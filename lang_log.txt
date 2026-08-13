@@ -1,0 +1,8 @@
+[lang] model params: 11.4M, vocab=1767, lines=6000
+[lang] epoch 0 baseline recorded
+[lang] ep 1/5 loss=20.112 (6.4s)
+[lang] ep 2/5 loss=7.314 (11.0s)
+[lang] ep 3/5 loss=5.446 (15.7s)
+[lang] ep 4/5 loss=4.424 (20.2s)
+[lang] ep 5/5 loss=3.352 (24.7s)
+[lang] saved to /home/god/Desktop/whitebox/results/language/lang.json

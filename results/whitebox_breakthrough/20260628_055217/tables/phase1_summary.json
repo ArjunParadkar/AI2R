@@ -1,0 +1,98 @@
+{
+  "report_epoch": 5,
+  "report_epoch_rationale": "last healthy-LM epoch (control ppl <=1.8x min); epoch-30 perplexity is overfit for BOTH runs and not reported.",
+  "best_alpha": 0.5,
+  "bias_reduction_pct": 70.81256166609472,
+  "ppl_degradation_pct": 1.8527801607500813,
+  "control_ppl_at_report_epoch": 84.51750878075906,
+  "regularization_backhalf_ppl_delta_pct": {
+    "0.1": 1.449764335527504,
+    "0.3": 0.004799468404038942,
+    "0.5": -4.559417386538762
+  },
+  "intervention_window_runA_epochs": -3,
+  "t_bias_runA": 8,
+  "t_output_runA": 5,
+  "intervened_at_runB": 1,
+  "selected_heads": [
+    [
+      3,
+      10
+    ],
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      3,
+      8
+    ]
+  ],
+  "runB_any_layer_bias_significant_final": true,
+  "perm_final_runB": {
+    "0": {
+      "observed": 1.5539765038029343,
+      "p_value": 0.019801980198019802,
+      "null_mean": 1.050701203064191,
+      "null_std": 0.19316608808721855
+    },
+    "3": {
+      "observed": 12.509739306725022,
+      "p_value": 0.009900990099009901,
+      "null_mean": 7.374261202568728,
+      "null_std": 1.348237017098693
+    },
+    "6": {
+      "observed": 9.156371119006078,
+      "p_value": 0.019801980198019802,
+      "null_mean": 6.20887161284451,
+      "null_std": 1.0661303663062014
+    },
+    "9": {
+      "observed": 6.60266986713529,
+      "p_value": 1.0,
+      "null_mean": 11.13554000369865,
+      "null_std": 1.5726729635313048
+    },
+    "11": {
+      "observed": 9.01588652349788,
+      "p_value": 1.0,
+      "null_mean": 21.256367878245666,
+      "null_std": 3.147439021813806
+    }
+  },
+  "alpha_rows": [
+    {
+      "alpha": 0.5,
+      "bias_reduction_pct": 70.81256166609472,
+      "ppl_degradation_pct": 1.8527801607500813,
+      "ratio": 38.21960367808733,
+      "outbias_B": 0.13639487326145172,
+      "ppl_B": 86.08343241580917
+    },
+    {
+      "alpha": 0.3,
+      "bias_reduction_pct": 32.0668475613182,
+      "ppl_degradation_pct": 0.8738932732252582,
+      "ratio": 36.6941957898064,
+      "outbias_B": 0.3174562156200409,
+      "ppl_B": 85.25610160469168
+    },
+    {
+      "alpha": 0.1,
+      "bias_reduction_pct": -0.3104932311825101,
+      "ppl_degradation_pct": -0.20860305677997798,
+      "ratio": -1.4884333314284401,
+      "outbias_B": 0.4687577188014984,
+      "ppl_B": 84.34120267392811
+    }
+  ]
+}

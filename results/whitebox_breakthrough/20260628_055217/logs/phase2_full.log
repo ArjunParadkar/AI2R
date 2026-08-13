@@ -1,0 +1,41 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+=== FROM-SCRATCH small_6L_384 ===
+[small_6L_384] params=30.0M layers=6 d=384 topo=[0, 1, 3, 4, 6]
+[transformers] `loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+  [small_6L_384 ep1] loss=5.333 L0=0.08 L1=0.16 L3=0.42 L4=0.80 L6=0.34 ob=0.016 ppl=946.8 (3s)
+  [small_6L_384 ep5] loss=3.186 L0=0.06 L1=0.35 L3=1.12 L4=1.23 L6=0.35 ob=0.544 ppl=768.3 (16s)
+  [small_6L_384 ep10] loss=2.336 L0=0.06 L1=0.30 L3=0.31 L4=0.44 L6=0.29 ob=0.833 ppl=1415.8 (31s)
+  [small_6L_384 ep15] loss=1.227 L0=0.07 L1=0.18 L3=0.55 L4=0.56 L6=0.35 ob=0.990 ppl=2575.6 (47s)
+  [small_6L_384 ep20] loss=0.894 L0=0.08 L1=0.38 L3=0.53 L4=0.40 L6=0.29 ob=1.147 ppl=4351.3 (62s)
+  [small_6L_384 ep25] loss=0.438 L0=0.08 L1=0.66 L3=0.47 L4=0.73 L6=0.37 ob=1.219 ppl=7480.4 (78s)
+  [small_6L_384 ep30] loss=0.475 L0=0.07 L1=0.89 L3=0.87 L4=0.88 L6=0.72 ob=1.340 ppl=11642.4 (93s)
+  [small_6L_384 ep35] loss=0.420 L0=0.07 L1=0.48 L3=0.81 L4=0.82 L6=0.65 ob=1.190 ppl=13708.9 (109s)
+[small_6L_384] t_bias=None t_output=1 WINDOW=None min_perm_p=0.3653
+
+=== FROM-SCRATCH mid_8L_512 ===
+[mid_8L_512] params=51.0M layers=8 d=512 topo=[0, 2, 4, 6, 8]
+  [mid_8L_512 ep1] loss=5.264 L0=0.14 L2=0.58 L4=0.18 L6=0.41 L8=0.23 ob=0.028 ppl=926.3 (5s)
+  [mid_8L_512 ep5] loss=3.129 L0=0.10 L2=0.81 L4=1.78 L6=1.75 L8=0.10 ob=0.629 ppl=839.1 (23s)
+  [mid_8L_512 ep10] loss=2.085 L0=0.10 L2=0.84 L4=1.56 L6=1.40 L8=0.15 ob=0.901 ppl=1925.1 (46s)
+  [mid_8L_512 ep15] loss=1.110 L0=0.09 L2=1.23 L4=1.77 L6=1.62 L8=0.84 ob=1.082 ppl=4070.7 (69s)
+  [mid_8L_512 ep20] loss=0.676 L0=0.09 L2=0.86 L4=1.66 L6=1.11 L8=1.06 ob=1.201 ppl=8240.4 (91s)
+  [mid_8L_512 ep25] loss=0.412 L0=0.09 L2=0.90 L4=1.79 L6=1.66 L8=1.14 ob=1.255 ppl=11319.5 (115s)
+  [mid_8L_512 ep30] loss=0.304 L0=0.09 L2=1.70 L4=1.83 L6=1.92 L8=0.85 ob=1.282 ppl=14426.5 (137s)
+  [mid_8L_512 ep35] loss=0.372 L0=0.08 L2=1.82 L4=1.76 L6=1.91 L8=0.71 ob=1.471 ppl=19453.8 (160s)
+[mid_8L_512] t_bias=None t_output=1 WINDOW=None min_perm_p=0.9681
+
+=== FROM-SCRATCH large_12L_768 ===
+[large_12L_768] params=123.7M layers=12 d=768 topo=[0, 3, 6, 9, 12]
+  [large_12L_768 ep1] loss=5.210 L0=0.20 L3=1.78 L6=1.47 L9=1.36 L12=0.01 ob=0.029 ppl=929.9 (10s)
+  [large_12L_768 ep5] loss=3.114 L0=0.14 L3=1.69 L6=1.71 L9=2.87 L12=0.41 ob=0.574 ppl=973.3 (49s)
+  [large_12L_768 ep10] loss=1.966 L0=0.14 L3=2.26 L6=2.45 L9=5.10 L12=0.49 ob=0.822 ppl=2880.5 (98s)
+  [large_12L_768 ep15] loss=0.943 L0=0.15 L3=1.50 L6=3.15 L9=3.75 L12=0.68 ob=1.035 ppl=7961.5 (147s)
+  [large_12L_768 ep20] loss=0.674 L0=0.14 L3=2.13 L6=5.76 L9=4.25 L12=0.26 ob=1.115 ppl=12869.3 (195s)
+  [large_12L_768 ep25] loss=0.472 L0=0.14 L3=1.58 L6=3.88 L9=4.62 L12=0.69 ob=1.146 ppl=24491.3 (244s)
+  [large_12L_768 ep30] loss=0.356 L0=0.14 L3=2.60 L6=1.82 L9=3.73 L12=0.40 ob=1.280 ppl=34969.8 (293s)
+  [large_12L_768 ep35] loss=0.328 L0=0.13 L3=4.79 L6=6.98 L9=7.72 L12=0.88 ob=1.433 ppl=41982.1 (341s)
+[large_12L_768] t_bias=None t_output=1 WINDOW=None min_perm_p=0.3014
+
+[saved] /home/god/whitebox_experiments_clone/results/whitebox_breakthrough/20260628_055217/raw/phase2_results.json
+WINDOWS: {'small_6L_384': None, 'mid_8L_512': None, 'large_12L_768': None}

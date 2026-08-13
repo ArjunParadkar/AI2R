@@ -1,0 +1,4 @@
+noise_pct,peak_SV,peak_epoch,peak/median_post,TC_final,TC_monotonic,B1_final,train_acc,test_acc
+0,13.4361,2,2.32,1.461,0.667,295,0.929,0.894
+50,4.4157,6,1.72,0.443,0.75,286,0.42,0.721
+100,1.2584,1,34.38,0.001,0.667,100,0.101,0.084

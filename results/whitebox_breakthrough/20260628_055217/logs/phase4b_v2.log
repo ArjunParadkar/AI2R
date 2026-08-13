@@ -1,0 +1,16 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[tox] n=24758 toxic_frac=0.832
+=== RUN A (no intervention) ===
+[transformers] [1mGPT2ForSequenceClassification LOAD REPORT[0m from: gpt2
+Key          | Status  | 
+-------------+---------+-
+score.weight | MISSING | 
+
+Notes:
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+  [A ep1] loss=0.057 tox_acc=0.959 bias_gap=+0.330 (idP=0.397 neP=0.067) (63s)
+  [A ep2] loss=0.198 tox_acc=0.964 bias_gap=+0.140 (idP=0.153 neP=0.014) (126s)
+  [A ep3] loss=0.013 tox_acc=0.963 bias_gap=+0.235 (idP=0.246 neP=0.011) (189s)
+  [A ep4] loss=0.060 tox_acc=0.954 bias_gap=+0.437 (idP=0.471 neP=0.034) (252s)
+  [A ep5] loss=0.127 tox_acc=0.954 bias_gap=+0.203 (idP=0.208 neP=0.005) (316s)
+  [A ep6] loss=0.000 tox_acc=0.960 bias_gap=+0.105 (idP=0.105 neP=0.000) (379s)

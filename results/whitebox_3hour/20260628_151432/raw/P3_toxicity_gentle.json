@@ -1,0 +1,137 @@
+{
+  "n": 24758,
+  "epochs": 8,
+  "alpha": 0.4,
+  "rank": 3,
+  "n_identity_probe": 160,
+  "runA": [
+    {
+      "tox_acc": 0.9585352719439957,
+      "identity_meanP": 0.39662882685661316,
+      "neutral_meanP": 0.06651037931442261,
+      "bias_gap": 0.33011844754219055,
+      "identity_toxic_rate": 0.31875
+    },
+    {
+      "tox_acc": 0.9636510500807755,
+      "identity_meanP": 0.1531364768743515,
+      "neutral_meanP": 0.01361170969903469,
+      "bias_gap": 0.13952477276325226,
+      "identity_toxic_rate": 0.1
+    },
+    {
+      "tox_acc": 0.962843295638126,
+      "identity_meanP": 0.24588139355182648,
+      "neutral_meanP": 0.010617578402161598,
+      "bias_gap": 0.23526380956172943,
+      "identity_toxic_rate": 0.1875
+    },
+    {
+      "tox_acc": 0.9544964997307486,
+      "identity_meanP": 0.47111377120018005,
+      "neutral_meanP": 0.03384361416101456,
+      "bias_gap": 0.4372701644897461,
+      "identity_toxic_rate": 0.45
+    },
+    {
+      "tox_acc": 0.9542272482498654,
+      "identity_meanP": 0.20782914757728577,
+      "neutral_meanP": 0.004722180776298046,
+      "bias_gap": 0.20310696959495544,
+      "identity_toxic_rate": 0.15625
+    },
+    {
+      "tox_acc": 0.9596122778675282,
+      "identity_meanP": 0.10457079112529755,
+      "neutral_meanP": 5.5312390031758696e-05,
+      "bias_gap": 0.10451547801494598,
+      "identity_toxic_rate": 0.09375
+    },
+    {
+      "tox_acc": 0.9625740441572429,
+      "identity_meanP": 0.1727626472711563,
+      "neutral_meanP": 0.00012118524318793789,
+      "bias_gap": 0.17264145612716675,
+      "identity_toxic_rate": 0.15
+    },
+    {
+      "tox_acc": 0.9617662897145934,
+      "identity_meanP": 0.19762645661830902,
+      "neutral_meanP": 5.6741224398138e-05,
+      "bias_gap": 0.19756971299648285,
+      "identity_toxic_rate": 0.175
+    }
+  ],
+  "runB": [
+    {
+      "tox_acc": 0.9612277867528272,
+      "identity_meanP": 0.3501124978065491,
+      "neutral_meanP": 0.09745430946350098,
+      "bias_gap": 0.2526581883430481,
+      "identity_toxic_rate": 0.20625
+    },
+    {
+      "tox_acc": 0.9636510500807755,
+      "identity_meanP": 0.13552099466323853,
+      "neutral_meanP": 0.018228154629468918,
+      "bias_gap": 0.11729283630847931,
+      "identity_toxic_rate": 0.075
+    },
+    {
+      "tox_acc": 0.9617662897145934,
+      "identity_meanP": 0.2959030270576477,
+      "neutral_meanP": 0.0289301835000515,
+      "bias_gap": 0.2669728398323059,
+      "identity_toxic_rate": 0.25
+    },
+    {
+      "tox_acc": 0.9515347334410339,
+      "identity_meanP": 0.3317802846431732,
+      "neutral_meanP": 0.022819366306066513,
+      "bias_gap": 0.3089609146118164,
+      "identity_toxic_rate": 0.3
+    },
+    {
+      "tox_acc": 0.9585352719439957,
+      "identity_meanP": 0.19517730176448822,
+      "neutral_meanP": 0.008393402211368084,
+      "bias_gap": 0.18678389489650726,
+      "identity_toxic_rate": 0.15625
+    },
+    {
+      "tox_acc": 0.9588045234248789,
+      "identity_meanP": 0.211001917719841,
+      "neutral_meanP": 0.003269657026976347,
+      "bias_gap": 0.20773226022720337,
+      "identity_toxic_rate": 0.2
+    },
+    {
+      "tox_acc": 0.960958535271944,
+      "identity_meanP": 0.22231483459472656,
+      "neutral_meanP": 0.0013302272418513894,
+      "bias_gap": 0.22098460793495178,
+      "identity_toxic_rate": 0.225
+    },
+    {
+      "tox_acc": 0.9588045234248789,
+      "identity_meanP": 0.2302558720111847,
+      "neutral_meanP": 0.0006955094868317246,
+      "bias_gap": 0.22956036031246185,
+      "identity_toxic_rate": 0.21875
+    }
+  ],
+  "final_A": {
+    "tox_acc": 0.9617662897145934,
+    "identity_meanP": 0.19762645661830902,
+    "neutral_meanP": 5.6741224398138e-05,
+    "bias_gap": 0.19756971299648285,
+    "identity_toxic_rate": 0.175
+  },
+  "final_B": {
+    "tox_acc": 0.9588045234248789,
+    "identity_meanP": 0.2302558720111847,
+    "neutral_meanP": 0.0006955094868317246,
+    "bias_gap": 0.22956036031246185,
+    "identity_toxic_rate": 0.21875
+  }
+}

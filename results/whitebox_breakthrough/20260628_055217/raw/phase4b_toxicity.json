@@ -1,0 +1,81 @@
+{
+  "n": 24758,
+  "epochs": 6,
+  "alpha": 1.0,
+  "rank": 4,
+  "n_identity_probe": 160,
+  "runA": [
+    {
+      "tox_acc": 0.9585352719439957,
+      "identity_toxic_rate": 0.31875,
+      "identity_meanP": 0.39662882685661316
+    },
+    {
+      "tox_acc": 0.9636510500807755,
+      "identity_toxic_rate": 0.1,
+      "identity_meanP": 0.1531364768743515
+    },
+    {
+      "tox_acc": 0.962843295638126,
+      "identity_toxic_rate": 0.1875,
+      "identity_meanP": 0.24588139355182648
+    },
+    {
+      "tox_acc": 0.9544964997307486,
+      "identity_toxic_rate": 0.45,
+      "identity_meanP": 0.47111377120018005
+    },
+    {
+      "tox_acc": 0.9542272482498654,
+      "identity_toxic_rate": 0.15625,
+      "identity_meanP": 0.20782914757728577
+    },
+    {
+      "tox_acc": 0.9596122778675282,
+      "identity_toxic_rate": 0.09375,
+      "identity_meanP": 0.10457079112529755
+    }
+  ],
+  "runB": [
+    {
+      "tox_acc": 0.9569197630586969,
+      "identity_toxic_rate": 0.3,
+      "identity_meanP": 0.3945412039756775
+    },
+    {
+      "tox_acc": 0.9569197630586969,
+      "identity_toxic_rate": 0.1375,
+      "identity_meanP": 0.3109019696712494
+    },
+    {
+      "tox_acc": 0.9614970382337102,
+      "identity_toxic_rate": 0.41875,
+      "identity_meanP": 0.47607216238975525
+    },
+    {
+      "tox_acc": 0.8384491114701131,
+      "identity_toxic_rate": 1.0,
+      "identity_meanP": 0.9844735264778137
+    },
+    {
+      "tox_acc": 0.9528809908454496,
+      "identity_toxic_rate": 0.44375,
+      "identity_meanP": 0.521001398563385
+    },
+    {
+      "tox_acc": 0.9170705438879914,
+      "identity_toxic_rate": 0.9875,
+      "identity_meanP": 0.875103771686554
+    }
+  ],
+  "final_A": {
+    "tox_acc": 0.9596122778675282,
+    "identity_toxic_rate": 0.09375,
+    "identity_meanP": 0.10457079112529755
+  },
+  "final_B": {
+    "tox_acc": 0.9170705438879914,
+    "identity_toxic_rate": 0.9875,
+    "identity_meanP": 0.875103771686554
+  }
+}

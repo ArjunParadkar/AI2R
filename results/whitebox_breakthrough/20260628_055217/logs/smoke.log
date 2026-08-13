@@ -1,0 +1,19 @@
+[setup] train=200 (M100/F100) clean_heldout=300
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+=== RUN A (control) ===
+  [ep0] BiasTop L0=0.8049 baseline_mean=0.4771 std=0.0767 thr(2sd)=0.6305 outbias=0.3880 ppl=140.06
+[transformers] `loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+/home/god/whitebox_experiments_clone/phase1_intervention.py:245: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  tot += float(loss) * len(bi); n += len(bi)
+  [ep1] loss=3.556 BiasTopL0=0.8049 L3=11.9492 outbias=0.2632 ppl=188.99 (11s)
+  [ep2] loss=1.032 BiasTopL0=0.8046 L3=10.3189 outbias=0.0751 ppl=273.53 (23s)
+  [ep3] loss=0.686 BiasTopL0=0.8045 L3=10.2401 outbias=0.0406 ppl=412.31 (35s)
+
+=== RUN B (intervened, alpha=0.3) ===
+  [ep0] BiasTop L0=0.8049 baseline_mean=0.4771 std=0.0767 thr(2sd)=0.6305 outbias=0.3880 ppl=140.06
+  [ep1] loss=3.556 BiasTopL0=0.8049 L3=11.9492 outbias=0.2632 ppl=188.99 (11s)
+  *** INTERVENTION at ep2 (t*_bias=1, alpha=0.3); top5 heads=[(1, 9), (1, 7), (1, 4), (0, 8), (0, 11)]
+  [ep2] loss=1.032 BiasTopL0=0.8046 L3=10.3189 outbias=0.0751 ppl=273.53 (27s)
+  [ep3] loss=0.687 BiasTopL0=0.8045 L3=10.1788 outbias=0.0403 ppl=411.98 (39s)

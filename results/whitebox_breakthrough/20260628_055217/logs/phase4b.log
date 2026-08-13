@@ -1,0 +1,34 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[tox] n=24758 toxic_frac=0.832
+=== RUN A (no intervention) ===
+[transformers] [1mGPT2ForSequenceClassification LOAD REPORT[0m from: gpt2
+Key          | Status  | 
+-------------+---------+-
+score.weight | MISSING | 
+
+Notes:
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+  [A ep1] loss=0.057 tox_acc=0.959 identity_toxic_rate=0.319 meanP=0.397 (63s)
+  [A ep2] loss=0.198 tox_acc=0.964 identity_toxic_rate=0.100 meanP=0.153 (126s)
+  [A ep3] loss=0.013 tox_acc=0.963 identity_toxic_rate=0.188 meanP=0.246 (189s)
+  [A ep4] loss=0.060 tox_acc=0.954 identity_toxic_rate=0.450 meanP=0.471 (252s)
+  [A ep5] loss=0.127 tox_acc=0.954 identity_toxic_rate=0.156 meanP=0.208 (314s)
+  [A ep6] loss=0.000 tox_acc=0.960 identity_toxic_rate=0.094 meanP=0.105 (377s)
+=== RUN B (intervention alpha=1.0 rank=4) ===
+[transformers] [1mGPT2ForSequenceClassification LOAD REPORT[0m from: gpt2
+Key          | Status  | 
+-------------+---------+-
+score.weight | MISSING | 
+
+Notes:
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+  [B ep1] loss=0.115 tox_acc=0.957 identity_toxic_rate=0.300 meanP=0.395 (63s)
+  [B ep2] loss=0.168 tox_acc=0.957 identity_toxic_rate=0.138 meanP=0.311 (127s)
+  [B ep3] loss=0.087 tox_acc=0.961 identity_toxic_rate=0.419 meanP=0.476 (190s)
+  [B ep4] loss=0.013 tox_acc=0.838 identity_toxic_rate=1.000 meanP=0.984 (253s)
+  [B ep5] loss=0.112 tox_acc=0.953 identity_toxic_rate=0.444 meanP=0.521 (317s)
+  [B ep6] loss=0.017 tox_acc=0.917 identity_toxic_rate=0.988 meanP=0.875 (380s)
+[saved] /home/god/whitebox_experiments_clone/results/whitebox_breakthrough/20260628_055217/raw/phase4b_toxicity.json
+FINAL A: tox_acc=0.960 identity_toxic_rate=0.094
+FINAL B: tox_acc=0.917 identity_toxic_rate=0.988
+IDENTITY-BIAS REDUCTION: -953.3%  | tox-acc change -4.4%

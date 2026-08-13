@@ -1,0 +1,21 @@
+
+=== FROM-SCRATCH small_6L_384 ===
+[small_6L_384] params=30.0M layers=6 d=384 topo=[0, 1, 3, 4, 6]
+[transformers] `loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+/home/god/whitebox_experiments_clone/phase2_scaling.py:113: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  tloss.append(float(loss))
+  [small_6L_384 ep1] loss=6.288 L0=0.16 L1=0.43 L3=1.42 L4=0.95 L6=0.25 ob=0.003 ppl=987.7 (7s)
+  [small_6L_384 ep5] loss=5.461 L0=0.07 L1=0.22 L3=0.27 L4=0.18 L6=0.22 ob=-0.001 ppl=739.5 (34s)
+  [small_6L_384 ep10] loss=3.833 L0=0.06 L1=0.60 L3=0.82 L4=0.90 L6=0.40 ob=0.019 ppl=1134.4 (69s)
+  [small_6L_384 ep15] loss=2.172 L0=0.05 L1=0.63 L3=0.70 L4=0.86 L6=0.39 ob=0.042 ppl=1936.1 (104s)
+  [small_6L_384 ep20] loss=1.833 L0=0.05 L1=0.46 L3=0.60 L4=0.94 L6=0.57 ob=0.039 ppl=3047.4 (139s)
+  [small_6L_384 ep25] loss=0.920 L0=0.06 L1=0.28 L3=1.02 L4=1.41 L6=0.77 ob=0.041 ppl=4791.4 (175s)
+  [small_6L_384 ep30] loss=0.537 L0=0.06 L1=0.56 L3=0.62 L4=0.49 L6=0.71 ob=0.033 ppl=6444.5 (210s)
+  [small_6L_384 ep35] loss=0.362 L0=0.06 L1=0.65 L3=0.73 L4=0.81 L6=0.72 ob=0.027 ppl=8324.1 (246s)
+  [small_6L_384 ep40] loss=0.309 L0=0.06 L1=0.75 L3=1.07 L4=0.95 L6=0.52 ob=0.050 ppl=11024.5 (281s)
+[small_6L_384] t_bias=None t_output=1 WINDOW=None min_perm_p=0.5549
+
+=== FROM-SCRATCH mid_8L_512 ===
+[mid_8L_512] params=51.0M layers=8 d=512 topo=[0, 2, 4, 6, 8]
+  [mid_8L_512 ep1] loss=6.254 L0=0.20 L2=0.54 L4=0.63 L6=0.96 L8=0.19 ob=0.000 ppl=1002.1 (10s)

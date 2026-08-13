@@ -1,0 +1,27 @@
+[setup] train=400 (M100/F100) clean_heldout=100 obprobe=48x2
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+=== RUN A (control) ===
+  [ep0] L0=1.544 L3=14.825 L6=16.935 L9=19.847 L11=23.881 outbias=0.1068 (onset_thr=0.1347) ppl=142.57
+[transformers] `loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+/home/god/whitebox_experiments_clone/phase1_intervention.py:323: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  tot += float(loss) * len(bi); n += len(bi)
+  [ep1] loss=3.853 BiasTopL0=1.548 L3=16.118 L6=17.668 outbias=0.3177 ppl=50.97 (12s)
+  [ep2] loss=2.274 BiasTopL0=1.549 L3=16.187 L6=16.630 outbias=0.5210 ppl=45.67 (25s)
+  [ep3] loss=1.791 BiasTopL0=1.550 L3=15.732 L6=15.912 outbias=0.6292 ppl=46.80 (37s)
+  [ep4] loss=1.478 BiasTopL0=1.551 L3=15.741 L6=15.554 outbias=0.7938 ppl=51.98 (50s)
+  [ep5] loss=1.233 BiasTopL0=1.552 L3=15.968 L6=15.591 outbias=0.9090 ppl=62.81 (62s)
+  [ep6] loss=0.992 BiasTopL0=1.552 L3=16.066 L6=14.885 outbias=1.0220 ppl=79.30 (75s)
+
+=== RUN B (intervened, alpha=1.0, blocks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], k=24) ===
+  [ep0] L0=1.544 L3=14.825 L6=16.935 L9=19.847 L11=23.881 outbias=0.1068 (onset_thr=0.1347) ppl=142.57
+  [ep1] loss=3.853 BiasTopL0=1.548 L3=16.118 L6=17.668 outbias=0.3177 ppl=50.97 (13s)
+  *** INTERVENTION at ep2 (onset t*=1, alpha=1.0, k=24); top heads=[(11, 8), (11, 0), (4, 7), (11, 4), (4, 11), (10, 4), (11, 11), (5, 9), (3, 3), (5, 5), (3, 10), (10, 9), (8, 0), (5, 7), (10, 10), (9, 3), (9, 5), (8, 2), (8, 7), (5, 6), (5, 10), (1, 11), (5, 0), (3, 2)]
+  [ep2] loss=2.274 BiasTopL0=1.549 L3=16.187 L6=16.630 outbias=0.5210 ppl=45.67 (32s)
+  [ep3] loss=2.641 BiasTopL0=1.550 L3=16.192 L6=14.837 outbias=0.5929 ppl=82.30 (45s)
+  [ep4] loss=2.003 BiasTopL0=1.551 L3=16.010 L6=15.117 outbias=0.7109 ppl=76.46 (58s)
+  [ep5] loss=1.616 BiasTopL0=1.553 L3=13.860 L6=15.841 outbias=0.7557 ppl=86.27 (71s)
+  [ep6] loss=1.306 BiasTopL0=1.554 L3=12.800 L6=12.873 outbias=0.9394 ppl=102.45 (85s)
+
+[saved] /home/god/whitebox_experiments_clone/results/whitebox_breakthrough/20260628_055217/raw/_mech.json

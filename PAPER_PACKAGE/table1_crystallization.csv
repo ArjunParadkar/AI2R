@@ -1,0 +1,11 @@
+class,t_c*_mean (epoch),t_c*_std,final_residual_SV,crystallization_rank,distinctness_rank
+ship,22.7,0.9,0.3542,1,1
+horse,23.3,0.9,0.4372,2,4
+truck,23.3,0.9,0.3637,2,2
+deer,23.3,0.9,0.4932,2,7
+frog,24.0,0.0,0.4515,5,5
+dog,24.0,0.0,0.4921,5,6
+bird,24.0,1.6,0.519,5,9
+cat,24.7,0.9,0.5156,8,8
+automobile,24.7,0.9,0.397,8,3
+airplane,24.7,0.9,0.5318,8,10

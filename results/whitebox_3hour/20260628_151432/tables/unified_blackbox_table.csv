@@ -1,0 +1,7 @@
+Problem,Prior State,WHITEBOX Result,Status
+P1 Concept crystallization order,"ρ≈0.59, no robustness measure",FPL~accuracy ρ=-0.84 (p=0.002); cryst~distinct ρ=0.32,Deepened — first topological robustness measure
+P3 Bias precedence/intervention,Hypothesis only,Intervention removes 70.8% gender bias @+1.9% ppl (separate run); precedence window NOT robust,Partially solved
+P4 Failure neighborhoods,Untested,"layer3 TC correct=0.04 vs mis=0.04, MWU p=0.000 — misclassified topologically sparser",First attempt
+P5 Fragility under shift,Untested,residual SV vs acc-drop ρ=0.05 (p=0.881) — no significant prediction,First attempt
+P6 Memorization signature,Shown on ResNet only,GPT-2 124M: clean TC=607.68 vs 100%-noise TC=0.211,Solved — cross-architecture
+P7 Cross-modal universality,Confounded comparison,ViT-from-scratch SV peak t=0.03 vs TinyGPT-from-scratch (matched),Solved — matched conditions

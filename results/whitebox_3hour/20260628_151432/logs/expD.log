@@ -1,0 +1,8 @@
+[D] ViT 4.8M
+[D ep5] loss=1.056
+[D ep10] loss=0.896
+[D ep15] loss=0.626
+[D ep20] loss=0.417
+[D ep25] loss=0.497
+[D ep30] loss=0.437
+[D done] ViT SV peak at normalized t=0.03 (ep1)

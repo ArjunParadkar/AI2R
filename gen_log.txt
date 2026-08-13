@@ -1,0 +1,15 @@
+[gen] Loading vision runs...
+  found 3 seeds
+[gen] Loading memorization runs: [0, 50, 100]
+[gen] Language: present
+/home/god/Desktop/whitebox/generate_results.py:248: RuntimeWarning: Mean of empty slice
+  mean_tc = np.nanmean(t_c, axis=0)
+/home/god/.local/lib/python3.14/site-packages/numpy/lib/_nanfunctions_impl.py:1997: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+/home/god/Desktop/whitebox/generate_results.py:248: RuntimeWarning: Mean of empty slice
+  mean_tc = np.nanmean(t_c, axis=0)
+/home/god/.local/lib/python3.14/site-packages/numpy/lib/_nanfunctions_impl.py:1997: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+[gen] Wrote /home/god/Desktop/whitebox/results/REPORT.md
+[gen] Figures in /home/god/Desktop/whitebox/results/figures
+[gen] Tables in /home/god/Desktop/whitebox/results/tables

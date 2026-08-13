@@ -1,0 +1,31 @@
+[compas] n=5278 (AA+Cauc, ProPublica-filtered)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+=== RUN A (no intervention) ===
+[transformers] [1mGPT2ForSequenceClassification LOAD REPORT[0m from: gpt2
+Key          | Status  | 
+-------------+---------+-
+score.weight | MISSING | 
+
+Notes:
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+  [A ep1] loss=0.610 acc=0.643 DPgap=+0.220 FPRgap=+0.193 (21s)
+  [A ep5] loss=0.648 acc=0.698 DPgap=+0.182 FPRgap=+0.097 (103s)
+  [A ep10] loss=0.672 acc=0.692 DPgap=+0.196 FPRgap=+0.129 (205s)
+  [A ep15] loss=0.556 acc=0.693 DPgap=+0.217 FPRgap=+0.163 (308s)
+  [A ep20] loss=0.632 acc=0.688 DPgap=+0.220 FPRgap=+0.146 (410s)
+=== RUN B (intervention alpha=1.0, rank=8) ===
+[transformers] [1mGPT2ForSequenceClassification LOAD REPORT[0m from: gpt2
+Key          | Status  | 
+-------------+---------+-
+score.weight | MISSING | 
+
+Notes:
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+  [B ep1] loss=0.488 acc=0.674 DPgap=+0.196 FPRgap=+0.153 (21s)
+  [B ep5] loss=0.713 acc=0.688 DPgap=+0.186 FPRgap=+0.112 (133s)
+  [B ep10] loss=0.658 acc=0.689 DPgap=+0.219 FPRgap=+0.152 (267s)
+  [B ep15] loss=0.550 acc=0.696 DPgap=+0.226 FPRgap=+0.181 (397s)
+  [B ep20] loss=0.663 acc=0.672 DPgap=+0.205 FPRgap=+0.131 (557s)
+[saved] /home/god/whitebox_experiments_clone/results/whitebox_breakthrough/20260628_055217/raw/phase4_compas.json
+FINAL A: acc=0.688 DPgap=+0.220 FPRgap=+0.146
+FINAL B: acc=0.672 DPgap=+0.205 FPRgap=+0.131
