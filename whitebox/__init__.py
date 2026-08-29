@@ -11,7 +11,8 @@ Public API is re-exported here. Anything not listed here is internal.
 """
 from .core.reduce import fit_reducer, Reducer
 from .core.persistence import compute_diagrams, Diagrams, available_backends
-from .core.film import Film, film_from_activations
+from .core.film import Film, FilmRecorder, film_from_activations, topological_film
+from .core.bootstrap import bootstrap_metric, BootEstimate
 from .metrics.sv import structural_velocity
 from .metrics.tc import topological_complexity
 from .metrics.betti import betti_at_scale, betti_curve, median_scale
@@ -23,7 +24,8 @@ __version__ = "0.0.1"
 __all__ = [
     "fit_reducer", "Reducer",
     "compute_diagrams", "Diagrams", "available_backends",
-    "Film", "film_from_activations",
+    "Film", "FilmRecorder", "film_from_activations", "topological_film",
+    "bootstrap_metric", "BootEstimate",
     "structural_velocity", "topological_complexity",
     "betti_at_scale", "betti_curve", "median_scale",
     "top_k_lifetime", "feature_persistence_runs",
