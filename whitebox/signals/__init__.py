@@ -1,19 +1,13 @@
 """Calibrated, claim-bearing signals. Each entry point ships only with a
-VALIDATION.md entry (Phase 4). Phase 0 = stubs that name their phase.
+VALIDATION.md entry (Phase 4).
 
-    memorization_signal          Phase 2  (TC/beta1 collapse; the robust result)
-    failure_neighborhoods        Phase 4  (P4; layer-3 TC of misclassified inputs)
-    representation_correspondence Phase 3 (Sub-H4; RTD-style cross-space comparison)
+    memorization_signal           Phase 2  (per-family calibrated memorisation score)
+    representation_correspondence Phase 3  (Sub-H4; RTD-style cross-space comparison)
+
+`failure_neighborhoods` (paper P4) was evaluated in Phase 4 and NOT shipped:
+under a label-permutation null the effect is not significant and per-sample
+it is dominated by softmax confidence (VALIDATION.md).
 """
+from .memorization import memorization_signal, memorization_features, MemorizationSignal, Calibration
+from .correspondence import representation_correspondence, correspondence, rtd, Correspondence
 
-
-def _not_yet(name, phase):
-    def f(*a, **k):
-        raise NotImplementedError(f"whitebox.{name} is delivered in Phase {phase}.")
-    f.__name__ = name
-    return f
-
-
-memorization_signal = _not_yet("memorization_signal", 2)
-representation_correspondence = _not_yet("representation_correspondence", 3)
-failure_neighborhoods = _not_yet("failure_neighborhoods", 4)

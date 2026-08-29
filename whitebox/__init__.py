@@ -18,8 +18,10 @@ from .metrics.tc import topological_complexity
 from .metrics.betti import betti_at_scale, betti_curve, median_scale
 from .metrics.fpl import top_k_lifetime, feature_persistence_runs
 from .metrics.biastop import bias_top, bias_top_permutation_test
+from .signals import memorization_signal, memorization_features, MemorizationSignal
+from .signals import representation_correspondence, correspondence, rtd, Correspondence
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 __all__ = [
     "fit_reducer", "Reducer",
@@ -30,4 +32,6 @@ __all__ = [
     "betti_at_scale", "betti_curve", "median_scale",
     "top_k_lifetime", "feature_persistence_runs",
     "bias_top", "bias_top_permutation_test",
+    "memorization_signal", "memorization_features", "MemorizationSignal",
+    "representation_correspondence", "correspondence", "rtd", "Correspondence",
 ]

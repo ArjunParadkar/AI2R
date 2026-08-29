@@ -5,3 +5,5 @@ __pycache__/
 *.pth
 data/
 .pytest_cache/
+benchmarks/results/battery_*/*.npz
+benchmarks/data/

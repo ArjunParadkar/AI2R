@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "whitebox-topo"
-version = "0.0.1"
+version = "0.1.0"
 description = "Topological interpretability of neural-network training: persistent homology instruments (SV, TC, FPL, BiasTop) and calibrated signals built on them."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -24,8 +24,14 @@ torch = ["torch>=2.0"]
 viz = ["matplotlib>=3.7"]
 dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0"]
 
+[project.urls]
+Repository = "https://github.com/ArjunParadkar/AI2R"
+
 [tool.setuptools.packages.find]
 include = ["whitebox*"]
+
+[tool.setuptools.package-data]
+"whitebox.signals" = ["calibration/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -9,7 +9,7 @@ clone was modified; this library is a new tree.
 
 | Result | Evidence | Where | Verdict |
 |---|---|---|---|
-| **Memorization / TC collapse** (P6, H4) | ResNet-18/CIFAR-10: TC_final clean 1.461 vs 100 % noise 0.001 (~1000×), β₁ 295→100, peak SV 13.4 vs 1.3. GPT-2 124M/LM-target noise: TC 607.7 vs 0.211 (~2900×), β₁ 14→1, critical noise ≈ 25 %. Two architectures, two modalities, two label-noise mechanisms. | `results/REPORT.md` Table 3; `results/whitebox_3hour/*/tables/A_memorization.csv`; scripts `exp_memorization.py`, `expA_memorization.py` | **Robust.** Single seed each, but the effect size is 3 orders of magnitude. Phase 2 flagship. Needs: multi-seed, intermediate noise levels, and a calibration battery before it is a *number*. |
+| **Memorization / TC collapse** (P6, H4) | ResNet-18/CIFAR-10: TC_final clean 1.461 vs 100 % noise 0.001 (~1000×), β₁ 295→100, peak SV 13.4 vs 1.3. GPT-2 124M/LM-target noise: TC 607.7 vs 0.211 (~2900×), β₁ 14→1, critical noise ≈ 25 %. Two architectures, two modalities, two label-noise mechanisms. | `results/REPORT.md` Table 3; `results/whitebox_3hour/*/tables/A_memorization.csv`; scripts `exp_memorization.py`, `expA_memorization.py` | **Downgraded after Phase 2.** The 1000×/2900× collapses came from 100 %-noise models that had NOT fit the noise (ResNet train acc 0.10; GPT-2 fits 39 % of targets) — a failure-to-learn signature. Models that genuinely memorise show no TC collapse. A memorisation signature exists but its sign flips between CNN and LM (`benchmarks/PHASE2.md`); shipped per family. |
 | **FPL ↔ per-class accuracy** (P1) | Mean top-3 H1 lifetime after crystallisation vs per-class CIFAR-10 test accuracy: Spearman ρ = −0.84, p = 0.002, 2 seeds × 60 epochs. | `results/whitebox_3hour/*/tables/B_crystallization.csv`; `expB_crystallization.py::top3_fpl` | **Robust for n=10 classes.** Only 10 data points; needs replication on another dataset before exposure as a signal. Instrument (`top_k_lifetime`) ships now; the signal waits for Phase 4 evidence. |
 | **P4 failure neighbourhoods** | Layer-3 bootstrap TC of misclassified CIFAR-10 test inputs 0.037 vs correct 0.044, Mann–Whitney p = 8.2e-6 (40 bootstrap draws of 150 pts). β₁ n.s. (p=0.99). | `expC_failure.py`; `results/whitebox_3hour/*/raw/C_*.json` | **Supported, one model.** Effect is small (16 %) but significant; bootstrap draws are not independent samples, so p is optimistic. Phase 4 benchmark item. |
 | SV phase-transition peak (H1) | Every layer shows an SV peak in epochs 2–5; cross-seed ρ = 0.93; loss has no matching feature. | `results/REPORT.md` Table 2 | Replicates across 3 seeds. Descriptive, not a decision signal by itself; shipped as the `sv_trajectory` instrument. |
@@ -51,7 +51,7 @@ in `whitebox/core` and `whitebox/metrics` with tests.
 
 ## What this means for the build
 
-* Phase 2's `memorization_signal` = TC/β₁ collapse (bin 1 row 1). Calibrated, not raw.
+* Phase 2's `memorization_signal` was planned on TC/β₁ collapse (bin 1 row 1); the battery showed that collapse is a failure-to-learn artefact. The shipped signal uses scale-free features calibrated per architecture family (PHASE2.md).
 * `top_k_lifetime` and P4 TC are candidates for Phase 4 only after a second dataset.
 * No API for bias precedence, bias intervention, fragility, or cross-modal timing.
 * BiasTop stays as an instrument (it measures a real distance) with no claim attached.
