@@ -6,7 +6,7 @@ fig, ax = plt.subplots(1, 3, figsize=(14, 4))
 for b in ("ripser", "giotto-ph", "giotto-ph-nocollapse", "landmark"):
     r = [x for x in t if x["backend"] == b]; ax[0].plot([int(x["n"]) for x in r], [float(x["seconds"]) for x in r], "o-", label=b)
 ax[0].plot([int(x["n"]) for x in wall], [float(x["seconds"]) for x in wall], "k^--", label="giotto-ph nocollapse (wall run)")
-ax[0].set_xscale("log"); ax[0].set_yscale("log"); ax[0].set_xlabel("probe size n"); ax[0].set_ylabel("PH seconds (L12, PCA30, thresh95)"); ax[0].legend(fontsize=7); ax[0].set_title("PH wall-clock vs probe size")
+ax[0].set_xscale("log"); ax[0].set_yscale("log"); ax[0].set_xticks([150,300,500,1000,2000,4000,8000]); ax[0].set_xticklabels(["150","300","500","1k","2k","4k","8k"]); ax[0].minorticks_off(); ax[0].set_xlabel("probe size n"); ax[0].set_ylabel("PH seconds (L12, PCA30, thresh95)"); ax[0].legend(fontsize=7); ax[0].set_title("PH wall-clock vs probe size")
 ax[1].plot([int(x["n"]) for x in wall], [float(x["TC"]) for x in wall], "o-"); ax[1].set_xlabel("probe size n"); ax[1].set_ylabel("TC (H1)"); ax[1].set_title("TC grows with n: raw TC is size-dependent")
 names = ["gpt2", "gpt2-medium", "gpt2-large", "gpt2-xl"]; P = [124e6] + [rep[n]["n_params"] for n in names[1:]]
 ext = [rep["gpt2_extract_2000_seconds"] / 4] + [rep[n]["extract_seconds"] for n in names[1:]]
