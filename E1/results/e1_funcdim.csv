@@ -1,0 +1,5 @@
+function,depth,width,seed,converged,steps,n_params,rank,expected_rank,deficit,dead_units,unexplained_deficit
+XOR3,2,4,2,True,102,41,28,33,5,1,0
+MAJ3,2,6,0,True,48,73,45,61,16,2,2
+MAJ3,2,6,1,True,43,73,42,61,19,2,3
+MAJ3,2,6,2,True,62,73,47,61,14,1,7

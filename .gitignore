@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+E1/results/networks/
+.pytest_cache/

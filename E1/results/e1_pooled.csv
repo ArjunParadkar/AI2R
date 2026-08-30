@@ -1,0 +1,5 @@
+function,depth,width,scheme,n_expl,n_circuits,orbits_eps0.01,circuit_orbits_eps0.01,orbits_eps0.02,circuit_orbits_eps0.02,orbits_eps0.05,circuit_orbits_eps0.05,orbits_eps0.1,circuit_orbits_eps0.1,orbits_eps0.2,circuit_orbits_eps0.2,orbits_functional,circuit_orbits_functional
+XOR3,2,4,zero,219,1,219,1,219,1,219,1,219,1,219,1,219,1
+XOR3,2,4,mean,219,1,219,1,219,1,219,1,219,1,219,1,219,1
+MAJ3,2,6,zero,1193,13,1193,13,1193,13,1193,13,1193,13,1193,13,1193,13
+MAJ3,2,6,mean,1500,28,1500,28,1500,28,1500,28,1500,28,1500,28,1158,21
