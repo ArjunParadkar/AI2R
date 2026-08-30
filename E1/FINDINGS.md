@@ -104,3 +104,13 @@ pooled circuits; explanation counts differ by 10³×) — recorded, as the brief
 Files: `results/e1_cells.csv` (per-cell verdicts + CIs), `e1_h1b.csv`,
 `e1_pooled*.csv`, `e1_per_network*.csv`, `e1_funcdim*.csv`,
 `fig_orbits_vs_expl.png`, `fig_ratio_vs_width.png`, `fig_funcdim.png`.
+
+## Example figures (added 2026-08-30)
+
+`make_examples.py` → `fig_example_gauge_pair.png` (a *planted* gauge-equivalent
+pair: circuit 0x317 of XOR3 d2 w6 seed 1 and its image under a random
+permutation + scaling; canonical forms coincide, so the orbit code merges them —
+the only way to exhibit such a pair, since none occur between independently
+trained networks) and `fig_example_distinct_pair.png` (two genuinely distinct
+minimal mean-valid circuits of the same network: different neuron subsets,
+different gate assignments, no element of G maps one to the other).
