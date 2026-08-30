@@ -1,0 +1,18 @@
+{
+ "tokens": {
+  "source": "stas/openwebtext-10k",
+  "n_docs_scanned": 73,
+  "n_seq": 512,
+  "seq_len": 128
+ },
+ "sae_cfg_last": {
+  "d_in": "768",
+  "d_sae": "24576",
+  "dtype": "float32",
+  "device": "cuda",
+  "apply_b_dec_to_input": "True",
+  "normalize_activations": "none",
+  "reshape_activations": "none",
+  "metadata": "SAEMetadata({'sae_lens_version': '6.50.0', 'sae_lens_training_version': None, 'model_name': 'gpt2-small', 'hook_name': 'blocks.10.hook_resid_pre', 'hook_head_index': None, 'dataset_path': 'Skylion007/openwebtext', 'context_size': 128, 'model_from_pretrained_kwargs': {'center_writing_weights': True}, 'neuronpedia_id': 'gpt2-small/10-res-jb', 'prepend_bos': True})"
+ }
+}

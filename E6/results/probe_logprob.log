@@ -1,0 +1,21 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 20104.84it/s]
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+Loaded pretrained model gpt2-small into HookedTransformer
+2 {'E': 0.022220607712769458, 'Eshuf': -0.015346472687074897, 'X': 0.08680117134634935} 135.87649536132812
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+6 {'E': 0.06591005527337868, 'Eshuf': -0.013025124489238094, 'X': 0.18847513553786155} 209.3195037841797
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+10 {'E': 0.28336846425918016, 'Eshuf': -0.012336395714841686, 'X': 0.2644007978136269} 246.01089477539062
