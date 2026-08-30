@@ -77,7 +77,7 @@ images the input cloud is pixel space and **good classifiers score near 0**
 — they discard input topology on purpose. Read `benchmarks/PHASE3.md`
 before using this to judge a model.
 
-## v2 modules: gauge invariance and legibility (Phase 6)
+## v2 modules: gauge invariance, legibility, and dark matter (Phase 6 / Stage 2B)
 
 **Is my metric a statement about the function, or about one arbitrary
 representative of it?** For a ReLU MLP the network's function is unchanged by
@@ -120,6 +120,33 @@ architecture (ρ(Q₁₀, S) = −0.37 pooled is an architecture offset with the
 sign; within-architecture CIs all cross 0). The profile is a measurement.
 Needs the `legibility` extra (`networkx`, `python-igraph`, `leidenalg`, `torch`).
 
+**Is an SAE's reconstruction error ("dark matter") structured, or isotropic
+noise?** `residual_structure` reads the error cloud e = x − recon(x) with two
+independent nulls — a Marchenko–Pastur/Tracy–Widom spectral null (with a
+matched-diagonal-Gaussian kill and a feature-shuffle validity check) and the
+v1 topology-with-shuffle-null instrument (with a covariance-matched Gaussian
+control):
+
+```python
+from whitebox.darkmatter import residual_structure
+rep = residual_structure(errors)                # E = x - SAE(x), (n_tokens, d)
+rep = residual_structure(acts=x, recon=sae(x))  # or pass the pair directly
+rep.n_outliers, rep.spectral_test_valid          # Test 1: MP/TW spectral null
+rep.tc_ratio, rep.tc_ratio_ci, rep.gaussian_control_tc_ratio   # Test 2: topology null
+rep.verdict   # "neither" / "spectrally_structured" / "topologically_structured" / "both"
+```
+
+`verdict` is **not** a claim that dark matter is structured — it names which
+instrument(s) cleared their own pre-registered bar. On the one battery run so
+far (E6, GPT-2 small, `gpt2-small-res-jb`, 3 layers) every layer read
+`"spectrally_structured"` (real, robust MP outliers — 179–198 of 768 dims,
+surviving a matched-diagonal-Gaussian kill and a top-50-PC-of-x projection
+kill) and **none** read `"topologically_structured"` or `"both"`: `tc_ratio`
+was **below 1.0** at every layer (0.11–0.46) — the error cloud is *less*
+topologically complex than its own feature-shuffled null, and below a
+covariance-matched Gaussian control that correctly calibrates to ~1.0. Takes
+plain numpy arrays; no `transformer_lens` / SAELens / torch dependency.
+
 ## Instruments (no claims attached)
 
 ```python
@@ -142,6 +169,7 @@ whitebox/metrics     sv, tc (+ persistent entropy), betti, fpl, biastop
 whitebox/signals     memorization (calibrated per family; standardize= option, PHASE6.md), correspondence (RTD)
 whitebox/invariants  (v2) ReLU-MLP gauge group, orbit sampler, check_invariance, the invariant metrics
 whitebox/legibility  (v2) attribution-graph measures, discovery pipeline, legibility_profile (no score)
+whitebox/darkmatter  (v2) SAE-error MP/TW spectral null + topology-with-shuffle-null, residual_structure
 whitebox/activations forward-hook extraction; HF hidden-state helper
 benchmarks/          batteries, calibration, validation; results/*.csv + 300-dpi figures
 AUDIT.md             what the paper's code/results were sorted into
