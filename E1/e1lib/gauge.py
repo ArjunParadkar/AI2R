@@ -2,7 +2,7 @@
 canonical forms of circuit sub-implementations, orbit keys, and random gauge transforms."""
 import hashlib
 import numpy as np
-from .enumerate import circuit_layers, binarised_acts, interpretations, _offsets
+from .enumerate import circuit_layers, binarised_acts, interpretation_count, _offsets
 
 
 def apply_gauge(model, perms=None, scales=None):
@@ -104,17 +104,13 @@ def functional_key(model, X, mid, scheme):
     return tuple(parts)
 
 
-def explanation_keys(model, X, mid, scheme, eps_list, max_leaves=10_000_000):
-    """For one circuit: interpretation count, per-eps gauge keys (canonical form of the circuit's
-    parameter implementation + the frozenset of its gate-multiset interpretations, which is
-    gauge-invariant by construction), and the functional key."""
-    count, gkeys = interpretations(model, X, mid, scheme, max_leaves)
+def explanation_keys(model, X, mid, scheme, eps_list, max_leaves=None):
+    """For one circuit: exact interpretation count, per-eps gauge key (canonical form of the
+    circuit's parameter implementation; the interpretation set is gauge-invariant so it adds
+    nothing to the key), and the functional key."""
+    count = interpretation_count(model, X, mid, scheme)
     fkey = functional_key(model, X, mid, scheme)
-    ik = frozenset(gkeys)
-    keys = {}
-    for eps in eps_list:
-        ck, _, _, _ = canonical_form(model, mid, eps)
-        keys[eps] = (ck, ik)
+    keys = {eps: canonical_form(model, mid, eps)[0] for eps in eps_list}
     return count, keys, fkey
 
 
@@ -126,14 +122,18 @@ def orbit_counts(records, eps_list):
     n_expl = sum(c for c, _, _ in records)
     out = {"n_expl": n_expl, "n_circuits": len(records)}
     for eps in eps_list:
-        seen = {}
+        seen, clash = {}, 0
         for c, keys, _ in records:
-            seen[keys[eps]] = c
+            k = keys[eps]
+            if k in seen and seen[k] != c:
+                clash += 1
+            seen[k] = max(seen.get(k, 0), c)
         out[f"orbits_eps{eps}"] = sum(seen.values())
         out[f"circuit_orbits_eps{eps}"] = len(seen)
+        out[f"key_count_clash_eps{eps}"] = clash
     fseen = {}
     for c, _, f in records:
-        fseen[f] = c
+        fseen[f] = max(fseen.get(f, 0), c)
     out["orbits_functional"] = sum(fseen.values())
     out["circuit_orbits_functional"] = len(fseen)
     return out

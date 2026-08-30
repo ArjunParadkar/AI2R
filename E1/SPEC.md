@@ -243,3 +243,40 @@ vectorised in numpy in chunks of 2^16 masks — minutes, not hours.
    multiplicity is untouched by G, so the within-network ratio is ≈ 1
    unless circuits are duplicated; the pooled-across-seeds orbit count is
    where gauge can act. Both were already pre-registered.
+
+3. (2026-08-30, approved by Arjun before the pre-registered run) **H-E1a
+   primary ratio is the pooled one.** Within a single generic network the
+   ratio is ≈ 1 by construction (interpretation multiplicity is not moved by
+   G), so the pre-registered test would be vacuous. H-E1a now reads: per
+   (function, d, w) cell, pool the explanations of all converged seeds;
+   `N_orbits_pooled(ε=0.05) / N_expl_pooled ≤ 0.5`, with a seed-bootstrap
+   95 % CI (resample seeds with replacement, recompute the pooled ratio)
+   lying below 0.5. The within-network ratio is demoted to a reported
+   column. H-E1b likewise uses pooled counts per cell across widths.
+   Also: interpretation enumeration is capped at 10^6 leaves per circuit
+   (truncation flagged in a column); per-network key records are pickled so
+   the bootstrap is exact.
+
+4. (2026-08-30, during the run, after 3 of 36 cells) **Exact counting
+   instead of leaf enumeration.** The Python DFS over interpretation trees
+   took 33 min for the XOR3 d2 w8 cell (up to 4×10⁶ leaves per network,
+   some circuits hitting the 10⁶ cap); the neuron-subset enumeration itself
+   takes 0.1 s. Replaced by a dynamic programme over the set of input pairs
+   distinguished so far (`interpretation_count`), which returns the *same*
+   number with no cap (unit test against the DFS on trained and
+   hand-built nets). Orbit key is now the canonical parameter form alone —
+   the interpretation set is gauge-invariant so it added nothing; a column
+   records any ε-key collision between circuits with different
+   interpretation counts (`key_count_clash`). Run restarted from scratch;
+   the partial results were discarded, nothing was looked at beyond the
+   three cells' timing. Definitions and hypotheses unchanged.
+
+5. (2026-08-30, at aggregation, analysis-only) **Seed bootstrap de-duplicates
+   resampled seeds.** A plain with-replacement resample duplicates whole
+   networks; a duplicated network is gauge-identical to itself, so the pooled
+   orbit/explanation ratio of the resample drops (to ≈ 0.35) for a reason that
+   has nothing to do with gauge. The CI is therefore computed over the unique
+   seed subset of each resample (a subsampling bootstrap). Point estimates,
+   definitions and pass criteria are unchanged; only the CI is affected. The
+   defect was noticed because the first aggregation produced CI upper bounds
+   below the point estimate.

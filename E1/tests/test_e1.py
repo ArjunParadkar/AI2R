@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 from e1lib.functions import truth_table
 from e1lib.models import MLP, lookup_table_mlp, train_mlp
-from e1lib.enumerate import enumerate_valid, minimal_ids, interpretations
+from e1lib.enumerate import enumerate_valid, minimal_ids
 from e1lib.gauge import (random_gauge, permute_mask_id, explanation_keys, orbit_counts,
                          canonical_form)
 from e1lib.funcdim import functional_dimension
@@ -130,3 +130,19 @@ def test_functional_dimension_hand_net():
     fd = functional_dimension(m, np.random.default_rng(0))
     assert fd["rank"] <= fd["expected_rank"]
     assert fd["deficit"] >= 0
+
+
+def test_dp_count_equals_dfs_count():
+    from e1lib.enumerate import interpretations_dfs, interpretation_count
+    for name, w in [("XOR3", 5), ("MAJ3", 6), ("AND_OR3", 6)]:
+        X, y = truth_table(name)
+        m, conv, _ = train_mlp(X, y, depth=2, width=w, seed=3)
+        if not conv:
+            continue
+        for scheme in ["zero", "mean"]:
+            mins = minimal_ids(enumerate_valid(m, X, y, scheme))
+            for c in mins[:6]:
+                assert interpretation_count(m, X, int(c), scheme) == interpretations_dfs(m, X, int(c), scheme)[0]
+    m = hand_xor3("different"); X, y = truth_table("XOR3")
+    for c in minimal_ids(enumerate_valid(m, X, y, "zero")):
+        assert interpretation_count(m, X, int(c), "zero") == interpretations_dfs(m, X, int(c), "zero")[0]

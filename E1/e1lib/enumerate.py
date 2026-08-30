@@ -128,7 +128,7 @@ def _ablated_acts(model, X, mid, scheme):
     return [a[0] for a in acts], logits[0]
 
 
-def interpretations(model, X, mid, scheme, max_leaves=10_000_000):
+def interpretations_dfs(model, X, mid, scheme, max_leaves=10_000_000):
     """Enumerate consistent gate interpretations of circuit `mid` (Méloux et al. 2025, Sec. 3):
     layer by layer, each circuit neuron gets a threshold separating its activations into 0/1 such
     that the bits are a function of its circuit-parents' bits; the output bit is fixed (logit > 0)
@@ -169,3 +169,69 @@ def interpretations(model, X, mid, scheme, max_leaves=10_000_000):
 
     rec(0, X.astype(np.int8), [])
     return count, gate_keys
+
+
+def _pair_masks(N):
+    pairs = [(r, q) for r in range(N) for q in range(r + 1, N)]
+    return pairs
+
+
+def _distinguish_mask(bits, pairs):
+    m = 0
+    for i, (r, q) in enumerate(pairs):
+        if bits[r] != bits[q]:
+            m |= 1 << i
+    return m
+
+
+def interpretation_count(model, X, mid, scheme):
+    """Exact number of Méloux-consistent interpretations of circuit `mid`, by dynamic programming
+    over the set of input pairs distinguished so far. A separation of a unit is consistent with
+    its parents iff every pair it distinguishes is already distinguished by the parents' bits
+    (same parent pattern -> same bit); the output is consistent iff every label-different pair is
+    distinguished by the last layer. Identical to the leaf count of `interpretations_dfs`."""
+    acts, logits = _ablated_acts(model, X, mid, scheme)
+    layers = circuit_layers(mid, model.widths)
+    N = len(X)
+    pairs = _pair_masks(N)
+    out_bits = (logits > 0).astype(np.int8)
+    need = _distinguish_mask(out_bits, pairs)
+    # per unit: list of separation masks (all thresholds between consecutive distinct values)
+    def unit_options(a):
+        vals = np.unique(np.round(a, 9))
+        opts = []
+        for gi in range(len(vals) - 1):
+            t = 0.5 * (vals[gi] + vals[gi + 1])
+            opts.append(_distinguish_mask((a > t).astype(np.int8), pairs))
+        return opts
+    states = {_distinguish_mask_matrix(X.astype(np.int8), pairs): 1}
+    for l, units in enumerate(layers):
+        opts = [unit_options(acts[l][:, u]) for u in units]
+        new = {}
+        for st, cnt in states.items():
+            # DP across units of this layer: partial state = OR of chosen masks
+            partial = {0: cnt}
+            for o in opts:
+                allowed = [m for m in o if (m & ~st) == 0]
+                if not allowed:
+                    partial = {}
+                    break
+                nxt = {}
+                for pm, pc in partial.items():
+                    for m in allowed:
+                        nxt[pm | m] = nxt.get(pm | m, 0) + pc
+                partial = nxt
+            for pm, pc in partial.items():
+                new[pm] = new.get(pm, 0) + pc
+        states = new
+        if not states:
+            return 0
+    return sum(c for st, c in states.items() if (need & ~st) == 0)
+
+
+def _distinguish_mask_matrix(B, pairs):
+    m = 0
+    for i, (r, q) in enumerate(pairs):
+        if (B[r] != B[q]).any():
+            m |= 1 << i
+    return m

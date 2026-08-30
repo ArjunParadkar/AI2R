@@ -1,5 +1,5 @@
 """E1 main run. See SPEC.md. Usage: python run_e1.py [--smoke] [--cells XOR3:2:4,...]"""
-import argparse, os, sys, time, json
+import argparse, os, sys, time, json, pickle
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from e1lib.functions import truth_table, FUNCTIONS
@@ -9,6 +9,7 @@ from e1lib.gauge import explanation_keys, orbit_counts, random_gauge
 from e1lib.funcdim import functional_dimension
 
 EPS = [0.01, 0.02, 0.05, 0.1, 0.2]
+MAX_LEAVES = 1_000_000
 N_SEEDS = 24
 CELLS = [(f, d, w) for f in FUNCTIONS for d in (2, 3) for w in (4, 6, 8, 10) if d * w <= 20]
 RES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
@@ -21,6 +22,7 @@ def run_network(model, X, y, tag):
         mins = minimal_ids(valid)
         recs = [explanation_keys(model, X, int(c), scheme, EPS) for c in mins]
         oc = orbit_counts(recs, EPS)
+        truncated = 0
         # jitter check (SPEC control 4): 1e-4 relative noise, recompute orbit counts
         rng = np.random.default_rng(0)
         jit = model.copy()
@@ -29,7 +31,7 @@ def run_network(model, X, y, tag):
         jrecs = [explanation_keys(jit, X, int(c), scheme, EPS) for c in mins] if (jit.predict(X) == y).all() else recs
         joc = orbit_counts(jrecs, EPS)
         row = {**tag, "scheme": scheme, "n_valid": len(valid), "n_minimal": len(mins),
-               "n_uninterpretable": sum(1 for c, _, _ in recs if c == 0),
+               "n_uninterpretable": sum(1 for c, _, _ in recs if c == 0), "n_truncated": truncated,
                "all_valid_expl": None, **oc,
                **{f"jitter_orbits_eps{e}": joc[f"orbits_eps{e}"] for e in EPS}}
         row["ratio_eps0.05"] = oc["orbits_eps0.05"] / oc["n_expl"] if oc["n_expl"] else np.nan
@@ -43,6 +45,7 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--cells", default=None)
     ap.add_argument("--seeds", type=int, default=N_SEEDS)
+    ap.add_argument("--suffix", default="", help="output CSV suffix (for resumed partial runs; aggregate_e1 merges e1_*<suffix>.csv)")
     a = ap.parse_args()
     cells = CELLS
     if a.cells:
@@ -64,6 +67,8 @@ def main():
             model.save(os.path.join(RES, "networks", f"{fname}_d{d}_w{w}_s{seed}.npz"))
             r, p = run_network(model, X, y, tag)
             rows += r
+            with open(os.path.join(RES, "networks", f"{fname}_d{d}_w{w}_s{seed}.recs.pkl"), "wb") as fh:
+                pickle.dump(p, fh)
             for s in p:
                 pooled[s] += p[s]
             fd = functional_dimension(model, np.random.default_rng(seed))
@@ -79,9 +84,9 @@ def main():
             oc = orbit_counts(pooled[s], EPS)
             pooled_rows.append({"function": fname, "depth": d, "width": w, "scheme": s, **oc})
         print(f"{fname} d={d} w={w}: {time.time()-t0:.1f}s", flush=True)
-        pd.DataFrame(rows).to_csv(os.path.join(RES, "e1_per_network.csv"), index=False)
-        pd.DataFrame(pooled_rows).to_csv(os.path.join(RES, "e1_pooled.csv"), index=False)
-        pd.DataFrame(funcdim_rows).to_csv(os.path.join(RES, "e1_funcdim.csv"), index=False)
+        pd.DataFrame(rows).to_csv(os.path.join(RES, f"e1_per_network{a.suffix}.csv"), index=False)
+        pd.DataFrame(pooled_rows).to_csv(os.path.join(RES, f"e1_pooled{a.suffix}.csv"), index=False)
+        pd.DataFrame(funcdim_rows).to_csv(os.path.join(RES, f"e1_funcdim{a.suffix}.csv"), index=False)
     print("done")
 
 
