@@ -77,7 +77,7 @@ images the input cloud is pixel space and **good classifiers score near 0**
 — they discard input topology on purpose. Read `benchmarks/PHASE3.md`
 before using this to judge a model.
 
-## v2 modules: gauge invariance, legibility, and dark matter (Phase 6 / Stage 2B)
+## v2 modules: gauge invariance, legibility, dark matter, and gluing (Phase 6 / Stage 2B)
 
 **Is my metric a statement about the function, or about one arbitrary
 representative of it?** For a ReLU MLP the network's function is unchanged by
@@ -147,6 +147,38 @@ topologically complex than its own feature-shuffled null, and below a
 covariance-matched Gaussian control that correctly calibrates to ~1.0. Takes
 plain numpy arrays; no `transformer_lens` / SAELens / torch dependency.
 
+**Does my explanation glue into one global explanation, or does it fall apart
+across the input space?** `explanation_obstruction` covers your examples with
+overlapping clusters (from an embedding, or a cover you supply), fits a local
+"explanation" per cluster (its top-k highest-|score| columns), and measures
+the frustrated-cycle obstruction Ω to gluing those local explanations into
+one global one — the discrete Čech-style construction of the sheaf-of-
+explanations framework (arXiv 2603.17141):
+
+```python
+from whitebox.gluing import explanation_obstruction
+rep = explanation_obstruction(scores, embedding=emb, k=10, k_e=200)   # scores: (n_examples, n_edges)
+rep.omega, rep.null_lo, rep.null_hi, rep.p_null      # Ω and its example-label-shuffle null
+rep.significant_vs_null                              # p_null <= 0.025 -- NOT a "distinct mechanisms" claim
+rep.blocking_pairs                                   # top frustrated cluster pairs, bootstrap CIs
+rep.cyclomatic                                        # the nerve's cyclomatic number
+print(rep.caveat)                                     # read this before using significant_vs_null for anything
+```
+
+**There is no `verdict` and no "distinct mechanisms" claim generator.** On
+the one battery run so far (E3, GPT-2 small, IOI vs an induction control) the
+pre-registered matched single-mechanism control **failed its own null-band
+test** (Ω above the shuffle null in 34/40 grid cells, including the summary
+config) and IOI showed **smaller** raw Ω than that failed control in **every**
+one of 40 grid cells — the opposite of the pre-registered direction. The one
+IOI blocking pair that did clear its own null did not survive a second-
+embedding stability check. `rep.caveat` states this in the returned object,
+not only in documentation someone might skip: a positive `significant_vs_null`
+supports "distinct mechanisms" only if a caller independently confirms a
+matched single-mechanism control lands in its own null band AND the blocking
+pair survives a second embedding — neither held in E3's battery. Takes plain
+numpy arrays; no `transformer_lens` / EAP dependency.
+
 ## Instruments (no claims attached)
 
 ```python
@@ -170,6 +202,7 @@ whitebox/signals     memorization (calibrated per family; standardize= option, P
 whitebox/invariants  (v2) ReLU-MLP gauge group, orbit sampler, check_invariance, the invariant metrics
 whitebox/legibility  (v2) attribution-graph measures, discovery pipeline, legibility_profile (no score)
 whitebox/darkmatter  (v2) SAE-error MP/TW spectral null + topology-with-shuffle-null, residual_structure
+whitebox/gluing      (v2) sheaf-obstruction on a cover's nerve, explanation_obstruction (no verdict)
 whitebox/activations forward-hook extraction; HF hidden-state helper
 benchmarks/          batteries, calibration, validation; results/*.csv + 300-dpi figures
 AUDIT.md             what the paper's code/results were sorted into
