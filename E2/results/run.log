@@ -1,0 +1,16 @@
+687 networks, n_reps=100, workers=14, untrained=False
+  50/687 done, 114s
+  100/687 done, 252s
+  150/687 done, 361s
+  200/687 done, 445s
+  250/687 done, 575s
+  300/687 done, 681s
+  350/687 done, 802s
+  400/687 done, 902s
+  450/687 done, 1142s
+  500/687 done, 1311s
+  550/687 done, 1527s
+  600/687 done, 1684s
+  650/687 done, 1848s
+  687/687 done, 1993s
+done in 1995s

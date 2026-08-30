@@ -1,0 +1,19 @@
+840 networks, n_reps=100, workers=14, untrained=True
+  50/840 done, 190s
+  100/840 done, 392s
+  150/840 done, 573s
+  200/840 done, 717s
+  250/840 done, 877s
+  300/840 done, 1067s
+  350/840 done, 1220s
+  400/840 done, 1414s
+  450/840 done, 1607s
+  500/840 done, 3128s
+  550/840 done, 3400s
+  600/840 done, 3601s
+  650/840 done, 3814s
+  700/840 done, 4029s
+  750/840 done, 4266s
+  800/840 done, 4526s
+  840/840 done, 4749s
+done in 4753s
