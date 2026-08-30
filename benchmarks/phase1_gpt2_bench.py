@@ -11,7 +11,7 @@ CSV + JSON in benchmarks/results.
 from __future__ import annotations
 import csv, json, os, time
 import numpy as np, torch
-import whitebox as wb
+import whiteboxtopo as wb
 from common import probe_sentences, gpt2_activations, RESULTS
 
 os.makedirs(RESULTS, exist_ok=True)

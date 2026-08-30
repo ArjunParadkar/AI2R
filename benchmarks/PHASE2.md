@@ -38,11 +38,16 @@ feature-shuffled cloud, `pe1` persistent entropy (Rucco et al. 2016),
 Consequently a calibration fitted on one family applied to the other is
 **anti-predictive**: every penultimate feature set gives cross-family AUC
 0.00–0.67 (`phase2_calibration_table.csv`; the ROC figure's dotted curves).
+Regenerate the battery + the ROC figure: `python benchmarks/phase2_battery_cifar.py`,
+`python benchmarks/phase2_battery_gpt2.py` (raw per-model JSON/NPZ under
+`results/battery_*`), then `python benchmarks/phase2_calibrate.py` →
+`results/phase2_calibration_table.csv`, `results/phase2_features.csv`,
+`results/phase2_roc.png` (300 dpi).
 The universality claim (P6 "cross-architecture") is refuted for the
 memorising regime. The signal therefore ships **per family** with `family`
 a required argument; there is no auto-detect.
 
-## Shipped calibration (`whitebox/signals/calibration/memorization_<family>.json`)
+## Shipped calibration (`whiteboxtopo/signals/calibration/memorization_<family>.json`)
 
 | family | feature | in-sample AUC | leave-one-seed-out AUC | applied to the other family | n |
 |---|---|---:|---:|---:|---:|
@@ -59,7 +64,9 @@ and every result states where it sits relative to the battery ranges
 (`battery_position`). Treat the score as a calibrated *ranking* with an
 interval, not as a probability of anything outside this battery.
 
-**Along training** (`phase2_trajectory.png`) — a limitation: in ResNets the
+**Along training** (`phase2_trajectory.png`, regenerate with
+`python benchmarks/phase2_trajectory.py` → `results/phase2_trajectory.csv`
++ the figure, 300 dpi) — a limitation: in ResNets the
 classes overlap heavily at epochs 10–20 (0 %-noise subset models score
 0.43–0.71, noisy ones 0.50–0.93) and separate cleanly only at epochs 30–40,
 i.e. once the noisy labels are fit. In GPT-2 only the 100 %-noise runs rise

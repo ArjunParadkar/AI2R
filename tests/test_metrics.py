@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
-import whitebox as wb
-from whitebox.metrics.tc import persistent_entropy
-from whitebox.metrics.sv import sv_trajectory
+import whiteboxtopo as wb
+from whiteboxtopo.metrics.tc import persistent_entropy
+from whiteboxtopo.metrics.sv import sv_trajectory
 from conftest import circle
 
 D1 = np.array([[0.0, 1.0], [0.2, 0.5], [0.1, 0.15]])

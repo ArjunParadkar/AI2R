@@ -43,7 +43,7 @@ def _scores_under(model, x, targets, means, keep, metric):
 def discover_circuit(model, x, targets, means, seed: int = 0, F_target: float = 0.9, rescore_every: int = 16,
                      n_passes: int = 2, metric=logprob_metric):
     """Returns dict(keep, size, frac, F, cost, wall, gap); ``keep`` is a bool tensor over nodes.
-    ``model`` must follow the node-instrumented protocol (see ``whitebox.legibility.models``)."""
+    ``model`` must follow the node-instrumented protocol (see ``whiteboxtopo.legibility.models``)."""
     import torch
     model.eval(); t0 = time.time(); N = model.n_nodes
     rng = np.random.default_rng(seed)

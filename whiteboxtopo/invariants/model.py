@@ -115,7 +115,7 @@ def _torch_layers(model):
             continue
         else:
             raise ValueError(f"unsupported module {type(m).__name__}: the ReLU-MLP symmetry group does not apply. "
-                             "Other architectures need their own group (see whitebox.invariants docs).")
+                             "Other architectures need their own group (see whiteboxtopo.invariants docs).")
     if expect_linear or len(linears) < 2:
         raise ValueError("nn.Sequential must end in a Linear layer and have >= 1 hidden ReLU layer")
     return linears
@@ -132,7 +132,7 @@ def as_relu_mlp(model) -> ReluMLP:
     if hasattr(model, "Ws") and hasattr(model, "bs"):
         return ReluMLP(model.Ws, model.bs)
     raise TypeError(f"cannot interpret {type(model).__name__} as a ReLU MLP: pass a torch nn.Sequential of Linear/ReLU, "
-                    "an object with .Ws/.bs lists, or a whitebox.invariants.ReluMLP")
+                    "an object with .Ws/.bs lists, or a whiteboxtopo.invariants.ReluMLP")
 
 
 def rebuild(model, Ws, bs):

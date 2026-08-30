@@ -1,6 +1,6 @@
 import numpy as np, pytest
-import whitebox as wb
-from whitebox.signals.memorization import memorization_features, Calibration, memorization_signal, calib_path
+import whiteboxtopo as wb
+from whiteboxtopo.signals.memorization import memorization_features, Calibration, memorization_signal, calib_path
 from conftest import circle
 
 
@@ -69,7 +69,7 @@ def test_standardize_option_is_gauge_invariant_and_raw_is_not():
 
 
 def test_standardized_calibration_path_policy():
-    import os, whitebox as wb
+    import os, whiteboxtopo as wb
     for fam in ("cnn_classifier", "lm_transformer"):
         p = os.path.join(os.path.dirname(calib_path(fam)), f"memorization_{fam}_std.json")
         if os.path.exists(p):

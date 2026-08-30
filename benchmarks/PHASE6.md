@@ -1,4 +1,4 @@
-# Phase 6 (v2) — `whitebox.invariants`, `whitebox.legibility`, and the gauge question for `memorization_signal`
+# Phase 6 (v2) — `whiteboxtopo.invariants`, `whiteboxtopo.legibility`, and the gauge question for `memorization_signal`
 
 Stage 2 of the whitebox-v2 programme (2026-08-30). Inputs: E2 and E4 of
 whitebox-v2 (their result tables are copied into `results/phase6/`; their
@@ -6,7 +6,7 @@ code was ported, not imported — the library has no dependency on the
 experiment tree). Figures: `phase6_figures.py` → `results/phase6/*.png`
 (300 dpi). Benchmark: `phase6_standardize_memorization.py`.
 
-## 1. `whitebox.invariants` — what ships and why (instrument)
+## 1. `whiteboxtopo.invariants` — what ships and why (instrument)
 
 E2 sampled 100 representatives of the gauge orbit (hidden-unit permutations
 × per-unit positive scalings, log α ~ N(0, 1)) of 687 converged ReLU MLPs and
@@ -58,7 +58,7 @@ Judgment calls: multi-output nets attribute to Σ_k f_k (grad×act) and use
 `approximate`); `diagnose=True` costs 3× the orbit passes and is the default
 because "which symmetry" is the finding.
 
-## 2. `whitebox.legibility` — profile shipped, score refused
+## 2. `whiteboxtopo.legibility` — profile shipped, score refused
 
 Port of `e4lib` (graph measures, shuffled-weight null, min-fill treewidth
 bound, effective sparsity, the fixed EAP + greedy-prune discovery pipeline)

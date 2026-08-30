@@ -33,7 +33,7 @@ ax.axhline(1e-6, color="g", ls="--", lw=0.8); ax.text(0.5, 1.6e-6, "exact (< 1e-
 ax.axhline(0.05, color="r", ls="--", lw=0.8); ax.text(7.6, 0.07, "not invariant (> 0.05)", color="r", ha="left", fontsize=8)
 ax.set_yscale("log"); ax.set_ylim(5e-17, 30); ax.set_xticks(x); ax.set_xticklabels(names, rotation=70, ha="right", fontsize=7)
 ax.set_ylabel("orbit CV (median over 687 trained ReLU MLPs, 100 reps)"); ax.legend(fontsize=8, loc="center left")
-ax.set_title("Gauge invariance under hidden-unit permutations x per-unit scalings (E2). Shipped in whitebox.invariants: I1-I3, I8, sorted N2/N3/N6")
+ax.set_title("Gauge invariance under hidden-unit permutations x per-unit scalings (E2). Shipped in whiteboxtopo.invariants: I1-I3, I8, sorted N2/N3/N6")
 shipped = {"logits_tt", "input_grad_tt", "W_product", "tc0_box_std", "tc1_box_std", "gradxact_sorted", "ablation_sorted", "gates_sorted"}
 for i, n in enumerate(names):
     if n in shipped: ax.get_xticklabels()[i].set_color("darkgreen"); ax.get_xticklabels()[i].set_fontweight("bold")

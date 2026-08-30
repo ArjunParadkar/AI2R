@@ -1,13 +1,13 @@
-"""whitebox.invariants — every shipped invariant re-checked by orbit sampling
+"""whiteboxtopo.invariants — every shipped invariant re-checked by orbit sampling
 (permutations x positive scalings) on hand-built, random and trained ReLU MLPs,
 in numpy and torch form; plus the audit tool's controls (planted invariant
 passes, planted non-invariant fails, non-symmetry is detected)."""
 import numpy as np, pytest, warnings
-from whitebox.invariants import (ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, check_invariance, audit_metrics,
+from whiteboxtopo.invariants import (ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, check_invariance, audit_metrics,
                                  cv_of, agreement_of, GROUPS, FLOAT_FLOOR, INVARIANTS, invariant_quantities,
                                  logits, standardized_tc, gate_multiset, sorted_ablation, gradxact, ablation, gate_bits,
                                  standardize_units)
-from whitebox.invariants.metrics import _sorted_per_layer
+from whiteboxtopo.invariants.metrics import _sorted_per_layer
 
 X3 = np.array([[a, b, c] for a in (0, 1) for b in (0, 1) for c in (0, 1)], dtype=float)
 XBOX = np.random.default_rng(0).uniform(-1, 2, size=(120, 3))
@@ -95,7 +95,7 @@ def test_diagnosis_names_the_symmetry():
     assert check_invariance(lambda mm: ablation(mm, X3), m, 40).broken_by == "perm"
     assert check_invariance(lambda mm: np.abs(mm.hidden_acts(X3)[0]).mean(0), m, 40).broken_by == "perm+scale"
     # raw TC of the raw cloud: permutation-exact, broken by scaling (E2 headline)
-    from whitebox import compute_diagrams, topological_complexity
+    from whiteboxtopo import compute_diagrams, topological_complexity
     raw_tc = lambda mm: topological_complexity(compute_diagrams(mm.hidden_acts(XBOX)[0], None, backend="ripser")[0])
     rep = check_invariance(raw_tc, m, 40)
     assert rep.broken_by == "scale" and rep.per_group["perm"] < 1e-10 and rep.per_group["scale"] > 0.05

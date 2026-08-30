@@ -1,7 +1,7 @@
 # Phase 3 — `representation_correspondence`: pre-registered test of Sub-H4
 
 Method: RTD (Barannikov et al. 2022), reimplemented from the reference code
-(`whitebox/signals/correspondence.py`); score = 1 − RTD(data, repr) /
+(`whiteboxtopo/signals/correspondence.py`); score = 1 − RTD(data, repr) /
 RTD(data, re-paired repr), clipped to [0, 1], bootstrap over batches. The
 null keeps the representation's own topology and destroys only the
 point-wise correspondence, so the score measures *structure-preserving
@@ -30,6 +30,8 @@ weakest — see Step 3.
 
 ## Step 2 — synthetic models (`phase3_synthetic.csv`, `phase3_synthetic.png`)
 
+Regenerate: `python benchmarks/phase3_synthetic.py` (300 dpi figure).
+
 Per manifold × 3 seeds: `iso` (rotated/scaled data), `untrained` MLP hidden
 layer, `general` (MLP regressing a smooth function of the coordinates,
 held-out R² ≈ 1.00), `memorize` (same MLP fitting i.i.d. random targets,
@@ -51,6 +53,9 @@ memoriser, which keeps a mangled but loop-bearing copy of the input. On the
 torus the target depends on all three coordinates and the ordering holds.
 
 ## Step 3 — real data (`phase3_real.csv`, `phase3_real.png`)
+
+Regenerate: `python benchmarks/phase3_real.py` (300 dpi figure; needs
+`benchmarks/data/` — CIFAR-10/MNIST + a GPT-2 corpus).
 
 Penultimate layer vs pixel space, 5 batches of 300.
 

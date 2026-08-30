@@ -1,4 +1,4 @@
-"""whitebox.gluing -- planted controls (mirrors E3 SPEC's own instrument tests:
+"""whiteboxtopo.gluing -- planted controls (mirrors E3 SPEC's own instrument tests:
 homogeneous cover -> 0, a two-mechanism bridging split -> nonzero Omega with the
 blocking pair recovered, shuffle-null sanity, brute-force cycle-space validation)
 plus the E3 battery headline reproduced from the committed results CSVs.
@@ -9,7 +9,7 @@ import os
 import numpy as np
 import pytest
 
-from whitebox.gluing import (
+from whiteboxtopo.gluing import (
     explanation_obstruction, GluingReport, CAVEAT,
     nerve, obstruction, bottleneck, h0, brute_force_obs,
     cover_from_embedding,

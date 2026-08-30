@@ -16,7 +16,7 @@ Obstruction construction (SPEC S6.2-6.3): with agreement J_e on each nerve edge,
     Omega_rel = Omega / sum(1 - J_e).
 
 None of this is model-specific: it never touches a transformer, an EAP graph, or
-a torch tensor. See whitebox.gluing (the report/API layer) for the honest scope
+a torch tensor. See whiteboxtopo.gluing (the report/API layer) for the honest scope
 of what a nonzero Omega does and does not support.
 """
 from __future__ import annotations

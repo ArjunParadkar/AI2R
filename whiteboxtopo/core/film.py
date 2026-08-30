@@ -3,7 +3,7 @@ subsampling uncertainty.
 
 Definition 2: F^l = (D^l_k(t))_t. ``Film`` stores/indexes; ``FilmRecorder``
 builds one live during training; ``topological_film`` is the one-call entry
-point for a list of checkpoints. The instruments in ``whitebox.metrics`` read
+point for a list of checkpoints. The instruments in ``whiteboxtopo.metrics`` read
 the result.
 """
 from __future__ import annotations

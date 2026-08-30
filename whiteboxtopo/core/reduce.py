@@ -28,7 +28,7 @@ def fit_reducer(X: np.ndarray, n_components: int = 30, random_state: int = 0) ->
     """Fit PCA on the epoch-0 activations of a probe set.
 
     n_components is clipped to min(n_components, n_samples-1, n_features),
-    matching the original ``whitebox.fit_pca``.
+    matching the original ``whiteboxtopo.fit_pca``.
     """
     X = np.asarray(X, dtype=np.float64)
     k = int(min(n_components, X.shape[0] - 1, X.shape[1]))

@@ -55,7 +55,7 @@ def probe_sentences(n, seed=0, offset=2000):
 def gpt2_activations(name, sents, layers, device="cuda", max_len=40, batch=32, dtype=None):
     import torch
     from transformers import GPT2LMHeadModel, GPT2TokenizerFast
-    from whitebox.activations import hf_hidden_states
+    from whiteboxtopo.activations import hf_hidden_states
     tok = GPT2TokenizerFast.from_pretrained(name); tok.pad_token = tok.eos_token
     kw = {"dtype": dtype} if dtype is not None else {}
     model = GPT2LMHeadModel.from_pretrained(name, **kw).to(device).eval()

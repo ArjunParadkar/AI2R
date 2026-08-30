@@ -14,7 +14,7 @@ from __future__ import annotations
 import csv, glob, json, os, time
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 from scipy.stats import spearmanr
-from whitebox.signals.correspondence import correspondence
+from whiteboxtopo.signals.correspondence import correspondence
 from models import cifar_tensors, probe_from
 from common import RESULTS
 DEV = "cuda"; rows = []
@@ -32,7 +32,7 @@ for p in sorted(glob.glob(f"{RESULTS}/battery_cifar/*.json")):
 
 # ---- MNIST MLP mini-battery -----------------------------------------------
 import torchvision, torchvision.transforms as T
-root = "/home/god/whitebox-lib/benchmarks/data"; os.makedirs(root, exist_ok=True)
+root = "/home/god/whiteboxtopo-lib/benchmarks/data"; os.makedirs(root, exist_ok=True)
 tr = torchvision.datasets.MNIST(root, train=True, download=True); te = torchvision.datasets.MNIST(root, train=False, download=True)
 Xm = (tr.data.float() / 255).flatten(1); ym = tr.targets; Xmt = (te.data.float() / 255).flatten(1); ymt = te.targets
 rng = np.random.default_rng(0); pidx = np.concatenate([rng.choice(np.where(ym.numpy() == c)[0], 50, replace=False) for c in range(10)])

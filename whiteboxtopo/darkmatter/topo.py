@@ -1,6 +1,6 @@
 """Test 2 -- the v1 topology-with-shuffle-null instrument (TC(H1), beta_1, feature-shuffle
-null) applied to error point clouds. Reuses ``whitebox.signals.memorization.memorization_features``
-unchanged (PCA -> 30 dims fitted on the cloud itself, VR persistence via ``whitebox.core``,
+null) applied to error point clouds. Reuses ``whiteboxtopo.signals.memorization.memorization_features``
+unchanged (PCA -> 30 dims fitted on the cloud itself, VR persistence via ``whiteboxtopo.core``,
 95th-percentile filtration truncation, 5 feature-shuffled copies for the ratio's denominator) --
 no persistence code is duplicated here. Ported from whitebox-v2 E6 (``e6lib/topo.py``).
 """

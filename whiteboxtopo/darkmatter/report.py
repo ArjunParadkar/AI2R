@@ -1,4 +1,4 @@
-"""residual_structure -- the whitebox.darkmatter public API.
+"""residual_structure -- the whiteboxtopo.darkmatter public API.
 
 Ported from whitebox-v2 E6 (2026-08-30, GPT-2 small / gpt2-small-res-jb SAELens
 residual-stream SAEs, blocks.{2,6,10}.hook_resid_pre, 65k OpenWebText tokens/layer;
@@ -7,7 +7,7 @@ instruments read the SAE reconstruction error E = x - SAE(x) ("dark matter",
 Engels, Smith & Tegmark 2024, arXiv:2410.14670):
 
   Test 1 (spectral): a Marchenko-Pastur bulk + Tracy-Widom edge null on E's
-    sample correlation matrix (``whitebox.darkmatter.rmt``), with the
+    sample correlation matrix (``whiteboxtopo.darkmatter.rmt``), with the
     feature-shuffle kill (marginals preserved, cross-dimension correlation
     destroyed -- must give <= 1 outlier or the test is void on that data) and
     a without-replacement subsample CI (E6 SPEC Amendment 2: the naive
@@ -16,7 +16,7 @@ Engels, Smith & Tegmark 2024, arXiv:2410.14670):
     Amendment 5).
 
   Test 2 (topological): the v1 TC(H1)-with-feature-shuffle-null instrument
-    (``whitebox.darkmatter.topo``, reusing ``whitebox.signals.memorization``
+    (``whiteboxtopo.darkmatter.topo``, reusing ``whiteboxtopo.signals.memorization``
     unchanged) on a random subsample of the error cloud, with a bootstrap CI
     over independent subsamples and a covariance-matched Gaussian control
     (N(mean(E), Cov(E)) -- "covariance but no extra topology").

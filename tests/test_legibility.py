@@ -1,9 +1,9 @@
-"""whitebox.legibility — graph measures on planted graphs, discovery on a planted circuit,
+"""whiteboxtopo.legibility — graph measures on planted graphs, discovery on a planted circuit,
 the profile end-to-end, and the refusal of legibility_score."""
 import numpy as np, pytest
 pytest.importorskip("igraph"); pytest.importorskip("leidenalg"); pytest.importorskip("networkx")
 torch = pytest.importorskip("torch")
-from whitebox.legibility import (modularity_q, treewidth_bound, threshold_density, symmetrise, sparsity, shuffled_q_null,
+from whiteboxtopo.legibility import (modularity_q, treewidth_bound, threshold_density, symmetrise, sparsity, shuffled_q_null,
                                  modularity_sweep, discover_circuit, jaccard, NodeMLP, legibility_profile, legibility_score,
                                  NotCalibratedError)
 

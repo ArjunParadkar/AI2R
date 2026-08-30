@@ -12,4 +12,5 @@ jobs:
         with: {python-version: "${{ matrix.python-version }}"}
       - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: pip install -e ".[dev]"
+      - run: python -c "import whiteboxtopo; print(whiteboxtopo.__all__)"
       - run: pytest -q

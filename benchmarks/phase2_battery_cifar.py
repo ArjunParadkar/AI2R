@@ -12,7 +12,7 @@ import json, os, sys, time
 import numpy as np, torch, torch.nn.functional as F
 from torch.utils.data import DataLoader, TensorDataset
 from models import ResNet18, cifar_tensors, noisy_subset, probe_from
-from whitebox.activations import ActivationExtractor
+from whiteboxtopo.activations import ActivationExtractor
 from common import RESULTS
 
 OUT = f"{RESULTS}/battery_cifar"; os.makedirs(OUT, exist_ok=True); DEV = "cuda"

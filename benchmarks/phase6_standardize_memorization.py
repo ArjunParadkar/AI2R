@@ -25,7 +25,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.dirname(__file__))
 from common import RESULTS
-from whitebox.signals.memorization import memorization_features, Calibration, calib_path, FAMILIES
+from whiteboxtopo.signals.memorization import memorization_features, Calibration, calib_path, FAMILIES
 
 OUT = os.path.join(RESULTS, "phase6"); os.makedirs(OUT, exist_ok=True)
 LOG = ["tc_ratio", "tc_norm", "tc0_norm", "b1", "n_bars"]

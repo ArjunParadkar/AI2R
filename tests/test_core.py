@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import whitebox as wb
+import whiteboxtopo as wb
 from conftest import circle, blob
 
 

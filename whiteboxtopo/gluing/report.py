@@ -1,4 +1,4 @@
-"""explanation_obstruction -- the whitebox.gluing public API.
+"""explanation_obstruction -- the whiteboxtopo.gluing public API.
 
 Ported from whitebox-v2 E3 (2026-08-30, GPT-2 small, IOI vs an induction
 control; see /home/god/whitebox-v2/E3/SPEC.md and E3/FINDINGS.md in the
@@ -205,7 +205,7 @@ def explanation_obstruction(scores, cover=None, embedding=None, k=10, k_e=200, t
         A precomputed overlapping cover (membership matrix). If given,
         `embedding`/`k`/`theta`/`n_pca`/`cover_method` are ignored.
     embedding : (n_examples, d) array, optional
-        Used to build a cover via `whitebox.gluing.cover_from_embedding` if
+        Used to build a cover via `whiteboxtopo.gluing.cover_from_embedding` if
         `cover` is not given. Exactly one of `cover`/`embedding` is required.
     k : number of clusters (ignored if `cover` is given).
     k_e : section size -- each cluster's local explanation is its top-k_e

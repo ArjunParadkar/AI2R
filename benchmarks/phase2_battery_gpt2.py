@@ -8,7 +8,7 @@ from __future__ import annotations
 import json, os, time
 import numpy as np, torch
 from transformers import GPT2LMHeadModel, GPT2TokenizerFast
-from whitebox.activations import hf_hidden_states
+from whiteboxtopo.activations import hf_hidden_states
 from common import CORPUS, RESULTS
 
 OUT = f"{RESULTS}/battery_gpt2"; os.makedirs(OUT, exist_ok=True); DEV = "cuda"; MAX_LEN = 40; BATCH = 16

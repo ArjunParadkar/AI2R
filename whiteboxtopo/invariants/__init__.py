@@ -1,4 +1,4 @@
-"""whitebox.invariants — gauge-invariant observables for ReLU MLPs, and an audit tool.
+"""whiteboxtopo.invariants — gauge-invariant observables for ReLU MLPs, and an audit tool.
 
 An interpretability quantity is a statement about the *function* a network
 computes only if it is constant on the network's gauge orbit. For a ReLU MLP
@@ -8,7 +8,7 @@ scalings. This module ships (1) the quantities that E2 (whitebox-v2,
 own orbit-sampling unit test, and (2) ``check_invariance``, which runs the
 same audit on any metric you write.
 
-    from whitebox.invariants import check_invariance, standardized_tc
+    from whiteboxtopo.invariants import check_invariance, standardized_tc
     rep = check_invariance(lambda m: my_metric(m, X), model, n_reps=100)
     rep.verdict      # 'exact' | 'approximate' | 'not_invariant'
     rep.broken_by    # 'none' | 'perm' | 'scale' | 'perm+scale' | 'combined-only'

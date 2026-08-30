@@ -15,8 +15,8 @@ from __future__ import annotations
 import csv, json, os, time
 import numpy as np
 from scipy.stats import spearmanr, pearsonr
-import whitebox as wb
-from whitebox.metrics.sv import diagram_distance
+import whiteboxtopo as wb
+from whiteboxtopo.metrics.sv import diagram_distance
 from common import SYNTHETIC, embed, probe_sentences, gpt2_activations, RESULTS
 
 N = 500

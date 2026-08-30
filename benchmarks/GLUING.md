@@ -1,4 +1,4 @@
-# `whitebox.gluing` — the E3 port (Stage 2B, 2026-08-30)
+# `whiteboxtopo.gluing` — the E3 port (Stage 2B, 2026-08-30)
 
 Input: E3 of whitebox-v2 (its result tables are copied verbatim into
 `results/gluing/`; its code was ported, not imported — the library has no
@@ -9,7 +9,7 @@ Amendment 1 replacing the originally pre-registered fuzzy-c-means cover) and
 
 ## What ships, and — more importantly — what does not
 
-`whitebox.gluing.explanation_obstruction(scores, cover=None, embedding=None,
+`whiteboxtopo.gluing.explanation_obstruction(scores, cover=None, embedding=None,
 ...)` — an **instrument**, not a claim. It takes a plain `(n_examples,
 n_edges)` array of per-example attribution/explanation weights (EAP scores in
 E3, but the function has no opinion about where they came from — feature
@@ -101,7 +101,7 @@ the embedding-robustness kill.** Per the programme's rule 3 this is shipped
 as a negative, not suppressed — hence a diagnostic instrument, not a scored
 detector.
 
-`GluingReport.caveat` (also exported as `whitebox.gluing.CAVEAT`) states this
+`GluingReport.caveat` (also exported as `whiteboxtopo.gluing.CAVEAT`) states this
 in the object itself, not only in documentation someone might skip:
 
 > A positive `significant_vs_null` here only supports "distinct mechanisms
@@ -147,12 +147,12 @@ tree (not copied here in full — only the CSVs the test suite reads).
 * **API shape changed from PROGRAM.md's sketch.** `explanation_obstruction(model,
   prompts, task_fn)` is not what ships; the library takes precomputed
   `(scores, cover_or_embedding)`, matching the house pattern
-  (`whitebox.darkmatter` takes error matrices, not a model + SAE). The
+  (`whiteboxtopo.darkmatter` takes error matrices, not a model + SAE). The
   model-scoring half (EAP on a live GPT-2) stays in `E3/e3lib/eap.py`.
 * **Cover method default is `"knn2"` (2-nearest-centre), not the originally
   pre-registered fuzzy c-means.** SPEC Amendment 1 found fuzzy c-means
   degenerate on real embeddings (every centre collapses onto the global
-  mean). `method="fcm"` is kept (`whitebox.gluing.cover_from_embedding`) for
+  mean). `method="fcm"` is kept (`whiteboxtopo.gluing.cover_from_embedding`) for
   callers whose data does not hit that degeneracy, with the same adaptive
   theta-lowering fallback.
 * **Triangle diagnostic is vacuous under the default cover.** The
@@ -192,7 +192,7 @@ family (mean-pooled residual stream at two layers), one cover construction
 (2-nearest-centre on k-means++ centres, PCA-20). Nothing here has been
 checked on a second model, a second attribution method (EAP only), or a
 cover built any other way than E3's Amendment-1 construction. The math core
-(`whitebox.gluing.core`) is validated independently of any of that (brute-
+(`whiteboxtopo.gluing.core`) is validated independently of any of that (brute-
 force cycle enumeration against the closed-form bottleneck construction on
 60 random small nerves, plus a hand-built cycle graph) — the scope limits
 above are about what a real attribution-score battery has actually been

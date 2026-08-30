@@ -29,10 +29,10 @@ dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0", "networkx
 Repository = "https://github.com/ArjunParadkar/AI2R"
 
 [tool.setuptools.packages.find]
-include = ["whitebox*"]
+include = ["whiteboxtopo*"]
 
 [tool.setuptools.package-data]
-"whitebox.signals" = ["calibration/*.json"]
+"whiteboxtopo.signals" = ["calibration/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

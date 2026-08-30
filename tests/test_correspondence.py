@@ -1,6 +1,6 @@
 import numpy as np, pytest
-import whitebox as wb
-from whitebox.signals.correspondence import rtd, correspondence, cross_barcode, normalized_distances
+import whiteboxtopo as wb
+from whiteboxtopo.signals.correspondence import rtd, correspondence, cross_barcode, normalized_distances
 from conftest import circle
 
 

@@ -1,7 +1,7 @@
-"""whitebox.darkmatter -- is the SAE reconstruction error structured, or is it isotropic
+"""whiteboxtopo.darkmatter -- is the SAE reconstruction error structured, or is it isotropic
 noise? Two independent instruments (instrument only; verdict discipline below):
 
-    from whitebox.darkmatter import residual_structure
+    from whiteboxtopo.darkmatter import residual_structure
     rep = residual_structure(errors)                 # E = x - SAE(x), (n_tokens, d)
     rep = residual_structure(acts=x, recon=sae(x))    # or pass the pair directly
     rep.n_outliers, rep.structured_fraction, rep.spectral_test_valid   # Test 1 (MP/TW null)
@@ -16,7 +16,7 @@ question (is e linearly predictive of the model's own output), was never part of
 pre-registered H-E6 pass/fail, and needs a live model + SAE (torch, transformer_lens,
 SAELens) that this library does not depend on. This module takes plain numpy arrays.
 
-**Verdict discipline (mirrors whitebox.legibility's refused score):** the two
+**Verdict discipline (mirrors whiteboxtopo.legibility's refused score):** the two
 instruments ship; the claim "dark matter is structured" does not, because E6's own
 pre-registered criterion (H-E6: n_outliers>10 AND tc_ratio>1.2, both with CI clearing
 their bar) FAILED at every layer tested -- Test 1 passed cleanly (n_outliers 179-198 of

@@ -12,7 +12,7 @@ def _need(mod):
     try:
         return __import__(mod)
     except ImportError as e:
-        raise ImportError(f"whitebox.legibility needs {mod}: pip install 'whitebox-topo[legibility]'") from e
+        raise ImportError(f"whiteboxtopo.legibility needs {mod}: pip install 'whitebox-topo[legibility]'") from e
 
 
 def symmetrise(E) -> np.ndarray:

@@ -1,4 +1,4 @@
-# `whitebox.darkmatter` — the E6 port (Stage 2B, 2026-08-30)
+# `whiteboxtopo.darkmatter` — the E6 port (Stage 2B, 2026-08-30)
 
 Input: E6 of whitebox-v2 (its result tables are copied verbatim into
 `results/darkmatter/`; its code was ported, not imported — the library has
@@ -8,7 +8,7 @@ E6's own docs: `E6/SPEC.md` (pre-registration + four amendments) and
 
 ## What ships
 
-`whitebox.darkmatter.residual_structure(errors)` — an **instrument**, not a
+`whiteboxtopo.darkmatter.residual_structure(errors)` — an **instrument**, not a
 claim. Two independent readings of a reconstruction-error cloud e = x −
 recon(x) (e.g. an SAE's error, but the function takes plain numpy arrays and
 has no opinion about where `errors` came from):
@@ -26,8 +26,8 @@ has no opinion about where `errors` came from):
   Amendment 2 — see "judgment calls" below for why with-replacement is
   wrong here).
 * **Test 2 (topological)**: the v1 TC(H₁)-with-feature-shuffle-null
-  instrument (`whitebox.signals.memorization.memorization_features`,
-  reused unchanged — PCA→30, VR persistence via `whitebox.core`, 95th-
+  instrument (`whiteboxtopo.signals.memorization.memorization_features`,
+  reused unchanged — PCA→30, VR persistence via `whiteboxtopo.core`, 95th-
   percentile filtration truncation) on a random subsample of `errors`,
   `tc_ratio` = TC(H₁) / TC(H₁) of the feature-shuffled null, with a
   bootstrap CI over independent subsamples and a **covariance-matched
@@ -48,7 +48,7 @@ a live model + SAE (torch, transformer_lens, SAELens) this library does not
 depend on. `E6/e6lib/probe.py` has the reusable streaming-ridge machinery if
 a future module wants it.
 
-## Verdict discipline (mirrors `whitebox.legibility`)
+## Verdict discipline (mirrors `whiteboxtopo.legibility`)
 
 `DarkMatterReport.verdict ∈ {"neither", "spectrally_structured",
 "topologically_structured", "both"}` describes **which instrument(s)

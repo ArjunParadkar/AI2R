@@ -1,7 +1,7 @@
-"""whitebox.gluing -- does the explanation glue? A model-free measurement
+"""whiteboxtopo.gluing -- does the explanation glue? A model-free measurement
 instrument, NOT a validated "distinct mechanisms" detector:
 
-    from whitebox.gluing import explanation_obstruction
+    from whiteboxtopo.gluing import explanation_obstruction
     rep = explanation_obstruction(scores, embedding=emb, k=10, k_e=200)
     rep.omega, rep.omega_rel, rep.null_lo, rep.null_hi, rep.p_null
     rep.significant_vs_null   # p_null <= 0.025 -- NOT "distinct mechanisms" by itself
@@ -18,7 +18,7 @@ explanation scores, plus either a precomputed cover (membership matrix) or an
 embedding to build one from -- no transformer_lens, no EAP, no torch
 dependency.
 
-**Verdict discipline (mirrors whitebox.darkmatter / whitebox.legibility): NO
+**Verdict discipline (mirrors whiteboxtopo.darkmatter / whiteboxtopo.legibility): NO
 scored "distinct mechanisms" detector ships.** E3's own pre-registered
 matched single-mechanism control (induction) FAILED its own null-band
 criterion (Omega above the shuffle null in 34/40 grid cells, including the

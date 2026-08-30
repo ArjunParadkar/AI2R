@@ -28,6 +28,10 @@ cost is model-size-independent once activations are in hand.
 Where it would break: probes above ~10⁴ points (RAM grows as n²; ripser's
 H1 columns dominate). That regime is not needed for any signal in AUDIT.md.
 
+Regenerate: `python benchmarks/phase1_figures.py` → `results/phase1_timing.png`
+(300 dpi, ~1 min); the timing table above comes from
+`phase1_wall.py`/`phase1_gpt2_bench.py` → `phase1_wall.csv`/`phase1_gpt2_timing.csv`.
+
 ## Backend findings (`phase1_gpt2_timing.csv`)
 
 * `giotto-ph` without edge collapse is the fastest exact backend for n ≥ 500.
@@ -39,6 +43,9 @@ H1 columns dominate). That regime is not needed for any signal in AUDIT.md.
   Given the numbers above it would not change any decision.
 
 ## Approximation validation (`phase1_approx_summary.csv`, `phase1_approx_vs_exact.png`)
+
+Regenerate: `python benchmarks/phase1_validate_approx.py` → `results/phase1_approx_summary.csv`,
+`results/phase1_approx_raw.csv`, `results/phase1_approx_vs_exact.png` (300 dpi).
 
 24 clouds, n=500: 6 synthetic manifolds × 3 seeds embedded in R³⁰ plus real
 GPT-2 activations (layers 0/6/12) and their feature-shuffled counterparts.
@@ -84,7 +91,7 @@ TC number would not survive a change of activation scale.
 
 ## Deliverable
 
-`whitebox.topological_film(model, probe, layers, checkpoints=...)` and the
+`whiteboxtopo.topological_film(model, probe, layers, checkpoints=...)` and the
 live `FilmRecorder`: per-(layer, epoch) diagrams on the full probe plus
 20 paired bootstrap subsamples; `film.tc/sv/betti/fpl(layer)` return
 `BootEstimate`s with 95 % percentile intervals; `film.summary()` for plotting.

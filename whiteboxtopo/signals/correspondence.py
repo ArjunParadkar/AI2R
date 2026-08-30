@@ -1,4 +1,4 @@
-"""whitebox.representation_correspondence — does the model's internal
+"""whiteboxtopo.representation_correspondence — does the model's internal
 representation preserve the topology of the data manifold? (Sub-H4:
 understanding as structure-preserving mapping.)
 

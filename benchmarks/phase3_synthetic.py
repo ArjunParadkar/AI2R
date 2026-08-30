@@ -13,8 +13,8 @@ Ground truth for (c): held-out R^2 of each trained model on fresh points.
 from __future__ import annotations
 import csv, json, os, time
 import numpy as np, torch, torch.nn as nn
-from whitebox.core.persistence import compute_diagrams
-from whitebox.signals.correspondence import correspondence
+from whiteboxtopo.core.persistence import compute_diagrams
+from whiteboxtopo.signals.correspondence import correspondence
 from common import SYNTHETIC, embed, RESULTS
 torch.set_num_threads(4)
 MAN = {"circle": (SYNTHETIC["circle"], [1, 1, 0]), "torus": (SYNTHETIC["torus"], [1, 2, 1]), "sphere": (SYNTHETIC["sphere"], [1, 0, 1])}

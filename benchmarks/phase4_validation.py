@@ -23,8 +23,8 @@ from scipy.stats import spearmanr, mannwhitneyu
 from sklearn.metrics import roc_auc_score
 from sklearn.neighbors import NearestNeighbors
 from torch.utils.data import DataLoader, TensorDataset
-import whitebox as wb
-from whitebox.activations import ActivationExtractor
+import whiteboxtopo as wb
+from whiteboxtopo.activations import ActivationExtractor
 from models import ResNet18, cifar_tensors, probe_from
 from common import RESULTS
 DEV = "cuda"; OUT = f"{RESULTS}/phase4"; os.makedirs(OUT, exist_ok=True)

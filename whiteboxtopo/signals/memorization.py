@@ -1,4 +1,4 @@
-"""whitebox.memorization_signal — is this model memorising or generalising?
+"""whiteboxtopo.memorization_signal — is this model memorising or generalising?
 
 Built on the most robust WHITEBOX result (AUDIT.md bin 1): the topology of a
 model's penultimate representation on a probe set collapses when the model
@@ -33,7 +33,7 @@ Gauge (v2, benchmarks/PHASE6.md): the raw features are computed in the
 network's native unit coordinates. E2 showed that TC of a raw ReLU activation
 cloud is not invariant under the per-unit rescalings a ReLU layer admits;
 ``standardize=True`` z-scores each unit over the probe first (the E2 repair,
-``whitebox.invariants.standardize_units``), which makes the features exactly
+``whiteboxtopo.invariants.standardize_units``), which makes the features exactly
 gauge-invariant. The Phase 6 benchmark measures what that costs the signal;
 the default follows that result (see PHASE6.md and ``calib_path``).
 
@@ -76,7 +76,7 @@ def memorization_features(acts: np.ndarray, n_components: int = 30, n_shuffle: i
     """Scale-free topological features of ONE activation cloud (n, d).
     The reducer is fitted on this cloud (no training history needed).
     ``standardize=True`` z-scores every unit over the probe before PCA (dead units
-    dropped): the gauge-invariant variant (E2 repair, whitebox.invariants)."""
+    dropped): the gauge-invariant variant (E2 repair, whiteboxtopo.invariants)."""
     acts = np.asarray(acts, dtype=np.float64)
     if standardize:
         from ..invariants.metrics import standardize_units
@@ -173,7 +173,7 @@ def memorization_signal(model=None, probe=None, layer: Optional[str] = None, act
 
     Either pass ``model``, ``probe`` (iterable of batches) and ``layer`` (the
     penultimate-feature module name, e.g. ``"pool"`` / ``"avgpool"``; for HF
-    models pass ``activations`` from ``whitebox.activations.hf_hidden_states``),
+    models pass ``activations`` from ``whiteboxtopo.activations.hf_hidden_states``),
     or pass ``activations`` directly as an (n_probe, d) array.
 
     ``family`` selects the calibration ("cnn_classifier" or "lm_transformer");

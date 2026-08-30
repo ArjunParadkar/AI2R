@@ -2,7 +2,7 @@
 memorisation is complete? Features at every saved checkpoint of the CIFAR
 battery (epochs 10..40) and GPT-2 (0,5,10), penultimate layer."""
 import csv, glob, json, os, numpy as np
-from whitebox.signals.memorization import memorization_features, Calibration
+from whiteboxtopo.signals.memorization import memorization_features, Calibration
 from common import RESULTS
 rows = []
 for p in sorted(glob.glob(f"{RESULTS}/battery_cifar/*.npz")):

@@ -17,8 +17,8 @@ import csv, glob, json, os
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, roc_curve
-from whitebox.signals.memorization import memorization_features, Calibration, calib_path
-from whitebox.core.bootstrap import subsample_indices
+from whiteboxtopo.signals.memorization import memorization_features, Calibration, calib_path
+from whiteboxtopo.core.bootstrap import subsample_indices
 from common import RESULTS
 
 rows = []

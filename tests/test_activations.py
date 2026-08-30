@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 torch = pytest.importorskip("torch")
-from whitebox.activations import ActivationExtractor
+from whiteboxtopo.activations import ActivationExtractor
 
 
 def test_extractor_pools_and_stacks():

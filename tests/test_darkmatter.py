@@ -1,4 +1,4 @@
-"""whitebox.darkmatter -- planted controls (E6 SPEC's own instrument-controls section)
+"""whiteboxtopo.darkmatter -- planted controls (E6 SPEC's own instrument-controls section)
 plus the E6 battery headline reproduced from the committed results CSVs.
 """
 import csv
@@ -8,7 +8,7 @@ import ast
 import numpy as np
 import pytest
 
-from whitebox.darkmatter import (residual_structure, DarkMatterReport, mp_outliers, feature_shuffle,
+from whiteboxtopo.darkmatter import (residual_structure, DarkMatterReport, mp_outliers, feature_shuffle,
                                  gaussian_matched_cov, subsample_outliers, SPECTRAL_N_OUTLIERS_MIN,
                                  TOPOLOGY_TC_RATIO_MIN)
 from conftest import circle

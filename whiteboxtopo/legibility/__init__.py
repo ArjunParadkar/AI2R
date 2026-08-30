@@ -1,7 +1,7 @@
-"""whitebox.legibility — structural measures of a model's attribution graph (instrument), and an
+"""whiteboxtopo.legibility — structural measures of a model's attribution graph (instrument), and an
 explicitly UNCALIBRATED ``legibility_score`` (raises).
 
-    from whitebox.legibility import legibility_profile, NodeMLP
+    from whiteboxtopo.legibility import legibility_profile, NodeMLP
     prof = legibility_profile(model, (x, targets), discovery_batches=[(x1, t1), (x2, t2)])
     prof["Q10"], prof["Q10_excess"], prof["tw10_norm"], prof["sparsity"], prof["S"], prof["jaccard"]
 
