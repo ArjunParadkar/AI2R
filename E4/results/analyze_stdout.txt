@@ -1,0 +1,90 @@
+                                test           subset       rho        lo        hi   p_perm    n      dBIC     knee  knee_lo  knee_hi        b1       b2      b2_lo     b2_hi  frac_boot_pos    value      Q10
+                  H-E4(i) rho(Q10,S)              all -0.365791 -0.546395 -0.172794 0.000500 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                      rho(Q10,S_raw)              all -0.222767 -0.444973  0.000017 0.042479 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                H-E4(ii) knee Q10->S              all       NaN       NaN       NaN 0.059940 87.0 -2.591448 0.434447 0.156499 0.458751 -1.093494 1.580226 -20.133379 31.228269          0.440      NaN      NaN
+                   H-E4b rho(tw/N,S)              all -0.110313 -0.346806  0.128691 0.300350 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+              H-E4b rho(tw/N,cost/N)              all  0.167602 -0.029690  0.358761 0.128936 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                    rho(tw,cost raw)              all  0.672235  0.527438  0.763664 0.000500 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+ H-E4c partial rho(Q10,S|sparsity,N)              all -0.222844 -0.425374  0.087056      NaN 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+partial rho(Q10_excess,S|sparsity,N)              all -0.207049 -0.412784  0.026431      NaN 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+       partial rho(sparsity,S|Q10,N)              all -0.241087 -0.448443  0.008411      NaN 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)          all/mlp  0.322797 -0.122720  0.677040 0.084958 29.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)          all/tf2 -0.381258 -0.701022  0.042636 0.038981 29.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)          all/tf4  0.214815 -0.198174  0.552387 0.261869 29.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                kill5 knee at d=0.05              all       NaN       NaN       NaN 0.311688 87.0 -5.980145 0.463063 0.204558 0.551205 -0.989502 1.199958  -7.767086 19.473150          0.186      NaN      NaN
+                 kill5 rho(Q_0.05,S)              all -0.338184 -0.517155 -0.155063 0.001499 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                 kill5 knee at d=0.2              all       NaN       NaN       NaN 0.082917 87.0 -3.523543 0.374367 0.127210 0.417655 -1.237674 1.660934 -67.752751  3.138983          0.467      NaN      NaN
+                  kill5 rho(Q_0.2,S)              all -0.340817 -0.533099 -0.111208 0.001499 87.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                  H-E4(i) rho(Q10,S)          learned -0.373154 -0.582460 -0.142245 0.001499 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                      rho(Q10,S_raw)          learned -0.373154 -0.586766 -0.123567 0.001999 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                H-E4(ii) knee Q10->S          learned       NaN       NaN       NaN 0.050949 71.0 -2.252068 0.412512 0.153364 0.436046 -1.079227 1.430025 -23.874759 36.880511          0.554      NaN      NaN
+                   H-E4b rho(tw/N,S)          learned -0.179528 -0.415808  0.079605 0.132934 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+              H-E4b rho(tw/N,cost/N)          learned  0.204201 -0.051284  0.435852 0.086957 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                    rho(tw,cost raw)          learned  0.709963  0.579414  0.787856 0.000500 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+ H-E4c partial rho(Q10,S|sparsity,N)          learned  0.021472 -0.244179  0.306417      NaN 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+partial rho(Q10_excess,S|sparsity,N)          learned -0.258513 -0.436885 -0.007814      NaN 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+       partial rho(sparsity,S|Q10,N)          learned  0.092848 -0.179578  0.369279      NaN 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)      learned/mlp  0.152586 -0.354727  0.560586 0.493753 22.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)      learned/tf2 -0.237692 -0.633403  0.229336 0.246877 25.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S)      learned/tf4  0.409565 -0.048432  0.682971 0.038481 24.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                kill5 knee at d=0.05          learned       NaN       NaN       NaN 0.354645 71.0 -5.794773 0.552695 0.197274 0.594179 -0.745530 1.266502 -14.171863 73.968716          0.234      NaN      NaN
+                 kill5 rho(Q_0.05,S)          learned -0.376642 -0.586077 -0.129928 0.001000 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                 kill5 knee at d=0.2          learned       NaN       NaN       NaN 0.065934 71.0 -2.845635 0.295268 0.127210 0.342585 -1.393767 1.551394 -88.531486  2.646836          0.526      NaN      NaN
+                  kill5 rho(Q_0.2,S)          learned -0.331888 -0.549962 -0.083308 0.003998 71.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                  H-E4(i) rho(Q10,S)     trained_only -0.461404 -0.650441 -0.247538 0.000500 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                      rho(Q10,S_raw)     trained_only -0.379461 -0.589744 -0.156390 0.000500 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                H-E4(ii) knee Q10->S     trained_only       NaN       NaN       NaN 0.016983 72.0  0.754044 0.432612 0.156971 0.436046 -1.248566 1.865788 -19.001413 25.991055          0.656      NaN      NaN
+                   H-E4b rho(tw/N,S)     trained_only -0.067498 -0.331832  0.194945 0.562219 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+              H-E4b rho(tw/N,cost/N)     trained_only  0.282801  0.038958  0.501052 0.012494 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                    rho(tw,cost raw)     trained_only  0.705913  0.565128  0.797868 0.000500 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+ H-E4c partial rho(Q10,S|sparsity,N)     trained_only -0.178516 -0.457779  0.196669      NaN 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+partial rho(Q10_excess,S|sparsity,N)     trained_only -0.184180 -0.396306  0.092552      NaN 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+       partial rho(sparsity,S|Q10,N)     trained_only -0.084832 -0.351704  0.236483      NaN 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S) trained_only/mlp  0.225996 -0.276079  0.635981 0.268366 24.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S) trained_only/tf2 -0.273913 -0.654600  0.226229 0.192404 24.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+        kill6 within-arch rho(Q10,S) trained_only/tf4  0.188696 -0.305201  0.589903 0.364818 24.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                kill5 knee at d=0.05     trained_only       NaN       NaN       NaN 0.268731 72.0 -5.186961 0.549500 0.198170 0.559146 -0.806340 1.478268 -14.433164 57.903328          0.165      NaN      NaN
+                 kill5 rho(Q_0.05,S)     trained_only -0.413437 -0.604648 -0.206826 0.001499 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+                 kill5 knee at d=0.2     trained_only       NaN       NaN       NaN 0.021978 72.0  0.491069 0.336523 0.128278 0.452381 -1.612666 1.998787 -42.538069  3.321776          0.615      NaN      NaN
+                  kill5 rho(Q_0.2,S)     trained_only -0.437412 -0.623412 -0.214665 0.000500 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN      NaN      NaN
+    kill3 untrained_block S_raw mean         controls       NaN       NaN       NaN      NaN  3.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN 0.964563 0.520707
+          kill3 untrained S_raw mean         controls       NaN       NaN       NaN      NaN  9.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN 0.925960 0.245473
+                kill3 trained S mean         controls       NaN       NaN       NaN      NaN 72.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN 0.379230 0.289696
+              kill3 randlabel S mean         controls       NaN       NaN       NaN      NaN  3.0       NaN      NaN      NaN      NaN       NaN      NaN        NaN       NaN            NaN 0.139859 0.261147
+                                           test       rho        lo        hi   p_perm
+              horse_race rho(N,jaccard_guarded) -0.514806 -0.695711 -0.303679 0.000500
+                     horse_race rho(sparsity,F)  0.495068  0.324540  0.641926 0.000500
+            horse_race rho(Q10,jaccard_guarded)  0.429812  0.186337  0.642240 0.000500
+          horse_race rho(Q_auc,jaccard_guarded)  0.407679  0.144944  0.625663 0.001000
+                        horse_race rho(Q_auc,F)  0.407538  0.204386  0.584854 0.000500
+                            horse_race rho(N,F) -0.404314 -0.587221 -0.201949 0.000500
+     horse_race rho(Q10_excess,jaccard_guarded)  0.393662  0.173722  0.563867 0.001999
+                          horse_race rho(Q10,F)  0.392952  0.202439  0.568153 0.000500
+                          horse_race rho(Q10,S) -0.365791 -0.537747 -0.162847 0.000500
+                        horse_race rho(Q_auc,S) -0.343834 -0.522124 -0.153744 0.003998
+                            horse_race rho(N,S)  0.317713  0.108860  0.500295 0.003498
+       horse_race rho(sparsity,jaccard_guarded)  0.293561  0.039356  0.514852 0.015992
+                     horse_race rho(sparsity,S) -0.280342 -0.511997 -0.044110 0.009995
+                         horse_race rho(tw10,F) -0.275570 -0.490515 -0.032511 0.009495
+              horse_race rho(weight_sparsity,S)  0.239593  0.003320  0.452657 0.022989
+                   horse_race rho(Q10_excess,S) -0.232218 -0.419164 -0.031788 0.025987
+      horse_race rho(weight_sparsity,cost_norm) -0.232156 -0.414923 -0.030604 0.026987
+             horse_race rho(sparsity,cost_norm) -0.221149 -0.422585 -0.004706 0.038981
+           horse_race rho(Q10_excess,cost_norm)  0.207121  0.013138  0.386030 0.053973
+                    horse_race rho(tw10_norm,F) -0.196624 -0.413978  0.034996 0.078961
+                 horse_race rho(tw10,cost_norm)  0.178352 -0.049162  0.392272 0.092454
+            horse_race rho(tw10_norm,cost_norm)  0.167602 -0.044022  0.367656 0.122939
+horse_race rho(weight_sparsity,jaccard_guarded) -0.146819 -0.378754  0.084514 0.214393
+           horse_race rho(tw10,jaccard_guarded) -0.111380 -0.345560  0.145922 0.367316
+                    horse_race rho(tw10_norm,S) -0.110313 -0.347038  0.125891 0.309845
+                   horse_race rho(Q10_excess,F)  0.076975 -0.119810  0.262318 0.481759
+        horse_race rho(edge_sparsity,cost_norm) -0.073378 -0.273344  0.148699 0.489255
+              horse_race rho(weight_sparsity,F)  0.073125 -0.163518  0.293582 0.470765
+                horse_race rho(edge_sparsity,S)  0.067929 -0.174129  0.309560 0.525737
+                horse_race rho(Q_auc,cost_norm) -0.056182 -0.298084  0.188637 0.584708
+                horse_race rho(edge_sparsity,F)  0.047163 -0.157615  0.263071 0.669165
+                  horse_race rho(Q10,cost_norm) -0.040316 -0.286851  0.216492 0.694653
+                         horse_race rho(tw10,S) -0.024484 -0.259323  0.212947 0.833083
+                    horse_race rho(N,cost_norm) -0.008969 -0.243625  0.229301 0.931034
+  horse_race rho(edge_sparsity,jaccard_guarded) -0.005466 -0.267992  0.240060 0.959020
+      horse_race rho(tw10_norm,jaccard_guarded) -0.003841 -0.259288  0.242209 0.975512

@@ -1,0 +1,32 @@
+POST-HOC (not pre-registered). learned models n= 71
+within mlp: rho(Q10,jaccard) = 0.37 [-0.09,0.71] p=0.080
+within mlp: rho(Q10,F) = -0.42 [-0.71,-0.07] p=0.048
+within mlp: rho(Q10,S) = 0.15 [-0.31,0.60] p=0.490
+within tf2: rho(Q10,jaccard) = -0.02 [-0.50,0.43] p=0.937
+within tf2: rho(Q10,F) = -0.07 [-0.47,0.33] p=0.744
+within tf2: rho(Q10,S) = -0.24 [-0.63,0.20] p=0.264
+within tf4: rho(Q10,jaccard) = -0.51 [-0.71,-0.12] p=0.020
+within tf4: rho(Q10,F) = -0.21 [-0.58,0.19] p=0.320
+within tf4: rho(Q10,S) = 0.41 [-0.06,0.69] p=0.044
+pooled partial rho(Q10,S | arch) = 0.03 [-0.26,0.33]
+pooled partial rho(Q10,jaccard | arch) = -0.16 [-0.37,0.14]
+pooled partial rho(Q10,F | arch) = -0.21 [-0.44,0.06]
+pooled partial rho(Q10,cost/N | arch) = -0.07 [-0.36,0.20]
+pooled partial rho(tw/N,cost/N | arch) = -0.13 [-0.38,0.10]
+pooled partial rho(tw/N,S | arch) = -0.18 [-0.39,0.06]
+
+Golechha replication: clus arms vs none, per arch (learned trained models)
+  mlp  none    n=3 Q10=0.381 Qex=-0.032 S=0.193 J=0.73 size=103.3
+  mlp  clus5   n=3 Q10=0.629 Qex=0.151 S=0.266 J=0.78 size=93.9
+  mlp  clus40  n=2 Q10=0.696 Qex=0.148 S=0.352 J=0.76 size=83.0
+  tf2  none    n=3 Q10=0.249 Qex=-0.199 S=0.366 J=0.53 size=86.2
+  tf2  clus5   n=3 Q10=0.219 Qex=-0.255 S=0.575 J=0.41 size=57.8
+  tf2  clus40  n=3 Q10=0.223 Qex=-0.270 S=0.728 J=0.47 size=37.0
+  tf4  none    n=3 Q10=0.179 Qex=-0.100 S=0.359 J=0.53 size=174.2
+  tf4  clus5   n=3 Q10=0.189 Qex=-0.105 S=0.470 J=0.50 size=144.1
+  tf4  clus40  n=3 Q10=0.164 Qex=-0.171 S=0.641 J=0.39 size=97.7
+
+Q10_excess < 0 fraction: 0.9  learned: 0.87
+cost/N by arch: {'mlp': 1.65, 'tf2': 1.55, 'tf4': 1.63}
+F achieved: min/median 0.9 0.9
+binary_success count: 1 of 87 ; ['trained|tf2|modadd|l1_1e-3']

@@ -1,0 +1,425 @@
+== E4 run 2026-08-30 10:54:22 device=cuda cells=87 done=0
+[1/87] trained|mlp|modadd|none
+  step 200 loss 2.945 eval_acc 0.293
+  step 400 loss 1.139 eval_acc 0.894
+  step 600 loss 0.171 eval_acc 1.000
+   acc 1.000 learned True Q10 0.410 (null 0.441) tw10 26 sp 0.35 S 0.130 F 0.901 cost 243 J 0.82 [4s]
+[2/87] trained|mlp|modadd|wd0.1
+  step 200 loss 2.948 eval_acc 0.302
+  step 400 loss 1.190 eval_acc 0.858
+  step 600 loss 0.192 eval_acc 1.000
+   acc 1.000 learned True Q10 0.398 (null 0.439) tw10 30 sp 0.35 S 0.135 F 0.901 cost 243 J 0.79 [3s]
+[3/87] trained|mlp|modadd|l1_1e-4
+  step 200 loss 3.148 eval_acc 0.068
+  step 400 loss 2.751 eval_acc 0.255
+  step 600 loss 0.820 eval_acc 0.943
+  step 800 loss 0.314 eval_acc 1.000
+   acc 1.000 learned True Q10 0.498 (null 0.488) tw10 15 sp 0.55 S 0.406 F 0.901 cost 236 J 0.74 [3s]
+[4/87] trained|mlp|modadd|l1_1e-3
+  step 200 loss 3.141 eval_acc 0.043
+  step 400 loss 3.138 eval_acc 0.043
+  step 600 loss 3.138 eval_acc 0.043
+  step 800 loss 3.137 eval_acc 0.043
+  step 1000 loss 3.137 eval_acc 0.043
+  step 1200 loss 3.137 eval_acc 0.043
+  step 1400 loss 3.138 eval_acc 0.043
+  step 1600 loss 3.137 eval_acc 0.043
+  step 1800 loss 3.136 eval_acc 0.043
+  step 2000 loss 3.136 eval_acc 0.043
+  step 2200 loss 3.136 eval_acc 0.043
+  step 2400 loss 3.137 eval_acc 0.043
+  step 2600 loss 3.138 eval_acc 0.043
+  step 2800 loss 3.136 eval_acc 0.043
+  step 3000 loss 3.140 eval_acc 0.043
+  step 3200 loss 3.139 eval_acc 0.043
+  step 3400 loss 3.139 eval_acc 0.043
+  step 3600 loss 3.136 eval_acc 0.043
+  step 3800 loss 3.138 eval_acc 0.043
+  step 4000 loss 3.136 eval_acc 0.043
+   acc 0.043 learned False Q10 0.391 (null 0.587) tw10 12 sp 0.61 S 0.000 F nan cost 3 J 1.00 [5s]
+[5/87] trained|mlp|modadd|drop0.1
+  step 200 loss 2.988 eval_acc 0.272
+  step 400 loss 1.623 eval_acc 0.839
+  step 600 loss 0.693 eval_acc 0.989
+   acc 0.989 learned True Q10 0.397 (null 0.426) tw10 30 sp 0.31 S 0.120 F 0.900 cost 245 J 0.80 [3s]
+[6/87] trained|mlp|modadd|drop0.3
+  step 200 loss 3.064 eval_acc 0.219
+  step 400 loss 2.315 eval_acc 0.705
+  step 600 loss 1.632 eval_acc 0.955
+   acc 0.955 learned True Q10 0.436 (null 0.431) tw10 27 sp 0.28 S 0.107 F 0.900 cost 246 J 0.83 [5s]
+[7/87] trained|mlp|modadd|clus5
+  step 200 loss 3.139 eval_acc 0.049
+  step 400 loss 3.135 eval_acc 0.049
+  step 600 loss 3.135 eval_acc 0.042
+  step 800 loss 3.136 eval_acc 0.055
+  step 1000 loss 3.134 eval_acc 0.055
+  step 1200 loss 3.132 eval_acc 0.057
+  step 1400 loss 3.130 eval_acc 0.060
+  step 1600 loss 3.128 eval_acc 0.066
+  step 1800 loss 3.117 eval_acc 0.068
+  step 2000 loss 3.095 eval_acc 0.070
+  step 2200 loss 3.058 eval_acc 0.081
+  step 2400 loss 3.004 eval_acc 0.093
+  step 2600 loss 2.904 eval_acc 0.134
+  step 2800 loss 2.687 eval_acc 0.172
+  step 3000 loss 2.357 eval_acc 0.282
+  step 3200 loss 1.918 eval_acc 0.510
+  step 3400 loss 1.470 eval_acc 0.800
+  step 3600 loss 1.010 eval_acc 0.930
+  step 3800 loss 0.701 eval_acc 0.998
+   acc 0.998 learned True Q10 0.560 (null 0.478) tw10 23 sp 0.57 S 0.208 F 0.900 cost 235 J 0.76 [62s]
+[8/87] trained|mlp|modadd|clus40
+  step 200 loss 3.140 eval_acc 0.043
+  step 400 loss 3.135 eval_acc 0.047
+  step 600 loss 3.136 eval_acc 0.047
+  step 800 loss 3.137 eval_acc 0.053
+  step 1000 loss 3.135 eval_acc 0.049
+  step 1200 loss 3.135 eval_acc 0.040
+  step 1400 loss 3.136 eval_acc 0.038
+  step 1600 loss 3.135 eval_acc 0.043
+  step 1800 loss 3.135 eval_acc 0.047
+  step 2000 loss 3.134 eval_acc 0.045
+  step 2200 loss 3.133 eval_acc 0.042
+  step 2400 loss 3.134 eval_acc 0.049
+  step 2600 loss 3.135 eval_acc 0.047
+  step 2800 loss 3.135 eval_acc 0.051
+  step 3000 loss 3.138 eval_acc 0.047
+  step 3200 loss 3.134 eval_acc 0.047
+  step 3400 loss 3.137 eval_acc 0.047
+  step 3600 loss 3.132 eval_acc 0.059
+  step 3800 loss 3.132 eval_acc 0.059
+  step 4000 loss 3.125 eval_acc 0.060
+   acc 0.060 learned False Q10 0.433 (null 0.634) tw10 10 sp 0.64 S 0.000 F 0.905 cost 177 J 0.41 [13s]
+[9/87] trained|mlp|sort|none
+  step 200 loss 0.201 eval_acc 0.974
+  step 400 loss 0.029 eval_acc 0.997
+   acc 0.997 learned True Q10 0.342 (null 0.404) tw10 24 sp 0.36 S 0.276 F 0.900 cost 225 J 0.60 [4s]
+[10/87] trained|mlp|sort|wd0.1
+  step 200 loss 0.208 eval_acc 0.973
+  step 400 loss 0.032 eval_acc 0.997
+   acc 0.997 learned True Q10 0.343 (null 0.404) tw10 25 sp 0.36 S 0.276 F 0.900 cost 225 J 0.61 [4s]
+[11/87] trained|mlp|sort|l1_1e-4
+  step 200 loss 0.336 eval_acc 0.971
+  step 400 loss 0.154 eval_acc 0.997
+   acc 0.997 learned True Q10 0.330 (null 0.412) tw10 23 sp 0.39 S 0.302 F 0.901 cost 221 J 0.61 [3s]
+[12/87] trained|mlp|sort|l1_1e-3
+  step 200 loss 1.672 eval_acc 0.425
+  step 400 loss 0.973 eval_acc 0.773
+  step 600 loss 0.641 eval_acc 0.960
+  step 800 loss 0.511 eval_acc 0.995
+   acc 0.995 learned True Q10 0.367 (null 0.539) tw10 15 sp 0.69 S 0.659 F 0.902 cost 211 J 0.74 [2s]
+[13/87] trained|mlp|sort|drop0.1
+  step 200 loss 0.333 eval_acc 0.967
+  step 400 loss 0.123 eval_acc 0.995
+   acc 0.995 learned True Q10 0.406 (null 0.412) tw10 27 sp 0.33 S 0.284 F 0.900 cost 224 J 0.59 [6s]
+[14/87] trained|mlp|sort|drop0.3
+  step 200 loss 0.615 eval_acc 0.952
+  step 400 loss 0.361 eval_acc 0.990
+  step 600 loss 0.318 eval_acc 0.997
+   acc 0.997 learned True Q10 0.426 (null 0.410) tw10 33 sp 0.28 S 0.273 F 0.901 cost 225 J 0.58 [8s]
+[15/87] trained|mlp|sort|clus5
+  step 200 loss 1.719 eval_acc 0.334
+  step 400 loss 1.482 eval_acc 0.461
+  step 600 loss 0.975 eval_acc 0.827
+  step 800 loss 0.597 eval_acc 0.946
+  step 1000 loss 0.413 eval_acc 0.973
+  step 1200 loss 0.329 eval_acc 0.988
+  step 1400 loss 0.246 eval_acc 0.992
+   acc 0.992 learned True Q10 0.583 (null 0.461) tw10 19 sp 0.47 S 0.286 F 0.900 cost 227 J 0.73 [37s]
+[16/87] trained|mlp|sort|clus40
+  step 200 loss 1.885 eval_acc 0.336
+  step 400 loss 1.692 eval_acc 0.333
+  step 600 loss 1.673 eval_acc 0.326
+  step 800 loss 1.663 eval_acc 0.342
+  step 1000 loss 1.604 eval_acc 0.348
+  step 1200 loss 1.608 eval_acc 0.383
+  step 1400 loss 1.555 eval_acc 0.400
+  step 1600 loss 1.512 eval_acc 0.401
+  step 1800 loss 1.475 eval_acc 0.403
+  step 2000 loss 1.422 eval_acc 0.501
+  step 2200 loss 1.343 eval_acc 0.510
+  step 2400 loss 1.329 eval_acc 0.580
+  step 2600 loss 1.198 eval_acc 0.629
+  step 2800 loss 1.104 eval_acc 0.692
+  step 3000 loss 0.988 eval_acc 0.723
+  step 3200 loss 0.869 eval_acc 0.784
+  step 3400 loss 0.793 eval_acc 0.839
+  step 3600 loss 0.658 eval_acc 0.874
+  step 3800 loss 0.580 eval_acc 0.905
+  step 4000 loss 0.514 eval_acc 0.930
+   acc 0.930 learned True Q10 0.650 (null 0.518) tw10 14 sp 0.54 S 0.352 F 0.900 cost 246 J 0.69 [26s]
+[17/87] trained|mlp|copy|none
+  step 200 loss 0.151 eval_acc 0.993
+   acc 0.993 learned True Q10 0.391 (null 0.394) tw10 39 sp 0.25 S 0.172 F 0.900 cost 238 J 0.77 [3s]
+[18/87] trained|mlp|copy|wd0.1
+  step 200 loss 0.160 eval_acc 0.993
+   acc 0.993 learned True Q10 0.391 (null 0.395) tw10 37 sp 0.25 S 0.164 F 0.901 cost 239 J 0.77 [3s]
+[19/87] trained|mlp|copy|l1_1e-4
+  step 200 loss 0.336 eval_acc 0.980
+  step 400 loss 0.165 eval_acc 1.000
+   acc 1.000 learned True Q10 0.386 (null 0.407) tw10 36 sp 0.31 S 0.258 F 0.902 cost 227 J 0.68 [3s]
+[20/87] trained|mlp|copy|l1_1e-3
+  step 200 loss 2.083 eval_acc 0.145
+  step 400 loss 2.071 eval_acc 0.141
+  step 600 loss 2.048 eval_acc 0.140
+  step 800 loss 1.968 eval_acc 0.173
+  step 1000 loss 1.955 eval_acc 0.171
+  step 1200 loss 1.865 eval_acc 0.237
+  step 1400 loss 1.811 eval_acc 0.273
+  step 1600 loss 1.774 eval_acc 0.343
+  step 1800 loss 1.738 eval_acc 0.347
+  step 2000 loss 1.717 eval_acc 0.345
+  step 2200 loss 1.685 eval_acc 0.334
+  step 2400 loss 1.674 eval_acc 0.341
+  step 2600 loss 1.667 eval_acc 0.331
+  step 2800 loss 1.666 eval_acc 0.332
+  step 3000 loss 1.659 eval_acc 0.335
+  step 3200 loss 1.657 eval_acc 0.340
+  step 3400 loss 1.651 eval_acc 0.336
+  step 3600 loss 1.650 eval_acc 0.331
+  step 3800 loss 1.645 eval_acc 0.333
+  step 4000 loss 1.644 eval_acc 0.334
+   acc 0.334 learned False Q10 0.268 (null 0.772) tw10 6 sp 0.86 S 0.000 F 0.913 cost 146 J 0.50 [7s]
+[21/87] trained|mlp|copy|drop0.1
+  step 200 loss 0.325 eval_acc 0.989
+  step 400 loss 0.101 eval_acc 1.000
+   acc 1.000 learned True Q10 0.396 (null 0.402) tw10 41 sp 0.20 S 0.260 F 0.901 cost 227 J 0.61 [4s]
+[22/87] trained|mlp|copy|drop0.3
+  step 200 loss 0.806 eval_acc 0.974
+  step 400 loss 0.513 eval_acc 0.998
+   acc 0.998 learned True Q10 0.406 (null 0.401) tw10 40 sp 0.13 S 0.164 F 0.901 cost 239 J 0.74 [4s]
+[23/87] trained|mlp|copy|clus5
+  step 200 loss 1.974 eval_acc 0.678
+  step 400 loss 1.031 eval_acc 0.995
+   acc 0.995 learned True Q10 0.746 (null 0.496) tw10 10 sp 0.37 S 0.305 F 0.901 cost 244 J 0.85 [3s]
+[24/87] trained|mlp|copy|clus40
+  step 200 loss 2.055 eval_acc 0.322
+  step 400 loss 2.008 eval_acc 0.581
+  step 600 loss 1.933 eval_acc 0.747
+  step 800 loss 1.757 eval_acc 0.902
+  step 1000 loss 1.351 eval_acc 0.899
+  step 1200 loss 0.779 eval_acc 0.960
+  step 1400 loss 0.352 eval_acc 1.000
+   acc 1.000 learned True Q10 0.742 (null 0.578) tw10 10 sp 0.45 S 0.352 F 0.900 cost 230 J 0.82 [7s]
+[25/87] trained|tf2|modadd|none
+  step 200 loss 1.178 eval_acc 0.781
+  step 400 loss 0.060 eval_acc 1.000
+   acc 1.000 learned True Q10 0.258 (null 0.445) tw10 18 sp 0.28 S 0.167 F 0.900 cost 254 J 0.76 [7s]
+[26/87] trained|tf2|modadd|wd0.1
+  step 200 loss 1.204 eval_acc 0.807
+  step 400 loss 0.064 eval_acc 1.000
+   acc 1.000 learned True Q10 0.259 (null 0.432) tw10 18 sp 0.27 S 0.150 F 0.901 cost 257 J 0.76 [7s]
+[27/87] trained|tf2|modadd|l1_1e-4
+  step 200 loss 1.632 eval_acc 0.739
+  step 400 loss 0.350 eval_acc 1.000
+   acc 1.000 learned True Q10 0.264 (null 0.434) tw10 19 sp 0.28 S 0.176 F 0.901 cost 255 J 0.75 [6s]
+[28/87] trained|tf2|modadd|l1_1e-3
+  step 200 loss 4.492 eval_acc 0.047
+  step 400 loss 3.834 eval_acc 0.070
+  step 600 loss 3.506 eval_acc 0.089
+  step 800 loss 3.100 eval_acc 0.193
+  step 1000 loss 1.673 eval_acc 0.637
+  step 1200 loss 0.810 eval_acc 1.000
+   acc 1.000 learned True Q10 0.143 (null 0.629) tw10 7 sp 0.89 S 0.919 F 0.904 cost 162 J 0.58 [10s]
+[29/87] trained|tf2|modadd|drop0.1
+  step 200 loss 2.384 eval_acc 0.384
+  step 400 loss 0.661 eval_acc 0.983
+   acc 0.983 learned True Q10 0.237 (null 0.443) tw10 9 sp 0.31 S 0.314 F 0.900 cost 235 J 0.55 [6s]
+[30/87] trained|tf2|modadd|drop0.3
+  step 200 loss 3.069 eval_acc 0.068
+  step 400 loss 1.758 eval_acc 0.635
+  step 600 loss 0.806 eval_acc 0.975
+   acc 0.975 learned True Q10 0.209 (null 0.466) tw10 9 sp 0.55 S 0.529 F 0.900 cost 209 J 0.36 [7s]
+[31/87] trained|tf2|modadd|clus5
+  step 200 loss 2.232 eval_acc 0.526
+  step 400 loss 0.257 eval_acc 1.000
+   acc 1.000 learned True Q10 0.217 (null 0.476) tw10 10 sp 0.34 S 0.230 F 0.900 cost 252 J 0.69 [6s]
+[32/87] trained|tf2|modadd|clus40
+  step 200 loss 4.293 eval_acc 0.380
+  step 400 loss 0.482 eval_acc 0.992
+   acc 0.992 learned True Q10 0.219 (null 0.503) tw10 10 sp 0.42 S 0.336 F 0.900 cost 245 J 0.57 [8s]
+[33/87] trained|tf2|sort|none
+  step 200 loss 0.038 eval_acc 0.999
+   acc 0.999 learned True Q10 0.237 (null 0.498) tw10 13 sp 0.22 S 0.414 F 0.900 cost 224 J 0.51 [6s]
+[34/87] trained|tf2|sort|wd0.1
+  step 200 loss 0.040 eval_acc 0.999
+   acc 0.999 learned True Q10 0.236 (null 0.501) tw10 13 sp 0.21 S 0.400 F 0.900 cost 223 J 0.52 [6s]
+[35/87] trained|tf2|sort|l1_1e-4
+  step 200 loss 0.278 eval_acc 0.999
+   acc 0.999 learned True Q10 0.227 (null 0.507) tw10 14 sp 0.21 S 0.407 F 0.900 cost 222 J 0.52 [5s]
+[36/87] trained|tf2|sort|l1_1e-3
+  step 200 loss 1.446 eval_acc 0.998
+   acc 0.998 learned True Q10 0.229 (null 0.464) tw10 23 sp 0.22 S 0.350 F 0.900 cost 242 J 0.56 [5s]
+[37/87] trained|tf2|sort|drop0.1
+  step 200 loss 0.075 eval_acc 0.998
+   acc 0.998 learned True Q10 0.239 (null 0.465) tw10 12 sp 0.24 S 0.368 F 0.900 cost 226 J 0.49 [4s]
+[38/87] trained|tf2|sort|drop0.3
+  step 200 loss 0.159 eval_acc 0.994
+   acc 0.994 learned True Q10 0.239 (null 0.441) tw10 10 sp 0.27 S 0.370 F 0.900 cost 226 J 0.47 [5s]
+[39/87] trained|tf2|sort|clus5
+  step 200 loss 0.392 eval_acc 0.991
+   acc 0.991 learned True Q10 0.205 (null 0.520) tw10 9 sp 0.54 S 0.716 F 0.900 cost 195 J 0.28 [4s]
+[40/87] trained|tf2|sort|clus40
+  step 200 loss 2.201 eval_acc 0.980
+  step 400 loss 0.195 eval_acc 0.998
+   acc 0.998 learned True Q10 0.201 (null 0.536) tw10 8 sp 0.75 S 0.890 F 0.901 cost 181 J 0.34 [8s]
+[41/87] trained|tf2|copy|none
+  step 200 loss 0.019 eval_acc 1.000
+   acc 1.000 learned True Q10 0.252 (null 0.400) tw10 20 sp 0.18 S 0.517 F 0.900 cost 206 J 0.33 [5s]
+[42/87] trained|tf2|copy|wd0.1
+  step 200 loss 0.021 eval_acc 1.000
+   acc 1.000 learned True Q10 0.255 (null 0.400) tw10 20 sp 0.17 S 0.505 F 0.900 cost 208 J 0.35 [5s]
+[43/87] trained|tf2|copy|l1_1e-4
+  step 200 loss 0.245 eval_acc 1.000
+   acc 1.000 learned True Q10 0.251 (null 0.408) tw10 21 sp 0.17 S 0.495 F 0.900 cost 209 J 0.36 [6s]
+[44/87] trained|tf2|copy|l1_1e-3
+  step 200 loss 1.255 eval_acc 1.000
+   acc 1.000 learned True Q10 0.283 (null 0.423) tw10 31 sp 0.19 S 0.414 F 0.900 cost 221 J 0.51 [8s]
+[45/87] trained|tf2|copy|drop0.1
+  step 200 loss 0.021 eval_acc 1.000
+   acc 1.000 learned True Q10 0.258 (null 0.407) tw10 19 sp 0.14 S 0.512 F 0.900 cost 206 J 0.30 [6s]
+[46/87] trained|tf2|copy|drop0.3
+  step 200 loss 0.024 eval_acc 1.000
+   acc 1.000 learned True Q10 0.266 (null 0.412) tw10 21 sp 0.11 S 0.539 F 0.900 cost 203 J 0.27 [11s]
+[47/87] trained|tf2|copy|clus5
+  step 200 loss 0.352 eval_acc 1.000
+   acc 1.000 learned True Q10 0.233 (null 0.423) tw10 11 sp 0.36 S 0.779 F 0.900 cost 194 J 0.27 [8s]
+[48/87] trained|tf2|copy|clus40
+  step 200 loss 2.079 eval_acc 1.000
+   acc 1.000 learned True Q10 0.249 (null 0.441) tw10 8 sp 0.50 S 0.958 F 0.912 cost 155 J 0.48 [6s]
+[49/87] trained|tf4|modadd|none
+  step 200 loss 0.356 eval_acc 0.989
+   acc 0.989 learned True Q10 0.156 (null 0.282) tw10 69 sp 0.30 S 0.124 F 0.900 cost 534 J 0.80 [24s]
+[50/87] trained|tf4|modadd|wd0.1
+  step 200 loss 0.393 eval_acc 0.989
+   acc 0.989 learned True Q10 0.162 (null 0.282) tw10 70 sp 0.28 S 0.129 F 0.900 cost 529 J 0.80 [28s]
+[51/87] trained|tf4|modadd|l1_1e-4
+  step 200 loss 0.918 eval_acc 0.985
+   acc 0.985 learned True Q10 0.153 (null 0.288) tw10 66 sp 0.30 S 0.167 F 0.900 cost 538 J 0.76 [26s]
+[52/87] trained|tf4|modadd|l1_1e-3
+  step 200 loss 5.017 eval_acc 0.043
+  step 400 loss 3.898 eval_acc 0.036
+  step 600 loss 3.560 eval_acc 0.042
+  step 800 loss 3.422 eval_acc 0.042
+  step 1000 loss 3.348 eval_acc 0.043
+  step 1200 loss 3.284 eval_acc 0.043
+  step 1400 loss 3.247 eval_acc 0.043
+  step 1600 loss 3.215 eval_acc 0.043
+  step 1800 loss 3.202 eval_acc 0.043
+  step 2000 loss 3.180 eval_acc 0.043
+  step 2200 loss 3.171 eval_acc 0.043
+  step 2400 loss 3.161 eval_acc 0.043
+  step 2600 loss 3.161 eval_acc 0.043
+  step 2800 loss 3.153 eval_acc 0.043
+  step 3000 loss 3.155 eval_acc 0.043
+  step 3200 loss 3.150 eval_acc 0.043
+  step 3400 loss 3.148 eval_acc 0.043
+  step 3600 loss 3.144 eval_acc 0.043
+  step 3800 loss 3.148 eval_acc 0.043
+  step 4000 loss 3.142 eval_acc 0.043
+   acc 0.043 learned False Q10 0.257 (null 0.341) tw10 42 sp 0.83 S 0.000 F 1.000 cost 98 J 0.34 [88s]
+[53/87] trained|tf4|modadd|drop0.1
+  step 200 loss 1.774 eval_acc 0.735
+  step 400 loss 0.300 eval_acc 1.000
+   acc 1.000 learned True Q10 0.152 (null 0.299) tw10 57 sp 0.39 S 0.387 F 0.900 cost 558 J 0.50 [47s]
+[54/87] trained|tf4|modadd|drop0.3
+  step 200 loss 2.897 eval_acc 0.236
+  step 400 loss 1.434 eval_acc 0.870
+  step 600 loss 0.550 eval_acc 0.998
+   acc 0.998 learned True Q10 0.170 (null 0.364) tw10 44 sp 0.49 S 0.460 F 0.900 cost 515 J 0.49 [54s]
+[55/87] trained|tf4|modadd|clus5
+  step 200 loss 1.333 eval_acc 0.947
+  step 400 loss 0.281 eval_acc 1.000
+   acc 1.000 learned True Q10 0.161 (null 0.306) tw10 44 sp 0.36 S 0.266 F 0.900 cost 551 J 0.70 [55s]
+[56/87] trained|tf4|modadd|clus40
+  step 200 loss 3.086 eval_acc 0.904
+  step 400 loss 0.261 eval_acc 1.000
+   acc 1.000 learned True Q10 0.149 (null 0.331) tw10 32 sp 0.46 S 0.321 F 0.900 cost 567 J 0.70 [46s]
+[57/87] trained|tf4|sort|none
+  step 200 loss 0.019 eval_acc 1.000
+   acc 1.000 learned True Q10 0.194 (null 0.321) tw10 86 sp 0.23 S 0.382 F 0.900 cost 525 J 0.49 [26s]
+[58/87] trained|tf4|sort|wd0.1
+  step 200 loss 0.021 eval_acc 1.000
+   acc 1.000 learned True Q10 0.198 (null 0.324) tw10 89 sp 0.22 S 0.384 F 0.900 cost 520 J 0.49 [40s]
+[59/87] trained|tf4|sort|l1_1e-4
+  step 200 loss 0.437 eval_acc 1.000
+   acc 1.000 learned True Q10 0.197 (null 0.331) tw10 89 sp 0.22 S 0.368 F 0.900 cost 503 J 0.51 [41s]
+[60/87] trained|tf4|sort|l1_1e-3
+  step 200 loss 2.061 eval_acc 0.999
+   acc 0.999 learned True Q10 0.181 (null 0.337) tw10 85 sp 0.26 S 0.461 F 0.900 cost 510 J 0.50 [47s]
+[61/87] trained|tf4|sort|drop0.1
+  step 200 loss 0.051 eval_acc 0.999
+   acc 0.999 learned True Q10 0.234 (null 0.379) tw10 80 sp 0.22 S 0.407 F 0.900 cost 483 J 0.47 [45s]
+[62/87] trained|tf4|sort|drop0.3
+  step 200 loss 0.119 eval_acc 0.999
+   acc 0.999 learned True Q10 0.231 (null 0.344) tw10 77 sp 0.24 S 0.376 F 0.900 cost 473 J 0.49 [48s]
+[63/87] trained|tf4|sort|clus5
+  step 200 loss 0.443 eval_acc 0.999
+   acc 0.999 learned True Q10 0.172 (null 0.319) tw10 62 sp 0.35 S 0.489 F 0.900 cost 531 J 0.45 [51s]
+[64/87] trained|tf4|sort|clus40
+  step 200 loss 2.009 eval_acc 0.997
+   acc 0.997 learned True Q10 0.166 (null 0.372) tw10 36 sp 0.53 S 0.733 F 0.900 cost 477 J 0.29 [46s]
+[65/87] trained|tf4|copy|none
+  step 200 loss 0.017 eval_acc 1.000
+   acc 1.000 learned True Q10 0.186 (null 0.232) tw10 106 sp 0.19 S 0.572 F 0.900 cost 396 J 0.31 [41s]
+[66/87] trained|tf4|copy|wd0.1
+  step 200 loss 0.020 eval_acc 1.000
+   acc 1.000 learned True Q10 0.186 (null 0.230) tw10 107 sp 0.18 S 0.561 F 0.900 cost 398 J 0.31 [42s]
+[67/87] trained|tf4|copy|l1_1e-4
+  step 200 loss 0.411 eval_acc 1.000
+   acc 1.000 learned True Q10 0.191 (null 0.230) tw10 108 sp 0.18 S 0.564 F 0.900 cost 397 J 0.31 [46s]
+[68/87] trained|tf4|copy|l1_1e-3
+  step 200 loss 1.846 eval_acc 1.000
+   acc 1.000 learned True Q10 0.185 (null 0.269) tw10 96 sp 0.25 S 0.562 F 0.900 cost 461 J 0.43 [39s]
+[69/87] trained|tf4|copy|drop0.1
+  step 200 loss 0.019 eval_acc 1.000
+   acc 1.000 learned True Q10 0.192 (null 0.234) tw10 112 sp 0.13 S 0.564 F 0.900 cost 395 J 0.30 [33s]
+[70/87] trained|tf4|copy|drop0.3
+  step 200 loss 0.021 eval_acc 1.000
+   acc 1.000 learned True Q10 0.207 (null 0.240) tw10 117 sp 0.10 S 0.559 F 0.900 cost 396 J 0.29 [40s]
+[71/87] trained|tf4|copy|clus5
+  step 200 loss 0.455 eval_acc 1.000
+   acc 1.000 learned True Q10 0.235 (null 0.257) tw10 67 sp 0.28 S 0.656 F 0.900 cost 440 J 0.36 [29s]
+[72/87] trained|tf4|copy|clus40
+  step 200 loss 1.946 eval_acc 1.000
+   acc 1.000 learned True Q10 0.177 (null 0.302) tw10 41 sp 0.38 S 0.869 F 0.900 cost 364 J 0.19 [20s]
+[73/87] randlabel|mlp|modadd|none
+  step 200 loss 2.458 eval_acc 0.278
+  step 400 loss 1.805 eval_acc 0.465
+  step 600 loss 1.209 eval_acc 0.692
+  step 800 loss 0.728 eval_acc 0.890
+  step 1000 loss 0.335 eval_acc 0.983
+  step 1200 loss 0.151 eval_acc 1.000
+   acc 1.000 learned True Q10 0.394 (null 0.414) tw10 34 sp 0.38 S 0.133 F 0.901 cost 244 J 0.83 [4s]
+[74/87] randlabel|tf2|modadd|none
+  step 200 loss 1.136 eval_acc 0.792
+  step 400 loss 0.085 eval_acc 1.000
+   acc 1.000 learned True Q10 0.234 (null 0.425) tw10 13 sp 0.26 S 0.154 F 0.901 cost 255 J 0.75 [7s]
+[75/87] randlabel|tf4|modadd|none
+  step 200 loss 0.263 eval_acc 0.998
+   acc 0.998 learned True Q10 0.155 (null 0.281) tw10 68 sp 0.29 S 0.132 F 0.900 cost 517 J 0.81 [35s]
+[76/87] untrained|mlp|modadd|none
+   acc 0.051 learned False Q10 0.337 (null 0.422) tw10 31 sp 0.52 S 0.000 F 0.920 cost 161 J 0.08 [11s]
+[77/87] untrained|mlp|sort|none
+   acc 0.144 learned False Q10 0.300 (null 0.419) tw10 32 sp 0.46 S 0.000 F 0.908 cost 176 J 0.24 [8s]
+[78/87] untrained|mlp|copy|none
+   acc 0.109 learned False Q10 0.306 (null 0.423) tw10 29 sp 0.46 S 0.000 F 0.906 cost 171 J 0.24 [7s]
+[79/87] untrained|tf2|modadd|none
+   acc 0.047 learned False Q10 0.249 (null 0.438) tw10 22 sp 0.33 S 0.000 F 1.181 cost 148 J 0.11 [8s]
+[80/87] untrained|tf2|sort|none
+   acc 0.124 learned False Q10 0.259 (null 0.419) tw10 22 sp 0.37 S 0.000 F 0.910 cost 162 J 0.11 [7s]
+[81/87] untrained|tf2|copy|none
+   acc 0.141 learned False Q10 0.257 (null 0.404) tw10 27 sp 0.37 S 0.000 F 0.910 cost 168 J 0.16 [8s]
+[82/87] untrained|tf4|modadd|none
+   acc 0.047 learned False Q10 0.158 (null 0.286) tw10 70 sp 0.36 S 0.000 F 1.744 cost 289 J 0.00 [37s]
+[83/87] untrained|tf4|sort|none
+   acc 0.088 learned False Q10 0.178 (null 0.262) tw10 91 sp 0.42 S 0.000 F 1.055 cost 288 J 0.17 [43s]
+[84/87] untrained|tf4|copy|none
+   acc 0.095 learned False Q10 0.165 (null 0.248) tw10 98 sp 0.42 S 0.000 F 0.910 cost 319 J 0.08 [34s]
+[85/87] untrained_block|mlp|modadd|none
+   acc 0.043 learned False Q10 0.707 (null 0.820) tw10 3 sp 0.55 S 0.000 F 0.949 cost 151 J 0.26 [1s]
+[86/87] untrained_block|tf2|modadd|none
+   acc 0.043 learned False Q10 0.461 (null 0.539) tw10 21 sp 0.55 S 0.000 F 1.003 cost 150 J 0.00 [5s]
+[87/87] untrained_block|tf4|modadd|none
+   acc 0.043 learned False Q10 0.394 (null 0.416) tw10 51 sp 0.48 S 0.000 F 1.416 cost 283 J 1.00 [12s]
+done
