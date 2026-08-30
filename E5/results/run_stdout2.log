@@ -1,0 +1,68 @@
+14:16:36 E5 run start smoke=False models=25 steps=4000 lr=0.002 n_null=100
+14:16:36 connectome core top-10% edge count (matched threshold) = 607
+14:16:38 trained trained|rnn|N148|s1: steps=-1 acc_tail=0.774 acc_tol1=1.000 learned=True 0s
+14:16:38 trained trained|rnn|N148|s2: steps=-1 acc_tail=0.771 acc_tol1=1.000 learned=True 0s
+14:16:38 trained trained|rnn|N148|s0: steps=-1 acc_tail=0.746 acc_tol1=0.999 learned=True 0s
+14:16:38 trained trained|rnn|N148|s4: steps=-1 acc_tail=0.754 acc_tol1=0.999 learned=True 0s
+14:16:38 trained trained|rnn|N148|s3: steps=-1 acc_tail=0.770 acc_tol1=1.000 learned=True 0s
+14:16:38 trained trained|rnn|N148|s5: steps=-1 acc_tail=0.774 acc_tol1=1.000 learned=True 0s
+14:16:38 trained trained|rnn|N148|s6: steps=-1 acc_tail=0.766 acc_tol1=1.000 learned=True 0s
+14:16:38 trained trained|rnn|N148|s8: steps=-1 acc_tail=0.751 acc_tol1=0.999 learned=True 0s
+14:16:38 trained trained|rnn|N148|s7: steps=-1 acc_tail=0.757 acc_tol1=0.999 learned=True 0s
+14:16:39 trained trained|rnn|N148|s9: steps=-1 acc_tail=0.748 acc_tol1=1.000 learned=True 0s
+14:18:13 trained trained|rnn|N64|s0: steps=4000 acc_tail=0.726 acc_tol1=0.997 learned=True 95s
+14:20:08 trained trained|rnn|N64|s1: steps=4000 acc_tail=0.735 acc_tol1=0.999 learned=True 115s
+14:22:09 trained trained|rnn|N64|s2: steps=4000 acc_tail=0.724 acc_tol1=0.999 learned=True 121s
+14:23:53 trained trained|gru|N148|s1: steps=4000 acc_tail=0.902 acc_tol1=1.000 learned=True 435s
+14:23:58 trained trained|gru|N148|s0: steps=4000 acc_tail=0.883 acc_tol1=1.000 learned=True 439s
+14:24:02 trained trained|gru|N148|s2: steps=4000 acc_tail=0.894 acc_tol1=1.000 learned=True 443s
+14:26:59 trained shuffled_target|rnn|N148|s0: steps=4000 acc_tail=0.059 acc_tol1=0.171 learned=False 177s
+14:27:34 trained trained|rnn|N256|s0: steps=4000 acc_tail=0.736 acc_tol1=0.999 learned=True 325s
+14:29:17 trained trained|rnn|N256|s1: steps=4000 acc_tail=0.474 acc_tol1=0.846 learned=False 324s
+14:29:17 trained untrained|rnn|N148|s0: steps=0 acc_tail=0.075 acc_tol1=0.199 learned=False 0s
+14:29:18 trained untrained|rnn|N148|s1: steps=0 acc_tail=0.057 acc_tol1=0.191 learned=False 0s
+14:29:18 trained untrained|rnn|N148|s2: steps=0 acc_tail=0.057 acc_tol1=0.166 learned=False 0s
+14:29:43 trained trained|rnn|N256|s2: steps=4000 acc_tail=0.549 acc_tol1=0.940 learned=True 346s
+14:30:10 trained shuffled_target|rnn|N148|s1: steps=4000 acc_tail=0.064 acc_tol1=0.188 learned=False 191s
+14:30:44 trained shuffled_target|rnn|N148|s2: steps=4000 acc_tail=0.072 acc_tol1=0.201 learned=False 190s
+14:30:44 training done; measuring
+14:32:24 measured trained|rnn|N148|s3: Qw=0.244 Qf=0.164 tw_w=81 tw_f=34 S_raw=0.11 F=0.91 J=0.92 zQ=3.3 100s
+14:32:25 measured trained|rnn|N148|s1: Qw=0.239 Qf=0.171 tw_w=84 tw_f=35 S_raw=0.07 F=0.90 J=0.92 zQ=2.2 101s
+14:32:26 measured trained|rnn|N148|s0: Qw=0.236 Qf=0.203 tw_w=78 tw_f=44 S_raw=0.09 F=0.90 J=0.93 zQ=1.4 102s
+14:32:27 measured trained|rnn|N148|s2: Qw=0.228 Qf=0.196 tw_w=78 tw_f=47 S_raw=0.11 F=0.90 J=0.93 zQ=0.2 102s
+14:33:58 measured trained|rnn|N148|s4: Qw=0.234 Qf=0.198 tw_w=81 tw_f=46 S_raw=0.11 F=0.90 J=0.94 zQ=0.7 94s
+14:33:59 measured trained|rnn|N148|s5: Qw=0.230 Qf=0.211 tw_w=81 tw_f=47 S_raw=0.11 F=0.90 J=0.91 zQ=0.4 94s
+14:34:04 measured trained|rnn|N148|s6: Qw=0.231 Qf=0.172 tw_w=80 tw_f=36 S_raw=0.10 F=0.90 J=0.94 zQ=0.7 98s
+14:34:08 measured trained|rnn|N148|s7: Qw=0.223 Qf=0.163 tw_w=81 tw_f=37 S_raw=0.12 F=0.91 J=0.95 zQ=-0.9 101s
+14:35:36 measured trained|rnn|N148|s8: Qw=0.239 Qf=0.199 tw_w=83 tw_f=36 S_raw=0.11 F=0.91 J=0.92 zQ=2.2 98s
+14:35:46 measured trained|rnn|N148|s9: Qw=0.234 Qf=0.192 tw_w=80 tw_f=50 S_raw=0.09 F=0.90 J=0.96 zQ=1.6 107s
+14:36:04 measured trained|rnn|N64|s0: Qw=0.360 Qf=0.319 tw_w=22 tw_f=15 S_raw=0.02 F=0.97 J=1.00 zQ=1.6 18s
+14:36:22 measured trained|gru|N148|s0: Qw=0.254 Qf=0.199 tw_w=76 tw_f=50 S_raw=0.05 F=0.90 J=0.93 zQ=8.2 138s
+14:36:23 measured trained|rnn|N64|s1: Qw=0.381 Qf=0.263 tw_w=22 tw_f=14 S_raw=0.04 F=0.91 J=0.95 zQ=3.2 19s
+14:36:40 measured trained|rnn|N64|s2: Qw=0.348 Qf=0.248 tw_w=20 tw_f=13 S_raw=0.02 F=0.92 J=0.97 zQ=1.3 18s
+14:37:00 measured trained|gru|N148|s1: Qw=0.256 Qf=0.224 tw_w=77 tw_f=55 S_raw=0.09 F=0.91 J=0.90 zQ=6.0 172s
+14:38:23 measured trained|gru|N148|s2: Qw=0.258 Qf=0.218 tw_w=80 tw_f=52 S_raw=0.08 F=0.91 J=0.92 zQ=8.0 167s
+14:39:47 measured shuffled_target|rnn|N148|s0: Qw=0.223 Qf=0.208 tw_w=74 tw_f=54 S_raw=0.96 F=0.94 J=0.04 zQ=-0.1 84s
+14:41:26 measured shuffled_target|rnn|N148|s1: Qw=0.227 Qf=0.227 tw_w=75 tw_f=61 S_raw=0.95 F=1.02 J=0.00 zQ=0.6 99s
+14:42:42 measured trained|rnn|N256|s0: Qw=0.188 Qf=0.129 tw_w=170 tw_f=48 S_raw=0.16 F=0.91 J=0.86 zQ=6.5 379s
+14:42:54 measured shuffled_target|rnn|N148|s2: Qw=0.220 Qf=0.217 tw_w=76 tw_f=59 S_raw=0.96 F=0.92 J=0.03 zQ=-0.8 87s
+14:42:59 measured trained|rnn|N256|s2: Qw=0.240 Qf=0.156 tw_w=169 tw_f=63 S_raw=0.11 F=0.90 J=0.87 zQ=24.2 359s
+14:43:14 measured trained|rnn|N256|s1: Qw=0.234 Qf=0.166 tw_w=171 tw_f=81 S_raw=0.05 F=0.91 J=0.92 zQ=20.8 393s
+14:44:03 measured untrained|rnn|N148|s0: Qw=0.238 Qf=0.238 tw_w=89 tw_f=67 S_raw=0.97 F=1.16 J=0.17 zQ=0.9 81s
+14:44:24 measured untrained|rnn|N148|s1: Qw=0.230 Qf=0.216 tw_w=92 tw_f=58 S_raw=0.86 F=0.91 J=0.37 zQ=-0.8 90s
+14:44:24 measured untrained|rnn|N148|s2: Qw=0.237 Qf=0.230 tw_w=91 tw_f=63 S_raw=0.91 F=0.91 J=0.11 zQ=0.8 85s
+14:44:31 core type-block signed totals:
+[[ 7.9800e+03  5.7650e+03  5.1280e+03  5.1570e+03  1.7286e+04]
+ [ 4.9900e+02  2.1100e+02  8.1000e+01  1.3090e+03  2.0000e+01]
+ [ 1.3486e+04  7.9000e+01  3.1770e+03  1.9890e+03  1.2000e+01]
+ [ 8.4170e+03  1.3400e+02  1.9510e+03  4.2700e+03  1.9000e+01]
+ [-6.6640e+03 -6.1230e+03 -2.7540e+03 -9.8000e+03 -2.4615e+04]]
+14:44:34   connectome nulls 0/100
+14:45:21   connectome nulls 20/100
+14:46:11   connectome nulls 40/100
+14:47:02   connectome nulls 60/100
+14:47:54   connectome nulls 80/100
+14:48:31 fly_core148: N=148 Q10=0.581 tw10=35 sparsity=0.073 nnz=0.433 nmi_type=0.048 nmi_wedge=0.556
+14:48:58 fly_full439: N=439 Q10=0.578 tw10=88 sparsity=0.294 nnz=0.276 nmi_type=0.740 nmi_wedge=0.335
+14:49:01 planted ring: Q10=0.550 tw10=27
+14:49:01 done in 32.4 min
