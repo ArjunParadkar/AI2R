@@ -53,3 +53,28 @@ def test_shipped_calibration_loads_if_present():
         Calibration.load("vit")
     with pytest.raises(ValueError):
         memorization_signal()
+
+
+def test_standardize_option_is_gauge_invariant_and_raw_is_not():
+    """Phase 6: per-unit standardisation (E2 repair) makes the features invariant to per-unit
+    rescaling of the activation units; the raw features are not."""
+    Z = _structured(); rng = np.random.default_rng(3); alpha = np.exp(rng.normal(0, 1, Z.shape[1]))
+    a = memorization_features(Z, n_components=8, standardize=True); b = memorization_features(Z * alpha, n_components=8, standardize=True)
+    for k in ("tc_ratio", "pe1", "tc_norm", "b1", "tc0_norm"):
+        assert a[k] == pytest.approx(b[k], rel=1e-6), k
+    r1 = memorization_features(Z, n_components=8); r2 = memorization_features(Z * alpha, n_components=8)
+    assert abs(r1["tc_norm"] - r2["tc_norm"]) / r1["tc_norm"] > 0.05 or abs(r1["pe1"] - r2["pe1"]) > 0.02
+    sig = memorization_signal(activations=Z, calibration=_dummy_cal(), n_boot=0, n_components=8, standardize=True)
+    assert 0 <= sig.score <= 1
+
+
+def test_standardized_calibration_path_policy():
+    import os, whitebox as wb
+    for fam in ("cnn_classifier", "lm_transformer"):
+        p = os.path.join(os.path.dirname(calib_path(fam)), f"memorization_{fam}_std.json")
+        if os.path.exists(p):
+            cal = Calibration.load(fam, standardize=True); assert cal.meta.get("standardize") is True
+        else:
+            with pytest.raises(ValueError, match="standardize=True"):
+                calib_path(fam, standardize=True)
+    assert wb.check_invariance is not None and wb.legibility_profile is not None

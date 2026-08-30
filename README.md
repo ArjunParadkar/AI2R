@@ -22,7 +22,8 @@ pytest -q                                             # ~30 s
 ```
 
 Dependencies: numpy, scipy, scikit-learn, ripser, persim; giotto-ph
-(recommended, multi-threaded exact PH); torch only for model hooks.
+(recommended, multi-threaded exact PH); torch only for model hooks;
+`[legibility]` extra (networkx, python-igraph, leidenalg) for `whitebox.legibility`.
 
 ## Quickstart 1 — is my classifier memorising?
 
@@ -76,6 +77,49 @@ images the input cloud is pixel space and **good classifiers score near 0**
 — they discard input topology on purpose. Read `benchmarks/PHASE3.md`
 before using this to judge a model.
 
+## v2 modules: gauge invariance and legibility (Phase 6)
+
+**Is my metric a statement about the function, or about one arbitrary
+representative of it?** For a ReLU MLP the network's function is unchanged by
+hidden-unit permutations and per-unit positive rescalings. `check_invariance`
+samples that orbit and reports how much any metric you write moves:
+
+```python
+from whitebox.invariants import check_invariance, standardized_tc, sorted_ablation
+rep = check_invariance(lambda m: my_metric(m, X), model, n_reps=100)   # numpy .Ws/.bs MLP or nn.Sequential(Linear/ReLU)
+print(rep)
+# InvarianceReport(my_metric, group=combined, n_reps=100: CV=1.4, agreement=0.01, verdict=not_invariant,
+#   broken_by=scale, param-distance median=3.1)
+```
+
+`whitebox.invariants` also ships the quantities E2 measured to be exactly
+invariant (logits, input Jacobian, W-product, **TC of the per-unit standardised
+cloud**, sorted grad×act / ablation / gate multisets), each re-checked by its
+own orbit unit test. What is *not* there matters more: TC, β and persistent
+entropy of a **raw** ReLU activation cloud are broken by per-unit scaling (orbit
+CV 1.4–3.0, larger than their variation between independently trained nets),
+and so is every "neuron i does X" reading. Scope: ReLU MLPs; other
+architectures have other groups (`VALIDATION.md`, `benchmarks/PHASE6.md`).
+
+**How legible is this model's attribution graph?** `legibility_profile`
+measures modularity (Leiden Q with a density sweep and a shuffled-weight null),
+a min-fill treewidth bound, effective sparsity, and the outcome of a fixed
+attribution-patching + greedy-prune discovery pipeline (guarded by an accuracy
+floor):
+
+```python
+from whitebox.legibility import legibility_profile, legibility_score
+prof = legibility_profile(model, (x, targets), discovery_batches=[(x1, t1), (x2, t2)])
+prof["Q10"], prof["Q10_excess"], prof["tw10_norm"], prof["sparsity"], prof["S"], prof["jaccard"]
+legibility_score(model, (x, targets))   # raises NotCalibratedError — deliberately
+```
+
+There is **no** `legibility_score` that returns a number: on E4's 87-model
+ensemble no structural measure predicted circuit-discovery success within an
+architecture (ρ(Q₁₀, S) = −0.37 pooled is an architecture offset with the wrong
+sign; within-architecture CIs all cross 0). The profile is a measurement.
+Needs the `legibility` extra (`networkx`, `python-igraph`, `leidenalg`, `torch`).
+
 ## Instruments (no claims attached)
 
 ```python
@@ -95,7 +139,9 @@ large models (`benchmarks/PHASE1.md`, verified to GPT-2 XL).
 ```
 whitebox/core        reduce (fixed PCA), persistence (ripser / giotto-ph / landmark), film, bootstrap
 whitebox/metrics     sv, tc (+ persistent entropy), betti, fpl, biastop
-whitebox/signals     memorization (calibrated per family), correspondence (RTD)
+whitebox/signals     memorization (calibrated per family; standardize= option, PHASE6.md), correspondence (RTD)
+whitebox/invariants  (v2) ReLU-MLP gauge group, orbit sampler, check_invariance, the invariant metrics
+whitebox/legibility  (v2) attribution-graph measures, discovery pipeline, legibility_profile (no score)
 whitebox/activations forward-hook extraction; HF hidden-state helper
 benchmarks/          batteries, calibration, validation; results/*.csv + 300-dpi figures
 AUDIT.md             what the paper's code/results were sorted into

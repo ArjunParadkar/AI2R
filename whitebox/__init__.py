@@ -6,6 +6,8 @@ Layering (each level only depends on the one below it):
     metrics  the instruments: SV, TC, Betti, FPL, BiasTop  (claim-independent)
     signals  calibrated answers built on the instruments     (Phase 2+)
     viz      plotting of films and diagrams
+    invariants  (v2) gauge-invariant observables of ReLU MLPs + check_invariance audit
+    legibility  (v2) attribution-graph structure profile; legibility_score is NOT calibrated
 
 Public API is re-exported here. Anything not listed here is internal.
 """
@@ -20,6 +22,9 @@ from .metrics.fpl import top_k_lifetime, feature_persistence_runs
 from .metrics.biastop import bias_top, bias_top_permutation_test
 from .signals import memorization_signal, memorization_features, MemorizationSignal
 from .signals import representation_correspondence, correspondence, rtd, Correspondence
+from . import invariants, legibility
+from .invariants import check_invariance, InvarianceReport
+from .legibility import legibility_profile, legibility_score
 
 __version__ = "0.1.0"
 
@@ -34,4 +39,5 @@ __all__ = [
     "bias_top", "bias_top_permutation_test",
     "memorization_signal", "memorization_features", "MemorizationSignal",
     "representation_correspondence", "correspondence", "rtd", "Correspondence",
+    "invariants", "legibility", "check_invariance", "InvarianceReport", "legibility_profile", "legibility_score",
 ]

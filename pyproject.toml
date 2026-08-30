@@ -22,7 +22,8 @@ dependencies = [
 fast = ["giotto-ph>=0.2"]
 torch = ["torch>=2.0"]
 viz = ["matplotlib>=3.7"]
-dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0"]
+legibility = ["torch>=2.0", "networkx>=3.0", "python-igraph>=0.10", "leidenalg>=0.10"]
+dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0", "networkx>=3.0", "python-igraph>=0.10", "leidenalg>=0.10"]
 
 [project.urls]
 Repository = "https://github.com/ArjunParadkar/AI2R"

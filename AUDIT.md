@@ -55,3 +55,23 @@ in `whitebox/core` and `whitebox/metrics` with tests.
 * `top_k_lifetime` and P4 TC are candidates for Phase 4 only after a second dataset.
 * No API for bias precedence, bias intervention, fragility, or cross-modal timing.
 * BiasTop stays as an instrument (it measures a real distance) with no claim attached.
+
+## v2 findings (whitebox-v2 Stage 1, 2026-08-30) — what Phase 6 builds on
+
+Sources: `/home/god/whitebox-v2/E{1,2,4}/FINDINGS.md` and `results/`; the E2
+and E4 tables are copied into `benchmarks/results/phase6/`. E3 and E6 were
+still running when Phase 6 closed and are not summarised here.
+
+| Experiment | Pre-registered claim | Result | Library consequence |
+|---|---|---|---|
+| **E1** gauge orbits vs circuit multiplicity (687+ converged ReLU MLPs on 6 Boolean functions, exact enumeration of minimal circuits and interpretations) | H-E1a: gauge (permutations × ReLU scalings) explains ≥ 50 % of explanation multiplicity; H-E1b: orbits grow slower with width than explanations | **Both fail in every cell**: orbits/explanations ∈ [0.997, 1.000] at every ε; slope difference exactly 0. Even an exactly invariant coarse functional key collapses at most ⅓ of the multiplicity. Méloux-type multiplicity is genuine (distinct neuron subsets with distinct gate assignments), not symmetry seen twice. | **Negative.** No "orbit-collapse" API. Documented so nobody re-derives it. |
+| **E2** gauge-invariant observables (same nets, 3 sampling groups × 100 orbit reps, 840 untrained nulls) | H-E2a–f: which quantities are constant on the gauge orbit | All six hypotheses pass as pre-stated. **Invariant** (CV at the 1.3e-15 float floor): logits, input Jacobian, W-product, TC of the per-unit-standardised cloud, sorted grad×act / ablation / gate multisets. **Not invariant**: TC / β / PE of the *raw* activation cloud (scale CV 1.4–3.0 > between-net CV 0.6–1.6), per-layer singular values (CV ≈ 1), raw |activation| and weight norms even after sorting, every raw-index per-neuron reading (top neuron agreement 0.10–0.17, "gate of neuron i" ≈ 1/w). Attribution *values* are scaling-invariant per unit; only their *labels* are gauge. Untrained null: 0/93 verdicts differ. | `whitebox.invariants` ships the invariant column only, each with an orbit test; `check_invariance` is E2's tool. **The v1 TC / β / PE / RTD instruments on raw ReLU activations are coordinate-dependent** (VALIDATION.md). Phase 6 measured what the repair costs `memorization_signal` (PHASE6.md). |
+| **E4** legibility phase diagram (87 small models: mlp/tf2/tf4 × modadd/sort/copy × 8 regularisation arms + random-label / untrained / block-masked controls; fixed EAP + greedy-prune discovery pipeline) | H-E4 (i) ρ(Q₁₀, S) > 0; (ii) a knee; H-E4b treewidth/N predicts S and cost; H-E4c Q survives control for sparsity and N | **All fail.** ρ(Q₁₀, S) = −0.37 [−0.55, −0.17] — wrong sign and an architecture offset (within-arch CIs all cross 0; partial ρ | arch = +0.03 [−0.26, 0.33]); no knee (ΔBIC −2.6); ρ(tw/N, S) = −0.11 [−0.35, 0.13]; cost/N ∈ [1.0, 2.1] by construction of a greedy pass. Attribution graphs are *less* modular than their shuffle null in 90 % of models. Golechha et al.'s "clusterability loss ⇒ smaller circuits" replicates, but not via attribution-graph Q in transformers. Untrained models "succeed" trivially without an accuracy guard. | `whitebox.legibility` ships the **profile** (Q sweep + shuffle null, treewidth bound, sparsity, guarded discovery outcome) as an instrument; **`legibility_score` raises `NotCalibratedError`** with these numbers. No FPT conjecture is stated. |
+
+Cross-cutting: every Stage-1 positive was an instrument-level fact (a quantity
+is invariant; a measure can be computed); every *predictive* claim tested
+(gauge explains multiplicity, structure predicts tractability) failed its
+pre-registered criterion. v2 therefore adds two instruments and zero new
+signals; the one candidate signal question it raised — is the calibrated
+memorisation signal gauge-invariant, and does making it so cost power — is
+answered in `benchmarks/PHASE6.md`.

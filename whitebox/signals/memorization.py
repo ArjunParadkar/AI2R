@@ -29,6 +29,14 @@ generalisers; GPT-2 memorisers have a less entropic, more collapsed one. So
 
 Calibrations live in ``calibration/memorization_<family>.json``.
 
+Gauge (v2, benchmarks/PHASE6.md): the raw features are computed in the
+network's native unit coordinates. E2 showed that TC of a raw ReLU activation
+cloud is not invariant under the per-unit rescalings a ReLU layer admits;
+``standardize=True`` z-scores each unit over the probe first (the E2 repair,
+``whitebox.invariants.standardize_units``), which makes the features exactly
+gauge-invariant. The Phase 6 benchmark measures what that costs the signal;
+the default follows that result (see PHASE6.md and ``calib_path``).
+
 Uncertainty: features are recomputed on ``n_boot`` probe subsamples of size
 ``subsample``; the reported interval is the subsample score spread
 re-centred on the full-probe score (features are mildly size-dependent, the
@@ -50,19 +58,29 @@ CALIB_DIR = os.path.join(os.path.dirname(__file__), "calibration")
 FAMILIES = ("cnn_classifier", "lm_transformer")
 
 
-def calib_path(family: str) -> str:
+def calib_path(family: str, standardize: bool = False) -> str:
     if family not in FAMILIES:
         raise ValueError(f"family must be one of {FAMILIES}; got {family!r}. The signal is calibrated per architecture family "
                          "because the feature sign flips between families (see benchmarks/PHASE2.md).")
-    return os.path.join(CALIB_DIR, f"memorization_{family}.json")
+    p = os.path.join(CALIB_DIR, f"memorization_{family}{'_std' if standardize else ''}.json")
+    if standardize and not os.path.exists(p):
+        raise ValueError(f"no calibration for family={family!r} with standardize=True (benchmarks/PHASE6.md: standardised "
+                         "features were not calibrated for this family). Use standardize=False or fit your own calibration.")
+    return p
 FEATURE_NAMES = ["tc_ratio", "pe1", "tc_norm", "b1", "tc0_norm", "n_bars", "tc", "tc_shuffled", "med_dist"]
 
 
 def memorization_features(acts: np.ndarray, n_components: int = 30, n_shuffle: int = 5, seed: int = 0,
-                          thresh_percentile: float = 95.0, backend: str = "auto", distance_device: str = "cpu") -> Dict[str, float]:
+                          thresh_percentile: float = 95.0, backend: str = "auto", distance_device: str = "cpu",
+                          standardize: bool = False) -> Dict[str, float]:
     """Scale-free topological features of ONE activation cloud (n, d).
-    The reducer is fitted on this cloud (no training history needed)."""
+    The reducer is fitted on this cloud (no training history needed).
+    ``standardize=True`` z-scores every unit over the probe before PCA (dead units
+    dropped): the gauge-invariant variant (E2 repair, whitebox.invariants)."""
     acts = np.asarray(acts, dtype=np.float64)
+    if standardize:
+        from ..invariants.metrics import standardize_units
+        acts = standardize_units(acts)
     r = fit_reducer(acts, n_components); Z = r.transform(acts)
     kw = dict(thresh_percentile=thresh_percentile, backend=backend, distance_device=distance_device)
     D = compute_diagrams(Z, None, **kw)
@@ -89,8 +107,8 @@ class Calibration:
     meta: dict = field(default_factory=dict)
 
     @classmethod
-    def load(cls, family: str = None, path: str = None) -> "Calibration":
-        path = path or calib_path(family)
+    def load(cls, family: str = None, path: str = None, standardize: bool = False) -> "Calibration":
+        path = path or calib_path(family, standardize)
         j = json.load(open(path))
         return cls(j["features"], np.array(j["mean"]), np.array(j["std"]), np.array(j["coef"]), float(j["intercept"]),
                    j.get("log_features", []), j.get("meta", {}))
@@ -149,7 +167,8 @@ class MemorizationSignal:
 
 def memorization_signal(model=None, probe=None, layer: Optional[str] = None, activations: Optional[np.ndarray] = None,
                         family: Optional[str] = None, n_boot: int = 20, subsample: Optional[int] = None, n_components: int = 30, seed: int = 0,
-                        calibration: Optional[Calibration] = None, distance_device: str = "cpu", **kw) -> MemorizationSignal:
+                        calibration: Optional[Calibration] = None, distance_device: str = "cpu", standardize: bool = False,
+                        **kw) -> MemorizationSignal:
     """Calibrated memorisation score for a model on a probe set.
 
     Either pass ``model``, ``probe`` (iterable of batches) and ``layer`` (the
@@ -159,6 +178,12 @@ def memorization_signal(model=None, probe=None, layer: Optional[str] = None, act
 
     ``family`` selects the calibration ("cnn_classifier" or "lm_transformer");
     it is required unless a ``calibration`` object is passed.
+
+    ``standardize`` (default False = the calibrated, coordinate-dependent v1
+    signal): per-unit z-scoring of the probe cloud before the topology. This is
+    the gauge-invariant form; benchmarks/PHASE6.md reports what it costs. It
+    needs its own calibration file (``memorization_<family>_std.json``), which
+    ships only for families where the benchmark kept the AUC.
 
     Returns a MemorizationSignal: ``score`` is P(memorising) under the Phase 2
     battery calibration for that family, with a 95 % interval from probe
@@ -170,8 +195,8 @@ def memorization_signal(model=None, probe=None, layer: Optional[str] = None, act
         from ..activations import ActivationExtractor
         ex = ActivationExtractor(model, [layer]); activations = ex(probe)[layer]; ex.remove()
     A = np.asarray(activations, dtype=np.float64); n = len(A)
-    cal = calibration or Calibration.load(family)
-    fkw = dict(n_components=n_components, seed=seed, distance_device=distance_device, **kw)
+    cal = calibration or Calibration.load(family, standardize=standardize)
+    fkw = dict(n_components=n_components, seed=seed, distance_device=distance_device, standardize=standardize, **kw)
     f = memorization_features(A, **fkw); point = cal.score(f)
     m = subsample or max(100, n // 2)
     if n_boot > 0 and n > 20:
