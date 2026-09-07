@@ -71,3 +71,35 @@ masked inputs are dependent (dead units, units sharing an activation pattern, al
 `corank`, `known_dim` and `excess` are unchanged; only the split of `excess` into explained /
 unexplained changed. `symmetry.csv` is recomputed for every specimen by `run_F3.py` (the F2 job's
 first-pass values are superseded; the file is rewritten).
+
+**#8 (2026-09-07, DESIGN amendment, principal review — not a threshold change).** The F4/F5 test as
+specified cannot return anything but K = N, for two structural reasons:
+1. *Within a network*: gauge acts on the whole parameter vector. Two distinct unit subsets of one
+   fixed θ are gauge-equivalent only if a symmetry maps θ to itself while carrying one subset onto
+   the other — i.e. only if θ has an automorphism (neurons with identical weights). A generically
+   trained network has none, so K_within = N always, regardless of anything about explanations.
+2. *Pooled across seeds* (the SPEC's primary statistic): equivalence was decided by exact
+   coincidence of canonical forms at relative tolerance 1e-6. Two independent trainings coincide
+   to 1e-6 with probability zero, so K_pooled = N always as well. E1 (2026-08-30) had both defects,
+   which is why the sprint "replicated" it.
+The failed planted N = 2K kill (#2) was the symptom: the one test that could have shown the orbit
+counter has power was replaced by a consistency check, leaving a test with no demonstrated power
+that returns the null everywhere.
+**Consequences.** (a) The F5 verdicts computed so far (`results/F5_verdicts.json`, H-F5a/b "fail") are
+**FROZEN and withdrawn** — not reported as a result about nature. (b) K_within = N is kept as a
+*documented finding about redundancy, not gauge*: Méloux-style within-network multiplicity is
+structural redundancy — the planted construction showed duplicated sub-circuits generate
+combinatorially many recombined valid circuits, not 2 orbits. Gauge explains multiplicity across
+parameterisations, not among subsets of one network; the SPEC conflated the two.
+(c) Three reformulations replace F4/F5, in order of importance, each with its own pre-registered
+threshold and a working planted kill (`SPEC_F4_reformulated.md`):
+   1. **Cross-seed orbit test (primary).** For networks trained from different seeds on the same
+      function: is a minimal circuit of seed A gauge-equivalent to one of seed B — does some g ∈ G
+      map A's circuit weights onto B's within tolerance, after unit matching and the functional-
+      dimension correction? Novelty FLAGGED: adjacent to convergent learning (Li et al. 2015) and
+      permutation-matching / re-basin (Ainsworth et al. 2022) — search before write-up.
+   2. **Approximate stabilisers within a network.** ε-symmetries: units whose scale-normalised
+      incoming weights match within ε; K_within(ε)/N reported as a curve.
+   3. **Interpretation-level gauge.** Whether interpretive multiplicity (Méloux thresholds) collapses
+      under per-unit sign-flip / negation equivalence.
+Nothing in F1–F3, F7–F11 changes; `explanations.csv` is the input to all three.

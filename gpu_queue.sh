@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Sequential GPU queue for the sprint (one GPU job at a time; the F2 d3w8 enumeration may still share the GPU).
+set -u
+V=/home/god/Whitebox/whitebox-v2/.venv/bin/python
+TL=/home/god/Whitebox/v2-programme/.venv-tl/bin/python
+E=/home/god/Whitebox/whitebox-v2/experiments
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+stage() { echo "STAGE $1 $(date '+%F %T')"; }
+run() { local name=$1; shift; stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; echo "STAGE END $name rc=$? $(date '+%F %T')"; }
+# wait for F7
+while systemctl --user is-active --quiet wb-f7b; do sleep 60; done
+stage "F7 finished"
+cd $E/F_gauge      && run F11     $V -u run_F11.py --n 30
+cd $E/K_darkmatter && run K1      $TL -u run_K1.py
+cd $E/K_darkmatter && run K2_K6   $V -u run_K2_K6.py
+cd $E/B_bias       && run B2_B4   $V -u run_B2_B4.py
+cd $E/V_legibility && run V1      $V -u run_V1.py
+cd $E/V_legibility && run V2_V3   $V -u run_V2_V3.py
+cd $E/M_memorization && run M2    $V -u run_M2_M3.py
+cd $E/M_memorization && run M3    $V -u run_M2_M3.py --m3
+cd $E/C_concepts   && run C1_C3   $V -u run_C1_C3.py
+cd $E/Z_topology   && run Z3      $V -u run_Z1_Z3.py z3
+cd $E/Z_topology   && run Z1      $V -u run_Z1_Z3.py z1
+cd $E/Z_topology   && run Z2      $V -u run_Z1_Z3.py z2
+cd $E/V_legibility && run V5      $V -u run_V2_V3.py --all-ckpts
+cd $E/F_gauge      && run F2_d3w10 $V -u run_F2.py --gpu --min-hidden 30 --max-hidden 30 --procs 4
+stage "QUEUE DONE"
