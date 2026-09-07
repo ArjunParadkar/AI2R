@@ -103,3 +103,14 @@ threshold and a working planted kill (`SPEC_F4_reformulated.md`):
    3. **Interpretation-level gauge.** Whether interpretive multiplicity (Méloux thresholds) collapses
       under per-unit sign-flip / negation equivalence.
 Nothing in F1–F3, F7–F11 changes; `explanations.csv` is the input to all three.
+
+## #9 (2026-09-07, operational — laptop power loss during the run)
+The machine lost power at ~17:20 with `wb-f2-cpu2`, `wb-f2-gpu24c`, `wb-f3` and `wb-f7b` in flight and both
+queues still waiting. All result CSVs parsed intact (no torn rows; per-specimen resume works for F2 and F7).
+Bug exposed by the crash: `run_F3.py` opens `results/symmetry.csv` in write mode while `run_F2.py` appends its
+older-accounting rows to the same file — a concurrent-writer collision (F3's flushes overwrite F2's appends).
+Fix: F2 now writes to `results/symmetry_f2.csv`; `results/symmetry.csv` is owned solely by F3, which is a full
+recompute and is re-run from scratch after the enumeration finishes (added to `cpu_queue.sh` before F4a).
+`gpu_queue.sh` now also waits for the F2 d3w8 GPU cells before F11 (F11 OOM'd three times when sharing the GPU).
+No scientific content changes. Resumed counts at relaunch: F2 CPU 1261/2270 specimens, F2 d3w8 167/424,
+F7 56/60, F3 restarted from 0 (was 2488/3143).

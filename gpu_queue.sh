@@ -8,8 +8,8 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 stage() { echo "STAGE $1 $(date '+%F %T')"; }
 run() { local name=$1; shift; stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; echo "STAGE END $name rc=$? $(date '+%F %T')"; }
 # wait for F7
-while systemctl --user is-active --quiet wb-f7b; do sleep 60; done
-stage "F7 finished"
+while systemctl --user is-active --quiet wb-f7b || systemctl --user is-active --quiet wb-f2-gpu24c; do sleep 60; done
+stage "F7 and F2 d3w8 finished"
 cd $E/F_gauge      && run F11     $V -u run_F11.py --n 30
 cd $E/K_darkmatter && run K1      $TL -u run_K1.py
 cd $E/K_darkmatter && run K2_K6   $V -u run_K2_K6.py

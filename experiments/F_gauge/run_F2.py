@@ -1,5 +1,5 @@
 """F2 + F3 + F4(within) — enumerate explanations, hidden symmetries, canonical orbit keys.
-Writes results/explanations.csv (one row per minimal circuit x criterion), results/symmetry.csv,
+Writes results/explanations.csv (one row per minimal circuit x criterion), results/symmetry_f2.csv (pre-Amendment-7 accounting; results/symmetry.csv is owned by run_F3.py),
 results/enumeration_status.csv. Resumable per specimen. --kill runs the F2/F4 planted kill tests."""
 import os, sys, csv, time, argparse, json
 from multiprocessing import Pool
@@ -210,7 +210,7 @@ def main():
         if name in done or nh > a.max_hidden or nh < a.min_hidden: continue
         jobs.append((name, r["path"], r["function"], a.gpu))
     print(f"{len(jobs)} specimens ({len(done)} done)", flush=True)
-    ep, yp = os.path.join(R, "explanations.csv"), os.path.join(R, "symmetry.csv")
+    ep, yp = os.path.join(R, "explanations.csv"), os.path.join(R, "symmetry_f2.csv")  # AMENDMENTS #9
     if a.gpu:
         global _POOL
         _POOL = Pool(a.procs)
