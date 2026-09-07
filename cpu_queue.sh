@@ -6,7 +6,8 @@ V=/home/god/Whitebox/whitebox-v2/.venv/bin/python
 E=/home/god/Whitebox/whitebox-v2/experiments
 stage() { echo "STAGE $1 $(date '+%F %T')"; }
 run() { local name=$1; shift; stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; echo "STAGE END $name rc=$? $(date '+%F %T')"; }
-while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c; do sleep 120; done
+# gate on completeness on disk, not only on unit liveness (a failed+relaunched unit let the queue start early once — AMENDMENTS #9)
+while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c || ! $V $E/../wb_ready.py f2; do sleep 120; done
 stage "F2 enumeration finished"
 cd $E/F_gauge && run F3        $V -u run_F3.py
 cd $E/F_gauge && run F4a_kills $V -u run_F4a.py --kills
