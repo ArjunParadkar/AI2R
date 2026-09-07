@@ -27,10 +27,23 @@ def load_tokens(tok):
     toks = np.array(seqs, dtype=np.int64); np.save(p, toks); return toks
 
 
+PH_SUB = np.random.default_rng(0).choice(N_TOK, 800, replace=False)   # AMENDMENTS #6
+
+
 def ph20(cloud, seed=0):
-    A = np.asarray(cloud, dtype=np.float64); A = A - A.mean(0)
+    A = np.asarray(cloud, dtype=np.float64)[PH_SUB]; A = A - A.mean(0)
     U, s, Vt = np.linalg.svd(A, full_matrices=False)
-    return ph_summary(A @ Vt[:20].T)
+    dg = compute_diagrams(A @ Vt[:20].T, maxdim=1, backend="ripser", thresh_percentile=95.0)
+    return _summ(dg)
+
+
+def _summ(dg):
+    out = []
+    for k in (0, 1):
+        D = np.asarray(dg.dgms[k]).reshape(-1, 2); fin = np.isfinite(D[:, 1]); life = D[fin, 1] - D[fin, 0]
+        p = life / life.sum() if life.sum() > 0 else np.zeros(0)
+        out += [len(D), float(np.sum(life ** 2)), float(-(p[p > 0] * np.log(p[p > 0])).sum()) if len(p) else 0.0]
+    return np.array(out, dtype=np.float64)
 
 
 def main():
@@ -40,7 +53,9 @@ def main():
     tok = GPT2TokenizerFast.from_pretrained("gpt2"); model = GPT2LMHeadModel.from_pretrained("gpt2").to(dev).eval()
     toks = load_tokens(tok); T = torch.tensor(toks, device=dev)
     if a.smoke: T = T[:4]
-    n_tok = T.numel(); print("tokens", T.shape, flush=True)
+    n_tok = T.numel()
+    global PH_SUB
+    PH_SUB = PH_SUB[PH_SUB < n_tok]; print("tokens", T.shape, flush=True)
     d = model.config.n_embd; H = model.config.n_head; dh = d // H
     blk = lambda m: m.transformer.h[LAYER]
     store = {}
@@ -100,7 +115,7 @@ def main():
             "ph_mlp_pca20": ph20(mlp_np),
             "ph_mlp_std_pca20": ph20(standardized_cloud(mlp_np)),
             "ph_head_z_concat_pca20": ph20(z_np.reshape(len(z_np), -1)),
-            "ph_head0_z": ph_summary(z_np[:, 0, :]),
+            "ph_head0_z": _summ(compute_diagrams(z_np[PH_SUB, 0, :], maxdim=1, backend="ripser", thresh_percentile=95.0)),
             "singular_values_Wfc": torch.linalg.svdvals(Wfc).cpu().numpy(),
             "singular_values_Wproj": torch.linalg.svdvals(Wpr).cpu().numpy(),
             "singular_values_Wfc_lnfolded": torch.linalg.svdvals(blk(m).ln_2.weight.detach().float()[:, None] * Wfc).cpu().numpy(),

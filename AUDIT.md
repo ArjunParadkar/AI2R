@@ -81,3 +81,31 @@ pre-registered criterion. v2 therefore adds instruments and (so far) zero new
 signals; the one candidate signal question it raised — is the calibrated
 memorisation signal gauge-invariant, and does making it so cost power — is
 answered in `benchmarks/PHASE6.md`.
+
+## Sprint retirements (WHITEBOX v2 handbook, 2026-09-07)
+
+### B1 — Bias precedence window: RETIRED
+v1 claim (H3): the topological bias signal (BiasTop per layer) rises before the output bias
+("precedence window"), and the window widens with scale. Evidence against, all from v1 itself
+(`~/Whitebox/v1/WHITEBOX_ALL_RESULTS.md` §1B; figures copied to
+`experiments/B_bias/results/fig/SCALE-1_trajectories.png`, `SCALE-2_window_vs_size.png`,
+`INT-3_window_heatmap.png`):
+* from-scratch GPT-2 configs 30M / 51M / 124M, in-distribution stereotype probe: output bias
+  crystallises (≈0 → 1.19 / 1.47 / 1.43) but **no layer's BiasTop crosses its 2σ baseline before
+  the output bias** at any size; window = None at all three sizes; permutation p-values
+  0.30–0.97;
+* pretrained GPT-2 124M: order reversed (t_output = 5 < t_bias = 8);
+* the only positive (TinyGPT, layer 0, t_bias = 2 < t_output = 4) was a from-scratch toy artefact.
+Status: no API, no claim; B2–B4 audit the bias *direction* geometry only. The v1 intervention
+result (70.8 % stereotype reduction at +1.9 % perplexity) is prescriptive and stays in Bin 2.
+
+### C5 — v1 P1 claims (FPL ↔ accuracy; crystallisation order): RETIRED
+* **FPL ↔ per-class accuracy** (ρ = −0.84, p = 0.002, n = 10 classes, 2 seeds): Phase 4 of
+  whitebox-lib (`benchmarks/results/phase4/phase4_summary.csv`) found it n.s. on full-data models
+  and it never received the second-dataset replication AUDIT Bin 1 required. Retired as a signal;
+  `top_k_lifetime` remains an instrument.
+* **Crystallisation order ↔ distinctness** (ρ = 0.585 p = 0.075 → ρ = 0.32 p = 0.36; cross-seed
+  order ρ = −0.007): never stable. Retired.
+* Consequence: `whiteboxtopo.signals.correspondence` and `metrics.fpl` carry no accuracy or
+  crystallisation claim in CLAIMS.md; the "concept map" work of Block C starts from
+  certification (C1–C3), not from these.

@@ -54,3 +54,9 @@ subsets) take ~40 min each under GPU sharing. Enumeration switched to float32 wi
 chunks (validity is a sign with margin ≥ 0.5, unaffected), and the 2-layer cells are run for seeds
 0–4 instead of 0–9 (4 functions × 5 seeds = 20 two-layer models; the 1-layer cells keep 10 seeds).
 Completed models are kept.
+
+**#6 (2026-09-07, during F11; no F11 row written yet).** Persistence on the full 2 000-token
+clouds (five clouds per renaming, 100th-percentile threshold) cost ~45 min per renaming; the F11
+persistence candidates are computed on a fixed 800-token subsample (same tokens for every
+renaming) at the v1 95th-percentile threshold. All non-persistence candidates keep the 2 000
+tokens. n = 30 per kind unchanged.
