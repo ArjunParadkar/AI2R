@@ -62,3 +62,25 @@ All numbers come from `benchmarks/` (CSV tables and 300-dpi figures under
 4. Everything else in this repository is a measurement or a documented
    negative result — including "how legible is this model" (`legibility_score`
    refuses to answer).
+
+## Sprint modules (handbook S1–S5, 2026-09-07) — public functions and their validation
+
+| Function | What it claims | Validation (test / battery) | Status |
+|---|---|---|---|
+| `symmetry.random_element / permutations / scalings / rotations / apply` | exact renamings of ReLU MLPs, `ToyTransformer`, HF GPT-2 | `tests/test_symmetry.py`: max output deviation 1.4e-14 (3 000 MLP renamings, 10 models), 4.4e-15 (toy transformer, incl. GL(d_head) rotations); F8: every F1 specimen, 300 renamings each (`experiments/F_gauge/results/F8_identity.csv`); F11: GPT-2 fp32 max Δlogit 3–5e-3 (`F11_identity.json`) | public |
+| `symmetry.hidden` | fiber dimension vs known group; identification of excess (dead / duplicate / constant) | planted duplicate and dead unit recovered with `unexplained = 0`; plain net excess 0 (`tests/test_symmetry.py`); F3 on 3 143 specimens (`results/symmetry.csv`) | public (ReLU MLP only) |
+| `symmetry.output_deviation`, `describe`, `inverse_on_units`, `uniform_scaling` | helpers | covered by the above | public |
+| `invariants.check_invariance` (handbook S2) | per-component CV under perm / scale / combined; invariant / covariant (fitted exponent) / artifact | anchors: weight product invariant (CV 7e-16), per-unit activation artifact, singular values covariant k = 1.000 R² = 1; gauge alignment repairs unit-indexed metrics (`tests/test_check.py`); F9 anchor on every specimen; F10 table | public |
+| `invariants.audit_quantities` | same, many metrics per forward pass, optional exact aligners | F11 (GPT-2), K6, B2, C1 | public |
+| `invariants.check_invariance_e2` | the E2 auditor (exact / approximate / not_invariant) | `tests/test_invariants.py` (unchanged) | public, legacy |
+| `nulls.feature_shuffle`, `label_permute` | destroy joint structure / labels, keep marginals | marginals preserved, mean |corr| < 0.1 (`tests/test_nulls.py`) | public |
+| `nulls.marchenko_pastur` | MP bulk + Tracy–Widom outlier count, σ² from bulk median | Gaussian noise: ≤ 4/100 trials with an outlier at q = 0.99 (nominal 1 %); planted 5 spikes → 5 | public |
+| `nulls.planted` | calibration data of known structure | circle has exactly one long H1 bar; 4-block graph Q > rewired null | public |
+| `graphs.attribution_graph / modularity / treewidth_ub / sparsity / rewired_null` | EAP graph and structure (frozen S4) | `tests/test_graphs_discovery.py`; E4 battery (PHASE6.md); V2 | public |
+| `discovery.find_circuit` | frozen attribution-patching + greedy prune | deterministic given seed, F ≥ 0.9 on a trained node MLP; E4 battery | public |
+| `topology.zigzag` | zigzag persistence over a cloud sequence (Dionysus) | planted loop in clouds 2–5 of 8 recovered as one bar [3, 12) = clouds 2..5 (`tests/test_topology.py`) | public; subsample dense clouds (S5 note) |
+| `topology.hilbert_function` | 2-parameter Hilbert function (scale × parameter) | circle: H1 ≥ 1 on the grid | public (rank-invariant diagonal only; RIVET not available) |
+| `topology.mapper` | KeplerMapper wrapper with β0/β1 | circle → one component with cycle rank ≥ 1 | public |
+| `topology.graph_ph` | clique-complex PH of weighted graphs (GUDHI) | 12-cycle → one essential H1 class; chord → two | public |
+| `topology.normalized_persistence`, `standardized_cloud` | per-unit-standardised persistence (E2's exact scaling repair) | invariant under per-unit scalings to 1e-8; F10 `ph_std_probe` column; Z5 | public |
+| `darkmatter.residual_structure` (K9 gate) | MP/TW + topology null on residuals | synthetic noise → structured fraction < 0.02 and ≤ 1 outlier (`tests/test_darkmatter.py::test_k9_*`) | public |

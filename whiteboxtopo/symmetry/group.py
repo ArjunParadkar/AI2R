@@ -65,6 +65,12 @@ def _backend(model):
             return _g2
     except ImportError:
         pass
+    try:
+        from . import llama as _ll
+        if _ll.handles(model):
+            return _ll
+    except ImportError:
+        pass
     raise TypeError(f"no symmetry backend for {type(model).__name__}; supported: ReLU MLPs (numpy .Ws/.bs, "
                     "torch nn.Sequential Linear/ReLU), whiteboxtopo.symmetry.transformer.ToyTransformer, "
                     "HF GPT2LMHeadModel")

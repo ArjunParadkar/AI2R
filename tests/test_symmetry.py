@@ -77,3 +77,18 @@ def test_inverse_on_units_undoes_renaming():
     v = S.apply(m, g).hidden_acts(X)[0].mean(0)
     back = S.inverse_on_units(g, 0, v, axis=0, scale_power=1.0)
     assert np.allclose(back, m.hidden_acts(X)[0].mean(0))
+
+
+def test_llama_family_backend_identity_if_cached():
+    """RoPE-commuting Q/K maps, GQA head permutations, V/O rotations, RMSNorm rescales are exact (fp32 floor)."""
+    import glob, os
+    torch = pytest.importorskip("torch"); tf = pytest.importorskip("transformers")
+    paths = glob.glob(os.path.expanduser("~/.cache/huggingface/hub/models--unsloth--Llama-3.2-1B/snapshots/*"))
+    if not paths:
+        pytest.skip("Llama-3.2-1B not cached")
+    torch.set_num_threads(4)
+    m = tf.AutoModelForCausalLM.from_pretrained(paths[0], dtype=torch.float32).eval()
+    tok = np.random.default_rng(0).integers(0, 32000, size=(1, 12)); rng = np.random.default_rng(1)
+    for kind in ("perm", "scale", "rot", "combined"):
+        g = S._backend(m).sample(m, rng, kind=kind, orthogonal=False, layers=[0, 3])
+        assert S.output_deviation(m, g, tok) < 1e-3

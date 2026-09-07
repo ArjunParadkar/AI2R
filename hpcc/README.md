@@ -5,7 +5,7 @@ Environment recipe: `hpcc/env.sh` (to be written with the cluster's module names
 
 | Job | Handbook | Needs | Status |
 |---|---|---|---|
-| `f12_frontier_audit.py` | F12 | Llama-3-8B or Gemma-2-9B (HF token), symmetry backend for RoPE/GQA/SwiGLU models | TODO (backend not yet written: head perms within GQA groups, V/O rotations, RMSNorm scalings, MLP perms; Q/K rotations restricted to RoPE-commuting block-diagonal phases) |
+| `f12_frontier_audit.py` | F12 | Llama-3-8B or Gemma-2-9B (HF token), `whiteboxtopo.symmetry.llama` backend | WRITTEN (backend + checkpointed script); verify identity on the cluster first (`identity.json`) |
 | `k7_width_scaling.py` | K7 | Gemma Scope width ladder 16k→1M (HF token) | TODO |
 | `k8_frontier_residue.py` | K8 | Gemma-2-9B + Gemma Scope | TODO |
 | `m4_cross_family.py` | M4 | v1 battery + ViT family | TODO |

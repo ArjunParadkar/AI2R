@@ -10,11 +10,11 @@ Backends: ReLU MLPs (numpy ``.Ws/.bs`` or torch ``nn.Sequential``),
 ``ToyTransformer`` (F7), HF ``GPT2LMHeadModel`` (F11). ``describe(model)`` lists
 the layers G acts on and the continuous dimension of the known group.
 """
-from .group import (GaugeElement, KINDS, describe, permutations, scalings, rotations, random_element,
+from .group import (_backend, GaugeElement, KINDS, describe, permutations, scalings, rotations, random_element,
                     uniform_scaling, apply, inverse_on_units, output_deviation)
 from .hidden import hidden, HiddenSymmetryReport, scaling_generators, realisation_jacobian
 from .transformer import ToyTransformer
 
-__all__ = ["GaugeElement", "KINDS", "describe", "permutations", "scalings", "rotations", "random_element",
+__all__ = ["_backend", "GaugeElement", "KINDS", "describe", "permutations", "scalings", "rotations", "random_element",
            "uniform_scaling", "apply", "inverse_on_units", "output_deviation", "hidden", "HiddenSymmetryReport",
            "scaling_generators", "realisation_jacobian", "ToyTransformer"]

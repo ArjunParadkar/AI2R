@@ -129,3 +129,12 @@ def test_shuffle_validity_catches_non_gaussian_marginals():
     # sanity: the low-level function used directly agrees
     counts = [mp_outliers(feature_shuffle(E, seed=1000 + i)).n_outliers for i in range(5)]
     assert max(counts) > 1
+
+
+def test_k9_synthetic_noise_structured_fraction_below_002():
+    """Handbook K9 gate: residual_structure on pure noise -> structured fraction < 0.02, <= 1 outlier."""
+    import numpy as np
+    from whiteboxtopo.darkmatter import residual_structure
+    E = np.random.default_rng(0).normal(size=(3000, 200))
+    rep = residual_structure(E, topology=False)
+    assert rep.structured_fraction < 0.02 and rep.n_outliers <= 1
