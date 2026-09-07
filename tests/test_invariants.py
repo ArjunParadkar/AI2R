@@ -3,7 +3,7 @@
 in numpy and torch form; plus the audit tool's controls (planted invariant
 passes, planted non-invariant fails, non-symmetry is detected)."""
 import numpy as np, pytest, warnings
-from whiteboxtopo.invariants import (ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, check_invariance, audit_metrics,
+from whiteboxtopo.invariants import (ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, check_invariance_e2 as check_invariance, audit_metrics,
                                  cv_of, agreement_of, GROUPS, FLOAT_FLOOR, INVARIANTS, invariant_quantities,
                                  logits, standardized_tc, gate_multiset, sorted_ablation, gradxact, ablation, gate_bits,
                                  standardize_units)
