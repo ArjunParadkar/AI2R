@@ -23,7 +23,7 @@ def orbits(df, definition, keycol="key6"):
     if definition == "hb":
         d = df[df.interpretable == 1]; w = np.ones(len(d))
     else:
-        d = df[df.n_meloux > 0]; w = d.n_meloux.values.astype(float)
+        d = df[df.n_meloux > 0]; w = d.n_meloux.values.astype(float)   # n_meloux == -1: capped (AMENDMENTS #4), excluded
     N = float(w.sum())
     if N == 0:
         return 0.0, 0.0, 0

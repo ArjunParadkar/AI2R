@@ -1,0 +1,6 @@
+# Block K — novelty log (searches 2026-09-07)
+
+**"Marchenko-Pastur random matrix null sparse autoencoder reconstruction error residual structure"** — hits: MP-guided pruning (arXiv 2606.02608), RMT-SVD pruning (2303.08986), Spectral Unforgetting (2605.20296), RMT sparse PCA for scRNA (2509.15429). No hit applies an MP/Tracy–Widom null to SAE residuals. **Status: OPEN as application** (unchanged).
+
+**"Engels dark matter sparse autoencoders scaling width nonlinear error"** — Engels, Smith & Tegmark, Decomposing the Dark Matter of SAEs (arXiv 2410.14670): ~50 % of the error vector and > 90 % of its norm linearly predictable from x; *nonlinear error stays constant as SAEs scale* (per-token scaling law). Also: Understanding SAE scaling in the presence of feature manifolds (2509.02565); Feature Hedging (2505.11756).
+**Consequence: K7 (width scaling of structured fraction) is TAKEN in its "does residue shrink with width" reading — Engels already shows the nonlinear residue does not shrink.** K7 runs as a replication with the spectral statistic and says so. K4 (linear predictability of Δlogits from e) is adjacent to Engels' "error predictable from x" — we predict the *model's output change* from e, which is a different target, but the framing must cite them and claim only the Δlogit target.

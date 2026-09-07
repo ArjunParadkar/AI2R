@@ -26,10 +26,25 @@ def _valid(model, X, y, scheme, use_gpu):
     return enumerate_valid(model, X, y, scheme)
 
 
+MELOUX_CAP = 60   # AMENDMENTS #4
+
+
+def _count_capped(model, X, mid, scheme, cap=MELOUX_CAP):
+    import signal
+    def _h(sig, frm): raise TimeoutError
+    old = signal.signal(signal.SIGALRM, _h); signal.alarm(cap)
+    try:
+        return int(interpretation_count(model, X, mid, scheme))
+    except TimeoutError:
+        return -1
+    finally:
+        signal.alarm(0); signal.signal(signal.SIGALRM, old)
+
+
 def circuit_row(model, X, y, spec, scheme, mid, meloux=True):
     mid = int(mid)
     ok, gates, out_table = handbook_interpretation(model, X, mid, scheme)
-    nm = int(interpretation_count(model, X, mid, scheme)) if meloux else -1
+    nm = _count_capped(model, X, mid, scheme) if meloux else -1
     keys = {eps: canonical_form(model, mid, eps)[0].hex() for eps in EPS}
     return dict(specimen=spec, criterion=scheme, circuit_id=mid, n_units=bin(mid).count("1"),
                 interpretable=int(ok), n_meloux=nm, key6=keys[1e-6], key4=keys[1e-4],

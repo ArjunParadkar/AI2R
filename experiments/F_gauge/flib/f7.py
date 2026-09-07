@@ -73,15 +73,16 @@ def node_means(model, tok):
 
 
 @torch.no_grad()
-def enumerate_valid_tf(model, tok, y, scheme, chunk=1 << 13, time_cap=None):
+def enumerate_valid_tf(model, tok, y, scheme, chunk=1 << 15, time_cap=None):
     t0 = time.time(); per, n_nodes = node_layout(model); total = 1 << n_nodes
     dev = model.wte.device; T = torch.tensor(tok, device=dev); Y = torch.tensor(y, device=dev)
+    import copy as _c; model = _c.deepcopy(model).float()                     # AMENDMENTS #5: float32 enumeration
     means = node_means(model, T); bits = torch.arange(n_nodes, device=dev)
     valid = []
     for start in range(0, total, chunk):
         if time_cap and time.time() - t0 > time_cap: return None
         ids = torch.arange(start, min(start + chunk, total), device=dev)
-        keep = ((ids[:, None] >> bits[None, :]) & 1).double()
+        keep = ((ids[:, None] >> bits[None, :]) & 1).to(model.wte.dtype)
         out = masked_forward(model, T, keep, means, scheme)
         pred = (out[..., 1] > out[..., 0]).long()
         ok = (pred == Y[None]).all(1)

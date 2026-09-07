@@ -21,7 +21,7 @@ def main():
     ep = os.path.join(R, "F7_explanations.csv")
     for fn in FUNCS:
         for L in LAYERS:
-            for s in SEEDS:
+            for s in (SEEDS if L == 1 else range(5)):   # AMENDMENTS #5
                 spec = f"{fn}_L{L}_s{s}"
                 if spec in done: continue
                 t0 = time.time()

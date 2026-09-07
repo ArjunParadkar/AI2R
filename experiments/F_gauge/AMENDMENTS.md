@@ -40,3 +40,17 @@ gauge-related explanations are identified.
 persistence on 256-point probe clouds) costs ~1 min per specimen; it is run on seeds 0–4 of
 every (function, depth, width) cell (760 specimens) rather than all 3 143 converged specimens.
 F8 and F9 run on every converged specimen. Nothing else changes.
+
+**#4 (2026-09-07, during the F2 run; affects only the Méloux co-primary column).** Exact Méloux
+threshold-interpretation counting is exponential in circuit size; at d·w = 20 single circuits were
+taking > 30 min and all 12 workers stalled on THR3/PARITY4 d2w10. A per-circuit wall cap of 60 s is
+imposed on `interpretation_count`; capped circuits get `n_meloux = -1` and are excluded from the
+Méloux N/K (their number is reported per cell in FINDINGS). The handbook (bit-at-0) definition,
+the circuit enumeration, the canonical keys and everything else are unaffected. Specimens
+already completed before the cap keep their exact counts.
+
+**#5 (2026-09-07, during F7; 11 of 80 models done).** Two-layer toy transformers (24 nodes, 2^24
+subsets) take ~40 min each under GPU sharing. Enumeration switched to float32 with 32 768-mask
+chunks (validity is a sign with margin ≥ 0.5, unaffected), and the 2-layer cells are run for seeds
+0–4 instead of 0–9 (4 functions × 5 seeds = 20 two-layer models; the 1-layer cells keep 10 seeds).
+Completed models are kept.

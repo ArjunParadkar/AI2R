@@ -65,15 +65,23 @@ def main():
         att = att.masked_fill(~torch.tril(torch.ones(Tn, Tn, dtype=torch.bool, device=dev)), float("-inf")).softmax(-1)
         z = (att @ v).permute(0, 2, 1, 3).reshape(-1, H, dh).float().detach()            # (n_tok, H, dh)
         att = att.detach()
-        # gradient x input for MLP hidden units under the next-token loss (one backward)
-        m.zero_grad(set_to_none=True)
-        cap2 = {}
-        def hook_mlp_g(mod, inp, out):
-            out.retain_grad(); cap2["mlp"] = out
-        hg = blk(m).mlp.act.register_forward_hook(hook_mlp_g)
-        lg = m(T).logits; loss = torch.nn.functional.cross_entropy(lg[:, :-1].reshape(-1, lg.shape[-1]), T[:, 1:].reshape(-1)); loss.backward()
-        hg.remove(); gxi = (cap2["mlp"] * cap2["mlp"].grad).reshape(-1, cap2["mlp"].shape[-1]).mean(0).detach().float().cpu().numpy()
-        m.zero_grad(set_to_none=True)
+        # gradient x input for MLP hidden units under the next-token loss: parameters frozen, the MLP
+        # activation is re-injected as a leaf so only the activation gradient is materialised (memory)
+        for p_ in m.parameters(): p_.requires_grad_(False)
+        gxi_acc = None
+        for bi in range(0, T.shape[0], 4):
+            cap2 = {}
+            def hook_mlp_g(mod, inp, out):
+                leaf = out.detach().requires_grad_(True); cap2["mlp"] = leaf; return leaf
+            hg = blk(m).mlp.act.register_forward_hook(hook_mlp_g)
+            Tb = T[bi:bi + 4]
+            lg = m(Tb).logits; loss = torch.nn.functional.cross_entropy(lg[:, :-1].reshape(-1, lg.shape[-1]), Tb[:, 1:].reshape(-1), reduction="sum")
+            (gr,) = torch.autograd.grad(loss, [cap2["mlp"]]); hg.remove()
+            part = (cap2["mlp"] * gr).reshape(-1, cap2["mlp"].shape[-1]).sum(0).detach().float()
+            gxi_acc = part if gxi_acc is None else gxi_acc + part
+            del lg, loss, gr, cap2
+        gxi = (gxi_acc / (T.shape[0] * (T.shape[1] - 1))).cpu().numpy()
+        torch.cuda.empty_cache()
         Wfc = blk(m).mlp.c_fc.weight.detach().float(); Wpr = blk(m).mlp.c_proj.weight.detach().float()
         g1, b1 = blk(m).ln_1.weight.detach().float(), blk(m).ln_1.bias.detach().float()
         Wattn = blk(m).attn.c_attn.weight.detach().float(); Wo = blk(m).attn.c_proj.weight.detach().float()
