@@ -26,8 +26,27 @@ def _valid(model, X, y, scheme, use_gpu):
     return enumerate_valid(model, X, y, scheme)
 
 
-def analyse(model, X, y, spec, use_gpu=False, meloux=True):
-    """Returns (explanation rows, status row)."""
+def circuit_row(model, X, y, spec, scheme, mid, meloux=True):
+    mid = int(mid)
+    ok, gates, out_table = handbook_interpretation(model, X, mid, scheme)
+    nm = int(interpretation_count(model, X, mid, scheme)) if meloux else -1
+    keys = {eps: canonical_form(model, mid, eps)[0].hex() for eps in EPS}
+    return dict(specimen=spec, criterion=scheme, circuit_id=mid, n_units=bin(mid).count("1"),
+                interpretable=int(ok), n_meloux=nm, key6=keys[1e-6], key4=keys[1e-4],
+                fkey=hash(functional_key(model, X, mid, scheme)),
+                algorithm=algorithm_string(gates, out_table, circuit_layers(mid, model.widths)) if ok else "")
+
+
+def _circuit_job(args):
+    path, fn, spec, scheme, mid, meloux = args
+    import torch; torch.set_num_threads(1)
+    model = MLP.load(os.path.join(R, path)); X, y = truth_table(fn)
+    return circuit_row(model, X, y, spec, scheme, mid, meloux)
+
+
+def analyse(model, X, y, spec, use_gpu=False, meloux=True, pool=None, path=None, fn=None):
+    """Returns (explanation rows, status row). With ``pool`` (GPU mode) the per-circuit analysis is
+    farmed out to worker processes."""
     rows, status = [], {"specimen": spec, "n_hidden": sum(model.widths)}
     t0 = time.time()
     for scheme in ("zero", "mean"):
@@ -37,24 +56,22 @@ def analyse(model, X, y, spec, use_gpu=False, meloux=True):
         status[f"enumerated_{scheme}"] = 1
         mins = minimal_ids_fast(valid)
         status[f"n_valid_{scheme}"] = int(len(valid)); status[f"n_minimal_{scheme}"] = int(len(mins))
-        for mid in mins:
-            mid = int(mid)
-            ok, gates, out_table = handbook_interpretation(model, X, mid, scheme)
-            nm = int(interpretation_count(model, X, mid, scheme)) if meloux else -1
-            keys = {eps: canonical_form(model, mid, eps)[0].hex() for eps in EPS}
-            rows.append(dict(specimen=spec, criterion=scheme, circuit_id=mid, n_units=bin(mid).count("1"),
-                             interpretable=int(ok), n_meloux=nm, key6=keys[1e-6], key4=keys[1e-4],
-                             fkey=hash(functional_key(model, X, mid, scheme)),
-                             algorithm=algorithm_string(gates, out_table, circuit_layers(mid, model.widths)) if ok else ""))
+        if pool is not None and len(mins) > 4:
+            rows += pool.map(_circuit_job, [(path, fn, spec, scheme, int(mid), meloux) for mid in mins], chunksize=4)
+        else:
+            rows += [circuit_row(model, X, y, spec, scheme, mid, meloux) for mid in mins]
     status["wall"] = round(time.time() - t0, 1)
     return rows, status
+
+
+_POOL = None
 
 
 def job(args):
     spec, path, fn, use_gpu = args
     import torch; torch.set_num_threads(1)
     model = MLP.load(os.path.join(R, path)); X, y = truth_table(fn)
-    rows, status = analyse(model, X, y, spec, use_gpu)
+    rows, status = analyse(model, X, y, spec, use_gpu, pool=_POOL, path=path, fn=fn)
     # F3
     h = S.hidden(model, inputs=X, seed=0, keep_directions=False)
     sym = dict(specimen=spec, n_params=h.n_params, rank=h.rank, fiber_dim=h.corank, known_dim=h.known_dim,
@@ -80,27 +97,81 @@ def _append(path, fields, rows):
 
 
 def kill_tests():
-    from flib.planted import xor3_single, planted_k
+    from flib.planted import xor3_single, planted_k, with_bias_unit
+    from flib.enumerate import mask_from_id
     X, y = truth_table("XOR3"); out = {}
     m = xor3_single()
     rows, st = analyse(m, X, y, "planted_xor_single", use_gpu=False)
     out["F2_kill"] = {s: dict(n_minimal=st[f"n_minimal_{s}"], circuits=[r["circuit_id"] for r in rows if r["criterion"] == s],
                              interpretable=[r["interpretable"] for r in rows if r["criterion"] == s],
                              full_set_id=(1 << sum(m.widths)) - 1) for s in ("zero", "mean")}
+    print("F2 kill", out["F2_kill"], flush=True)
     for k in (1, 2, 3):
-        m, nc = planted_k(k)
-        gpu = sum(m.widths) > 20
-        rows, st = analyse(m, X, y, f"planted_k{k}", use_gpu=gpu, meloux=False)
-        res = {}
+        m, blocks = planted_k(k); nc = len(blocks)
+        n_hidden = sum(m.widths); off = np.cumsum([0] + list(m.widths))
+        planted = []
+        for j in range(nc):
+            mid = 0
+            for l, (lo, hi) in enumerate(blocks[j]):
+                for u in range(lo, hi):
+                    mid |= 1 << (off[l] + u)
+            planted.append(mid)
+        res = {"n_hidden": n_hidden, "expected_K": k, "expected_N": 2 * k}
+        means = [a.mean(0) for a in m.hidden_acts(X)]
+        from flib.enumerate import ablated_forward
         for s in ("zero", "mean"):
-            rr = [r for r in rows if r["criterion"] == s and r["interpretable"]]
-            res[s] = dict(N=len(rr), K=len(set(r["key6"] for r in rr)), n_minimal=st.get(f"n_minimal_{s}"),
-                          enumerated=st.get(f"enumerated_{s}"), wall=st["wall"])
-        out[f"F4_kill_k{k}"] = dict(expected_K=k, expected_N=2 * k, **res)
-        print(k, res, flush=True)
+            r = {}
+            # validity of each planted circuit
+            masks = np.stack([mask_from_id(mid, n_hidden) for mid in planted])
+            logits, _ = ablated_forward(m, X, masks, s, means)
+            r["planted_valid"] = [bool(((logits[i] > 0).astype(np.int8) == y).all()) for i in range(nc)]
+            # minimality: enumerate all subsets of each planted circuit
+            r["planted_minimal"] = []
+            for mid in planted:
+                units = np.flatnonzero(mask_from_id(mid, n_hidden)); sub_valid = 0
+                for sub in range(1, (1 << len(units)) - 1):
+                    sm = np.zeros(n_hidden, bool); sm[units[[i for i in range(len(units)) if (sub >> i) & 1]]] = True
+                    lg, _ = ablated_forward(m, X, sm[None], s, means)
+                    if ((lg[0] > 0).astype(np.int8) == y).all(): sub_valid += 1
+                r["planted_minimal"].append(sub_valid == 0)
+            keys = [canonical_form(m, mid, 1e-6)[0].hex() for mid in planted]
+            interp = [handbook_interpretation(m, X, mid, s)[0] for mid in planted]
+            r["planted_interpretable"] = interp
+            r["K_planted"] = len(set(keys)); r["N_planted"] = nc
+            if n_hidden <= 28:
+                t0 = time.time()
+                valid = _valid(m, X, y, s, use_gpu=n_hidden > 20)
+                if valid is not None:
+                    mins = minimal_ids_fast(valid)
+                    ok = [handbook_interpretation(m, X, int(x), s)[0] for x in mins]
+                    ks = [canonical_form(m, int(x), 1e-6)[0].hex() for x in mins]
+                    r["exhaustive"] = dict(n_valid=int(len(valid)), n_minimal=int(len(mins)), N=int(sum(ok)),
+                                           K=len(set(kk for kk, o in zip(ks, ok) if o)),
+                                           planted_among_minimal=[int(p) in set(int(x) for x in mins) for p in planted],
+                                           wall=round(time.time() - t0, 1))
+            res[s] = r
+            print(k, s, r, flush=True)
+        out[f"F4_kill_k{k}"] = res
+    # F4-kill-b: gauge consistency of the orbit keys on trained specimens
+    from flib.gauge import random_gauge
+    spec = [r for r in csv.DictReader(open(os.path.join(R, "specimens.csv"))) if int(r["converged"]) and int(r["depth"]) * int(r["width"]) <= 16]
+    rng = np.random.default_rng(0); sel = rng.choice(len(spec), 100, replace=False)
+    kb = {"n": 0, "identical_zero": 0, "identical_mean": 0, "failures": []}
+    for i in sel:
+        r = spec[i]; m = MLP.load(os.path.join(R, r["path"])); Xs, ys = truth_table(r["function"])
+        mg, _, _ = random_gauge(m, rng, log_scale_sd=1.0)
+        for s in ("zero", "mean"):
+            k0 = sorted(canonical_form(m, int(x), 1e-6)[0].hex() for x in minimal_ids_fast(enumerate_valid(m, Xs, ys, s)))
+            k1 = sorted(canonical_form(mg, int(x), 1e-6)[0].hex() for x in minimal_ids_fast(enumerate_valid(mg, Xs, ys, s)))
+            same = k0 == k1
+            kb[f"identical_{s}"] += int(same)
+            if not same: kb["failures"].append((r["path"], s, len(k0), len(k1), len(set(k0) & set(k1))))
+        kb["n"] += 1
+    out["F4_kill_b"] = kb
+    print("F4-kill-b", kb, flush=True)
     with open(os.path.join(R, "kill_tests.json"), "w") as f:
-        json.dump(out, f, indent=1, default=int)
-    print(json.dumps(out, indent=1, default=int))
+        json.dump(out, f, indent=1, default=lambda o: bool(o) if isinstance(o, np.bool_) else int(o))
+    print(json.dumps(out, indent=1, default=lambda o: bool(o) if isinstance(o, np.bool_) else int(o)))
 
 
 def main():
@@ -126,6 +197,8 @@ def main():
     print(f"{len(jobs)} specimens ({len(done)} done)", flush=True)
     ep, yp = os.path.join(R, "explanations.csv"), os.path.join(R, "symmetry.csv")
     if a.gpu:
+        global _POOL
+        _POOL = Pool(a.procs)
         it = map(job, jobs)
     else:
         pool = Pool(a.procs); it = pool.imap_unordered(job, jobs)

@@ -25,13 +25,13 @@ claim about what an invariant quantity *means*. See VALIDATION.md.
 from .model import ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, random_gauge_element, param_distance, GROUPS
 from .core import (check_invariance as check_invariance_e2, audit_metrics, InvarianceReport, cv_of, agreement_of, verdict_for,
                    EXACT_CV, BROKEN_CV, FLOAT_FLOOR)
-from .check import check_invariance, audit_table, AuditResult, per_component_cv, global_cv, INVARIANT_CV, COVARIANT_R2
+from .check import check_invariance, audit_table, audit_quantities, AuditResult, per_component_cv, global_cv, INVARIANT_CV, COVARIANT_R2
 from .metrics import (logits, input_jacobian, weight_product, standardized_tc, standardize_units,
                       sorted_gradxact, sorted_ablation, gate_multiset, gate_bits, gradxact, ablation,
                       invariant_quantities, INVARIANTS)
 
 __all__ = ["ReluMLP", "as_relu_mlp", "apply_gauge", "sample_orbit", "random_gauge_element", "param_distance", "GROUPS",
-           "check_invariance", "check_invariance_e2", "audit_table", "AuditResult", "per_component_cv", "global_cv", "INVARIANT_CV", "COVARIANT_R2", "audit_metrics", "InvarianceReport", "cv_of", "agreement_of", "verdict_for",
+           "check_invariance", "check_invariance_e2", "audit_table", "audit_quantities", "AuditResult", "per_component_cv", "global_cv", "INVARIANT_CV", "COVARIANT_R2", "audit_metrics", "InvarianceReport", "cv_of", "agreement_of", "verdict_for",
            "EXACT_CV", "BROKEN_CV", "FLOAT_FLOOR",
            "logits", "input_jacobian", "weight_product", "standardized_tc", "standardize_units",
            "sorted_gradxact", "sorted_ablation", "gate_multiset", "gate_bits", "gradxact", "ablation",

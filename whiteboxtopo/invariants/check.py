@@ -217,3 +217,48 @@ def check_invariance(metric_fn: Callable, model, n: int = 100, seed: int = 0, ki
 def audit_table(metrics: Dict[str, Callable], model, **kw):
     """Run :func:`check_invariance` on a dict of metrics; returns a list of ``AuditResult``."""
     return [check_invariance(fn, model, name=name, **kw) for name, fn in metrics.items()]
+
+
+def audit_quantities(quantities_fn: Callable, model, n: int = 30, seed: int = 0, kinds: Optional[Sequence[str]] = None,
+                     scale_range=(0.1, 10.0), orthogonal: bool = True, aligners: Optional[Dict[str, Callable]] = None,
+                     layers=None, verbose: bool = False) -> Dict[str, AuditResult]:
+    """One forward pass per renaming for MANY metrics: ``quantities_fn(model) -> {name: array}``.
+    Same verdict rule as :func:`check_invariance` (no uniform-scaling sweep, so ``covariant`` needs
+    an external exponent and is not assigned here: verdicts are ``invariant`` / ``artifact``, with the
+    per-kind CVs to read the covariance off). ``aligners[name](g, value) -> aligned value`` may undo
+    the known renaming for unit-indexed metrics (reported as ``cv_aligned``). ``layers`` restricts the
+    renamings to those layers when the backend supports it (GPT-2)."""
+    desc = S.describe(model)
+    if kinds is None:
+        kinds = ("perm", "scale", "combined") + (("rot",) if desc["type"] != "relu_mlp" else ())
+    base = {k: np.asarray(v, dtype=np.float64) for k, v in quantities_fn(model).items()}
+    samples = {k: {q: [base[q]] for q in base} for k in kinds}
+    aligned = {k: {q: [base[q]] for q in base} for k in kinds}
+    aligners = aligners or {}
+    for ki, kind in enumerate(kinds):
+        rng = np.random.default_rng(seed + 1000 * ki)
+        for r in range(1, n):
+            g = (S._backend(model).sample(model, rng, kind=kind, log_range=scale_range, orthogonal=orthogonal, layers=layers)
+                 if layers is not None else S.random_element(model, rng, kind=kind, log_range=scale_range, orthogonal=orthogonal))
+            vals = quantities_fn(S.apply(model, g))
+            for q, v in vals.items():
+                v = np.asarray(v, dtype=np.float64)
+                samples[kind][q].append(v)
+                aligned[kind][q].append(aligners[q](g, v) if q in aligners else v)
+            if verbose:
+                print(f"  {kind} {r}/{n-1}", flush=True)
+    out = {}
+    for q in base:
+        cv = {k: per_component_cv(np.stack(samples[k][q])) for k in kinds}
+        cv_al = {k: per_component_cv(np.stack(aligned[k][q])) for k in kinds} if q in aligners else {}
+        comb = cv["combined"] if "combined" in cv else np.max(np.stack(list(cv.values())), 0)
+        verdict = "invariant" if np.median(comb) < INVARIANT_CV else "artifact"
+        v_al = None
+        if cv_al:
+            comb_al = cv_al["combined"] if "combined" in cv_al else np.max(np.stack(list(cv_al.values())), 0)
+            v_al = "invariant" if np.median(comb_al) < INVARIANT_CV else "artifact"
+        out[q] = AuditResult(metric=q, n=n, cv=cv, cv_aligned=cv_al, median_cv={k: float(np.median(v)) for k, v in cv.items()},
+                             frac_invariant={k: float(np.mean(v < INVARIANT_CV)) for k, v in cv.items()}, verdict=verdict,
+                             verdict_aligned=v_al, scaling_exponent=None, scaling_r2=None, base=base[q],
+                             samples={k: np.stack(samples[k][q]) for k in kinds}, align="gauge" if q in aligners else "none")
+    return out
