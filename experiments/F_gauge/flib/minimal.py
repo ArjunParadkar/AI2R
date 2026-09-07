@@ -13,8 +13,12 @@ def minimal_ids_fast(valid_ids):
     for c in np.unique(pc):
         batch = v[pc == c]
         if len(M):
-            sub = (batch[:, None] & M[None, :]) == M[None, :]          # m ⊂ v (m has fewer bits, so proper)
-            keep = ~sub.any(1)
+            # m ⊂ v (m has fewer bits, so proper). Chunked so the (batch x M) broadcast stays <= 2^25 int64
+            # (256 MB): the un-chunked version peaked at 21 GB on OR4 d3w8 (10M valid) and was OOM-killed (AMENDMENTS #9).
+            step = max(1, (1 << 25) // len(M)); keep = np.empty(len(batch), dtype=bool)
+            for s in range(0, len(batch), step):
+                b = batch[s:s + step]
+                keep[s:s + step] = ~((b[:, None] & M[None, :]) == M[None, :]).any(1)
         else:
             keep = np.ones(len(batch), bool)
         minimal.append(batch[keep]); M = np.concatenate([M, batch[keep]])

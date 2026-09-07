@@ -90,8 +90,8 @@ def job(args):
     # F3
     h = S.hidden(model, inputs=X, seed=0, keep_directions=False)
     sym = dict(specimen=spec, n_params=h.n_params, rank=h.rank, fiber_dim=h.corank, known_dim=h.known_dim,
-               excess=h.excess, dead=h.identified["dead"], duplicate=h.identified["duplicate"],
-               constant=h.identified["constant"], unexplained=h.unexplained, G_incomplete=int(h.G_incomplete),
+               excess=h.excess, dead=h.identified.get("dead", ""), duplicate=h.identified.get("duplicate", ""),
+               constant=h.identified.get("constant", ""), unexplained=h.unexplained,   # keys changed in Amendment 7; F3 owns the real accounting G_incomplete=int(h.G_incomplete),
                dead_units=len(h.dead_units), constant_units=len(h.constant_units))
     return rows, status, sym
 
