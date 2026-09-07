@@ -39,10 +39,11 @@ class HiddenSymmetryReport:
     known_dim: int                  # continuous generators of G accounted for
     excess: int                     # corank - known_dim (>= 0 up to numerical rank error)
     unexplained: int                # excess not identified by the heuristics
-    identified: Dict[str, int] = field(default_factory=dict)   # {"dead": k, "duplicate": k, "constant": k}
+    identified: Dict[str, int] = field(default_factory=dict)   # flat directions per mechanism: dead / all_active / shared_pattern (duplicate = subset)
     dead_units: List[tuple] = field(default_factory=list)
     duplicate_pairs: List[tuple] = field(default_factory=list)
     constant_units: List[tuple] = field(default_factory=list)
+    groups: List[dict] = field(default_factory=list)
     singular_values: Optional[np.ndarray] = field(default=None, repr=False)
     null_directions: Optional[np.ndarray] = field(default=None, repr=False)   # (n_null, n_params), after removing G
     G_incomplete: bool = False
@@ -140,37 +141,65 @@ def hidden(model, inputs=None, rel_tol: float = 1e-8, seed: int = 0, keep_direct
     else:
         n_extra, extra_dirs = corank, null
     excess = corank - known_dim
-    # ---- identification heuristics on the probe set
-    h = X; dead, const, dups = [], [], []
+    # ---- identification on the probe set: units of a layer that share one activation pattern over the
+    # probe are jointly LINEAR there, so f depends on their parameters only through the effective map
+    # M = sum_u w_out[u] (w_u, b_u)  (fan_out x (fan_in+1), rank r <= min(k, fan_in+1, fan_out)); a group of k
+    # such units therefore carries k(a+b) - k - [r(a+b) - r^2] flat directions beyond its k scalings
+    # (a = fan_in+1, b = fan_out). Dead groups (all-zero pattern) carry k(a+b) - k. Duplicated units and
+    # always-active units are the k >= 2 / all-ones special cases. Each group's contribution is reported.
+    h = X; dead, const, dups, groups = [], [], [], []
+    group_dirs = 0
     for l, (W, b) in enumerate(zip(m.Ws[:-1], m.bs[:-1])):
-        pre = h @ W + b; act = pre > 0
+        pre = h @ W + b; act = pre > 0; a_, b_ = W.shape[0] + 1, m.Ws[l + 1].shape[1]
+        patterns = {}
         for j in range(W.shape[1]):
-            if not act[:, j].any():
-                dead.append((l, j))
-            elif act[:, j].all():
-                const.append((l, j))
-        # duplicates: incoming (w, b) proportional (positive factor)
-        V = np.vstack([W, b[None, :]]); nrm = np.linalg.norm(V, axis=0); nrm[nrm == 0] = 1
-        Vn = V / nrm
+            key = act[:, j].tobytes(); patterns.setdefault(key, []).append(j)
+            if not act[:, j].any(): dead.append((l, j))
+            elif act[:, j].all(): const.append((l, j))
+        V = np.vstack([W, b[None, :]]); nrm = np.linalg.norm(V, axis=0); nrm[nrm == 0] = 1; Vn = V / nrm
         for i in range(W.shape[1]):
             for j in range(i + 1, W.shape[1]):
-                if (l, i) in dead or (l, j) in dead:
-                    continue
-                if np.linalg.norm(Vn[:, i] - Vn[:, j]) < dup_tol:
+                if (l, i) not in dead and (l, j) not in dead and np.linalg.norm(Vn[:, i] - Vn[:, j]) < dup_tol:
                     dups.append((l, i, j))
+        for key, units in patterns.items():
+            k = len(units); is_dead = not act[:, units[0]].any()
+            if is_dead:
+                extra = k * (a_ + b_) - k
+            else:
+                r = min(k, a_, b_); extra = k * (a_ + b_) - k - (r * (a_ + b_) - r * r)
+            if extra > 0:
+                groups.append(dict(layer=l, units=units, k=k, kind="dead" if is_dead else ("all_active" if act[:, units[0]].all() else "shared_pattern"), dirs=int(extra)))
+                group_dirs += int(extra)
         h = np.maximum(pre, 0.0)
-    # count flat directions each mechanism contributes beyond the scaling generator
-    n_out_next = lambda l: m.Ws[l + 1].shape[1]
-    dead_dirs = sum(m.Ws[l].shape[0] + 1 + n_out_next(l) - 1 for (l, j) in dead)       # incoming + bias + outgoing, minus the scaling already counted
-    # a duplicated pair shares its activation pattern, so f depends only on w_out_i (w_i,b_i) + w_out_j (w_j,b_j):
-    # fan_in+1 incoming + n_out outgoing trade directions, minus the one already inside span(scaling generators)
-    dup_dirs = sum(m.Ws[l].shape[0] + 1 + n_out_next(l) - 1 for (l, i, j) in dups)
-    const_dirs = len(const)                                                              # bias can move against next-layer bias (one direction each, first-order)
-    identified = {"dead": int(dead_dirs), "duplicate": int(dup_dirs), "constant": int(const_dirs)}
-    unexplained = max(int(excess) - sum(identified.values()), 0)
+    identified = {"dead": int(sum(g["dirs"] for g in groups if g["kind"] == "dead")),
+                  "all_active": int(sum(g["dirs"] for g in groups if g["kind"] == "all_active")),
+                  "shared_pattern": int(sum(g["dirs"] for g in groups if g["kind"] == "shared_pattern")),
+                  "duplicate": int(sum(g["dirs"] for g in groups if g["kind"] == "shared_pattern" and any((g["layer"], i, j) in [(d[0], d[1], d[2]) for d in dups] for i in g["units"] for j in g["units"] if i < j)))}
+    # ---- exact first-order accounting: null directions confined to ONE parameter block (W_l, b_l) — the
+    # outgoing weights of a rank-deficient activation layer, or the incoming weights of units whose masked
+    # inputs are dependent — together with the known scaling generators span the "explained" part of the
+    # fiber; what is left is unexplained (a genuinely coupled flat direction).
+    off, _ = _param_layout(m)
+    explained = [G] if G.shape[0] else []
+    block_null = {}
+    for l in range(len(m.Ws)):
+        oW, shpW = off[("W", l)]; ob, shpb = off[("b", l)]
+        cols = np.concatenate([np.arange(oW, oW + int(np.prod(shpW))), np.arange(ob, ob + int(np.prod(shpb)))])
+        Jb = J[:, cols]; sb = np.linalg.svd(Jb, compute_uv=False); rb = int((sb > rel_tol * s[0]).sum()) if sb.size else 0
+        nb = len(cols) - rb; block_null[l] = nb
+        if nb > 0:
+            Vb = np.linalg.svd(Jb, full_matrices=True)[2][rb:]           # (nb, len(cols))
+            E = np.zeros((nb, n_params)); E[:, cols] = Vb; explained.append(E)
+    if explained:
+        Ex = np.vstack(explained); se = np.linalg.svd(Ex, compute_uv=False); n_explained = int((se > 1e-8 * se[0]).sum())
+    else:
+        n_explained = 0
+    unexplained = max(int(corank) - n_explained, 0)
+    identified["block_null_dirs"] = {int(l): int(v) for l, v in block_null.items()}
+    identified["explained_total"] = int(n_explained - known_dim)
     return HiddenSymmetryReport(
         n_params=int(n_params), rank=rank, corank=int(corank), known_dim=int(known_dim), excess=int(excess),
-        unexplained=unexplained, identified=identified, dead_units=dead, duplicate_pairs=dups, constant_units=const,
+        unexplained=unexplained, identified=identified, dead_units=dead, duplicate_pairs=dups, constant_units=const, groups=groups,
         singular_values=s if keep_directions else None,
         null_directions=extra_dirs if keep_directions else None,
         G_incomplete=bool(excess > 0))

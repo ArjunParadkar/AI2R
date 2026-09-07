@@ -122,5 +122,22 @@ def main():
     print("specimens with within-network orbit merges:", len(m), "of", len(W))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" and len(sys.argv) == 1:
     main()
+
+
+def f3():
+    """F3 summary: fiber dimension vs known group per cell."""
+    Y = pd.read_csv(os.path.join(R, "symmetry.csv"))
+    sp = Y.specimen.str.extract(r"^(?P<function>[A-Z0-9_]+)_d(?P<depth>\d)_w(?P<width>\d+)_s(?P<seed>\d+)$"); Y = pd.concat([Y, sp], axis=1)
+    g = Y.groupby(["depth", "width"]).agg(n=("specimen", "size"), frac_G_incomplete=("G_incomplete", "mean"), excess_mean=("excess", "mean"),
+                                        excess_max=("excess", "max"), unexplained_mean=("unexplained", "mean"), frac_unexplained_pos=("unexplained", lambda s: (s > 0).mean()),
+                                        dead_units_mean=("dead_units", "mean"), constant_units_mean=("constant_units", "mean"), explained_mean=("explained", "mean")).reset_index()
+    g.to_csv(os.path.join(R, "F3_summary.csv"), index=False); print(g.to_string())
+    tot = dict(n=int(len(Y)), frac_G_incomplete=float(Y.G_incomplete.mean()), frac_unexplained_pos=float((Y.unexplained > 0).mean()),
+               excess_median=float(Y.excess.median()), explained_frac_of_excess=float(Y.explained.sum() / max(Y.excess.sum(), 1)), unexplained_median=float(Y.unexplained.median()))
+    json.dump(tot, open(os.path.join(R, "F3_totals.json"), "w"), indent=1); print(tot)
+
+
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "f3":
+    f3()

@@ -60,3 +60,14 @@ clouds (five clouds per renaming, 100th-percentile threshold) cost ~45 min per r
 persistence candidates are computed on a fixed 800-token subsample (same tokens for every
 renaming) at the v1 95th-percentile threshold. All non-persistence candidates keep the 2 000
 tokens. n = 30 per kind unchanged.
+
+**#7 (2026-09-07, F3 accounting; measurement unchanged).** The first F3 pass identified only
+dead / duplicate / constant units and left a median excess of 22 flat directions "unclassified" on
+1 000 specimens. The identification in `symmetry.hidden` was replaced by an exact first-order
+accounting: null directions of the realisation Jacobian confined to a single parameter block
+(W_l, b_l) — outgoing weights of a rank-deficient activation layer, incoming weights of units whose
+masked inputs are dependent (dead units, units sharing an activation pattern, always-active groups)
+— together with the scaling generators span the *explained* fiber; the remainder is *unexplained*.
+`corank`, `known_dim` and `excess` are unchanged; only the split of `excess` into explained /
+unexplained changed. `symmetry.csv` is recomputed for every specimen by `run_F3.py` (the F2 job's
+first-pass values are superseded; the file is rewritten).
