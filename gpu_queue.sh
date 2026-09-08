@@ -16,8 +16,13 @@ stage "F7 and F2 d3w8 finished"
 cd $E/F_gauge      && run F11     $V -u run_F11.py --n 30
 cd $E/K_darkmatter && run K1      $TL -u run_K1.py
 cd $E/K_darkmatter && run K2_K6   $V -u run_K2_K6.py
+# B2_B4 may be running standalone (wb-b2b4, 2026-09-08 rerun): wait for it, then the .done marker skips the stage
+while systemctl --user is-active --quiet wb-b2b4; do sleep 60; done
 cd $E/B_bias       && run B2_B4   $V -u run_B2_B4.py
-cd $E/V_legibility && run V1      $V -u run_V1.py
+# V1 in three disjoint shards: shard 0 here, shards 1-2 as units wb-v1-s1 / wb-v1-s2 (launched with the queue); wait for all
+cd $E/V_legibility && run V1      $V -u run_V1.py --shard 0 3
+while systemctl --user is-active --quiet wb-v1-s1 || systemctl --user is-active --quiet wb-v1-s2 || ! $V $E/../wb_ready.py v1; do sleep 120; done
+stage "V1 all shards finished"
 cd $E/V_legibility && run V2_V3   $V -u run_V2_V3.py
 cd $E/M_memorization && run M2    $V -u run_M2_M3.py
 cd $E/M_memorization && run M3    $V -u run_M2_M3.py --m3

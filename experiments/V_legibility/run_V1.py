@@ -66,12 +66,20 @@ def train_one(row, device="cuda", log=print):
 
 
 def main():
+    # --shard i n: this process trains plan()[i::n] (disjoint shards run as parallel units; AMENDMENTS V#1 2026-09-08)
+    ap = argparse.ArgumentParser(); ap.add_argument("--shard", type=int, nargs=2, default=(0, 1)); a = ap.parse_args()
     rows = plan(); out = os.path.join(R, "V1_models.csv")
     done = {r["name"] for r in csv.DictReader(open(out))} if os.path.exists(out) else set()
-    print(len(rows), "models planned,", len(done), "done", flush=True)
-    for row in rows:
+    mine = rows[a.shard[0]::a.shard[1]]
+    print(len(rows), "models planned,", len(done), "done;", len(mine), "in shard", a.shard, flush=True)
+    for row in mine:
         if row["name"] in done: continue
-        res = train_one(row); row.update(res)
+        hp = os.path.join(CK, row["name"], "history.json")
+        if os.path.exists(hp) and not row["untrained"]:      # trained before a crash, CSV row lost: rebuild the row from history
+            hist = json.load(open(hp)); res = dict(steps=STEPS, eval_acc=hist[-1]["eval_acc"], train_acc=hist[-1]["train_acc"], wall=float("nan"), n_ckpt=len(hist))
+        else:
+            res = train_one(row)
+        row.update(res)
         new = not os.path.exists(out)
         with open(out, "a", newline="") as f:
             w = csv.DictWriter(f, fieldnames=list(row))
