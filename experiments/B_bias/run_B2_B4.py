@@ -10,6 +10,8 @@ from whiteboxtopo.symmetry.group import inverse_on_units
 from whiteboxtopo.core.persistence import compute_diagrams
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results"); os.makedirs(R, exist_ok=True)
 BLOCKS = [1, 2, 3, 6]; dev = "cuda"
+B3_NS = (25, 50, 100, 200, 400, 800); B3_PROCS = 8; B3_NPERM = 100   # AMENDMENTS #1
+_B3 = {}
 
 
 def pooled(model, ids, mask, block):
@@ -37,13 +39,46 @@ def pooled(model, ids, mask, block):
 def unit(v): return v / (np.linalg.norm(v) + 1e-12)
 
 
+def _biastop(A, B):
+    from persim import wasserstein
+    mu, P20 = _B3["mu"], _B3["P20"]
+    da = compute_diagrams((A - mu) @ P20, maxdim=1, backend="ripser").dgms[1]; db = compute_diagrams((B - mu) @ P20, maxdim=1, backend="ripser").dgms[1]
+    return wasserstein(np.asarray(da).reshape(-1, 2), np.asarray(db).reshape(-1, 2))
+
+
+def _perm_test(A, B, rng, n_perm=B3_NPERM):
+    stat = _biastop(A, B); Z = np.vstack([A, B]); n = len(A); c = 0
+    for i in range(n_perm):
+        p = rng.permutation(len(Z)); c += _biastop(Z[p[:n]], Z[p[n:]]) >= stat
+    return (c + 1) / (n_perm + 1)
+
+
+def _b3_trial(args):
+    """One B3 trial -> 1 if the permutation test rejects at alpha = 0.05. variant: shift (pre-registered translation,
+    == null by translation invariance), stretch (factor 1+delta along g; AMENDMENTS #1), real_MF (male vs female clouds)."""
+    variant, n, delta, seed = args
+    import torch; torch.set_num_threads(1)
+    M, F, g, sd = _B3["M"], _B3["F"], _B3["g"], _B3["sd"]
+    rng = np.random.default_rng([seed, n, {"shift": 0, "stretch": 1, "real_MF": 2}[variant]])
+    if variant == "real_MF":
+        A = M[rng.choice(len(M), n, replace=False)]; B = F[rng.choice(len(F), n, replace=False)]
+    else:
+        idx = rng.choice(len(M), 2 * n, replace=False); A, B = M[idx[:n]], M[idx[n:]]
+        if variant == "shift": B = B + float(delta) * sd * g
+        else: B = B + float(delta) * ((B - B.mean(0)) @ g)[:, None] * g[None, :]
+    return int(_perm_test(A, B, rng) < 0.05)
+
+
 def main():
     from transformers import GPT2LMHeadModel, GPT2TokenizerFast
     tok = GPT2TokenizerFast.from_pretrained("gpt2"); tok.pad_token = tok.eos_token
     model = GPT2LMHeadModel.from_pretrained("gpt2").to(dev).eval()
     male, female = build_corpus(0, 100); m_ids, m_mask = encode(tok, male); f_ids, f_mask = encode(tok, female)
     rows, kill = [], {}
-    for block in BLOCKS:
+    b2_kill_p = os.path.join(R, "B2_kill.json")
+    b2_done = os.path.exists(b2_kill_p) and all(f"block{b}" in json.load(open(b2_kill_p)) for b in BLOCKS)
+    if b2_done: print("B2 complete on disk (B2_direction.csv, B2_kill.json) — skipped on resume", flush=True)
+    for block in ([] if b2_done else BLOCKS):
         def quantities(m):
             rm, mm, hm = pooled(m, m_ids, m_mask, block); rf, mf, hf = pooled(m, f_ids, f_mask, block)
             Q = {"g_resid": unit(rm.mean(0) - rf.mean(0)), "g_resid_norm": np.array([np.linalg.norm(rm.mean(0) - rf.mean(0))]),
@@ -91,10 +126,12 @@ def main():
                                      cos_mf_disjoint_halves_mean=float(np.mean(cos_mf)), pass_kill=bool(np.mean(np.abs(cos_rand)) < 0.5 and np.mean(cos_mf) > 0.9))
         print("kill", block, kill[f"block{block}"], flush=True)
         pd.DataFrame(rows).to_csv(os.path.join(R, "B2_direction.csv"), index=False); json.dump(kill, open(os.path.join(R, "B2_kill.json"), "w"), indent=1)
-    # ---- B3 power curve (block 6 residual clouds, PCA-20, BiasTop = W2 between H1 diagrams)
-    from persim import wasserstein
+    # ---- B3 power curve (block 6 residual clouds, PCA-20, BiasTop = W2 between H1 diagrams) — see AMENDMENTS #1:
+    # the pre-registered planted divergence (a translation of the cloud by δ·sd·g) is invisible to a Vietoris–Rips
+    # diagram by construction, so the shift cells measure the false-positive rate; a post-hoc *stretch* variant
+    # (factor 1+δ along g) is added as the calibrated power curve; trials are parallel and the CSV is resumable.
+    from multiprocessing import Pool
     rm, _, _ = pooled(model, m_ids, m_mask, 6); rf, _, _ = pooled(model, f_ids, f_mask, 6)
-    # larger pools: regenerate 800 sentences per group with other seeds
     M_all, F_all = [rm], [rf]
     for sd in range(1, 8):
         ma, fa = build_corpus(sd, 100); mi, mk = encode(tok, ma); fi, fk = encode(tok, fa)
@@ -102,32 +139,29 @@ def main():
     M_all, F_all = np.vstack(M_all), np.vstack(F_all)
     allX = np.vstack([M_all, F_all]); mu = allX.mean(0); U, s, Vt = np.linalg.svd(allX - mu, full_matrices=False); P20 = Vt[:20].T
     g = unit(M_all.mean(0) - F_all.mean(0)); sd_pool = float(allX.std(0).mean())
-    def biastop(A, B):
-        da = compute_diagrams((A - mu) @ P20, maxdim=1, backend="ripser").dgms[1]; db = compute_diagrams((B - mu) @ P20, maxdim=1, backend="ripser").dgms[1]
-        return wasserstein(np.asarray(da).reshape(-1, 2), np.asarray(db).reshape(-1, 2))
-    def perm_test(A, B, n_perm=200, rng=None):
-        stat = biastop(A, B); Z = np.vstack([A, B]); n = len(A); c = 0
-        for i in range(n_perm):
-            p = rng.permutation(len(Z)); c += biastop(Z[p[:n]], Z[p[n:]]) >= stat
-        return (c + 1) / (n_perm + 1)
-    prow = []
-    rng = np.random.default_rng(0)
-    for n in (25, 50, 100, 200, 400, 800):
-        for delta in (0.0, 0.25, 0.5, 1.0):
-            rej = 0; trials = 50 if n <= 200 else 20
-            for t in range(trials):
-                idx = rng.choice(len(M_all), 2 * n, replace=False); A, B = M_all[idx[:n]], M_all[idx[n:]] + delta * sd_pool * g
-                rej += perm_test(A, B, n_perm=100, rng=rng) < 0.05
-            prow.append(dict(n=n, delta=delta, trials=trials, power=rej / trials)); print(prow[-1], flush=True)
-            pd.DataFrame(prow).to_csv(os.path.join(R, "B3_power.csv"), index=False)
-    # real M/F split power
-    for n in (25, 50, 100, 200, 400, 800):
-        rej = 0; trials = 20
-        for t in range(trials):
-            A = M_all[rng.choice(len(M_all), n, replace=False)]; B = F_all[rng.choice(len(F_all), n, replace=False)]
-            rej += perm_test(A, B, n_perm=100, rng=rng) < 0.05
-        prow.append(dict(n=n, delta="real_MF", trials=trials, power=rej / trials)); print(prow[-1], flush=True)
-    pd.DataFrame(prow).to_csv(os.path.join(R, "B3_power.csv"), index=False)
+    _B3.update(M=M_all, F=F_all, mu=mu, P20=P20, g=g, sd=sd_pool)
+    b3_csv = os.path.join(R, "B3_power.csv")
+    prow = pd.read_csv(b3_csv).to_dict("records") if os.path.exists(b3_csv) else []
+    for r in prow:
+        if not isinstance(r.get("variant"), str): r["variant"] = "real_MF" if str(r["delta"]) == "real_MF" else "shift"
+    have = {(r["variant"], int(r["n"]), str(r["delta"])) for r in prow}
+    cells = [("shift", n, 0.0) for n in B3_NS] + [("stretch", n, d) for n in B3_NS for d in (0.25, 0.5, 1.0)] + [("real_MF", n, "real_MF") for n in B3_NS]
+    with Pool(B3_PROCS) as pool:
+        for variant, n, delta in cells:
+            if (variant, n, str(delta)) in have: continue
+            trials = 50 if n <= 200 else 20; t0 = time.time()
+            rej = sum(pool.map(_b3_trial, [(variant, n, delta, seed) for seed in range(trials)]))
+            prow.append(dict(n=n, delta=delta, trials=trials, power=rej / trials, variant=variant)); print(prow[-1], f"{time.time()-t0:.0f}s", flush=True)
+            pd.DataFrame(prow).to_csv(b3_csv, index=False)
+    # power-0.8 crossings (linear interpolation in n) and FPR summary
+    df = pd.DataFrame(prow); summ = []
+    for (variant, delta), grp in df.groupby(["variant", "delta"]):
+        grp = grp.sort_values("n"); ns, pw = grp.n.values.astype(float), grp.power.values.astype(float); n80 = np.nan
+        for a, b in zip(range(len(ns) - 1), range(1, len(ns))):
+            if pw[a] < 0.8 <= pw[b]: n80 = ns[a] + (0.8 - pw[a]) * (ns[b] - ns[a]) / (pw[b] - pw[a]); break
+        if pw[0] >= 0.8: n80 = ns[0]
+        summ.append(dict(variant=variant, delta=delta, n_for_power_0_8=n80, max_power=pw.max(), fpr_ok=bool(pw.max() <= 0.07) if variant == "shift" and str(delta) == "0.0" else ""))
+    pd.DataFrame(summ).to_csv(os.path.join(R, "B3_summary.csv"), index=False); print(summ, flush=True)
     # ---- B4 separability rank: participation ratio of the between/within discriminative spectrum
     def pr_spectrum(X, labels, k=50):
         Xc = X - X.mean(0); U, s, Vt = np.linalg.svd(Xc, full_matrices=False); Z = Xc @ Vt[:k].T

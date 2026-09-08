@@ -5,7 +5,10 @@ set -u
 V=/home/god/Whitebox/whitebox-v2/.venv/bin/python
 E=/home/god/Whitebox/whitebox-v2/experiments
 stage() { echo "STAGE $1 $(date '+%F %T')"; }
-run() { local name=$1; shift; stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; echo "STAGE END $name rc=$? $(date '+%F %T')"; }
+# a stage with logs/<name>.done is skipped (idempotent relaunch after power loss — AMENDMENTS #10)
+run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKIP $name (done marker)"; return 0; fi
+        stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; local rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
+        [ $rc -eq 0 ] && touch "$E/../logs/$name.done"; return $rc; }
 # gate on completeness on disk, not only on unit liveness (a failed+relaunched unit let the queue start early once — AMENDMENTS #9)
 while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c || ! $V $E/../wb_ready.py f2; do sleep 120; done
 stage "F2 enumeration finished"

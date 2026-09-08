@@ -6,7 +6,10 @@ TL=/home/god/Whitebox/v2-programme/.venv-tl/bin/python
 E=/home/god/Whitebox/whitebox-v2/experiments
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 stage() { echo "STAGE $1 $(date '+%F %T')"; }
-run() { local name=$1; shift; stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; echo "STAGE END $name rc=$? $(date '+%F %T')"; }
+# a stage with logs/<name>.done is skipped (idempotent relaunch after power loss — AMENDMENTS #10)
+run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKIP $name (done marker)"; return 0; fi
+        stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; local rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
+        [ $rc -eq 0 ] && touch "$E/../logs/$name.done"; return $rc; }
 # wait for F7
 while systemctl --user is-active --quiet wb-f7b || systemctl --user is-active --quiet wb-f2-gpu24c || ! $V $E/../wb_ready.py f7 || ! $V $E/../wb_ready.py f2gpu; do sleep 60; done
 stage "F7 and F2 d3w8 finished"

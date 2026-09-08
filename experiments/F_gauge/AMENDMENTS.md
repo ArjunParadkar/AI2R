@@ -114,3 +114,14 @@ recompute and is re-run from scratch after the enumeration finishes (added to `c
 `gpu_queue.sh` now also waits for the F2 d3w8 GPU cells before F11 (F11 OOM'd three times when sharing the GPU).
 No scientific content changes. Resumed counts at relaunch: F2 CPU 1261/2270 specimens, F2 d3w8 167/424,
 F7 56/60, F3 restarted from 0 (was 2488/3143).
+
+## #10 (2026-09-08, operational — second unplanned reboot)
+The machine went down again between 00:59 and 11:08 on 2026-09-08 (last write 00:59 = B3 cell n=400 δ=0.5; boot
+11:08; no shutdown record). State at the crash: F2 CPU 2692/2694 (the two d2w10 tail specimens
+`AND123_OR4_d2_w10_s13`, `NANDTREE_d2_w10_s21` were in flight), F2 d3w8 424/424, F7 60/60, F11 done, K1 done,
+K2–K6 done (rerun as `wb-k2k6` after the `mp_edge_hi` attribute bug, commit 71d223c), B2 done (kill FAILS at all
+four blocks: M/F disjoint-half cosine 0.65–0.79 < 0.9), B3 mid-run, cpu_queue still (correctly) waiting on F2.
+All CSVs parse. Queues now skip a stage whose `logs/<name>.done` marker exists (written on rc = 0; markers
+touched for F11, K1, K2_K6) so a third relaunch needs no editing. Relaunched 2026-09-08 ~11:30: `wb-f2-cpu2`
+(same command, 2 specimens left), `wb-cpu-queue`, `wb-gpu-queue`. B3 design amendment is in
+`experiments/B_bias/AMENDMENTS.md #1`. No scientific content of Block F changes.
