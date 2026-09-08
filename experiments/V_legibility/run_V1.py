@@ -111,8 +111,10 @@ def main():
         else:
             res = None
             for attempt in range(40):                          # shared GPU: wait for headroom, retry on OOM (V AMENDMENTS #1)
-                while gpu_free_mb() < 2500: time.sleep(60)
-                try: res = train_one(row); break
+                torch.cuda.empty_cache()                       # release our own cache first: three shards each waiting on the
+                while gpu_free_mb() < 2500:                    # others' cached memory deadlocked at 0 % util (V AMENDMENTS #2)
+                    torch.cuda.empty_cache(); time.sleep(60)
+                try: res = train_one(row); torch.cuda.empty_cache(); break
                 except torch.OutOfMemoryError:
                     torch.cuda.empty_cache(); print(f"  OOM on {row['name']} (attempt {attempt}), retrying", flush=True); time.sleep(120)
             if res is None: shutil.rmtree(os.path.join(CK, row["name"], ".lock"), ignore_errors=True); continue

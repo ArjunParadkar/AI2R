@@ -13,3 +13,10 @@ The 2026-09-07 runners cover V1–V5 only. `run_V6.py` (loss-invisible reorganis
 checkpoints, shuffle null per peak, gauge audit of SV on the cloud) and `analyze_V8_Z3.py` (Z3 β1 ΔBIC in the V4
 logistic; V8 held-out and within-architecture AUC gates for `legibility_score`) are written 2026-09-08 and run after
 V2/V3/V5/Z3 complete. Thresholds unchanged from SPEC.
+
+**#2 (2026-09-08 18:15, operational — V1 shard deadlock, no scientific change).** After the third power-loss
+relaunch the three V1 shards sat at 0 % GPU utilisation for 30 min at 34/130: each shard's headroom gate
+(`gpu_free_mb() < 2500`) waited on memory the *other* shards held in their own caching allocators after finishing a
+model (1.2–3.8 GB each), and nothing ever released it. Fix: `torch.cuda.empty_cache()` before and inside the wait
+and after each successful `train_one`. Shards restarted 18:13 (locks reclaimed by PID check); training resumed at
+98 % utilisation. Model results are unaffected (same training code, same seeds; interrupted models retrain from 0).
