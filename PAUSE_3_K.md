@@ -1,4 +1,4 @@
-# PAUSE 3 — Block K, dark matter (K1–K9) — 2026-09-08
+# PAUSE 3 — Block K, dark matter (K1–K9) — 2026-09-08 (FINAL for the laptop-runnable items; K7/K8 HPCC, Gemma not run)
 
 Written as a report, not a stop (standing instruction). Runs: `wb-gpu-queue` K1 (TL venv) + `wb-k2k6` (rerun after
 the `mp_edge_hi` attribute bug, commit 71d223c) on 2026-09-07; K6 (`run_K6.py`, written 2026-09-08 — the original
@@ -79,5 +79,36 @@ both" verdict and never says "dark matter"; K9 passes.
 nonlinear-residue statement (K5 negative and under-powered); anything about Gemma or frontier models; the phrase
 "topologically structured residual" in any direction the SPEC did not pre-register.
 
-## 7. K6 — certification (filled from the run)
-_pending — `wb-k6` in progress; table inserted when `results/K6_certification.csv` is complete._
+## 7. K6 — certification (filled from the run, 2026-09-08; `results/K6_certification.csv`, log `logs/K6.log`)
+
+Run: `run_K6.py --n 20` (TL venv, `wb-k6`), GPT-2 small layers 3/6/9, 2 000 OpenWebText tokens per layer, n = 20
+renamings per kind (head permutations, within-head Q/K and V/O basis changes, MLP-unit permutations, LN-compatible
+rescalings; combined = all four). Wall ≈ 50 min per layer, PCA and statistics on CPU (the GPU was shared with the V1
+shards; K AMENDMENT: `Es/Hs` moved to CPU, batch 8 — no numerical change). Verdict rule is the S3 `audit_quantities`
+one: invariant if median CV < 1e-3 under every kind, artifact if some kind moves it, "→ invariant after gauge
+alignment" if the aligned recomputation is invariant.
+
+| space | statistic | perm | scale | rot | combined | verdict |
+|---|---|---|---|---|---|---|
+| resid (anchor) | n_outliers, structured_fraction, top-20 eigs, tc_ratio, b1 | ≤ 4e-8 (b1: 0 / 0 / 0.004 at L9) | ≤ 5e-8 | ≤ 3e-7 | ≤ 3e-7 | **invariant** (exact, all 3 layers) |
+| MLP-hidden PCA-256 residual | n_outliers, structured_fraction, top-20 eigs, tc_ratio, b1 | ≤ 2e-8 | ≤ 4e-9 | ≤ 8e-8 | ≤ 8e-8 | **invariant** (all 3 layers) |
+| MLP-hidden PCA-256 residual | per-unit residual variance (unit-indexed) | **0.21–0.24** | 6e-8 | 5e-7 | 0.21–0.24 | **artifact → invariant after gauge alignment** (aligned CV ≤ 4e-7) |
+| MLP-hidden PCA-256 residual | per-unit residual variance, sorted | 6e-8 | 6e-8 | 5e-7 | 4e-7 | invariant |
+| MLP-hidden PCA-256 residual | top-20 units by residual variance (unit-indexed) | **0.22–0.23** | 0 | 0 | 0.18–0.26 | **artifact → invariant after gauge alignment** (aligned CV = 0) |
+
+(Values are the median CV across the 20 renamings; the range is across layers 3/6/9 where they differ.)
+
+**Threshold (SPEC K6: invariance class reported; residual-stream anchor exactly invariant) — MET.** The anchor is
+exact to float precision (CV ≤ 3e-7, b1 differences 0 except one 0.4 % perm/rot wobble at L9 that vanishes under
+the combined renaming — a persistence tie, not a structural change). The non-vacuous half: in the MLP-hidden space,
+where unit permutations *do* act, every *set-level* K2/K3 statistic (outlier count, structured fraction, spectrum,
+TC ratio, b1) is exactly invariant, and the only artifacts are the two *unit-indexed* readouts (per-unit residual
+variance and the top-20-unit list), which are exactly the kind of quantity a permutation must move (CV ≈ 0.2 ≈ the
+CV of a shuffled 3 072-vector) and which the aligner restores exactly. So the invariance class of the K2/K3 dark-matter
+statistics is: **invariant under the full GPT-2 gauge group, with unit-indexed decompositions covariant (fixable by
+alignment)**. Nothing in Block K's verdicts (K2 pass, K3 fail-by-sign, K4 partial, K5 fail) depends on a
+coordinate choice; the K3 sign result in particular is not a renaming artifact.
+
+What this does *not* show: invariance is a sanity property, not evidence of structure. The K6 table certifies that
+the K2–K5 numbers are properties of the model's function, not of its parameterisation; the substantive verdicts
+stay as in §§2–4 (second-order structure only; topology below its own shuffle). Gemma-2-2B remains **not run**.
