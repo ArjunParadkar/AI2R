@@ -10,7 +10,11 @@ run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKI
         stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; local rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
         [ $rc -eq 0 ] && touch "$E/../logs/$name.done"; return $rc; }
 # gate on completeness on disk, not only on unit liveness (a failed+relaunched unit let the queue start early once — AMENDMENTS #9)
-while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c || ! $V $E/../wb_ready.py f2; do sleep 120; done
+# AMENDMENTS #11: the F2 tail unit runs under an 8 h wall budget (RuntimeMaxSec); if it ends with specimens still
+# missing they are recorded in results/enumeration_excluded.csv (reason = wall budget) and the queue proceeds.
+while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c; do sleep 120; done
+if ! $V $E/../wb_ready.py f2; then $V $E/../wb_ready.py f2 --exclude-remaining "wall budget 8h exceeded after 3 power-loss restarts (AMENDMENTS #11)"; fi
+while ! $V $E/../wb_ready.py f2; do sleep 120; done
 stage "F2 enumeration finished"
 cd $E/F_gauge && run F3        $V -u run_F3.py
 cd $E/F_gauge && run F4a_kills $V -u run_F4a.py --kills

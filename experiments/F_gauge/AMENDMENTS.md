@@ -125,3 +125,16 @@ All CSVs parse. Queues now skip a stage whose `logs/<name>.done` marker exists (
 touched for F11, K1, K2_K6) so a third relaunch needs no editing. Relaunched 2026-09-08 ~11:30: `wb-f2-cpu2`
 (same command, 2 specimens left), `wb-cpu-queue`, `wb-gpu-queue`. B3 design amendment is in
 `experiments/B_bias/AMENDMENTS.md #1`. No scientific content of Block F changes.
+
+## #11 (2026-09-08, operational — THIRD power loss, 16:30; wall budget for the F2 tail)
+Boot 16:30 on 2026-09-08 (last V1 log write ~15:12; no shutdown record). State at the crash: F2 CPU still 2692/2694 —
+the same two d2w10 tail specimens (`AND123_OR4_d2_w10_s13`, `NANDTREE_d2_w10_s21`) were in flight for the third
+time and had never been given more than ~5 h continuous (their cell-mates took up to 3 477 s; `run_F2.py` has no
+per-specimen budget). K6 done (all layers, `K6_certification.csv`), B2 rerun + B3/B4 done, V1 32/130 with
+PID-checked locks (stale locks are reclaimed automatically), F3 not yet started (cpu_queue was correctly waiting).
+Relaunched 17:09 (V1 shards, V6 waiter, gpu_queue) and 17:15 (F2 tail, cpu_queue). Change: the F2 tail unit now
+runs under `RuntimeMaxSec=8h`; if it ends with specimens still missing, `wb_ready.py f2 --exclude-remaining <reason>`
+records them in `results/enumeration_excluded.csv` and the CPU queue proceeds (F3 → F4 → aggregate → F8–F10 → D1 →
+M1 → Z4/Z5). Aggregates must report counts over 2 692 (or 2 694) specimens and name the excluded two; no verdict in
+Block F depends on these two cells (both functions have ≥ 20 other converged specimens at d2w10). Not a threshold
+change.
