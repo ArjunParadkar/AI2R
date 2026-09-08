@@ -65,6 +65,10 @@ def train_one(row, device="cuda", log=print):
     return dict(steps=step, eval_acc=hist[-1]["eval_acc"], train_acc=hist[-1]["train_acc"], wall=time.time() - t0, n_ckpt=len(hist))
 
 
+# observed peak allocator use on the 5070 (8 GB): mlp ≤ 0.4 GB, tf2 ≈ 1.2 GB, tf3 ≈ 1.8 GB, tf4 ≈ 4.3 GB; OOM retry covers misses
+NEED_MB = {"mlp": 700, "tf2": 1500, "tf3": 2200, "tf4": 3000}
+
+
 def gpu_free_mb():
     try: return int(subprocess.check_output(["nvidia-smi", "--query-gpu=memory.free", "--format=csv,noheader,nounits"]).decode().split()[0])
     except Exception: return 10 ** 9
@@ -112,8 +116,9 @@ def main():
             res = None
             for attempt in range(40):                          # shared GPU: wait for headroom, retry on OOM (V AMENDMENTS #1)
                 torch.cuda.empty_cache()                       # release our own cache first: three shards each waiting on the
-                while gpu_free_mb() < 2500:                    # others' cached memory deadlocked at 0 % util (V AMENDMENTS #2)
-                    torch.cuda.empty_cache(); time.sleep(60)
+                need = NEED_MB.get(row["arch"][:3], 2500)      # others' cached memory deadlocked at 0 % util (V AMENDMENTS #2);
+                while gpu_free_mb() < need:                    # headroom sized per architecture so small MLPs do not queue
+                    torch.cuda.empty_cache(); time.sleep(60)   # behind a gate meant for tf4 (27 min idle observed)
                 try: res = train_one(row); torch.cuda.empty_cache(); break
                 except torch.OutOfMemoryError:
                     torch.cuda.empty_cache(); print(f"  OOM on {row['name']} (attempt {attempt}), retrying", flush=True); time.sleep(120)

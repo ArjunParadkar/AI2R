@@ -20,3 +20,6 @@ relaunch the three V1 shards sat at 0 % GPU utilisation for 30 min at 34/130: ea
 model (1.2–3.8 GB each), and nothing ever released it. Fix: `torch.cuda.empty_cache()` before and inside the wait
 and after each successful `train_one`. Shards restarted 18:13 (locks reclaimed by PID check); training resumed at
 98 % utilisation. Model results are unaffected (same training code, same seeds; interrupted models retrain from 0).
+Addendum 18:55: the fixed 2 500 MB headroom gate also serialised the shards — a shard with a small MLP waited 27 min
+while two transformers trained. Headroom is now per architecture (`NEED_MB`: mlp 700, tf2 1500, tf3 2200, tf4 3000,
+from observed peaks); OOM retry unchanged. Shards restarted 18:55.
