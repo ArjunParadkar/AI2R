@@ -43,3 +43,10 @@ degenerate pool, see #1) and are not used for the summary. B2 (2026-09-07) used 
 corpus; its direction is a frequency-weighted mean over ≤ 60 distinct sentences per group — left as run,
 flagged in the PAUSE 4 report; the kill outcome (disjoint-halves cosine 0.65–0.79) is if anything
 flattered by the duplication and still fails.
+
+## #3 (2026-09-08, operational — B4 toxicity column)
+The v1 toxicity file is the Davidson et al. hate-speech CSV (`count, hate_speech, offensive_language, neither, class,
+tweet`); the runner looked for a column containing "tox" and crashed (`IndexError`), so the 2026-09-08 B4 row for
+toxicity read "data error". Score = (hate_speech + offensive_language) / count, quartiles by `qcut` (duplicates
+dropped); if that gives fewer than 3 groups the 3 annotator classes are used. B4 rerun standalone (`wb-b4`); the gender
+and COMPAS rows are unchanged by this (same code path, deterministic).

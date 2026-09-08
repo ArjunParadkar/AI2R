@@ -185,9 +185,13 @@ def main():
         b4.append(dict(attribute="COMPAS_race", groups=0, participation_ratio=np.nan, v1_erasure=f"data error: {e!r}"[:120]))
     try:
         toxp = os.path.expanduser("~/Whitebox/v1/experiments/data/toxicity.csv"); tx = pd.read_csv(toxp).head(1200)
-        col = [c for c in tx.columns if "tox" in c.lower()][0]; tcol = [c for c in tx.columns if tx[c].dtype == object][0]
-        ids, mk = encode(tok, tx[tcol].astype(str).tolist(), 48); X = np.vstack([pooled(model, ids[i:i + 64], mk[i:i + 64], 6)[0] for i in range(0, len(ids), 64)])
-        lab = pd.qcut(tx[col], 4, labels=False, duplicates="drop").values
+        # Davidson et al. hate-speech CSV (count, hate_speech, offensive_language, neither, class, tweet): toxicity score =
+        # fraction of annotators voting hate/offensive; quartiles collapse on this discrete score, so the 3 annotator
+        # classes are used when qcut yields < 3 groups (B AMENDMENTS #3)
+        score = (tx["hate_speech"] + tx["offensive_language"]) / tx["count"]
+        ids, mk = encode(tok, tx["tweet"].astype(str).tolist(), 48); X = np.vstack([pooled(model, ids[i:i + 64], mk[i:i + 64], 6)[0] for i in range(0, len(ids), 64)])
+        lab = pd.qcut(score, 4, labels=False, duplicates="drop").values
+        if len(np.unique(lab)) < 3: lab = tx["class"].values
         b4.append(dict(attribute="toxicity", groups=int(len(np.unique(lab))), participation_ratio=pr_spectrum(X, lab), v1_erasure="failed"))
     except Exception as e:
         b4.append(dict(attribute="toxicity", groups=0, participation_ratio=np.nan, v1_erasure=f"data error: {e!r}"[:120]))

@@ -12,9 +12,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 from whiteboxtopo import symmetry as S
 from whiteboxtopo.invariants import audit_quantities
 from whiteboxtopo.symmetry.group import inverse_on_units
-from whiteboxtopo.darkmatter import mp_outliers, tc_ratio_bootstrap
+from whiteboxtopo.darkmatter import mp_outliers
+from whiteboxtopo.darkmatter.topo import tc_features
 HERE = os.path.dirname(os.path.abspath(__file__)); CACHE = os.path.join(HERE, "cache"); R = os.path.join(HERE, "results")
-LAYERS = [3, 6, 9]; BATCH = 16; K_PCA = 256; dev = "cuda"
+LAYERS = [3, 6, 9]; BATCH = 8; K_PCA = 256; dev = "cuda"
 
 
 def main():
@@ -38,19 +39,19 @@ def main():
                     out = m(T[b:b + BATCH], output_hidden_states=True)
                     x = out.hidden_states[L]; x = x - x.mean(-1, keepdim=True)     # TL center_writing_weights convention (K1)
                     e = x - sae.decode(sae.encode(x))
-                    Es.append(e[:, 1:].reshape(-1, x.shape[-1]).float()); Hs.append(cap[-1][:, 1:].reshape(-1, cap[-1].shape[-1]).float()); cap.clear()
-            hk.remove()
-            E = torch.cat(Es); Hm = torch.cat(Hs)
-            Hc = Hm - Hm.mean(0); C = Hc.T @ Hc / len(Hc); ev, V = torch.linalg.eigh(C); Vk = V[:, -K_PCA:]
-            Em = Hc - (Hc @ Vk) @ Vk.T                                            # PCA-256 residual in MLP-hidden space
-            E_np = E.cpu().numpy().astype(np.float64); Em_np = Em.cpu().numpy().astype(np.float64)
-            del Es, Hs, Hm, Hc, C, E, Em; torch.cuda.empty_cache()
+                    Es.append(e[:, 1:].reshape(-1, x.shape[-1]).float().cpu()); Hs.append(cap[-1][:, 1:].reshape(-1, cap[-1].shape[-1]).float().cpu()); cap.clear()
+            hk.remove(); torch.cuda.empty_cache()
+            E_np = torch.cat(Es).numpy().astype(np.float64); Hm = torch.cat(Hs).numpy().astype(np.float64)   # CPU: the GPU is shared (OOM 2026-09-08)
+            Hc = Hm - Hm.mean(0); C = Hc.T @ Hc / len(Hc); ev, V = np.linalg.eigh(C); Vk = V[:, -K_PCA:]
+            Em_np = Hc - (Hc @ Vk) @ Vk.T                                         # PCA-256 residual in MLP-hidden space
+            del Es, Hs, Hm, Hc, C
             Q = {}
+            sub = np.random.default_rng(0).choice(len(E_np), min(1000, len(E_np)), replace=False)   # fixed subsample: the same tokens under every renaming
             for name, A in (("resid", E_np), ("mlp", Em_np)):
                 mp = mp_outliers(A, form="correlation")
                 Q[f"{name}_n_outliers"] = np.array([mp.n_outliers], float); Q[f"{name}_structured_fraction"] = np.array([mp.structured_fraction])
-                Q[f"{name}_top20_eigs"] = np.sort(np.linalg.eigvalsh(np.corrcoef(A.T))[::-1][:20])
-                tr = tc_ratio_bootstrap(A, n_points=1000, n_boot=2, n_components=20, seed=0); tr = tr if isinstance(tr, dict) else vars(tr)
+                Q[f"{name}_top20_eigs"] = np.sort(np.sort(mp.eigenvalues)[::-1][:20])
+                tr = tc_features(A[sub], n_components=20, n_shuffle=3, seed=0)
                 Q[f"{name}_tc_ratio"] = np.array([tr["tc_ratio"]]); Q[f"{name}_b1"] = np.array([tr["b1"]], float)
             var_u = Em_np.var(0)
             Q["mlp_per_unit_resid_var"] = var_u

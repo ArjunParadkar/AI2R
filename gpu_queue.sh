@@ -20,8 +20,8 @@ cd $E/K_darkmatter && run K2_K6   $V -u run_K2_K6.py
 while systemctl --user is-active --quiet wb-b2b4; do sleep 60; done
 cd $E/B_bias       && run B2_B4   $V -u run_B2_B4.py
 # V1 in three disjoint shards: shard 0 here, shards 1-2 as units wb-v1-s1 / wb-v1-s2 (launched with the queue); wait for all
-cd $E/V_legibility && run V1      $V -u run_V1.py --shard 0 3
-while systemctl --user is-active --quiet wb-v1-s1 || systemctl --user is-active --quiet wb-v1-s2 || ! $V $E/../wb_ready.py v1; do sleep 120; done
+# (all three shards run as units wb-v1-s0/1/2 so they start before B2_B4 finishes; the queue only waits)
+while systemctl --user is-active --quiet wb-v1-s0 || systemctl --user is-active --quiet wb-v1-s1 || systemctl --user is-active --quiet wb-v1-s2 || ! $V $E/../wb_ready.py v1; do sleep 120; done
 stage "V1 all shards finished"
 cd $E/V_legibility && run V2_V3   $V -u run_V2_V3.py
 cd $E/M_memorization && run M2    $V -u run_M2_M3.py
