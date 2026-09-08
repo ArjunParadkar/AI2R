@@ -25,3 +25,21 @@ null). B2 is skipped on resume when `B2_kill.json` holds all four blocks. B3 cel
 Consequence for the framing: the v1 "BiasTop detects bias" claim cannot, even in principle, be about a mean
 shift between groups; whatever it detects is a change of *shape* of the residual cloud. Stated first in the
 PAUSE 4 report.
+
+## #2 (2026-09-08, design — the v1 probe corpus has only 60 distinct sentences per group)
+`build_corpus` (copied from v1) samples with replacement from 5 frames × 12 occupations, so *every* pool it
+produces, at any n, is a multiset supported on 60 distinct sentences per group; the residual clouds behind
+B3 (and v1's BiasTop) were therefore 60 distinct points with multiplicities, and a Rips diagram of a
+multiset is the diagram of its support (duplicates only add zero-length bars). The pre-registered n grid
+up to 800 per group was never attainable, and the resumed run failed at n = 800 (`Cannot take a larger
+sample than population`) because 2n = 1600 exceeded even the duplicated pool of 800.
+
+Post-hoc fix (not pre-registered): `blib.EXTRA_FRAMES` adds 35 neutral frames with the same {occ}/{pronoun}
+slots → `build_corpus_unique` = all 40 × 12 = 480 distinct sentences per group, no duplicates. B3 pools are
+now these 480 + 480 points; synthetic cells (shift at δ = 0, stretch) use n ∈ {25, 50, 100, 200} (2n ≤ 480),
+the real M/F reference uses n ∈ {25, 50, 100, 200, 400}. n = 800 is dropped as infeasible. The 19 rows
+computed on 2026-09-07 stay in `B3_power.csv` as `variant = shift_v1corpus` (they are FPR estimates on the
+degenerate pool, see #1) and are not used for the summary. B2 (2026-09-07) used the duplicated 100 + 100
+corpus; its direction is a frequency-weighted mean over ≤ 60 distinct sentences per group — left as run,
+flagged in the PAUSE 4 report; the kill outcome (disjoint-halves cosine 0.65–0.79) is if anything
+flattered by the duplication and still fails.

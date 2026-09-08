@@ -3,14 +3,14 @@ GPT-2 small pretrained (HF, fp32). Writes results/B2_direction.csv, B2_kill.json
 import os, sys, json, time
 import numpy as np, torch, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blib import build_corpus, encode, MALE_OCC, FEMALE_OCC
+from blib import build_corpus, build_corpus_unique, encode, MALE_OCC, FEMALE_OCC
 from whiteboxtopo import symmetry as S
 from whiteboxtopo.invariants import audit_quantities
 from whiteboxtopo.symmetry.group import inverse_on_units
 from whiteboxtopo.core.persistence import compute_diagrams
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results"); os.makedirs(R, exist_ok=True)
 BLOCKS = [1, 2, 3, 6]; dev = "cuda"
-B3_NS = (25, 50, 100, 200, 400, 800); B3_PROCS = 8; B3_NPERM = 100   # AMENDMENTS #1
+B3_NS = (25, 50, 100, 200); B3_NS_REAL = (25, 50, 100, 200, 400); B3_PROCS = 8; B3_NPERM = 100   # AMENDMENTS #1, #2
 _B3 = {}
 
 
@@ -131,21 +131,25 @@ def main():
     # diagram by construction, so the shift cells measure the false-positive rate; a post-hoc *stretch* variant
     # (factor 1+δ along g) is added as the calibrated power curve; trials are parallel and the CSV is resumable.
     from multiprocessing import Pool
-    rm, _, _ = pooled(model, m_ids, m_mask, 6); rf, _, _ = pooled(model, f_ids, f_mask, 6)
-    M_all, F_all = [rm], [rf]
-    for sd in range(1, 8):
-        ma, fa = build_corpus(sd, 100); mi, mk = encode(tok, ma); fi, fk = encode(tok, fa)
-        M_all.append(pooled(model, mi, mk, 6)[0]); F_all.append(pooled(model, fi, fk, 6)[0])
-    M_all, F_all = np.vstack(M_all), np.vstack(F_all)
+    # AMENDMENTS #2: unique-sentence pools (480 per group from 40 frames x 12 occupations), encoded in batches
+    mu_s, fu_s = build_corpus_unique(0)
+    def pool_all(sents):
+        out = []
+        for i in range(0, len(sents), 120):
+            ids, mk = encode(tok, sents[i:i + 120]); out.append(pooled(model, ids, mk, 6)[0])
+        return np.vstack(out)
+    M_all, F_all = pool_all(mu_s), pool_all(fu_s)
+    print(f"B3 pools: {len(M_all)} unique male, {len(F_all)} unique female sentences", flush=True)
+    assert 2 * max(B3_NS) <= len(M_all) and max(B3_NS_REAL) <= min(len(M_all), len(F_all))
     allX = np.vstack([M_all, F_all]); mu = allX.mean(0); U, s, Vt = np.linalg.svd(allX - mu, full_matrices=False); P20 = Vt[:20].T
     g = unit(M_all.mean(0) - F_all.mean(0)); sd_pool = float(allX.std(0).mean())
     _B3.update(M=M_all, F=F_all, mu=mu, P20=P20, g=g, sd=sd_pool)
     b3_csv = os.path.join(R, "B3_power.csv")
     prow = pd.read_csv(b3_csv).to_dict("records") if os.path.exists(b3_csv) else []
-    for r in prow:
-        if not isinstance(r.get("variant"), str): r["variant"] = "real_MF" if str(r["delta"]) == "real_MF" else "shift"
+    for r in prow:   # rows from the 2026-09-07 run: duplicated v1 corpus (60 distinct sentences), translation variant
+        if not isinstance(r.get("variant"), str): r["variant"] = "shift_v1corpus"
     have = {(r["variant"], int(r["n"]), str(r["delta"])) for r in prow}
-    cells = [("shift", n, 0.0) for n in B3_NS] + [("stretch", n, d) for n in B3_NS for d in (0.25, 0.5, 1.0)] + [("real_MF", n, "real_MF") for n in B3_NS]
+    cells = [("shift", n, 0.0) for n in B3_NS] + [("stretch", n, d) for n in B3_NS for d in (0.25, 0.5, 1.0)] + [("real_MF", n, "real_MF") for n in B3_NS_REAL]
     with Pool(B3_PROCS) as pool:
         for variant, n, delta in cells:
             if (variant, n, str(delta)) in have: continue
