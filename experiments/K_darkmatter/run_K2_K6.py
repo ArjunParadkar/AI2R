@@ -14,7 +14,7 @@ def k2(L, E, seq):
     r = {}
     for form in ("correlation", "covariance"):
         m = mp_outliers(E, form=form); r[f"n_outliers_{form}"] = m.n_outliers; r[f"structured_fraction_{form}"] = m.structured_fraction
-        r[f"tw_threshold_{form}"] = m.tw_threshold; r[f"bulk_edge_{form}"] = m.mp_edge_hi
+        r[f"tw_threshold_{form}"] = m.tw_threshold; r[f"bulk_edge_{form}"] = m.mp_edge
     bb = block_bootstrap_outliers(E, seq, B=50, seed=L); r.update({f"boot_{k}": v for k, v in bb.items()} if isinstance(bb, dict) else {"boot": str(bb)})
     r["kill_gaussian_matched_marginals"] = mp_outliers(gaussian_matched_diag(E, seed=L)).n_outliers
     r["kill_feature_shuffled"] = mp_outliers(nulls.feature_shuffle(E, seed=L)).n_outliers
