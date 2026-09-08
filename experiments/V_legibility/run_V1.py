@@ -72,8 +72,13 @@ def main():
     done = {r["name"] for r in csv.DictReader(open(out))} if os.path.exists(out) else set()
     mine = rows[a.shard[0]::a.shard[1]]
     print(len(rows), "models planned,", len(done), "done;", len(mine), "in shard", a.shard, flush=True)
-    for row in mine:
+    # own shard first, then steal any model no process has locked (atomic mkdir lock per model; a shard that starts
+    # late or dies does not stall the ensemble)
+    for row in mine + [r for r in rows if r not in mine]:
         if row["name"] in done: continue
+        lock = os.path.join(CK, row["name"], ".lock")
+        try: os.makedirs(lock, exist_ok=False)
+        except FileExistsError: continue
         hp = os.path.join(CK, row["name"], "history.json")
         if os.path.exists(hp) and not row["untrained"]:      # trained before a crash, CSV row lost: rebuild the row from history
             hist = json.load(open(hp)); res = dict(steps=STEPS, eval_acc=hist[-1]["eval_acc"], train_acc=hist[-1]["train_acc"], wall=float("nan"), n_ckpt=len(hist))

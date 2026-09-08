@@ -84,28 +84,32 @@ def main():
             Q = {"g_resid": unit(rm.mean(0) - rf.mean(0)), "g_resid_norm": np.array([np.linalg.norm(rm.mean(0) - rf.mean(0))]),
                  "g_mlp": unit(mm.mean(0) - mf.mean(0)), "g_mlp_norm": np.array([np.linalg.norm(mm.mean(0) - mf.mean(0))]),
                  "g_heads": (hm.mean(0) - hf.mean(0)) / (np.linalg.norm(hm.mean(0) - hf.mean(0)) + 1e-12),
+                 "g_heads_raw": hm.mean(0) - hf.mean(0),   # unnormalised: exact after alignment even for GL (non-orthogonal) R
                  "g_heads_per_head_norm": np.linalg.norm(hm.mean(0) - hf.mean(0), axis=1)}
             return Q
         key = ("mlp", block)
         def head_align(g, v):
+            # apply(): rotation per ORIGINAL head first, then head permutation (new head j = old head p[j]).
+            # Undo in reverse order: un-permute, then z = z' R_h^{-1} per original head (B AMENDMENTS #4: the first
+            # run undid the rotation before the permutation, which is wrong for the combined kind).
             p = g.perms.get(("head", block)); rots = g.rots.get(("rot", block))
             out = v.copy()
-            if rots is not None:   # z' = z R per head (V rotated by R) -> undo: z = z' R^{-1}
-                for h, Rm in enumerate(rots): out[h] = out[h] @ np.linalg.inv(np.asarray(Rm))
             if p is not None:
                 inv = np.empty_like(p); inv[p] = np.arange(len(p)); out = out[inv]
+            if rots is not None:
+                for h, Rm in enumerate(rots): out[h] = out[h] @ np.linalg.inv(np.asarray(Rm))
             return out
         def head_norm_align(g, v):
             p = g.perms.get(("head", block))
             if p is None: return v
             inv = np.empty_like(p); inv[p] = np.arange(len(p)); return v[inv]
-        aligners = {"g_mlp": lambda g, v, k=key: inverse_on_units(g, k, v, axis=0), "g_heads": head_align, "g_heads_per_head_norm": head_norm_align}
+        aligners = {"g_mlp": lambda g, v, k=key: inverse_on_units(g, k, v, axis=0), "g_heads": head_align, "g_heads_raw": head_align, "g_heads_per_head_norm": head_norm_align}
         t0 = time.time()
         res = audit_quantities(quantities, model, n=20, kinds=("perm", "scale", "rot", "combined"), aligners=aligners, orthogonal=False)
         for q, r in res.items():
             row = r.row(); row.update(block=block)
             # direction stability: cosine of each sample with the base, raw and gauge-aligned
-            if q in ("g_resid", "g_mlp", "g_heads"):
+            if q in ("g_resid", "g_mlp", "g_heads", "g_heads_raw"):
                 for kind, Vs in r.samples.items():
                     b = Vs[0].ravel(); row[f"cos_raw_{kind}"] = float(np.mean([np.dot(v.ravel(), b) / (np.linalg.norm(v) * np.linalg.norm(b)) for v in Vs[1:]]))
                 if q in aligners:

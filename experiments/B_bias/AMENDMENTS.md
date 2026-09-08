@@ -50,3 +50,12 @@ tweet`); the runner looked for a column containing "tox" and crashed (`IndexErro
 toxicity read "data error". Score = (hate_speech + offensive_language) / count, quartiles by `qcut` (duplicates
 dropped); if that gives fewer than 3 groups the 3 annotator classes are used. B4 rerun standalone (`wb-b4`); the gender
 and COMPAS rows are unchanged by this (same code path, deterministic).
+
+## #4 (2026-09-08, pipeline — B2 head aligner order)
+`symmetry.gpt2.apply` rotates each head in its original index and then permutes heads; the B2 exact aligner for the
+per-head bias direction undid the rotation first, so under *combined* renamings it applied R_h^{-1} to the wrong head
+(aligned CV 5.3–6.0 on `g_heads`, while perm-only and rot-only aligned to 2e-6 and 0.05). The 0.05 residual under
+GL (non-orthogonal) rotations is the global normalisation of `g_heads` (a GL change of basis changes the norm);
+`g_heads_raw` (unnormalised) is added and is expected exact after alignment. `g_heads_per_head_norm` is not a GL
+invariant (only an O(d_head) invariant) — its rot CV ≈ 0.08 is correct behaviour, not a bug. B2 rerun 2026-09-08
+(`wb-b2`; B3 cells skipped from the CSV, B4 recomputed deterministically). The kill verdict does not depend on the aligner.
