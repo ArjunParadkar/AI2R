@@ -25,8 +25,10 @@ def main():
     model = GPT2LMHeadModel.from_pretrained("gpt2").to(dev).eval()
     toks = np.load(os.path.join(CACHE, "tokens.npy")); T = torch.as_tensor(toks, device=dev)
     if a.smoke: T = T[:32]
-    rows = []
+    out = os.path.join(R, "K6_certification.csv")
+    rows = pd.read_csv(out).to_dict("records") if os.path.exists(out) and not a.smoke else []   # resume per layer
     for L in LAYERS:
+        if any(r.get("layer") == L for r in rows): print("skip layer", L, flush=True); continue
         t0 = time.time(); hook = f"blocks.{L}.hook_resid_pre"
         sae = SAE.from_pretrained("gpt2-small-res-jb", hook, device=dev); sae = sae[0] if isinstance(sae, tuple) else sae; sae.eval()
 

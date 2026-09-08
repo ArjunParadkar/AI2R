@@ -1,6 +1,6 @@
 """V1 — train the legibility ensemble (SPEC §V1) with checkpoints every 5 % of the step budget.
 Resumable (skips models whose final checkpoint exists). Writes results/V1_models.csv, ckpt/<model>/step_*.pt."""
-import os, sys, csv, json, time, itertools, argparse
+import os, sys, csv, json, time, itertools, argparse, shutil, subprocess
 import numpy as np, torch, torch.nn.functional as F
 from whiteboxtopo.legibility.tasks import Task, accuracy
 from whiteboxtopo.legibility.e4models import MLP, TinyTF
@@ -65,6 +65,35 @@ def train_one(row, device="cuda", log=print):
     return dict(steps=step, eval_acc=hist[-1]["eval_acc"], train_acc=hist[-1]["train_acc"], wall=time.time() - t0, n_ckpt=len(hist))
 
 
+def gpu_free_mb():
+    try: return int(subprocess.check_output(["nvidia-smi", "--query-gpu=memory.free", "--format=csv,noheader,nounits"]).decode().split()[0])
+    except Exception: return 10 ** 9
+
+
+def _alive(pid):
+    try: os.kill(pid, 0); return True
+    except ProcessLookupError: return False
+    except PermissionError: return True
+
+
+def acquire(name):
+    """Per-model lock (atomic mkdir) holding the owner's PID; a lock whose owner is dead (or a PID-less lock older than
+    2 min from the pre-PID code) is stale and taken over."""
+    d = os.path.join(CK, name); os.makedirs(d, exist_ok=True); lock = os.path.join(d, ".lock")
+    for _ in range(2):
+        try:
+            os.makedirs(lock, exist_ok=False); open(os.path.join(lock, "pid"), "w").write(str(os.getpid())); return True
+        except FileExistsError:
+            pf = os.path.join(lock, "pid")
+            if os.path.exists(pf):
+                try: pid = int(open(pf).read())
+                except ValueError: return False
+                if _alive(pid): return False
+            elif time.time() - os.path.getmtime(lock) < 120: return False
+            shutil.rmtree(lock, ignore_errors=True)
+    return False
+
+
 def main():
     # --shard i n: this process trains plan()[i::n] (disjoint shards run as parallel units; AMENDMENTS V#1 2026-09-08)
     ap = argparse.ArgumentParser(); ap.add_argument("--shard", type=int, nargs=2, default=(0, 1)); a = ap.parse_args()
@@ -75,15 +104,18 @@ def main():
     # own shard first, then steal any model no process has locked (atomic mkdir lock per model; a shard that starts
     # late or dies does not stall the ensemble)
     for row in mine + [r for r in rows if r not in mine]:
-        if row["name"] in done: continue
-        lock = os.path.join(CK, row["name"], ".lock")
-        try: os.makedirs(lock, exist_ok=False)
-        except FileExistsError: continue
+        if row["name"] in done or not acquire(row["name"]): continue
         hp = os.path.join(CK, row["name"], "history.json")
         if os.path.exists(hp) and not row["untrained"]:      # trained before a crash, CSV row lost: rebuild the row from history
             hist = json.load(open(hp)); res = dict(steps=STEPS, eval_acc=hist[-1]["eval_acc"], train_acc=hist[-1]["train_acc"], wall=float("nan"), n_ckpt=len(hist))
         else:
-            res = train_one(row)
+            res = None
+            for attempt in range(40):                          # shared GPU: wait for headroom, retry on OOM (V AMENDMENTS #1)
+                while gpu_free_mb() < 2500: time.sleep(60)
+                try: res = train_one(row); break
+                except torch.OutOfMemoryError:
+                    torch.cuda.empty_cache(); print(f"  OOM on {row['name']} (attempt {attempt}), retrying", flush=True); time.sleep(120)
+            if res is None: shutil.rmtree(os.path.join(CK, row["name"], ".lock"), ignore_errors=True); continue
         row.update(res)
         new = not os.path.exists(out)
         with open(out, "a", newline="") as f:
