@@ -24,7 +24,8 @@ def cloud(m, task, arch, dev="cpu"):
     if arch.startswith("mlp"):
         W = m.width; return torch.cat(outs[W:], 1).cpu().numpy().astype(np.float64)
     base = (m.nL - 1) * m.per
-    return torch.cat([o[:, m.read_pos, :] for o in outs[base + m.H: base + m.per]], 1).cpu().numpy().astype(np.float64)
+    A = torch.cat([o[:, m.read_pos, :] for o in outs[base + m.H: base + m.per]], 1)
+    return A.reshape(A.shape[0], -1).cpu().numpy().astype(np.float64)   # V AMENDMENTS #5: read_pos can be several positions -> flatten to (n, features)
 
 
 def dgm1(A):

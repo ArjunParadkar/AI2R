@@ -40,3 +40,8 @@ standalone unit `wb-v2v3` (the gpu queue had already moved on to M2; V5 later in
 **#4 (2026-09-09 12:20) V2/V3 OOM while sharing the GPU** (C1_C3's renamed GPT-2 copies + V6 on the same 8 GB card):
 `edge_scores` on a 512-wide MLP needed 586 MiB with 425 MiB free. The run is resumable per model (8 of 130 done);
 relaunched as `wb-v2v3` with a headroom gate (wait for ≥ 2.5 GB free, up to 60 attempts, 3-min back-off after a crash).
+
+**#5 (2026-09-09 12:22) V6 crashed on its first transformer model:** `cloud()` indexed `read_pos` (several output
+positions for sort/copy) and produced a 3-D array (512, positions·nodes, d); `compute_diagrams` requires (n, features).
+Fixed by flattening to (n, positions·nodes·d) before PCA-20 (the MLP branch was already 2-D). Smoke-tested on the first
+transformer row; relaunched as `wb-v6` (resumable per model; 3 MLP models were already recorded) with BLAS threads capped at 4.
