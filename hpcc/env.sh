@@ -15,5 +15,5 @@ if [ ! -d "$ROOT/.venv-hpcc" ]; then
 fi
 export PATH="$ROOT/.venv-hpcc/bin:$PATH"; mkdir -p "$ROOT/hpcc/logs" "$ROOT/hpcc/results"
 # smoke runs first (one unit of work each), then the full order from hpcc/README.md:
-#   python hpcc/f12_frontier_audit.py --model google/gemma-2-9b --layers 20 --n 2 --n-tokens 250 --out hpcc/results/f12_smoke
-#   python hpcc/k8_frontier_residue.py --layers 20 --n-seq 8 --out hpcc/results/k8_smoke
+#   python hpcc/kitasan_black.py --model google/gemma-2-9b --layers 20 --n 2 --n-tokens 250 --out hpcc/results/f12_smoke
+#   python hpcc/biwa_hayahide.py --layers 20 --n-seq 8 --out hpcc/results/k8_smoke

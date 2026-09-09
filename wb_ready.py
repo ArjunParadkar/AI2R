@@ -15,7 +15,7 @@ def f7():
     print(f"F7: {n}/60 done"); return n >= 60
 def v1():
     V = os.path.join(os.path.dirname(os.path.abspath(__file__)), "experiments", "V_legibility"); sys.path.insert(0, V)
-    from run_V1 import plan
+    from mejiro_dober import plan
     p = os.path.join(V, "results", "V1_models.csv"); done = {r["name"] for r in csv.DictReader(open(p))} if os.path.exists(p) else set()
     names = [r["name"] for r in plan()]; rem = [n for n in names if n not in done]; print(f"V1: {len(names)-len(rem)}/{len(names)} done"); return not rem
 if len(sys.argv) > 3 and sys.argv[2] == "--exclude-remaining":                                   # AMENDMENTS #11

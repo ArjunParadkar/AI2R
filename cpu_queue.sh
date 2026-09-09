@@ -16,17 +16,17 @@ while systemctl --user is-active --quiet wb-rice-shower || systemctl --user is-a
 if ! $V $E/../wb_ready.py f2; then $V $E/../wb_ready.py f2 --exclude-remaining "wall budget 8h exceeded after 3 power-loss restarts (AMENDMENTS #11)"; fi
 while ! $V $E/../wb_ready.py f2; do sleep 120; done
 stage "F2 enumeration finished"
-cd $E/F_gauge && run grass_wonder        $V -u run_F3.py
-cd $E/F_gauge && run el_condor_pasa_kills $V -u run_F4a.py --kills
-cd $E/F_gauge && run el_condor_pasa       $V -u run_F4a.py --procs 8 --max-pairs 20000
-cd $E/F_gauge && run air_groove       $V -u run_F4b.py
-cd $E/F_gauge && run hishi_amazon       $V -u run_F4c.py
-cd $E/F_gauge && run grass_wonder_aggregate   $V -u aggregate_F.py
-cd $E/F_gauge && run grass_wonder_aggregate_f3  $V -u aggregate_F.py f3
-cd $E/F_gauge && run special_week    $V -u run_F8_F10.py --procs 8
-cd $E/F_gauge && run special_week_summary $V -u summarize_F10.py
-cd $E/D_attribution && run sakura_bakushin_o  $V -u run_D1.py
-cd $E/M_memorization && run haru_urara $V -u run_M1.py 6
-cd $E/Z_topology && run tokai_teio     $V -u run_Z4_Z5.py
-cd $E/Z_topology && run tokai_teio     $V -u run_Z4_Z5.py z5
+cd $E/F_gauge && run grass_wonder        $V -u grass_wonder.py
+cd $E/F_gauge && run el_condor_pasa_kills $V -u el_condor_pasa.py --kills
+cd $E/F_gauge && run el_condor_pasa       $V -u el_condor_pasa.py --procs 8 --max-pairs 20000
+cd $E/F_gauge && run air_groove       $V -u air_groove.py
+cd $E/F_gauge && run hishi_amazon       $V -u hishi_amazon.py
+cd $E/F_gauge && run grass_wonder_aggregate   $V -u grass_wonder_aggregate.py
+cd $E/F_gauge && run grass_wonder_aggregate_f3  $V -u grass_wonder_aggregate.py f3
+cd $E/F_gauge && run special_week    $V -u special_week.py --procs 8
+cd $E/F_gauge && run special_week_summary $V -u special_week_summary.py
+cd $E/D_attribution && run sakura_bakushin_o  $V -u sakura_bakushin_o.py
+cd $E/M_memorization && run haru_urara $V -u haru_urara.py 6
+cd $E/Z_topology && run tokai_teio     $V -u tokai_teio.py
+cd $E/Z_topology && run tokai_teio     $V -u tokai_teio.py z5
 stage "CPU QUEUE DONE"
