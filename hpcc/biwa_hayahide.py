@@ -1,6 +1,6 @@
 """K8 — frontier residue: Gemma-2-9B + Gemma Scope (residual, canonical) at three layers, then K2–K5 exactly as on
 GPT-2 small (HPCC). Produces the K1 cache format (X, E, delta on the top-2000 next tokens, next_token, seq, pos, fvu) so
-``experiments/K_darkmatter/smart_falcon.py``'s k2 / k3 / k4_k5 run unchanged on it.
+``experiments/K_darkmatter/smart_falcon.py``'s smart_falcon / curren_chan / agnes_digital_tamamo_cross run unchanged on it.
 
 Usage:
   python biwa_hayahide.py --model google/gemma-2-9b --release gemma-scope-9b-pt-res-canonical --layers 9 20 31 \
@@ -51,12 +51,12 @@ def main():
     # K2–K5 on the cache, using the laptop analysis code unchanged (its module globals redirected to this run's dirs)
     smart_falcon.CACHE, smart_falcon.R, smart_falcon.LAYERS = cache, a.out, a.layers
     os.makedirs(os.path.join(a.out, "fig"), exist_ok=True)
-    k2, k3, k45 = [], [], []
+    smart_falcon, curren_chan, k45 = [], [], []
     for L in a.layers:
         Z = np.load(os.path.join(cache, f"L{L}.npz")); E, D, seq = Z["E"].astype(np.float64), Z["delta"].astype(np.float32), Z["seq"]
-        k2.append(smart_falcon.k2(L, E, seq)); k3.append(smart_falcon.k3(L, E)); r45 = smart_falcon.k4_k5(L, E, D, seq); k45.append(r45)
-        print("K2", k2[-1], "\nK3", k3[-1], "\nK4/K5", r45, flush=True)
-    for name, rs in (("K2_spectral", k2), ("K3_topology", k3), ("K4_K5", k45)):
+        smart_falcon.append(smart_falcon.smart_falcon(L, E, seq)); curren_chan.append(smart_falcon.curren_chan(L, E)); r45 = smart_falcon.agnes_digital_tamamo_cross(L, E, D, seq); k45.append(r45)
+        print("K2", smart_falcon[-1], "\nK3", curren_chan[-1], "\nK4/K5", r45, flush=True)
+    for name, rs in (("K2_spectral", smart_falcon), ("K3_topology", curren_chan), ("K4_K5", k45)):
         pd.DataFrame([r if isinstance(r, dict) else (r[0] if isinstance(r, (list, tuple)) and r and isinstance(r[0], dict) else {"raw": str(r)}) for r in rs]).to_csv(os.path.join(a.out, f"K8_{name}.csv"), index=False)
     print("done")
 

@@ -26,7 +26,7 @@ def valid(model, X, y, mid, scheme):
     return bool(((lg[0] > 0).astype(np.int8) == y).all())
 
 
-def z4():
+def tokai_teio_paths():
     E = pd.read_csv(os.path.join(F, "results", "explanations.csv"), dtype={"key6": str, "key4": str})
     sp = E.specimen.str.extract(r"^(?P<function>[A-Z0-9_]+)_d(?P<depth>\d)_w(?P<width>\d+)_s(?P<seed>\d+)$"); E = pd.concat([E, sp], axis=1)
     E["cell"] = E.function + "_d" + E.depth + "_w" + E.width; rows = []; rng = np.random.default_rng(0)
@@ -53,7 +53,7 @@ def z4():
     json.dump(summ, open(os.path.join(R, "Z4_summary.json"), "w"), indent=1); print(summ)
 
 
-def z5():
+def tokai_teio_scaling():
     A = pd.read_csv(os.path.join(F, "results", "audit_table.csv"))
     rows = []
     for metric, g in A.groupby("metric"):
@@ -67,4 +67,4 @@ def z5():
 
 
 if __name__ == "__main__":
-    (z5 if len(sys.argv) > 1 and sys.argv[1] == "z5" else z4)()
+    (tokai_teio_scaling if len(sys.argv) > 1 and sys.argv[1] in ("z5", "scaling", "tokai_teio_scaling") else tokai_teio_paths)()

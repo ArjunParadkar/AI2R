@@ -44,7 +44,7 @@ def film_events(diags, tol=0.15):
     return ev
 
 
-def z1(rows, dev):
+def seiun_sky(rows, dev):
     out = os.path.join(R, "Z1_zigzag.csv"); done = set(pd.read_csv(out).name) if os.path.exists(out) else set(); res = pd.read_csv(out).to_dict("records") if os.path.exists(out) else []
     for row in rows:
         if row["name"] in done or row["untrained"]: continue
@@ -62,7 +62,7 @@ def z1(rows, dev):
         res.append(r); pd.DataFrame(res).to_csv(out, index=False); print(r["name"], r["n_zigzag_bars_H1"], r["film_events"], r["mislabelled_fraction"], flush=True)
 
 
-def z2(rows, dev):
+def manhattan_cafe(rows, dev):
     out = os.path.join(R, "Z2_multiparam.csv"); done = set(pd.read_csv(out).name) if os.path.exists(out) else set(); res = pd.read_csv(out).to_dict("records") if os.path.exists(out) else []
     for row in rows:
         if row["name"] in done or row["untrained"]: continue
@@ -78,7 +78,7 @@ def z2(rows, dev):
         res.append(r); pd.DataFrame(res).to_csv(out, index=False); print(r, flush=True)
 
 
-def z3(rows, dev):
+def agnes_tachyon(rows, dev):
     out = os.path.join(R, "Z3_graphph.csv"); done = set(pd.read_csv(out).name) if os.path.exists(out) else set(); res = pd.read_csv(out).to_dict("records") if os.path.exists(out) else []
     for row in rows:
         if row["name"] in done: continue
@@ -91,13 +91,13 @@ def z3(rows, dev):
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("which", choices=["z1", "z2", "z3"]); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("which", choices=["seiun_sky", "manhattan_cafe", "agnes_tachyon"]); a = ap.parse_args()
     rows = [r for r in csv.DictReader(open(os.path.join(VR, "V1_models.csv")))]
     for r in rows:
         for k in ("random_labels", "untrained", "seed"): r[k] = int(r[k])
-    if a.which == "z1":
-        sel = [r for r in rows if (r["task"] == "modadd" and r["arch"] in ("mlp128", "tf2")) or r["random_labels"]]; z1(sel, "cuda")
-    elif a.which == "z2":
-        sel = [r for r in rows if r["task"] == "modadd" and not r["random_labels"]][:20]; z2(sel, "cuda")
+    if a.which in ("z1", "seiun_sky"):
+        sel = [r for r in rows if (r["task"] == "modadd" and r["arch"] in ("mlp128", "tf2")) or r["random_labels"]]; seiun_sky(sel, "cuda")
+    elif a.which in ("z2", "manhattan_cafe"):
+        sel = [r for r in rows if r["task"] == "modadd" and not r["random_labels"]][:20]; manhattan_cafe(sel, "cuda")
     else:
-        z3(rows, "cuda")
+        agnes_tachyon(rows, "cuda")

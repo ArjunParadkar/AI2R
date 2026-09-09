@@ -10,7 +10,7 @@ from whiteboxtopo.symmetry.group import inverse_on_units
 from whiteboxtopo.core.persistence import compute_diagrams
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results"); os.makedirs(R, exist_ok=True)
 BLOCKS = [1, 2, 3, 6]; dev = "cuda"
-B3_NS = (25, 50, 100, 200); B3_NS_REAL = (25, 50, 100, 200, 400); B3_PROCS = 8; B3_NPERM = 100   # AMENDMENTS #1, #2
+B3_NS = (25, 50, 100, 200); B3_NS_REAL = (25, 50, 100, 200, 400); B3_PROCS = 8; SUPER_CREEK_NPERM = 100   # AMENDMENTS #1, #2
 _B3 = {}
 
 
@@ -46,14 +46,14 @@ def _biastop(A, B):
     return wasserstein(np.asarray(da).reshape(-1, 2), np.asarray(db).reshape(-1, 2))
 
 
-def _perm_test(A, B, rng, n_perm=B3_NPERM):
+def _perm_test(A, B, rng, n_perm=SUPER_CREEK_NPERM):
     stat = _biastop(A, B); Z = np.vstack([A, B]); n = len(A); c = 0
     for i in range(n_perm):
         p = rng.permutation(len(Z)); c += _biastop(Z[p[:n]], Z[p[n:]]) >= stat
     return (c + 1) / (n_perm + 1)
 
 
-def _b3_trial(args):
+def _super_creek_trial(args):
     """One B3 trial -> 1 if the permutation test rejects at alpha = 0.05. variant: shift (pre-registered translation,
     == null by translation invariance), stretch (factor 1+delta along g; AMENDMENTS #1), real_MF (male vs female clouds)."""
     variant, n, delta, seed = args
@@ -158,7 +158,7 @@ def main():
         for variant, n, delta in cells:
             if (variant, n, str(delta)) in have: continue
             trials = 50 if n <= 200 else 20; t0 = time.time()
-            rej = sum(pool.map(_b3_trial, [(variant, n, delta, seed) for seed in range(trials)]))
+            rej = sum(pool.map(_super_creek_trial, [(variant, n, delta, seed) for seed in range(trials)]))
             prow.append(dict(n=n, delta=delta, trials=trials, power=rej / trials, variant=variant)); print(prow[-1], f"{time.time()-t0:.0f}s", flush=True)
             pd.DataFrame(prow).to_csv(b3_csv, index=False)
     # power-0.8 crossings (linear interpolation in n) and FPR summary

@@ -126,7 +126,7 @@ if __name__ == "__main__" and len(sys.argv) == 1:
     main()
 
 
-def f3():
+def grass_wonder():
     """F3 summary: fiber dimension vs known group per cell."""
     Y = pd.read_csv(os.path.join(R, "symmetry.csv"))
     sp = Y.specimen.str.extract(r"^(?P<function>[A-Z0-9_]+)_d(?P<depth>\d)_w(?P<width>\d+)_s(?P<seed>\d+)$"); Y = pd.concat([Y, sp], axis=1)
@@ -139,5 +139,5 @@ def f3():
     json.dump(tot, open(os.path.join(R, "F3_totals.json"), "w"), indent=1); print(tot)
 
 
-if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] == "f3":
-    f3()
+if __name__ == "__main__" and len(sys.argv) > 1 and sys.argv[1] in ("f3", "grass_wonder"):
+    grass_wonder()

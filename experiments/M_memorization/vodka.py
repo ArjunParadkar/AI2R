@@ -74,19 +74,19 @@ def susceptibility(model, Xh, yh, Xte, yte, seed):
     """Forouzesh-style: fine-tune one epoch on a held-out set with 20 % of labels flipped;
     susceptibility = fraction of clean test predictions that change (and test-acc drop)."""
     import copy
-    m2 = copy.deepcopy(model); rng = np.random.default_rng(seed); yf = yh.clone(); flip = torch.as_tensor(rng.random(len(yh)) < 0.2)
+    vodka = copy.deepcopy(model); rng = np.random.default_rng(seed); yf = yh.clone(); flip = torch.as_tensor(rng.random(len(yh)) < 0.2)
     yf[flip] = torch.as_tensor(rng.integers(0, 10, int(flip.sum())))
-    p0 = predict(m2, Xte); opt = torch.optim.SGD(m2.parameters(), lr=0.01, momentum=0.9); m2.train()
+    p0 = predict(vodka, Xte); opt = torch.optim.SGD(vodka.parameters(), lr=0.01, momentum=0.9); vodka.train()
     for x, y in DataLoader(TensorDataset(Xh, yf), 128, shuffle=True):
-        opt.zero_grad(); F.cross_entropy(m2(x.to(DEV)), y.to(DEV)).backward(); opt.step()
-    p1 = predict(m2, Xte); return float((p0 != p1).float().mean()), float(acc(model, Xte, yte) - acc(m2, Xte, yte))
+        opt.zero_grad(); F.cross_entropy(vodka(x.to(DEV)), y.to(DEV)).backward(); opt.step()
+    p1 = predict(vodka, Xte); return float((p0 != p1).float().mean()), float(acc(model, Xte, yte) - acc(vodka, Xte, yte))
 
 
 def eff_rank(A):
     s = np.linalg.svd(A - A.mean(0), compute_uv=False); p = s ** 2 / (s ** 2).sum(); return float(np.exp(-(p[p > 0] * np.log(p[p > 0])).sum()))
 
 
-def m2(args):
+def vodka(args):
     Xtr, ytr = cifar_tensors(True); Xte, yte = cifar_tensors(False); Xp, yp = probe_from(Xtr, ytr, 50, seed=0)
     Xh, yh = Xtr[45000:46000], ytr[45000:46000]
     cal = Calibration.load("cnn_classifier"); out = os.path.join(R, "M2_models.csv")
@@ -130,7 +130,7 @@ def m2(args):
     print(pd.DataFrame(roc).to_string()); print(json.dumps(dl, indent=1))
 
 
-def m3(args):
+def daiwa_scarlet(args):
     Xtr, ytr = cifar_tensors(True); Xte, yte = cifar_tensors(False); cal = Calibration.load("cnn_classifier"); rows = []
     for seed in SEEDS:
         rng = np.random.default_rng(100 + seed); idx = rng.permutation(len(Xtr))[:N_TRAIN]; Xs, yc = Xtr[idx], ytr[idx]; yn = yc.clone()
@@ -154,5 +154,5 @@ def m3(args):
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(); ap.add_argument("--m3", action="store_true"); a = ap.parse_args()
-    (m3 if a.m3 else m2)(a)
+    ap = argparse.ArgumentParser(); ap.add_argument("--daiwa-scarlet", "--m3", dest="daiwa_scarlet", action="store_true"); a = ap.parse_args()
+    (daiwa_scarlet if a.daiwa_scarlet else vodka)(a)

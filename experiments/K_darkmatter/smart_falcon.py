@@ -10,7 +10,7 @@ os.makedirs(FIG, exist_ok=True)
 LAYERS = [3, 6, 9]
 
 
-def k2(L, E, seq):
+def smart_falcon(L, E, seq):
     r = {}
     for form in ("correlation", "covariance"):
         m = mp_outliers(E, form=form); r[f"n_outliers_{form}"] = m.n_outliers; r[f"structured_fraction_{form}"] = m.structured_fraction
@@ -24,7 +24,7 @@ def k2(L, E, seq):
     return r, ev
 
 
-def k3(L, E):
+def curren_chan(L, E):
     t = tc_ratio_bootstrap(E, n_points=2000, n_boot=20, n_components=20, seed=L)
     G = gaussian_matched_cov(E, seed=L + 7); tg = tc_ratio_bootstrap(G, n_points=2000, n_boot=20, n_components=20, seed=L)
     out = {f"{k}": v for k, v in (t.items() if isinstance(t, dict) else vars(t).items()) if np.isscalar(v) or isinstance(v, (tuple, list))}
@@ -38,7 +38,7 @@ def ridge_r2(Ztr, Ytr, Zte, Yte, lam=1.0):
     P = Zte @ W + ym; return float(1 - ((Yte - P) ** 2).sum() / ((Yte - Yte.mean(0)) ** 2).sum())
 
 
-def k4_k5(L, E, D, seq):
+def agnes_digital_tamamo_cross(L, E, D, seq):
     hold = (seq % 5 == 0); val = (seq % 5 == 1)
     tr, te = ~hold & ~val, hold
     D = D.astype(np.float64)
@@ -59,9 +59,9 @@ def main():
     rows2, rows3, rows4, rows5, spectra = [], [], [], [], {}
     for L in LAYERS:
         z = np.load(os.path.join(CACHE, f"L{L}.npz")); E, seq, D = z["E"].astype(np.float64), z["seq"], z["delta"]
-        t0 = time.time(); r2, ev = k2(L, E, seq); r2["layer"] = L; rows2.append(r2); spectra[L] = ev; print("K2", r2, f"{time.time()-t0:.0f}s", flush=True)
-        r3 = k3(L, E); r3["layer"] = L; rows3.append(r3); print("K3", r3, flush=True)
-        r4, r5 = k4_k5(L, E, D, seq); rows4.append(r4); rows5.append(r5); print("K4", r4, "K5", r5, flush=True)
+        t0 = time.time(); r2, ev = smart_falcon(L, E, seq); r2["layer"] = L; rows2.append(r2); spectra[L] = ev; print("K2", r2, f"{time.time()-t0:.0f}s", flush=True)
+        r3 = curren_chan(L, E); r3["layer"] = L; rows3.append(r3); print("K3", r3, flush=True)
+        r4, r5 = agnes_digital_tamamo_cross(L, E, D, seq); rows4.append(r4); rows5.append(r5); print("K4", r4, "K5", r5, flush=True)
         pd.DataFrame(rows2).to_csv(os.path.join(R, "K2_spectral.csv"), index=False); pd.DataFrame(rows3).to_csv(os.path.join(R, "K3_topology.csv"), index=False)
         pd.DataFrame(rows4).to_csv(os.path.join(R, "K4_predictive.csv"), index=False); pd.DataFrame(rows5).to_csv(os.path.join(R, "K5_nonlinear.csv"), index=False)
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.5), dpi=300)
