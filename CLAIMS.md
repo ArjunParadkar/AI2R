@@ -9,7 +9,7 @@ do-not-use conditions, and — for refused APIs — why they refuse, naming the
 refusal.
 
 **Sourcing rule:** every number here is copied from `VALIDATION.md`,
-`AUDIT.md`, or `benchmarks/*.md`. Nothing is asserted here that isn't
+`AUDIT.md`, `benchmarks/*.md`, or a sprint pause report `PAUSE_*.md` (2026-09). Nothing is asserted here that isn't
 already asserted, with evidence, in one of those three files. Candidate
 signals that never made it into the public API at all (P1, P4, P5, P6-as-
 originally-claimed, H2/H3/H5, E1's orbit-collapse hypothesis) are *not*
@@ -411,6 +411,168 @@ a user might expect; the refusal itself is the shipped behavior.
 
 ---
 
+## Sprint modules (handbook S1–S5, 2026-09-07..09) — `whiteboxtopo.symmetry`, `.invariants.audit_quantities`, `.nulls`, `.graphs`, `.discovery`, `.topology`
+
+### `symmetry.random_element`, `permutations`, `scalings`, `rotations`, `apply`, `output_deviation`, `describe`, `uniform_scaling`, `inverse_on_units`, `ToyTransformer`
+
+- **Claim:** INSTRUMENT — exact renamings of a network by its known gauge group
+  G: hidden-unit permutations × per-unit positive scalings (ReLU MLPs);
+  head permutations, GL(d_head) / O(d_head) per-head changes of basis,
+  MLP-unit permutations and LayerNorm-compatible rescalings (`ToyTransformer`,
+  HF GPT-2; `symmetry.llama` for Llama-3 / Gemma-2 is written for HPCC and
+  untested locally).
+- **Evidence:** `tests/test_symmetry.py` — max output deviation 1.4e-14 over
+  3 000 MLP renamings (10 models), 4.4e-15 on the toy transformer incl. GL
+  rotations; F8 identity on every F1 specimen, 300 renamings each
+  (`experiments/F_gauge/results/F8_identity.csv`); F11 GPT-2 fp32 max
+  |Δlogit| 2.8e-3 (perm) – 4.7e-3 (rot) over 2 000 tokens
+  (`F11_identity.json`; PAUSE_2).
+- **Nulls:** the identity check *is* the null — a renaming that moves the
+  output is not an element of G; F11's fp32 floor is reported as a miss of
+  the SPEC's 1e-3 (fp32 rounding of LN rescalings by factors up to 10), and
+  every `invariant` verdict in F11 sits four orders below that floor.
+- **Failure modes / do-not-use:** ReLU MLPs, the toy transformer and GPT-2
+  only; scalings through GELU and `ln_f` are *not* sampled (not exact);
+  GL(d_head) is larger than what practitioners usually assume — anything
+  computed from head outputs z is only O(d_head)-invariant. `symmetry.llama`
+  ships without a local identity check (no GPU large enough).
+- **Novelty:** board #2 — the audit is OPEN as the empirical instantiation
+  of 2601.12913 / 2605.27836 / 2506.18053; the renamings themselves are the
+  parameter-symmetry survey's standard group (2506.13018), not a claim.
+- **Detail:** `VALIDATION.md` sprint table, `experiments/F_gauge/SPEC.md`
+  §F8/§F11, PAUSE_2_F8_F13.md.
+
+### `symmetry.hidden`, `HiddenSymmetryReport`, `scaling_generators`, `realisation_jacobian`
+
+- **Claim:** INSTRUMENT — fiber dimension of the realisation map at θ vs the
+  dimension of the known continuous group; identification of the excess as
+  dead / all-active / shared-pattern (duplicate) units; `unexplained` is what
+  no heuristic accounts for.
+- **Evidence:** planted duplicate and dead units recovered with
+  `unexplained = 0` (`tests/test_symmetry.py`); release gate
+  `tests/test_release_gates.py`: ≥ 90 % of a planted fiber (3 collinear
+  duplicates + 2 dead units) identified, dead set recovered exactly, no unit
+  reported dead that is alive on the probe region (8 random nets); **full F3
+  on 3 143 specimens: 99.0 % of trained nets have G_incomplete, 95.6 % of the
+  excess identified, unexplained median 0** (PAUSE_1 §F3, replacing the
+  1 000-specimen draft's "41 % unclassified").
+- **Nulls:** random (untrained) nets — the detector reports their genuine
+  dead units and nothing unexplained beyond rank slack (≤ 2 directions).
+- **Failure modes / do-not-use:** ReLU MLPs only; `excess` counts flat
+  directions of the *realisation map on the probe region* — a unit dead on
+  the probes but alive elsewhere is reported dead; numerical rank cut-off
+  `rel_tol` decides borderline directions; no transformer backend.
+- **Novelty:** board #1 — hidden symmetry is the survivor of the dead
+  "gauge explains multiplicity" claim; nearest 2112.12982 (identifiability
+  outside degenerate cases) and 2606.04754.
+- **Detail:** `experiments/F_gauge/results/symmetry.csv`, PAUSE_1_F1_F7.md.
+
+### `invariants.audit_quantities`, `audit_table`, `per_component_cv`, `check_invariance` (S2 verdicts `invariant` / `covariant` / `artifact`, `verdict_aligned`)
+
+- **Claim:** INSTRUMENT — the audit table: per-component CV of any set of
+  quantities under each symmetry kind separately, the fitted scaling exponent
+  for covariant quantities, and the verdict after an exact gauge alignment
+  (`inverse_on_units`, Hungarian) for unit-indexed quantities.
+- **Evidence:** anchors — weight product invariant (CV 7e-16), per-unit
+  activation artifact, singular values covariant with exponent 1.000 and
+  R² = 1, alignment repairs unit-indexed metrics (`tests/test_check.py`,
+  `tests/test_release_gates.py`); F9 anchor on every F1 specimen
+  (weight-product CV < 1e-6); F10 table on the enumeration; **F11 on GPT-2
+  small layer 6 (19 candidates, n = 30 per kind):** every cloud-level
+  persistence summary of the residual stream and MLP-hidden layer invariant
+  to ≤ 1e-7; per-unit activation / grad×input / top-10 / top direction /
+  attention entropy are artifacts that become invariant after alignment
+  (5e-7 – 6e-6); per-unit weight norms remain artifacts after alignment
+  (0.14: ln_2 scaling); head-z quantities move 2–5 % under GL(d_head)
+  (PAUSE_2 table).
+- **Nulls:** the planted-invariant / planted-non-invariant / non-symmetry
+  controls of `check_invariance_e2` (unchanged), plus the anchors above.
+- **Failure modes / do-not-use:** verdicts are conditional on the sampled
+  group (a quantity can only move from invariant to non-invariant when
+  symmetries are added); fp32 models floor at ~1e-3 |Δlogit| on GPT-2 and
+  ~1e-7 CV on MLPs — use `.double()` for a 1e-6 threshold; an aligned
+  verdict needs a *correct* aligner (B AMENDMENTS #4: undoing a rotation
+  before the permutation was wrong for the combined kind).
+- **Novelty:** board #2.
+- **Detail:** `experiments/F_gauge/results/F11_audit_table.csv`,
+  `audit_table.csv`, PAUSE_2_F8_F13.md; B2 / C1 / K6 / M1 reuse it.
+
+### `nulls.feature_shuffle`, `label_permute`, `marchenko_pastur`, `MPNull`, `planted`, `mp_edges`, `tw_threshold`
+
+- **Claim:** INSTRUMENT — the calibration nulls and planted structures every
+  detector is gated on.
+- **Evidence:** marginals preserved and mean |corr| < 0.1 after
+  `feature_shuffle`; MP + Tracy–Widom on Gaussian noise: ≤ 4/100 trials with
+  an outlier at q = 0.99; planted 5 spikes → 5 (`tests/test_nulls.py`);
+  release gates: mean outlier fraction < 0.02 over 20 noise draws, k ∈
+  {3, 5, 12} spikes recovered exactly (`tests/test_release_gates.py`).
+- **Nulls:** self-referential by construction; the Gaussian draw is the null.
+- **Failure modes / do-not-use:** the TW threshold assumes Gaussian-like
+  marginals (heavy tails → `spectral_test_valid = False` in `darkmatter`);
+  `planted("clusters")` places centres at random, so two of k can land close
+  — gates use `sep = 40`.
+- **Novelty:** none claimed (standard RMT).
+
+### `graphs.attribution_graph`, `modularity`, `treewidth_ub`, `sparsity`, `rewired_null`; `discovery.find_circuit`
+
+- **Claim:** INSTRUMENT — frozen S4 EAP graph at an edge *density*, Leiden Q
+  with a degree-preserving rewired null, min-fill treewidth upper bound,
+  participation-ratio sparsity; frozen attribution-patching + greedy-prune
+  circuit discovery (`find_circuit`).
+- **Evidence:** planted 4-block graph Q > 0.6 vs random < 0.4 and above the
+  rewired null; release gates: a random G(n, 0.08) graph sits inside its
+  rewired null band, planted k ∈ {4, 10} blocks recovered with the exact
+  count and ARI > 0.9; treewidth bound exact on trees / cycles / cliques;
+  planted 12-node circuit recovered at F ≥ 0.9 with nothing outside it;
+  `find_circuit` deterministic given seed (`tests/test_graphs_discovery.py`,
+  `tests/test_legibility.py`, `tests/test_release_gates.py`); E4 battery on
+  87 models (PHASE6.md); V2/V3 on the V1 ensemble (pending, `wb-gpu-queue`).
+- **Nulls:** `rewired_null` (Q), `shuffled_q_null` (`legibility_profile`);
+  untrained-model guard (S = 0 when accuracy < 0.5).
+- **Failure modes / do-not-use:** node-instrumented small models only
+  (N ≤ 300); density thresholds are frozen (0.01 / 0.05 / 0.1) — no per-model
+  tuning; `treewidth_ub` is an upper bound; Q of a graph with < 20 edges is
+  meaningless (guarded).
+- **Novelty:** board #5/#6 — a *measured* diagram only; the predictive
+  `legibility_score` remains REFUSED (E4).
+
+### `topology.zigzag`, `hilbert_function`, `mapper`, `graph_ph`, `normalized_persistence`, `standardized_cloud`
+
+- **Claim:** INSTRUMENT — zigzag persistence over a cloud sequence
+  (Dionysus), the rank-invariant diagonal of a 2-parameter (scale × f)
+  filtration, a KeplerMapper wrapper with β₀/β₁, clique-complex PH of weighted
+  graphs (GUDHI), and per-unit-standardised persistence (E2's exact scaling
+  repair).
+- **Evidence:** planted appearing/disappearing loop recovered as one bar
+  spanning exactly the planted clouds (2..5 of 8; release gate 3..7 of 10);
+  12-cycle → one essential H1 class, chord → two; k ∈ {3, 12} disjoint
+  planted cycles counted exactly; Mapper recovers k ∈ {3, 5} planted
+  components exactly and one cycle on a circle; Hilbert function H1 = 1 on a
+  circle and 0 on a noise blob; `normalized_persistence` invariant under
+  per-unit scalings to 1e-8 (`tests/test_topology.py`,
+  `tests/test_release_gates.py`).
+- **Nulls:** noise blobs / trees / Gaussian clouds in the same tests.
+- **Failure modes / do-not-use:** zigzag on dense clouds must be subsampled
+  (S5 note); a 40-point circle at scale 0.7 can have a sampling gap wider
+  than the scale — the gate uses 60 points; `hilbert_function` is the
+  rank-invariant diagonal only (no RIVET); Mapper's β₁ depends on
+  `n_cubes` / `overlap`; graph PH counts cycles of the *thresholded*
+  graph, so it inherits the density choice.
+- **Novelty:** board #11 — instruments; Z1/Z2 claims pending and must be
+  positioned against 2603.03037 / 2606.30384.
+
+### `darkmatter.residual_structure` — K9 gate (addition to the E6 entry above)
+
+- **Evidence added 2026-09:** synthetic noise → structured fraction < 0.02
+  and ≤ 1 outlier (`tests/test_darkmatter.py::test_k9_*`,
+  `tests/test_release_gates.py`); planted rank k ∈ {5, 10} recovered exactly.
+  K2–K5 on GPT-2 small layers 3/6/9 (PAUSE_3): K2 pass (173–198 outliers),
+  K3 FAIL (tc_ratio 0.24–0.32 < 1), K4 passes L6/L9 only, K5 fails all;
+  K6: anchor exact, MLP-space set statistics invariant, unit-indexed readouts
+  artifact → invariant after alignment.
+- **Novelty:** board #3/#4 — K7 width scaling is TAKEN (Engels et al.), run as
+  a replication.
+
 ## Experiments that produced no API at all
 
 **E1 (gauge orbits vs circuit-explanation multiplicity)** is not listed
@@ -420,6 +582,25 @@ hypotheses failed in every tested cell (orbits/explanations ∈
 the multiplicity even under an exactly invariant coarse functional key).
 There is no "orbit-collapse" function to refuse; the negative is
 documented in `AUDIT.md`'s v2-findings table so nobody re-derives it.
+
+- **F4a-1 / F5 / F6 — "gauge orbits explain explanation multiplicity"** (block
+  F, 2026-09): K/N = 1 within a network was a tautology (no automorphism
+  within one θ); across seeds K(0.1)/N = 1.000 under both criteria on all
+  133 (function, depth, width) cells with calibrated kills (exact relabel
+  passes at 3e-14, planted 1/2/3-algorithm nets give K = 1/2/3). F5/F6
+  verdicts are WITHDRAWN (`F5_verdicts.json` carries the marker). No API.
+  Survivors: `symmetry.hidden` (F3) and the K_alg/N ≈ 0.39 "same algorithm,
+  different weights" observation (PAUSE_1).
+- **B2 — a gauge-invariant gender-bias direction in GPT-2 small**: the kill
+  fails on all 4 blocks (disjoint-halves cosine 0.65–0.79 < 0.9), so the
+  direction is not stable enough for its invariance to mean anything; B3's
+  pre-registered planted shift was Rips-invariant by construction (its
+  "power" is a false-positive rate; a stretch variant is the calibrated
+  curve). No API beyond the existing `bias_top_permutation_test` instrument
+  (PAUSE_4 §B).
+- **K3 / K5 — topological or nonlinear structure in SAE dark matter**: fails
+  at every layer (PAUSE_3). `residual_structure` ships the spectral test and
+  the topological test as two readings with no combined verdict.
 
 ## What a researcher can act on today
 

@@ -1,4 +1,10 @@
-# whitebox-topo
+# whitebox-topo — the auditor
+
+**whitebox-topo is an auditor for interpretability claims**: it checks whether a
+metric, a circuit or a concept inventory is well-defined under a network's exact
+symmetry group, whether an explanation glues across the input space, and how much of
+a decomposition's residual is structure rather than noise. It hands back measurements
+with their validation batteries attached; it does not hand back verdicts.
 
 ## What this library is — and is not
 
