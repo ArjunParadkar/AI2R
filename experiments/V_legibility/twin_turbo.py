@@ -57,7 +57,8 @@ def main():
                     m, task = load(row, STEPS, d_)
                     s2 = structure(m, task, device=d_); s3 = disc(m, task, device=d_); break
                 except torch.OutOfMemoryError:
-                    print(row["name"], "CUDA OOM -> retrying on cpu", flush=True); torch.cuda.empty_cache()
+                    print(row["name"], "CUDA OOM -> retrying on cpu", flush=True)
+                    m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()   # release the failed model's GPU memory so the paddock can use the card
             s2.update(name=row["name"], task=row["task"], arch=row["arch"], device=d_)
             s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0, device=d_)
             for p, r in ((p2, s2), (p3, s3)):
@@ -82,7 +83,8 @@ def main():
                         if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
                         break
                     except torch.OutOfMemoryError:
-                        print(row["name"], step, "CUDA OOM -> retrying on cpu", flush=True); torch.cuda.empty_cache()
+                        print(row["name"], step, "CUDA OOM -> retrying on cpu", flush=True)
+                        m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
                 r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,
                                                           loss=hist[step]["loss"], eval_acc=hist[step]["eval_acc"], random_labels=row["random_labels"])
                 new = not os.path.exists(p5)
