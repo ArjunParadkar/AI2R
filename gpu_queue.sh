@@ -27,7 +27,7 @@ cd $E/B_bias       && run winning_ticket   $V -u winning_ticket.py
 # (all three shards run as units wb-mejiro-dober-s0/1/2 so they start before B2_B4 finishes; the queue only waits)
 while systemctl --user is-active --quiet wb-mejiro-dober-s0 || systemctl --user is-active --quiet wb-mejiro-dober-s1 || systemctl --user is-active --quiet wb-mejiro-dober-s2 || ! $V $E/../wb_ready.py mejiro_dober; do sleep 120; done
 stage "V1 all shards finished"
-cd $E/V_legibility && run twin_turbo   $V -u twin_turbo.py
+# Twin Turbo runs as the standalone unit wb-twin-turbo (V AMENDMENTS #7/#8); the paddock waits for her before Gold Ship
 cd $E/M_memorization && run vodka    $V -u vodka.py
 cd $E/M_memorization && run daiwa_scarlet    $V -u vodka.py --daiwa-scarlet
 while systemctl --user is-active --quiet wb-twin-turbo; do sleep 120; done   # Twin Turbo has the card first (standalone unit)

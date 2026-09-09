@@ -56,3 +56,9 @@ which is the honest answer for a graph with no rewirable structure. Relaunched a
 CUDA OOM within seconds and the paddock cascaded on to Seiun Sky. Paddock stopped; `gpu_queue.sh` now (a) waits for
 `wb-twin-turbo` to finish before Gold Ship, (b) waits for ≥ 4 GB free before every stage, (c) retries each stage once after
 5 min. Results so far are intact (all three horses are resumable).
+
+**#8 (2026-09-09 14:15) Twin Turbo OOMs on her own on the largest transformer models** (`edge_scores` allocates ~1 GiB blocks
+and the caching allocator already holds ~6 GB after 40 models): per-model fallback — on `torch.OutOfMemoryError` the model
+is reloaded and scored on the CPU (a `device` column records which). The paddock no longer has a Twin Turbo stage (she is
+the standalone `wb-twin-turbo`; the paddock waits for her before Gold Ship). The V2/V3 CSVs written before this amendment
+have no `device` column; DictWriter appends the new column only to new rows — readers must use `csv.DictReader` (they do).

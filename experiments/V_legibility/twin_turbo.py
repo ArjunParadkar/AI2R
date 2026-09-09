@@ -51,9 +51,15 @@ def main():
         for row in rows:
             if row["name"] in done: continue
             for k in ("random_labels", "untrained", "seed"): row[k] = int(row[k])
-            m, task = load(row, STEPS, dev); t0 = time.time()
-            s2 = structure(m, task); s2.update(name=row["name"], task=row["task"], arch=row["arch"])
-            s3 = disc(m, task); s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0)
+            t0 = time.time()
+            for d_ in (dev, "cpu"):                       # V AMENDMENTS #8: a model whose edge scores do not fit the 8 GB card is scored on the CPU
+                try:
+                    m, task = load(row, STEPS, d_)
+                    s2 = structure(m, task, device=d_); s3 = disc(m, task, device=d_); break
+                except torch.OutOfMemoryError:
+                    print(row["name"], "CUDA OOM -> retrying on cpu", flush=True); torch.cuda.empty_cache()
+            s2.update(name=row["name"], task=row["task"], arch=row["arch"], device=d_)
+            s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0, device=d_)
             for p, r in ((p2, s2), (p3, s3)):
                 new = not os.path.exists(p)
                 with open(p, "a", newline="") as f:
@@ -70,10 +76,15 @@ def main():
             hist = {h["step"]: h for h in json.load(open(os.path.join(CK, row["name"], "history.json")))}
             for step in sorted(hist):
                 if (row["name"], step) in done: continue
-                m, task = load(row, step, dev)
-                r = structure(m, task, null=True); r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,
+                for d_ in (dev, "cpu"):
+                    try:
+                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True)
+                        if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
+                        break
+                    except torch.OutOfMemoryError:
+                        print(row["name"], step, "CUDA OOM -> retrying on cpu", flush=True); torch.cuda.empty_cache()
+                r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,
                                                           loss=hist[step]["loss"], eval_acc=hist[step]["eval_acc"], random_labels=row["random_labels"])
-                if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task).items()})
                 new = not os.path.exists(p5)
                 with open(p5, "a", newline="") as f:
                     w = csv.DictWriter(f, fieldnames=list(r), extrasaction="ignore")
