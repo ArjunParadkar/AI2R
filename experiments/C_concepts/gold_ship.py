@@ -106,7 +106,7 @@ def main():
     for kind, ss in samples.items():
         rows.append(dict(quantity="feature_identity_exact_frac", kind=kind, median_cv=float(np.mean([s["feat_identity_exact"] for s in ss])), frac_invariant=np.nan, verdict=""))
         rows.append(dict(quantity="blind_certified_frac", kind=kind, median_cv=float(np.mean([s["blind_certified_frac"] for s in ss])), frac_invariant=np.nan, verdict=""))
-    pd.DataFrame(rows).to_csv(os.path.join(R, "C1_audit.csv"), index=False); print(pd.DataFrame(rows).to_string(), flush=True)
+    pd.DataFrame(rows).to_csv(os.path.join(R, "gold_ship_audit.csv"), index=False); print(pd.DataFrame(rows).to_string(), flush=True)
     # ---- C2 certified inventory (blind, across all samples): feature certified iff matched corr >= 0.95 in every renaming
     cert_counts = np.zeros(N_LAT)
     n_samples = 0
@@ -120,21 +120,21 @@ def main():
             ri, ci = linear_sum_assignment(-act_corr); m = np.zeros(N_LAT); m[ri] = act_corr[ri, ci]; cert_counts += (m >= 0.95); n_samples += 1
             del mg; torch.cuda.empty_cache()
     certified = cert_counts == n_samples; alive = (base_Z > 0).mean(0) > 0
-    pd.DataFrame(dict(feature=np.arange(N_LAT), certified=certified, alive=alive, cert_count=cert_counts)).to_csv(os.path.join(R, "C2_inventory.csv"), index=False)
+    pd.DataFrame(dict(feature=np.arange(N_LAT), certified=certified, alive=alive, cert_count=cert_counts)).to_csv(os.path.join(R, "gold_ship_inventory.csv"), index=False)
     print("C2 certified fraction (alive features):", float(certified[alive].mean()), "alive", int(alive.sum()), flush=True)
     # ---- C3 geometry + Mapper on certified vs uncertified lenses
     Dc = dic["D"][certified & alive]; ang = Dc @ Dc.T
     dg = T.rips(Dc[:1500] if len(Dc) > 1500 else Dc, maxdim=1, backend="ripser")
     geo = dict(n_certified=int((certified & alive).sum()), mean_abs_cos=float(np.abs(ang[np.triu_indices(len(ang), 1)]).mean()) if len(ang) > 1 else np.nan,
                n_bars_H1=int(len(dg.dgms[1])), total_persistence_H1=float(np.sum((np.asarray(dg.dgms[1]).reshape(-1, 2)[:, 1] - np.asarray(dg.dgms[1]).reshape(-1, 2)[:, 0]) ** 2)) if len(dg.dgms[1]) else 0.0)
-    pd.DataFrame([geo]).to_csv(os.path.join(R, "C3_geometry.csv"), index=False)
+    pd.DataFrame([geo]).to_csv(os.path.join(R, "gold_ship_geometry.csv"), index=False)
     sub = np.random.default_rng(3).choice(len(A0), 3000, replace=False); rows = []
     cidx = np.flatnonzero(certified & alive); uidx = np.flatnonzero(~certified & alive)
     for lens_name, idx in (("certified", cidx), ("uncertified", uidx)):
         if len(idx) < 2: continue
         top2 = idx[np.argsort(-base_Z[:, idx].mean(0))[:2]]; lens = base_Z[sub][:, top2]
         mp = T.mapper(A0[sub], lens, n_cubes=8, overlap=0.3); rows.append(dict(lens=lens_name, n_nodes=mp.n_nodes, n_edges=mp.n_edges, n_components=mp.n_components, cycle_rank=mp.cycle_rank))
-    pd.DataFrame(rows).to_csv(os.path.join(R, "C3_mapper.csv"), index=False); print(geo, rows, flush=True); print("done")
+    pd.DataFrame(rows).to_csv(os.path.join(R, "gold_ship_mapper.csv"), index=False); print(geo, rows, flush=True); print("done")
 
 
 if __name__ == "__main__":

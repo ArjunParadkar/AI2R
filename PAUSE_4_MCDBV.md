@@ -1,4 +1,4 @@
-# PAUSE 4 — Blocks M, C, D, B, V — DRAFT 2026-09-09 (Blocks B and D final; M/C/V running)
+# PAUSE 4 — Blocks M, C, D, B, V — DRAFT 2026-09-09 (Blocks B, C, D, M final; V running)
 
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
@@ -122,7 +122,57 @@ separable PH-H1 channels on VGG/CIFAR with noisy labels — and must be cited ne
   (AUC 0.967 vs 1.00, p = 0.36) while using only a 500-point probe cloud and no training labels".
 * Not claimable: superiority over anything; graded-memorisation tracking; anything cross-family until M4.
 
-## Block C — _pending (C1–C3 in gpu queue)_
+## Block C — Audited concept map (Gold Ship: C1–C3) — FINAL 2026-09-09
+
+### 1. Plain English
+A 4 096-latent k-sparse dictionary fitted on GPT-2 small's layer-6 MLP-hidden activations (50 k tokens, FVU 0.255) was
+re-encoded under 20 exact renamings of each kind (MLP-unit permutations, head permutations, GL(d_head) rotations, LN
+scalings) with the dictionary transported consistently. Everything measured on it is invariant to the float floor: the 20
+part-of-speech probe R² values (CV ≤ 3e-7), the decoder-direction geometry (CV ≤ 4e-7), and feature identity (99.97 % of
+latent activations equal to 1e-3). A *blind* certification — Hungarian matching of latents by activation profile, with no
+knowledge of the renaming — recovers the transported feature for 99.4 % of latents under every kind, so the certified
+inventory is 4 072 of 4 094 alive features (99.5 %); the 22–24 uncertified ones fail under every kind (cert counts are 0 or
+10, nothing in between), i.e. they are near-dead latents with no profile to match. Certified decoder directions are close
+to orthogonal (mean |cos| 0.022) and their direction cloud carries 8 104 finite H1 bars (total persistence 2.69); the Mapper
+graph of MLP space through the top-2 certified features is one component with cycle rank 6, against an uninformative 2-node
+graph through the uncertified lens (there are only 22 of them).
+
+### 2. Pre-registered thresholds and outcomes
+| Item | SPEC | Outcome (`results/gold_ship_audit.csv`, `_inventory.csv`, `_geometry.csv`, `_mapper.csv`) |
+|---|---|---|
+| C1 residual SAE (`gpt2-small-res-jb`) | invariant by construction; float-floor check CV < 1e-4 | **stated, not run**: the runner audits only the MLP-space dictionary (K6 already measured the residual SAE's set statistics invariant to the floor, PAUSE_3 §7) |
+| C1 MLP-space dictionary, exact (`align="gauge"`) | probe R² and geometry invariant | invariant: probe R² CV 1e-7 – 3e-7, geometry 0 – 4e-7, all four kinds — **met** |
+| C1 blind alignment | Hungarian on decoder cosines | run on **activation profiles** instead (decoder columns are in unit coordinates and permute trivially — the runner's note): blind certified fraction 0.994 for every kind |
+| C2 certified inventory | fraction with matched cosine ≥ 0.95 in every renaming | **99.5 % of alive latents (4 072 / 4 094)** over 10 combined renamings; uncertified latents are all-or-nothing (0 of 10) |
+| C3 certified geometry | angle matrix, persistence of the direction cloud | mean \|cos\| 0.022; 8 104 H1 bars, total persistence 2.69 (single base run) |
+| C3 Mapper certified vs uncertified lens, stability across renamings | β₀/β₁ and their stability | certified: β₀ = 1, β₁ = 6; uncertified: 2 nodes, β₀ = 2, β₁ = 0 (22 features — not a comparable lens); **stability across renamings not computed** (Mapper was run on the base model only) |
+
+### 3. Kill-test outcomes
+None pre-registered. The structural anchor holds: with the dictionary transported by the renaming, exact identity is
+recovered to 1e-3 on 99.97 % of latent activations.
+
+### 4. What contradicts the plan's framing — stated first
+* **C2 is nearly tautological as designed.** Transporting the dictionary with the gauge makes the features the same features
+  by construction; the blind certification then measures the *recall of the Hungarian matcher* on activation profiles
+  (99.4 %), not whether an independently fitted dictionary finds the same concepts. The interesting instability — different
+  seeds resolving the same subspace differently (2606.12138, NOVELTY_BOARD #7) — was not pre-registered and was not run.
+  What is claimable from Gold Ship is therefore the negative-space statement: *if* a concept inventory is transported with
+  the network's gauge, nothing about it moves; any instability observed across seeds is not a gauge artifact.
+* The uncertified lens comparison in C3 is empty (22 near-dead latents), so the "certified vs uncertified Mapper" contrast
+  says nothing here; and Mapper stability across renamings was not measured.
+* The residual-SAE half of C1 was not executed by this runner (stated as by-construction, backed by K6).
+
+### 5. Novelty
+NOVELTY_BOARD #7: seed-consistency of SAE features is TAKEN (2606.12138); the gauge half is what Gold Ship measured, and it
+comes out invariant-by-construction. TopoAct is the neighbour for the Mapper view (cite).
+
+### 6. Claimable / not claimable
+* Claimable: "an MLP-space concept dictionary transported with the exact gauge group is invariant to the float floor, and a
+  blind activation-profile matcher recovers 99.4 % of its latents — so cross-seed SAE feature instability cannot be blamed
+  on the network's symmetries".
+* Not claimable: a certified inventory in the sense of concepts stable across independently fitted dictionaries; any C3
+  stability statement; anything at scale (C4 is the HPCC job).
+
 ## Block D — Attribution, anchor only (D1) — FINAL 2026-09-09
 
 ### 1. Plain English
