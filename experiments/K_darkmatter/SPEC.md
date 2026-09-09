@@ -1,5 +1,7 @@
 # Block K — Dark matter: what the tools miss (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-K run. `results/` empty. Changes after
 results exist go to `AMENDMENTS.md`. Novelty: **OPEN as application** (MP null on transformer
 weights exists, Sept 2025; on SAE residuals not found — search logged in NOVELTY.md). K7

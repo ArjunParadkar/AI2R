@@ -1,5 +1,7 @@
 # Block D — Attribution (anchor only) — pre-registration
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any run. Novelty: **TAKEN** — Implementation Invariance
 axiom (Sundararajan, Taly & Yan 2017); axiom satisfaction per method tabulated in the July-2026
 survey. Path methods pass; LRP/DeepLIFT and neuron-level methods fail. No claim; D1 demonstrates

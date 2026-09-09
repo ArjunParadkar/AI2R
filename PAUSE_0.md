@@ -1,5 +1,7 @@
 # PAUSE 0 — Shared infrastructure S1–S5 (2026-09-07)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Written as a report, not a stop (Arjun's standing instruction: run without pausing; review afterwards).
 
 ## 1. Plain English

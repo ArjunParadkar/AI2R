@@ -1,5 +1,7 @@
 # Block C — Audited concept map (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-C run. Novelty: **FLAGGED** — feature alignment
 across seeds and RTD/tRSA comparisons exist; the invariance-certification layer on SAE features is
 likely open ("SAE feature consistency across seeds", "gauge fixing sparse autoencoder features" —

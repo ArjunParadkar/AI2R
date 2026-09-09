@@ -1,5 +1,7 @@
 # Block Z — Topology beyond persistent homology (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-Z run. Each item carries its own novelty flag.
 
 ## Z1 — Zigzag persistence across training  [5070]  FLAGGED (search "zigzag persistence neural network training")

@@ -1,5 +1,7 @@
 # PAUSE 2 — Block F, the audit (F8–F13) — FINAL 2026-09-09 (F8–F10 on the full enumeration; F11 final; F12 HPCC; F13 shipped)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 ## 1. Plain English
 The audit ran on all 3 143 enumerated specimens (F8: every renaming exact to 1.1e-13; F9: the weight-product anchor
 invariant to 2.7e-14 on every specimen) and on GPT-2 small (F11). The table says the same thing in both places: quantities

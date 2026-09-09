@@ -1,5 +1,7 @@
 # PAUSE 3 — Block K, dark matter (K1–K9) — 2026-09-08 (FINAL for the laptop-runnable items; K7/K8 HPCC, Gemma not run)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Written as a report, not a stop (standing instruction). Runs: `wb-gpu-queue` K1 (TL venv) + `wb-k2k6` (rerun after
 the `mp_edge_hi` attribute bug, commit 71d223c) on 2026-09-07; K6 (`run_K6.py`, written 2026-09-08 — the original
 runner never implemented it) as `wb-k6`. Gemma-2-2B / Gemma Scope: **NOT RUN** (gated model, no HF token on this

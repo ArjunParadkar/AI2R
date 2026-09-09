@@ -1,5 +1,7 @@
 # PAUSE 5 — Blocks Z (topology beyond PH) and L (release gates) — DRAFT 2026-09-09 (L section final; Z pending compute)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 _Handbook §13 format. Z1–Z3 run in `wb-gpu-queue` after C1–C3; Z4/Z5 in `wb-cpu-queue` after D1/M1. Their sections are filled
 when the CSVs land. The L section below is final for the laptop gates; L7 is an HPCC job._
 

@@ -1,5 +1,7 @@
 # Block B — Bias: certify the real part, retire the rest (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-B run. Novelty: **FLAGGED** (INLP/LEACE
 concept-erasure literature; gauge-invariance of bias directions and subspace-rank-as-erasure-
 predictor likely open but adjacent — search logged in NOVELTY.md before write-up).

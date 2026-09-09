@@ -1,5 +1,7 @@
 # Block M — Memorization: audit and benchmark the v1 survivor (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-M run. Novelty: **TAKEN** (per-sample noisy-label
 detection: MOIT, CrossSplit, ELR; Fisher-rank spectral signature 2026) — no "first" claim; M2/M3
 are baseline comparisons. Prior in-house: whitebox-lib Phase 2 (2026-08-29): the signal exists

@@ -1,5 +1,7 @@
 # PAUSE 1 — Block F, the spine: F1–F7 (headline decision) — 2026-09-09 FINAL on the full enumeration
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Written as a report, not a stop (standing instruction). Status of the inputs: F1 final; F2 2 692/2 694 CPU
 specimens + 424/424 d3w8 GPU specimens (the last two d2w10 specimens are on an 8 h wall budget, AMENDMENTS #11;
 d3w10 deliberately last in the GPU queue); F3 recomputed in full 2026-09-09 01:11–03:42 (3 143 specimens, totals aggregated 09:09); **F4a/F4b/F4c FINAL** (full reruns 03:42–09:02; F4a 133 cells per criterion,

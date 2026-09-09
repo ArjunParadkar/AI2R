@@ -1,5 +1,7 @@
 # Block V — Legibility: what makes a network explainable (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 before any Block-V run. Novelty: phase diagram **OPEN** (Golechha
 et al. qualitative); V5 drift **FLAGGED** (Filan et al. clusterability during training). Prior
 in-house: E4 (2026-08-30, 87 models): no structural measure predicts discovery success within an

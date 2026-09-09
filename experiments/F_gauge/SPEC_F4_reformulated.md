@@ -1,5 +1,7 @@
 # F4/F5 reformulated (pre-registration, 2026-09-07, after AMENDMENTS #8; before any run of this code)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Inputs: `results/explanations.csv` (minimal circuits per specimen × criterion, handbook-interpretable
 flag, Méloux count, functional key) and the trained specimens. Frozen: F1–F3, F7–F11.
 

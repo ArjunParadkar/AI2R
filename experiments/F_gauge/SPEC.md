@@ -1,5 +1,7 @@
 # Block F — The Spine: gauge orbits and the invariance audit (pre-registration)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 Status: SPEC written 2026-09-07 **before any run**. `results/` is empty at this
 commit. Changes after results exist go to `AMENDMENTS.md`, never here.
 Novelty status: **OPEN** (handbook §3) — bridge between parameter-symmetry

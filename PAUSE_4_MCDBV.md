@@ -1,5 +1,7 @@
 # PAUSE 4 — Blocks M, C, D, B, V — DRAFT 2026-09-09 (Blocks B and D final; M/C/V running)
 
+_Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
+
 ## Block B — Bias (B1–B5)
 
 ### 1. Plain English
