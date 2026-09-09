@@ -23,7 +23,8 @@ fast = ["giotto-ph>=0.2"]
 torch = ["torch>=2.0"]
 viz = ["matplotlib>=3.7"]
 legibility = ["torch>=2.0", "networkx>=3.0", "python-igraph>=0.10", "leidenalg>=0.10"]
-dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0", "networkx>=3.0", "python-igraph>=0.10", "leidenalg>=0.10"]
+topology = ["gudhi>=3.8", "kmapper>=2.0", "networkx>=3.0"]   # zigzag additionally needs dionysus (C++ build; tests importorskip it)
+dev = ["pytest>=7", "giotto-ph>=0.2", "matplotlib>=3.7", "torch>=2.0", "networkx>=3.0", "python-igraph>=0.10", "leidenalg>=0.10", "gudhi>=3.8", "kmapper>=2.0"]
 
 [project.urls]
 Repository = "https://github.com/ArjunParadkar/AI2R"

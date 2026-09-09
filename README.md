@@ -63,7 +63,7 @@ pytest -q                                             # ~30 s
 
 Dependencies: numpy, scipy, scikit-learn, ripser, persim; giotto-ph
 (recommended, multi-threaded exact PH); torch only for model hooks;
-`[legibility]` extra (networkx, python-igraph, leidenalg) for `whiteboxtopo.legibility`.
+`[legibility]` extra (networkx, python-igraph, leidenalg) for `whiteboxtopo.legibility`; `[topology]` extra (gudhi, kmapper, networkx) for `topology.graph_ph` / `topology.mapper` — `topology.zigzag` additionally needs `dionysus` (C++ build, not pinned).
 Import name is `whiteboxtopo` (the PyPI/dist name `whitebox-topo` is taken on
 the plain `whitebox` name by an unrelated GIS package).
 

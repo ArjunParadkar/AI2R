@@ -27,7 +27,7 @@ structured (137 outliers of 768 on 20 000 tokens, structured fraction 0.34) and,
 | L5 | CLAIMS.md: claim → experiment → evidence file → null → failure mode → novelty status | `CLAIMS.md` §"Sprint modules" (6 entries) + 3 dead-claim entries (F4a-1/F5/F6, B2, K3/K5); every entry carries a NOVELTY_BOARD number | yes |
 | L6 | end-to-end on GPT-2 small in one session, timing logged | `benchmarks/l6_end_to_end_gpt2.py` → `benchmarks/results/L6_timing.json`: load 5 s, identity 22 s (max Δlogit 1.7–2.3e-3 fp32), audit 308 s (9 quantities × 4 kinds × 8), darkmatter 172 s, total **507 s**; `hidden` recorded not-applicable (ReLU-MLP only); gluing and legibility recorded not-covered with the reason | yes |
 | L7 | end-to-end on Gemma-2-9B on HPCC, timing, what doesn't scale | `hpcc/l7_end_to_end.py` written (bf16 identity floor, audit, K8-cache darkmatter, `does_not_scale` list) — **not run** (no local GPU holds 9B) | pending HPCC |
-| L8 | pip-installable; CI green on 3.10–3.12 | `uv build` → `whitebox_topo-0.1.0-py3-none-any.whl` + sdist; fresh Python 3.10 venv installs the wheel with `[dev]` and imports `whiteboxtopo.__all__` (38 names); full suite in that venv: _see the L8 line in §3_; CI matrix widened to 3.10 / 3.11 / 3.12 (`.github/workflows/ci.yml`) — CI itself runs on push (repo not yet pushed) | local yes; remote pending push |
+| L8 | pip-installable; CI green on 3.10–3.12 | `uv build` → `whitebox_topo-0.1.0-py3-none-any.whl` + sdist; fresh Python 3.10 venv installs the wheel with `[dev]` and imports `whiteboxtopo.__all__` (38 names); full suite in that venv after the `[topology]` fix: **138 passed, 4 skipped (dionysus), 0 failed** (106 s); CI matrix widened to 3.10 / 3.11 / 3.12 (`.github/workflows/ci.yml`) — CI itself runs on push (repo not yet pushed) | local yes; remote pending push |
 | L9 | README pitch: "the auditor", never "opened the black box" | `README.md` now opens "whitebox-topo — the auditor"; the only occurrence of "open the black box" is the negation "We did **not** open the black box" | yes |
 | L10 | NOVELTY_BOARD.md finalised, every claim re-searched within 14 days | `NOVELTY_BOARD.md`: 12 claims, searches 2026-09-07 (F, K) and 2026-09-09 (M, C, B, V, Z, D); next re-search due before release, ≤ 2026-09-23 | yes (dated) |
 
@@ -38,8 +38,11 @@ structured (137 outliers of 768 on 20 000 tokens, structured fraction 0.34) and,
   "excess = 0"; (ii) a 40-point circle at scale 0.7 has a sampling gap wider than the scale in one of ten seeds — the
   planted loop uses 60 points. A third first-write failure was a counting error in the test (the infinite H0 bar is
   dropped from the diagram, so β₀ = finite bars + 1).
-* L8 fresh-venv run: first attempt failed at collection with `No module named 'conftest'` — caused by the
-  `--import-mode=importlib` flag I added, not by the package; the rerun without it: _filled below when it finishes_.
+* L8 fresh-venv run (Python 3.10.20, wheel + `[dev]`): first attempt failed at collection with `No module named
+  'conftest'` — caused by the `--import-mode=importlib` flag I added, not by the package. The rerun without it:
+  **133 passed, 4 skipped (dionysus), 5 FAILED — `gudhi` and `kmapper` were imported by shipped `topology.graph_ph` /
+  `topology.mapper` but declared in no extra.** A real L8 miss, fixed by adding a `[topology]` extra (gudhi, kmapper,
+  networkx) and both packages to `[dev]`; third run: 138 passed, 4 skipped, 0 failed.
 * L6 kill (flips vs F11): none of the nine verdicts differs from the F11 table (same quantities, 1 000 vs 2 000 tokens,
   8 vs 30 renamings).
 
