@@ -12,21 +12,21 @@ run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKI
 # gate on completeness on disk, not only on unit liveness (a failed+relaunched unit let the queue start early once — AMENDMENTS #9)
 # AMENDMENTS #11: the F2 tail unit runs under an 8 h wall budget (RuntimeMaxSec); if it ends with specimens still
 # missing they are recorded in results/enumeration_excluded.csv (reason = wall budget) and the queue proceeds.
-while systemctl --user is-active --quiet wb-f2-cpu2 || systemctl --user is-active --quiet wb-f2-gpu24c; do sleep 120; done
+while systemctl --user is-active --quiet wb-rice-shower || systemctl --user is-active --quiet wb-rice-shower-gpu; do sleep 120; done
 if ! $V $E/../wb_ready.py f2; then $V $E/../wb_ready.py f2 --exclude-remaining "wall budget 8h exceeded after 3 power-loss restarts (AMENDMENTS #11)"; fi
 while ! $V $E/../wb_ready.py f2; do sleep 120; done
 stage "F2 enumeration finished"
-cd $E/F_gauge && run F3        $V -u run_F3.py
-cd $E/F_gauge && run F4a_kills $V -u run_F4a.py --kills
-cd $E/F_gauge && run F4a       $V -u run_F4a.py --procs 8 --max-pairs 20000
-cd $E/F_gauge && run F4b       $V -u run_F4b.py
-cd $E/F_gauge && run F4c       $V -u run_F4c.py
-cd $E/F_gauge && run aggregate_F   $V -u aggregate_F.py
-cd $E/F_gauge && run aggregate_F3  $V -u aggregate_F.py f3
-cd $E/F_gauge && run F8_F10    $V -u run_F8_F10.py --procs 8
-cd $E/F_gauge && run F10_summary $V -u summarize_F10.py
-cd $E/D_attribution && run D1  $V -u run_D1.py
-cd $E/M_memorization && run M1 $V -u run_M1.py 6
-cd $E/Z_topology && run Z4     $V -u run_Z4_Z5.py
-cd $E/Z_topology && run Z5     $V -u run_Z4_Z5.py z5
+cd $E/F_gauge && run grass_wonder        $V -u run_F3.py
+cd $E/F_gauge && run el_condor_pasa_kills $V -u run_F4a.py --kills
+cd $E/F_gauge && run el_condor_pasa       $V -u run_F4a.py --procs 8 --max-pairs 20000
+cd $E/F_gauge && run air_groove       $V -u run_F4b.py
+cd $E/F_gauge && run hishi_amazon       $V -u run_F4c.py
+cd $E/F_gauge && run grass_wonder_aggregate   $V -u aggregate_F.py
+cd $E/F_gauge && run grass_wonder_aggregate_f3  $V -u aggregate_F.py f3
+cd $E/F_gauge && run special_week    $V -u run_F8_F10.py --procs 8
+cd $E/F_gauge && run special_week_summary $V -u summarize_F10.py
+cd $E/D_attribution && run sakura_bakushin_o  $V -u run_D1.py
+cd $E/M_memorization && run haru_urara $V -u run_M1.py 6
+cd $E/Z_topology && run tokai_teio     $V -u run_Z4_Z5.py
+cd $E/Z_topology && run tokai_teio     $V -u run_Z4_Z5.py z5
 stage "CPU QUEUE DONE"

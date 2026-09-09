@@ -11,25 +11,25 @@ run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKI
         stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; local rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
         [ $rc -eq 0 ] && touch "$E/../logs/$name.done"; return $rc; }
 # wait for F7
-while systemctl --user is-active --quiet wb-f7b || systemctl --user is-active --quiet wb-f2-gpu24c || ! $V $E/../wb_ready.py f7 || ! $V $E/../wb_ready.py f2gpu; do sleep 60; done
+while systemctl --user is-active --quiet wb-fuji-kiseki || systemctl --user is-active --quiet wb-rice-shower-gpu || ! $V $E/../wb_ready.py f7 || ! $V $E/../wb_ready.py f2gpu; do sleep 60; done
 stage "F7 and F2 d3w8 finished"
-cd $E/F_gauge      && run F11     $V -u run_F11.py --n 30
-cd $E/K_darkmatter && run K1      $TL -u run_K1.py
-cd $E/K_darkmatter && run K2_K6   $V -u run_K2_K6.py
-# B2_B4 may be running standalone (wb-b2b4, 2026-09-08 rerun): wait for it, then the .done marker skips the stage
-while systemctl --user is-active --quiet wb-b2b4; do sleep 60; done
-cd $E/B_bias       && run B2_B4   $V -u run_B2_B4.py
-# V1 in three disjoint shards: shard 0 here, shards 1-2 as units wb-v1-s1 / wb-v1-s2 (launched with the queue); wait for all
-# (all three shards run as units wb-v1-s0/1/2 so they start before B2_B4 finishes; the queue only waits)
-while systemctl --user is-active --quiet wb-v1-s0 || systemctl --user is-active --quiet wb-v1-s1 || systemctl --user is-active --quiet wb-v1-s2 || ! $V $E/../wb_ready.py v1; do sleep 120; done
+cd $E/F_gauge      && run narita_brian     $V -u run_F11.py --n 30
+cd $E/K_darkmatter && run eishin_flash      $TL -u run_K1.py
+cd $E/K_darkmatter && run smart_falcon   $V -u run_K2_K6.py
+# B2_B4 may be running standalone (wb-winning-ticket, 2026-09-08 rerun): wait for it, then the .done marker skips the stage
+while systemctl --user is-active --quiet wb-winning-ticket; do sleep 60; done
+cd $E/B_bias       && run winning_ticket   $V -u run_B2_B4.py
+# V1 in three disjoint shards: shard 0 here, shards 1-2 as units wb-mejiro-dober-s1 / wb-mejiro-dober-s2 (launched with the queue); wait for all
+# (all three shards run as units wb-mejiro-dober-s0/1/2 so they start before B2_B4 finishes; the queue only waits)
+while systemctl --user is-active --quiet wb-mejiro-dober-s0 || systemctl --user is-active --quiet wb-mejiro-dober-s1 || systemctl --user is-active --quiet wb-mejiro-dober-s2 || ! $V $E/../wb_ready.py v1; do sleep 120; done
 stage "V1 all shards finished"
-cd $E/V_legibility && run V2_V3   $V -u run_V2_V3.py
-cd $E/M_memorization && run M2    $V -u run_M2_M3.py
-cd $E/M_memorization && run M3    $V -u run_M2_M3.py --m3
-cd $E/C_concepts   && run C1_C3   $V -u run_C1_C3.py
-cd $E/Z_topology   && run Z3      $V -u run_Z1_Z3.py z3
-cd $E/Z_topology   && run Z1      $V -u run_Z1_Z3.py z1
-cd $E/Z_topology   && run Z2      $V -u run_Z1_Z3.py z2
-cd $E/V_legibility && run V5      $V -u run_V2_V3.py --all-ckpts
-cd $E/F_gauge      && run F2_d3w10 $V -u run_F2.py --gpu --min-hidden 30 --max-hidden 30 --procs 4
+cd $E/V_legibility && run twin_turbo   $V -u run_V2_V3.py
+cd $E/M_memorization && run vodka    $V -u run_M2_M3.py
+cd $E/M_memorization && run daiwa_scarlet    $V -u run_M2_M3.py --m3
+cd $E/C_concepts   && run gold_ship   $V -u run_C1_C3.py
+cd $E/Z_topology   && run agnes_tachyon      $V -u run_Z1_Z3.py z3
+cd $E/Z_topology   && run seiun_sky      $V -u run_Z1_Z3.py z1
+cd $E/Z_topology   && run manhattan_cafe      $V -u run_Z1_Z3.py z2
+cd $E/V_legibility && run silence_suzuka      $V -u run_V2_V3.py --all-ckpts
+cd $E/F_gauge      && run mejiro_mcqueen $V -u run_F2.py --gpu --min-hidden 30 --max-hidden 30 --procs 4
 stage "QUEUE DONE"
