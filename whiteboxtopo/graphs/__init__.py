@@ -62,7 +62,7 @@ def rewired_null(A, n: int = 20, seed: int = 0):
         H = G.copy()
         try:
             nx.double_edge_swap(H, nswap=max(1, 2 * H.number_of_edges()), max_tries=50 * max(1, H.number_of_edges()), seed=int(rng.integers(1 << 31)))
-        except nx.NetworkXError:
+        except nx.NetworkXException:      # includes NetworkXAlgorithmError: a 2–3-edge graph cannot be double-edge-swapped (V AMENDMENTS #6)
             pass
         B = nx.to_numpy_array(H); iu = np.triu_indices(B.shape[0], 1); m = B[iu] != 0
         vals = np.zeros(m.sum()); vals[:] = rng.permutation(w)[:m.sum()] if len(w) >= m.sum() else np.resize(rng.permutation(w), m.sum())

@@ -45,3 +45,8 @@ relaunched as `wb-v2v3` with a headroom gate (wait for ≥ 2.5 GB free, up to 60
 positions for sort/copy) and produced a 3-D array (512, positions·nodes, d); `compute_diagrams` requires (n, features).
 Fixed by flattening to (n, positions·nodes·d) before PCA-20 (the MLP branch was already 2-D). Smoke-tested on the first
 transformer row; relaunched as `wb-v6` (resumable per model; 3 MLP models were already recorded) with BLAS threads capped at 4.
+
+**#6 (2026-09-09 13:55) Twin Turbo fell at the first fence after the relaunch:** `graphs.rewired_null` let
+`NetworkXAlgorithmError` through (a graph with 2–3 edges at density 0.01 cannot be double-edge-swapped); the except clause
+caught only `NetworkXError`. Now catches `NetworkXException`; the null for such a graph is the graph itself (Q_excess ≈ 0),
+which is the honest answer for a graph with no rewirable structure. Relaunched as `wb-twin-turbo` (headroom-gated).
