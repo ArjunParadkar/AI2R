@@ -29,7 +29,14 @@ def cloud(m, task, arch, dev="cpu"):
 
 
 def dgm1(A):
-    A = A - A.mean(0); U, s, Vt = np.linalg.svd(A, full_matrices=False); Z = A @ Vt[:min(NPC, Vt.shape[0])].T
+    A = np.asarray(A, dtype=np.float64)
+    if not np.all(np.isfinite(A)):                       # V AMENDMENTS #9: a diverged checkpoint yields NaN/inf activations -> no diagram
+        return np.zeros((0, 2))
+    A = A - A.mean(0)
+    try: Vt = np.linalg.svd(A, full_matrices=False)[2]
+    except np.linalg.LinAlgError:                        # gesdd occasionally fails to converge; gesvd is slower but robust
+        from scipy.linalg import svd as _svd; Vt = _svd(A, full_matrices=False, lapack_driver="gesvd")[2]
+    Z = A @ Vt[:min(NPC, Vt.shape[0])].T
     D = np.asarray(compute_diagrams(Z, maxdim=1, backend="ripser", thresh_percentile=95.0).dgms[1]).reshape(-1, 2)
     return D[np.isfinite(D[:, 1])]
 

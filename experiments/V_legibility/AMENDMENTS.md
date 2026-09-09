@@ -62,3 +62,7 @@ and the caching allocator already holds ~6 GB after 40 models): per-model fallba
 is reloaded and scored on the CPU (a `device` column records which). The paddock no longer has a Twin Turbo stage (she is
 the standalone `wb-twin-turbo`; the paddock waits for her before Gold Ship). The V2/V3 CSVs written before this amendment
 have no `device` column; DictWriter appends the new column only to new rows — readers must use `csv.DictReader` (they do).
+
+**#9 (2026-09-09 14:25) Nice Nature fell on `numpy.linalg.svd` "SVD did not converge"** inside the PCA-20 step of the SV
+film. `dgm1` now returns an empty diagram for a cloud with non-finite values (a diverged checkpoint) and falls back to
+LAPACK gesvd when gesdd fails to converge. Relaunched (resumable, 16 models recorded).
