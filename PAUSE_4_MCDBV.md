@@ -51,6 +51,11 @@ noisy cell. No B4 kill was pre-registered (3-point consistency check only; 2 of 
 Searches logged in `B_bias/NOVELTY.md` (2026-09-07): INLP/LEACE erasure literature; gauge-invariance of bias
 directions and rank-predicts-erasure adjacent but unclaimed. After these results the claim that would have been
 novel (certified invariant bias direction) is not supported; what is reportable is the negative.
+Re-search 2026-09-09 (NOVELTY_BOARD #8): **Jin et al., arXiv 2608.10566 (Aug 2026) show that iterative erasure counts
+are not an affine-invariant concept dimension** — an information-preserving reparameterisation changes the count. B4's
+separability rank is therefore reported as a *procedure-relative* quantity (a property of the erasure procedure and the
+representation's geometry), not as a concept dimension; the "rank predicts erasure" reading is TAKEN in the negative and
+B4 makes no such claim. B2's exact-gauge audit of the direction is the complementary check the paper does not run.
 
 ### 6. Claimable / not claimable
 **Claimable.** (a) Residual-stream bias directions are renaming-invariant by construction and MLP-hidden ones are

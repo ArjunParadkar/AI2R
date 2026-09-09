@@ -36,3 +36,7 @@ S4 protocol models in `legibility.models` do accept it). Fix in `whiteboxtopo/le
 where the signature accepts it (the same rule `graphs.attribution_graph` already used for `edge_scores`). Discovery tests
 (9) green; V3 smoke on `modadd_mlp64_l10.0_wd0.0_dr0.0_s0`: F = 0.90, size 85, 3-seed Jaccard 0.55. Relaunched as the
 standalone unit `wb-v2v3` (the gpu queue had already moved on to M2; V5 later in the queue uses the fixed code).**
+
+**#4 (2026-09-09 12:20) V2/V3 OOM while sharing the GPU** (C1_C3's renamed GPT-2 copies + V6 on the same 8 GB card):
+`edge_scores` on a 512-wide MLP needed 586 MiB with 425 MiB free. The run is resumable per model (8 of 130 done);
+relaunched as `wb-v2v3` with a headroom gate (wait for ≥ 2.5 GB free, up to 60 attempts, 3-min back-off after a crash).
