@@ -53,12 +53,16 @@ def main():
             for k in ("random_labels", "untrained", "seed"): row[k] = int(row[k])
             t0 = time.time()
             for d_ in (dev, "cpu"):                       # V AMENDMENTS #8: a model whose edge scores do not fit the 8 GB card is scored on the CPU
+                oom = False
                 try:
                     m, task = load(row, STEPS, d_)
                     s2 = structure(m, task, device=d_); s3 = disc(m, task, device=d_); break
                 except torch.OutOfMemoryError:
+                    oom = True
+                # outside the except block: the exception's traceback holds the frames (and tensors) alive until it is cleared
+                if oom:
                     print(row["name"], "CUDA OOM -> retrying on cpu", flush=True)
-                    m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()   # release the failed model's GPU memory so the paddock can use the card
+                    m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
             s2.update(name=row["name"], task=row["task"], arch=row["arch"], device=d_)
             s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0, device=d_)
             for p, r in ((p2, s2), (p3, s3)):
@@ -78,11 +82,14 @@ def main():
             for step in sorted(hist):
                 if (row["name"], step) in done: continue
                 for d_ in (dev, "cpu"):
+                    oom = False
                     try:
                         m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True)
                         if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
                         break
                     except torch.OutOfMemoryError:
+                        oom = True
+                    if oom:
                         print(row["name"], step, "CUDA OOM -> retrying on cpu", flush=True)
                         m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
                 r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,

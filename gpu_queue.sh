@@ -30,7 +30,6 @@ stage "V1 all shards finished"
 # Twin Turbo runs as the standalone unit wb-twin-turbo (V AMENDMENTS #7/#8); the paddock waits for her before Gold Ship
 cd $E/M_memorization && run vodka    $V -u vodka.py
 cd $E/M_memorization && run daiwa_scarlet    $V -u vodka.py --daiwa-scarlet
-while systemctl --user is-active --quiet wb-twin-turbo; do sleep 120; done   # Twin Turbo has the card first (standalone unit)
 cd $E/C_concepts   && run gold_ship   $V -u gold_ship.py
 cd $E/Z_topology   && run agnes_tachyon      $V -u agnes_tachyon.py agnes_tachyon
 cd $E/Z_topology   && run seiun_sky      $V -u agnes_tachyon.py seiun_sky
