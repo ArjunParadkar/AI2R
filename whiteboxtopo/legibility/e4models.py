@@ -144,7 +144,27 @@ class TinyTF(_Base):
         logits = self.unemb(self.lnf(x[:, self.read_pos]))
         return logits
 
+    EDGE_BUDGET_BYTES = 1.5e9   # peak for the two (N, B*T*d) fp32 matrices; larger batches are scored in exact token chunks
+
     def edge_scores(self, tokens, targets, means):
+        """EAP edge scores. The score is a sum over batch elements (the metric is a batch mean, so every chunk's
+        contribution is rescaled by B_chunk / B), so a batch too large for ``EDGE_BUDGET_BYTES`` is processed in
+        chunks and summed — identical to the one-shot result up to float summation order (V AMENDMENTS #10)."""
+        B, T = tokens.shape; N = self.nL * self.per
+        per_elem = 2 * N * T * self.d * 4
+        Bc = max(1, int(self.EDGE_BUDGET_BYTES // per_elem))
+        if Bc >= B: return self._edge_scores_full(tokens, targets, means)
+        E = None; node = None
+        for i in range(0, B, Bc):
+            tb, yb = tokens[i:i + Bc], targets[i:i + Bc]; w = tb.shape[0] / B
+            mb = [mu[i:i + Bc] if (torch.is_tensor(mu) and mu.dim() >= 1 and mu.shape[0] == B) else mu for mu in means]   # TF means are per example (B, 1, d)
+            Eb, nb = self._edge_scores_full(tb, yb, mb)
+            E = Eb * w if E is None else E + Eb * w; node = nb * w if node is None else node + nb * w
+            del Eb, nb
+            if tokens.is_cuda: torch.cuda.empty_cache()
+        return E, node
+
+    def _edge_scores_full(self, tokens, targets, means):
         self.zero_grad(set_to_none=True)
         logits = self.forward(tokens, record=True); m = metric(logits, targets)
         outs = self._node_out

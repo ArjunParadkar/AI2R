@@ -66,3 +66,10 @@ have no `device` column; DictWriter appends the new column only to new rows — 
 **#9 (2026-09-09 14:25) Nice Nature fell on `numpy.linalg.svd` "SVD did not converge"** inside the PCA-20 step of the SV
 film. `dgm1` now returns an empty diagram for a cloud with non-finite values (a diverged checkpoint) and falls back to
 LAPACK gesvd when gesdd fails to converge. Relaunched (resumable, 16 models recorded).
+
+**#10 (2026-09-09 15:00) Chunked EAP edge scores for the transformers.** `TinyTF.edge_scores` materialised two
+(N, B·T·d) fp32 matrices (tf4 on sort: 1 040 nodes × 512 × 16 × 128 ≈ 4.3 GB each) — the reason sort_tf4 could not fit even
+an empty card and fell back to a ~1 h CPU run per model. The score is a sum over batch elements, so it is now computed in
+token chunks under a 1.5 GB budget (per-example means sliced with the chunk, each chunk weighted by B_chunk/B) and summed;
+`tests/test_legibility.py::test_tinytf_edge_scores_chunked_equals_full` checks equality with the one-shot result. Protocol
+unchanged (same batch, same metric); Twin Turbo restarted so the transformers run on the GPU alongside Gold Ship.

@@ -77,3 +77,20 @@ def test_legibility_score_refuses():
         legibility_score()
     with pytest.raises(NotImplementedError):
         legibility_score(model=None, task_batch=None)
+
+
+def test_tinytf_edge_scores_chunked_equals_full():
+    """V AMENDMENTS #10: chunked EAP edge scores (memory budget) equal the one-shot result."""
+    import torch
+    from whiteboxtopo.legibility.tasks import Task
+    from whiteboxtopo.legibility.e4models import TinyTF
+    task = Task("sort"); m = TinyTF(task, n_layers=2, d=32, heads=4, mlp=64, seed=0).eval()
+    x, y = task.batch(64, 0, "eval"); means = m.node_means(x)
+    E_full, n_full = m._edge_scores_full(x, y, means)
+    old = TinyTF.EDGE_BUDGET_BYTES
+    try:
+        TinyTF.EDGE_BUDGET_BYTES = 2 * m.nL * m.per * x.shape[1] * m.d * 4 * 7   # -> chunks of 7 batch elements
+        E_ch, n_ch = m.edge_scores(x, y, means)
+    finally:
+        TinyTF.EDGE_BUDGET_BYTES = old
+    assert torch.allclose(E_full, E_ch, rtol=1e-4, atol=1e-6 * E_full.abs().max()) and torch.allclose(n_full, n_ch, rtol=1e-4, atol=1e-6)
