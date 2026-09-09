@@ -60,7 +60,47 @@ real split at n ≤ 400 here; (d) gender PR = 1, COMPAS 3.3, toxicity 1.7 (three
 **Not claimable.** A certified bias direction; BiasTop as a bias detector; rank-predicts-erasure (3 points, one
 inconsistent); anything about other model families (B5 not run); blind-alignment stability (not measured).
 
-## Block M — _pending (M1 in cpu queue after D1; M2/M3 in gpu queue after V2/V3)_
+## Block M — Memorisation audit (M1 running), benchmark (M2 FINAL), per-class scoping (M3 running) — 2026-09-09
+
+### 1. Plain English (M2)
+On the retrained v1 CIFAR battery (ResNet-18, 5 000 images, label noise 0–100 % × 3 seeds, plus 3 full-data augmented
+generalisers; 21 models, every noisy model reproduces 100 % of its flipped labels), the topological memorisation signal
+separates memorising from generalising models with AUC 0.967 — one model misranked — while three of the baselines
+(susceptibility to label flips, ELR early-loss statistics, and the oracle generalisation gap) reach AUC 1.00. The DeLong
+test cannot distinguish them (p = 0.36, 21 models), so the pre-registered rule fires in its first clause: **the signal is
+positioned as complementary, not deprecated.** The battery is too easy for the baselines to say more: with 40 epochs on
+5 000 images every noisy model memorises everything, so any statistic that sees the training labels is trivially perfect.
+
+### 2. Pre-registered thresholds and outcomes
+| Item | Rule | Outcome |
+|---|---|---|
+| M2 verdict | if any baseline AUC ≥ topo − 0.02 with DeLong p > 0.05 → "complementary"; if a baseline beats it at p < 0.05 → deprecated-in-favour-of | topo **0.967**; susceptibility 1.00, ELR early-loss 1.00, ELR consistency 1.00, generalisation gap 1.00 (all p = 0.36); weight-norm ratio 0.967 (p = 1.0); effective rank 0.00 raw / 1.00 in its best orientation (sign not pre-registered → not counted) → **complementary; not deprecated** (`results/M2_delong.json`) |
+| M2 regression target (`memorized_flipped_frac`) | Spearman per method | **degenerate**: every noisy model reproduces 100 % of its flips, the target is constant on the positive class (empty column in `M2_roc.csv`) |
+| M1 | every shipped feature component invariant under channel permutations; scaling verdict reported | _running (`wb-m1`, 216 clouds)_ |
+| M3 | AUC per method, no claim | _running_ |
+
+### 3. Kill-test outcomes (M2)
+* Retrained-vs-cached check (SPEC): `topo_score_v1cache` equals `topo_score` on every model (the retrained probe
+  activations reproduce the cached features exactly at the shipped calibration).
+* The baselines' perfect AUCs are a property of the battery (all noisy models at train_acc_noisy = 1.000), not evidence
+  of a better detector; the M3 per-class study and M4 (HPCC) are where the baselines are expected to win on merit.
+
+### 4. What contradicts the plan's framing
+* The regression half of M2 cannot be evaluated on this battery (constant target); a graded-memorisation battery (fewer
+  epochs, so noisy models memorise 30–80 % of their flips) would be needed — not built in this sprint.
+* "Grokking-without-test complexity proxy" as effective rank comes out with AUC 0.00 in the pre-registered orientation
+  (higher rank ↔ memorising here); flipping the sign post hoc would make it perfect, so it is reported as 0.00.
+
+### 5. Novelty
+TAKEN (NOVELTY_BOARD #9): Topo² (2608.30487) is the direct topological neighbour — memorisation and generalisation as
+separable PH-H1 channels on VGG/CIFAR with noisy labels — and must be cited next to MOIT / CrossSplit / ELR; our
+`memorization_signal` remains a v1 calibrated signal audited (M1) and benchmarked (M2), not a new detector.
+
+### 6. Claimable / not claimable (M2)
+* Claimable: "on the v1 battery the topological signal is statistically indistinguishable from label-aware baselines
+  (AUC 0.967 vs 1.00, p = 0.36) while using only a 500-point probe cloud and no training labels".
+* Not claimable: superiority over anything; graded-memorisation tracking; anything cross-family until M4.
+
 ## Block C — _pending (C1–C3 in gpu queue)_
 ## Block D — Attribution, anchor only (D1) — FINAL 2026-09-09
 

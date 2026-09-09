@@ -51,11 +51,19 @@ def main():
         for p in sorted(glob.glob(os.path.join(LIB, f"battery_{fam}", "*.npz"))):
             for key in np.load(p).files:
                 jobs.append((fam, p, key))
-    print(len(jobs), "clouds", flush=True)
-    out = os.path.join(R, "M1_audit.csv"); w = None
-    with Pool(int(sys.argv[1]) if len(sys.argv) > 1 else 4) as pool, open(out, "w", newline="") as f:
+    out = os.path.join(R, "M1_audit.csv")
+    # M AMENDMENTS #2 (2026-09-09): resumable — (model, layer) pairs already in the CSV are skipped and the file is appended.
+    done = set()
+    if os.path.exists(out) and os.path.getsize(out) > 0:
+        with open(out) as f: done = {(r["model"], r["layer"]) for r in csv.DictReader(f)}
+    jobs = [j for j in jobs if (os.path.basename(j[1])[:-4], j[2]) not in done]
+    print(len(jobs), "clouds", f"({len(done)} already done)", flush=True)
+    w = None
+    with Pool(int(sys.argv[1]) if len(sys.argv) > 1 else 4) as pool, open(out, "a", newline="") as f:
         for i, rows in enumerate(pool.imap_unordered(job, jobs)):
-            if w is None: w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader()
+            if w is None:
+                w = csv.DictWriter(f, fieldnames=list(rows[0]))
+                if not done: w.writeheader()
             for r in rows: w.writerow(r)
             f.flush()
             if i % 10 == 0: print(i, rows[0]["model"], rows[0]["layer"], flush=True)
