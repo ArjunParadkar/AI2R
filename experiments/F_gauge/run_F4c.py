@@ -1,6 +1,6 @@
 """F4c — interpretation-level gauge: do Méloux threshold interpretations collapse under per-unit negation?
 (SPEC_F4_reformulated §F4c). Writes results/F4c_negation.csv, F4c_kill.json."""
-import os, sys, json, itertools
+import csv, os, sys, json, itertools
 from multiprocessing import Pool
 import numpy as np, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -64,10 +64,22 @@ def main():
     E = E[(E.n_meloux > 1) & (E.n_meloux <= CAP)]
     E = E.sample(min(3000, len(E)), random_state=0)
     jobs = [(r.specimen, r.criterion, int(r.circuit_id), r.specimen.split("_d")[0]) for r in E.itertuples()]
-    rows = []
-    with Pool(4) as pool:
+    # resumable (AMENDMENTS #11 addendum): every finished circuit is appended to F4c_negation_partial.csv at once;
+    # on restart the deterministic sample (random_state=0) is re-drawn and finished circuits are skipped.
+    part = os.path.join(R, "F4c_negation_partial.csv"); rows = []
+    if os.path.exists(part):
+        rows = pd.read_csv(part).to_dict("records")
+        done = {(r["specimen"], r["criterion"], int(r["circuit_id"])) for r in rows}
+        jobs = [j for j in jobs if (j[0], j[1], j[2]) not in done]
+        print(f"resuming: {len(rows)} done, {len(jobs)} left", flush=True)
+    with Pool(4) as pool, open(part, "a", newline="") as f:
+        w = None
         for i, r in enumerate(pool.imap_unordered(job, jobs, chunksize=8)):
             rows.append(r)
+            if w is None:
+                w = csv.DictWriter(f, fieldnames=list(r))
+                if f.tell() == 0: w.writeheader()
+            w.writerow(r); f.flush()
             if i % 200 == 0: print(i, r, flush=True)
     D = pd.DataFrame(rows); D.to_csv(os.path.join(R, "F4c_negation.csv"), index=False)
     ok = D[D.n_interp > 0]
