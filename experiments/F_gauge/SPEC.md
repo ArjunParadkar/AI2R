@@ -198,7 +198,7 @@ forms); n = 30 renamings per kind (time-bounded). Function identity verified
   flagged in the table, not smoothed.
 
 ## F12 — Frontier audit  [HPCC]
-Script `hpcc/f12_frontier_audit.py`: Llama-3-8B or Gemma-2-9B, 3 layers,
+Script `hpcc/kitasan_black.py`: Llama-3-8B or Gemma-2-9B, 3 layers,
 checkpointed per (layer, kind, sample), `--resume`. Not run locally.
 
 ## F13 — Ship  [LAPTOP]

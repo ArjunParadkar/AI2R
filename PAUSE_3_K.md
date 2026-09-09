@@ -3,7 +3,7 @@
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
 Written as a report, not a stop (standing instruction). Runs: `wb-gpu-queue` K1 (TL venv) + `wb-k2k6` (rerun after
-the `mp_edge_hi` attribute bug, commit 71d223c) on 2026-09-07; K6 (`run_K6.py`, written 2026-09-08 — the original
+the `mp_edge_hi` attribute bug, commit 71d223c) on 2026-09-07; K6 (`matikanefukukitaru.py`, written 2026-09-08 — the original
 runner never implemented it) as `wb-k6`. Gemma-2-2B / Gemma Scope: **NOT RUN** (gated model, no HF token on this
 machine) — recorded as not run, not as a null. K7/K8 are HPCC and not run.
 
@@ -58,7 +58,7 @@ these statistics are gauge-invariant: see §2/§7.
    quadratic features with the linear λ can only hurt). This is an under-powered test of nonlinearity, not evidence
    against Engels et al.'s nonlinear error component, which is defined on x, not on Δlogits.
 4. **K6 was missing from the runner.** The 2026-09-07 runner implemented K2–K5 only; K6 was written and run on
-   2026-09-08 (`run_K6.py`). No K result was changed by this; it is recorded so the omission is visible.
+   2026-09-08 (`matikanefukukitaru.py`). No K result was changed by this; it is recorded so the omission is visible.
 5. Gemma-2-2B was never run (gated). Every K number is GPT-2 small, one SAE release, one 50 k-token corpus.
 
 ## 5. Novelty searches (K_darkmatter/NOVELTY.md, 2026-09-07)
@@ -83,7 +83,7 @@ nonlinear-residue statement (K5 negative and under-powered); anything about Gemm
 
 ## 7. K6 — certification (filled from the run, 2026-09-08; `results/K6_certification.csv`, log `logs/K6.log`)
 
-Run: `run_K6.py --n 20` (TL venv, `wb-k6`), GPT-2 small layers 3/6/9, 2 000 OpenWebText tokens per layer, n = 20
+Run: `matikanefukukitaru.py --n 20` (TL venv, `wb-k6`), GPT-2 small layers 3/6/9, 2 000 OpenWebText tokens per layer, n = 20
 renamings per kind (head permutations, within-head Q/K and V/O basis changes, MLP-unit permutations, LN-compatible
 rescalings; combined = all four). Wall ≈ 50 min per layer, PCA and statistics on CPU (the GPU was shared with the V1
 shards; K AMENDMENT: `Es/Hs` moved to CPU, batch 8 — no numerical change). Verdict rule is the S3 `audit_quantities`

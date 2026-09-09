@@ -69,7 +69,7 @@ accounting: null directions of the realisation Jacobian confined to a single par
 masked inputs are dependent (dead units, units sharing an activation pattern, always-active groups)
 — together with the scaling generators span the *explained* fiber; the remainder is *unexplained*.
 `corank`, `known_dim` and `excess` are unchanged; only the split of `excess` into explained /
-unexplained changed. `symmetry.csv` is recomputed for every specimen by `run_F3.py` (the F2 job's
+unexplained changed. `symmetry.csv` is recomputed for every specimen by `grass_wonder.py` (the F2 job's
 first-pass values are superseded; the file is rewritten).
 
 **#8 (2026-09-07, DESIGN amendment, principal review — not a threshold change).** The F4/F5 test as
@@ -107,7 +107,7 @@ Nothing in F1–F3, F7–F11 changes; `explanations.csv` is the input to all thr
 ## #9 (2026-09-07, operational — laptop power loss during the run)
 The machine lost power at ~17:20 with `wb-f2-cpu2`, `wb-f2-gpu24c`, `wb-f3` and `wb-f7b` in flight and both
 queues still waiting. All result CSVs parsed intact (no torn rows; per-specimen resume works for F2 and F7).
-Bug exposed by the crash: `run_F3.py` opens `results/symmetry.csv` in write mode while `run_F2.py` appends its
+Bug exposed by the crash: `grass_wonder.py` opens `results/symmetry.csv` in write mode while `rice_shower.py` appends its
 older-accounting rows to the same file — a concurrent-writer collision (F3's flushes overwrite F2's appends).
 Fix: F2 now writes to `results/symmetry_f2.csv`; `results/symmetry.csv` is owned solely by F3, which is a full
 recompute and is re-run from scratch after the enumeration finishes (added to `cpu_queue.sh` before F4a).
@@ -129,7 +129,7 @@ touched for F11, K1, K2_K6) so a third relaunch needs no editing. Relaunched 202
 ## #11 (2026-09-08, operational — THIRD power loss, 16:30; wall budget for the F2 tail)
 Boot 16:30 on 2026-09-08 (last V1 log write ~15:12; no shutdown record). State at the crash: F2 CPU still 2692/2694 —
 the same two d2w10 tail specimens (`AND123_OR4_d2_w10_s13`, `NANDTREE_d2_w10_s21`) were in flight for the third
-time and had never been given more than ~5 h continuous (their cell-mates took up to 3 477 s; `run_F2.py` has no
+time and had never been given more than ~5 h continuous (their cell-mates took up to 3 477 s; `rice_shower.py` has no
 per-specimen budget). K6 done (all layers, `K6_certification.csv`), B2 rerun + B3/B4 done, V1 32/130 with
 PID-checked locks (stale locks are reclaimed automatically), F3 not yet started (cpu_queue was correctly waiting).
 Relaunched 17:09 (V1 shards, V6 waiter, gpu_queue) and 17:15 (F2 tail, cpu_queue). Change: the F2 tail unit now

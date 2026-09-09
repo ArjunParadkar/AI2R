@@ -35,7 +35,7 @@ activation space with the certified-feature lens (top-2 certified feature activa
 to Mapper with an uncertified lens (random uncertified features) — β0/β1 of the Mapper graphs and
 their stability across renamings. NOVELTY FLAGGED (TopoAct; cite; contribution = certification).
 
-## C4 — Scale  [HPCC]  `hpcc/c4_scale.py`.
+## C4 — Scale  [HPCC]  `hpcc/sirius_symboli.py`.
 
 ## C5 — Retire v1 P1 claims  [LAPTOP]
 `AUDIT.md`: retirement of FPL↔accuracy and crystallization-order (v1 P1 n.s. on full-data models,

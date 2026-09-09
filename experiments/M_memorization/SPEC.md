@@ -54,7 +54,7 @@ per-sample detection aggregated per class. Metric: separation of the 3 corrupted
 7 clean (AUC over classes, 10 per seed). Expected: existing methods win. Scoping result only.
 
 ## M4 — Cross-family scope  [HPCC]
-`hpcc/m4_cross_family.py`: recalibrate per family (CNN, LM, ViT), cross-family AUC (v1: 0.00).
+`hpcc/admire_vega.py`: recalibrate per family (CNN, LM, ViT), cross-family AUC (v1: 0.00).
 
 ## Pass/fail summary
 | Item | Threshold |

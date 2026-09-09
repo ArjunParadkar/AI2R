@@ -1,7 +1,7 @@
 # Block Z — amendments
 
 **#1 (2026-09-09 12:30) Z4b — scale gauge-fix + calibrated null added after PAUSE_5 §Z4 flagged both as missing.**
-`run_Z4b.py`, same 380 pairs (same seed and sampling loop as `run_Z4_Z5.z4`; the `hungarian_raw` condition reproduces Z4's
+`tokai_teio_b.py`, same 380 pairs (same seed and sampling loop as `run_Z4_Z5.z4`; the `hungarian_raw` condition reproduces Z4's
 numbers exactly: 0.118 / 0.129 / 0.28). Conditions: `scalefix_hungarian` — every hidden unit's incoming vector normalised
 to unit length with the outgoing row rescaled inversely (an exact symmetry; asserted to leave circuit validity unchanged
 on every pair), then Hungarian matching and linear interpolation in that frame; `scalefix_random_perm` — random unit

@@ -50,4 +50,4 @@ Correlate PR with v1's erasure success (gender succeeded, COMPAS/toxicity failed
 reported as a consistency check, not a test.
 
 ## B5 — Per-family calibration  [HPCC]
-`hpcc/b5_family_calibration.py`: GPT-2, Pythia-410M, Gemma-2-2B; BiasTop nulls; n requirements.
+`hpcc/mejiro_ryan.py`: GPT-2, Pythia-410M, Gemma-2-2B; BiasTop nulls; n requirements.

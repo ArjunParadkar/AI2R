@@ -52,7 +52,7 @@ percentile of its own trajectory); `check_invariance` of SV under the model's ga
 perm/scaling on the cloud columns; transformer: MLP-unit perm on the MLP-hidden cloud).
 Survives iff ≥ 50 % of peaks exceed the shuffle null AND SV is invariant; otherwise retired.
 
-## V7 — Pythia drift  [HPCC]  `hpcc/v7_pythia_drift.py`.
+## V7 — Pythia drift  [HPCC]  `hpcc/mejiro_ardan.py`.
 
 ## V8 — Ship legibility_score  [LAPTOP]
 Calibrate on V1 with 20 % held out (stratified by architecture); held-out AUC for "discovery will
