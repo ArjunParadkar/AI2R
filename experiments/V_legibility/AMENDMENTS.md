@@ -50,3 +50,9 @@ transformer row; relaunched as `wb-v6` (resumable per model; 3 MLP models were a
 `NetworkXAlgorithmError` through (a graph with 2–3 edges at density 0.01 cannot be double-edge-swapped); the except clause
 caught only `NetworkXError`. Now catches `NetworkXException`; the null for such a graph is the graph itself (Q_excess ≈ 0),
 which is the honest answer for a graph with no rewirable structure. Relaunched as `wb-twin-turbo` (headroom-gated).
+
+**#7 (2026-09-09 14:00) GPU serialisation.** After the relaunch three GPU horses shared the 8 GB card: Twin Turbo (standalone,
+5.9 GB with the caching allocator), Gold Ship (paddock) and then Agnes Tachyon — Gold Ship and Agnes Tachyon each fell to
+CUDA OOM within seconds and the paddock cascaded on to Seiun Sky. Paddock stopped; `gpu_queue.sh` now (a) waits for
+`wb-twin-turbo` to finish before Gold Ship, (b) waits for ≥ 4 GB free before every stage, (c) retries each stage once after
+5 min. Results so far are intact (all three horses are resumable).

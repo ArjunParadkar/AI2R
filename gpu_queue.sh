@@ -7,9 +7,13 @@ E=/home/god/Whitebox/whitebox-v2/experiments
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 stage() { echo "STAGE $1 $(date '+%F %T')"; }
 # a stage with logs/<name>.done is skipped (idempotent relaunch after power loss — AMENDMENTS #10)
+# V AMENDMENTS #7 (2026-09-09): one GPU horse at a time — every stage waits for >= 4 GB free GPU memory before starting and is
+# retried once after a failure (an OOM cascade took Gold Ship and Agnes Tachyon down in 5 s each while Twin Turbo held the card).
+gpu_wait() { while [ "$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | head -1)" -lt 4000 ]; do sleep 60; done; }
 run() { local name=$1; shift; if [ -e "$E/../logs/$name.done" ]; then stage "SKIP $name (done marker)"; return 0; fi
-        stage "START $name"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; local rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
-        [ $rc -eq 0 ] && touch "$E/../logs/$name.done"; return $rc; }
+        local rc=1; for attempt in 1 2; do gpu_wait
+        stage "START $name (attempt $attempt)"; ( "$@" ) >> "$E/../logs/$name.log" 2>&1; rc=$?; echo "STAGE END $name rc=$rc $(date '+%F %T')"
+        if [ $rc -eq 0 ]; then touch "$E/../logs/$name.done"; break; fi; sleep 300; done; return $rc; }
 # wait for F7
 while systemctl --user is-active --quiet wb-fuji-kiseki || systemctl --user is-active --quiet wb-rice-shower-gpu || ! $V $E/../wb_ready.py fuji_kiseki || ! $V $E/../wb_ready.py mejiro_mcqueen; do sleep 60; done
 stage "F7 and F2 d3w8 finished"
@@ -26,6 +30,7 @@ stage "V1 all shards finished"
 cd $E/V_legibility && run twin_turbo   $V -u twin_turbo.py
 cd $E/M_memorization && run vodka    $V -u vodka.py
 cd $E/M_memorization && run daiwa_scarlet    $V -u vodka.py --daiwa-scarlet
+while systemctl --user is-active --quiet wb-twin-turbo; do sleep 120; done   # Twin Turbo has the card first (standalone unit)
 cd $E/C_concepts   && run gold_ship   $V -u gold_ship.py
 cd $E/Z_topology   && run agnes_tachyon      $V -u agnes_tachyon.py agnes_tachyon
 cd $E/Z_topology   && run seiun_sky      $V -u agnes_tachyon.py seiun_sky
