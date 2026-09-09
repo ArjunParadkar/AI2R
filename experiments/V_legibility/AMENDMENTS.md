@@ -23,3 +23,9 @@ and after each successful `train_one`. Shards restarted 18:13 (locks reclaimed b
 Addendum 18:55: the fixed 2 500 MB headroom gate also serialised the shards — a shard with a small MLP waited 27 min
 while two transformers trained. Headroom is now per architecture (`NEED_MB`: mlp 700, tf2 1500, tf3 2200, tf4 3000,
 from observed peaks); OOM retry unchanged. Shards restarted 18:55.
+Addendum 22:35: two shards OOM'd 13× each in lock-step on `sort_tf2_*` (both retrying every 120 s with 4.6 GB free
+between collisions). Transformers now train one at a time behind a PID-checked GPU lock (`ckpt/.tf_gpu.lock`), with
+jittered OOM backoff; a shard that cannot get the lock releases the model and takes the next MLP (multi-pass loop,
+`done` re-read from the CSV before every model so nothing is retrained or double-logged). Headroom for tf raised
+to 3.5–4 GB. Remaining at 22:35: 73 models (33 transformers ≈ 25–45 min each serialised, 40 MLPs). Same training
+code and seeds; interrupted models retrain from 0.
