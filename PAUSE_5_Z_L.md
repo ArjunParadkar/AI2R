@@ -66,4 +66,52 @@ theoretical framing to cite; the empirical audit remains OPEN).
 * Not claimable: anything about 9B models (L7 pending); "CI green" until the repository is pushed and the workflow runs;
   any of the Z results (below).
 
-## Block Z — _pending_ (Z3 → Z1 → Z2 in `wb-gpu-queue` after C1–C3; Z4 → Z5 in `wb-cpu-queue` after M1)
+## Block Z — Z4/Z5 FINAL 2026-09-09; Z1–Z3 pending (`wb-gpu-queue` after C1–C3)
+
+### 1. Plain English (Z4, Z5)
+Z4 asked whether explanations are path-connected in the quotient of parameter space by the gauge group. Within one
+network the question is vacuous — F4/F5 found K = N, so there are no two explanations in the same orbit to connect. The
+fallback the SPEC pre-registered — take a valid circuit of network A, match B's units to A's by the Hungarian assignment,
+interpolate linearly from A to B and ask whether A's circuit stays valid — gives a clear negative: of 380 pairs across 20
+cells and both validity criteria, 11.8 % keep the circuit valid over ≥ 90 % of the path, 12.9 % have it valid at B, and
+the median path is valid for only 28 % of its length, breaking first at a median 28 % of the way. The same algorithm
+in a different network (F4a's "same algorithm, different weights") is not reachable along a straight line through
+matched weights. Z5 confirms the covariance law on all 657 specimens: raw persistence summaries scale with exponent
+exactly 2.000 under uniform per-network rescaling (R² = 1) and move under per-unit scalings (median CV 0.15 on the probe
+cloud, 0.82 on the truth table), while the per-unit-standardised persistence is invariant on 100 % of specimens
+(pre-registered ≥ 99 %).
+
+### 2. Pre-registered thresholds and outcomes
+| Item | Threshold | Outcome |
+|---|---|---|
+| Z4 within-orbit | pairs in the same orbit, different specimens | **0 pairs** (K = N everywhere) → vacuous, as the SPEC anticipated |
+| Z4 cross-orbit fallback | fraction of pairs with a valid path (validity ≥ 0.9 of 50 points) | **0.118** (45/380); valid at the endpoint 0.129; median fraction valid 0.28; median first break at 0.28 of the path; by criterion: `zero` 0.16, `mean` 0.08; best cells OR4_d2_w10 / OR4_d2_w6 (0.4 zero), worst THR3 / XORPAIR / EQPAIR / ONEHOT (0.0) — `results/Z4_paths.csv` |
+| Z4 "π₀ of the valid set vs H₀ of the quotient" | to be reported | **not computed**: with no within-orbit pairs the quotient's H₀ is the orbit count itself (= N), and the valid set's π₀ along straight lines is what the table above measures pairwise; no component count was formed |
+| Z5 TC exponent | k = 2, R² ≥ 0.99 | median component exponent **2.000** (IQR 2e-9), R² 1.000 on 657 specimens |
+| Z5 H1 count, persistent entropy | k = 0 | **not separately reported**: `Z5_scaling_law.csv` carries the median over the 6 summary components (n_bars, TC, PE for H0/H1), not per-component exponents — a gap in the runner, recorded, not patched today |
+| Z5 `ph_std_probe` | invariant on ≥ 99 % of specimens | **100 %** (657/657) |
+
+### 3. Kill-test outcomes
+* Z4 has **no calibrated null**: a no-matching (random unit assignment) baseline and a same-network-different-seed-of-the-
+  same-circuit control were not pre-registered and were not run. Without them, 11.8 % cannot be read as "low" against
+  anything but its own scale. Recorded as the reason Z4 is not claimable.
+* Z5 kill is F9/F10's own: the anchor `weight_product` is invariant on every specimen in the same table.
+
+### 4. What contradicts the plan's framing
+* Z4's premise (there are explanations to connect within an orbit) was already dead after PAUSE 1; the block ran its
+  fallback and produced a negative that agrees with F4a-1 (orbits do not merge explanations across seeds) — the same
+  finding seen a third way, not new evidence.
+* The interpolation is in *raw* parameter space after Hungarian matching only; scale gauge-fixing (which F4a needed
+  before its residual meant anything) was not applied here. A Z4 rerun with F4a's full gauge-fixing is the obvious next
+  step and would likely raise the fractions; not run.
+
+### 5. Novelty
+NOVELTY_BOARD #12 (OPEN; nearest 2505.23681 mode connectivity via parameter-space symmetry) and #11 (Z1/Z2 pending).
+
+### 6. Claimable / not claimable
+* Claimable: the Z5 covariance law (exponent 2 on 657 nets; standardisation makes persistence gauge-invariant) — an
+  instrument statement backing `topology.normalized_persistence`.
+* Not claimable: any Z4 statement beyond "the vacuous case occurred, and the fallback measurement is 11.8 % without a null".
+
+## Block Z — Z1–Z3 _pending_ (`wb-gpu-queue`: C1_C3 → Z3 → Z1 → Z2 → V5 → F2 d3w10)
+
