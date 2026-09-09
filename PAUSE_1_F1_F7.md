@@ -1,11 +1,10 @@
-# PAUSE 1 — Block F, the spine: F1–F7 (headline decision) — DRAFT 2026-09-08
+# PAUSE 1 — Block F, the spine: F1–F7 (headline decision) — 2026-09-09 (F4a final; F4b/F4c + F3 aggregate pending)
 
 Written as a report, not a stop (standing instruction). Status of the inputs: F1 final; F2 2 692/2 694 CPU
 specimens + 424/424 d3w8 GPU specimens (the last two d2w10 specimens are on an 8 h wall budget, AMENDMENTS #11;
-d3w10 deliberately last in the GPU queue); F3 being recomputed in full in `wb-cpu-queue` (the partial
-`symmetry.csv` on disk is a 1 000-specimen early pass); F4a/F4b/F4c numbers below are from the **partial F4a run
-of 2026-09-07** (140 cells) and the kills — the full rerun follows F3 in the CPU queue and will replace the numbers,
-not the verdicts unless stated. F5/F6 as pre-registered are **withdrawn** (AMENDMENTS #8). F7 final.
+d3w10 deliberately last in the GPU queue); F3 recomputed in full 2026-09-09 01:11–03:42 (3 143 specimens; the F3 totals quoted are still the
+1 000-specimen pass until `aggregate_F3` runs); **F4a FINAL** (full rerun 03:42–03:47, 133 cells per criterion,
+106 392 / 68 558 pooled circuits under zero / mean ablation); F4b/F4c running next in the CPU queue. F5/F6 as pre-registered are **withdrawn** (AMENDMENTS #8). F7 final.
 
 ## 1. Plain English
 The headline the handbook was built around — that the many "valid explanations" of a small network are mostly the
@@ -17,12 +16,12 @@ automorphism, which a generically trained network never has. K = N is a theorem,
 2026-09-07). Second, across seeds — the version of the question that can be asked — trained circuits for the same
 Boolean function are **not** renamings of each other: with a residual calibrated so that r tracks injected weight
 noise (r/δ = 0.54–0.56) and an exact-relabel positive control at 3e-14, the median cell merges essentially nothing
-at tolerance 0.1 (K(0.1)/N = 0.997 zero-ablation, 1.000 mean-ablation) and only about a third of circuits at the
-very loose 0.5. Same-function cross-seed pairs are closer than different-function pairs (median residual 1.006 vs
-1.126, KS p = 9e-7, N = 1.09 M vs 150 pairs), so the test has signal; the signal is just small. What *is* shared
+at tolerance 0.1 (median cell K(0.1)/N = 1.000 under both ablation criteria; 1.000 at every τ ≤ 0.03 in every
+cell) and even at the very loose 0.5 the median cell merges only 17 % (zero) / 1 % (mean) of its circuits. Same-function cross-seed pairs are closer than different-function pairs (median residual 1.027 vs
+1.164, KS D = 0.27, p underflows to 0 with 5.74 M vs 165 pairs), so the test has signal; the signal is just small. What *is* shared
 across seeds is the algorithm, not the weights: under zero-ablation the number of distinct gate-composition
-strings is about a third of the number of circuits (K_alg/N median 0.34; AND4 0.24, OR4 0.28, THR3 0.30 —
-monotone functions converge on fewer algorithms; AND_OR3 1.0), so "same algorithm, different weights" is the
+strings is well under half the number of circuits (K_alg/N median 0.39; AND4 0.24, OR4 0.28, THR3 0.30 —
+monotone functions converge on fewer algorithms; EXACT2 and AND_OR3 1.0), so "same algorithm, different weights" is the
 accurate description of multiplicity across seeds. What survives from F1–F7 as a headline candidate is the other
 thing Block F measured on the way: **hidden symmetries are universal** — 99.4 % of specimens have more flat
 directions than the permutation × scaling group predicts (median excess 22 directions on a 1 000-specimen pass),
@@ -40,8 +39,8 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
 | F3 | record known_dim vs fiber_dim; extract and identify excess | **MET** (partial pass, n = 1 000): G_incomplete 99.4 %; excess median 22; 59 % of excess identified (dead / constant / duplicate directions); 41 % "hidden symmetry, unclassified" |
 | F4 kill (original) | planted 1/2/3 algorithms → K = 1/2/3 | **PASS as amended** (AMENDMENTS #2/#4): K over the *planted* circuits = 1/2/3 and 100/100 gauge-consistency; exhaustive enumeration finds additional recombination circuits (K_exhaustive = 3, 47 for k = 1, 2) that are real, not a counter bug |
 | F5a/F5b | median K/N ≤ 0.5; width slopes | **WITHDRAWN** (AMENDMENTS #8) — tautological; `F5_verdicts.json` frozen |
-| F4a-1 (primary, reformulated) | median cell K(0.1)/N ≤ 0.5 | **FAIL** — 0.997 (zero), 1.000 (mean); K(τ)/N = 1.000 for every τ ≤ 0.03; 0.667 / 0.988 at τ = 0.5 |
-| F4a-2 | K_alg/N ≤ K(0.1)/N in the median cell | **PASS** under zero (0.34 ≤ 0.997); **vacuous** under mean (1.00 ≤ 1.00 — the mean criterion leaves ≤ 1 interpretable circuit per seed in most cells) |
+| F4a-1 (primary, reformulated) | median cell K(0.1)/N ≤ 0.5 | **FAIL** — 1.000 (zero), 1.000 (mean); K(τ)/N = 1.000 for every τ ≤ 0.03; 0.828 / 0.993 at τ = 0.5 (q10 across cells 0.445 / 0.816) |
+| F4a-2 | K_alg/N ≤ K(0.1)/N in the median cell | **PASS** under zero (0.39 ≤ 1.00); **vacuous** under mean (1.00 ≤ 1.00 — the mean criterion leaves ≤ 1 interpretable circuit per seed in most cells) |
 | F4b | median K_within(1e-2)/N ≥ 0.95 | pending (kills pass; runs after F4a in the CPU queue) |
 | F4c | ratio 1 expected (no negation collapse) | pending (kill pass) |
 | F7 | repeat F2–F5 on 1–2-layer attention models | enumeration **MET** (60/60 converged, extended G verified to ≤ 4e-15); orbit verdicts **withdrawn** with F5 |
@@ -50,12 +49,13 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
 * F2 kill: PASS (above). F4 original kill: PASS as amended (the planted circuits are recovered as one orbit
   per algorithm; the exhaustive count is larger because duplicated sub-circuits recombine — that observation is
   what led to AMENDMENTS #8).
-* F4a K1 exact relabel: PASS, r_max = 3.2e-14 over 414 circuit pairs (three bugs found and fixed by this kill
-  before it passed: Hungarian on unnormalised vectors, scale gauge not fixed, shared-pattern collapse done in the
-  wrong frame). K2 noise tracking: PASS, r/δ = 0.54, 0.56, 0.55 at δ = 1e-3, 1e-2, 3e-2, so τ has a meaning
-  (τ = 0.1 ≈ 18 % relative weight noise). K3 planted cross-algorithm: PASS, r(A,B) = 0.86 > 0.3 (A–C and B–C
+* F4a K1 exact relabel: PASS, r_max = 0.0 over 412 circuit pairs on the final run (3.2e-14 on the partial run;
+  three bugs found and fixed by this kill before it first passed: Hungarian on unnormalised vectors, scale gauge
+  not fixed, shared-pattern collapse done in the wrong frame). K2 noise tracking: PASS, r/δ = 0.62, 0.61, 0.60 at
+  δ = 1e-3, 1e-2, 3e-2, so τ has a meaning (τ = 0.1 ≈ 16 % relative weight noise). K3 planted cross-algorithm: PASS, r(A,B) = 0.86 > 0.3 (A–C and B–C
   have different layer sizes → r = ∞ by definition; only one finite cross-algorithm pair, stated as such).
-  K4 null: same-function pairs are closer than different-function pairs, KS p = 9.2e-7 — the test has signal.
+  K4 null: same-function pairs are closer than different-function pairs (1.027 vs 1.164, KS D = 0.27, p ≈ 0) — the
+  test has signal.
 * F4b kills: PASS — planted two gauge copies r = 7e-17; duplicated-unit specimen: both-copies circuit collapses to
   the original at 3.8e-15 (the half-weight single-copy minimal circuits differ by a real r = 0.21, as they should).
 * F4c kill: PASS (complement pair → one class; different patterns → two classes).
@@ -66,7 +66,7 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
    plan and is why F5/F6 are withdrawn rather than reported as "H-F5a fails".
 2. The reformulated cross-seed test, which can fail, does fail in the direction opposite to the headline: circuits
    for the same function from different seeds are essentially as far apart in gauge-residual terms as circuits for
-   *different* functions (1.006 vs 1.126 on a [0, 2] scale). Convergent learning at the circuit-weight level does
+   *different* functions (1.027 vs 1.164 on a [0, 2] scale). Convergent learning at the circuit-weight level does
    not happen in these networks; only algorithmic (gate-string) convergence does, and only under zero-ablation.
 3. F6 as specified ("one representative per orbit, name the algorithm") was executed under the withdrawn test, so
    its table (`F6_algorithms.csv`, 5 rows, n_orbits = n_explanations) is not an orbit autopsy and most entries are
@@ -93,17 +93,17 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
 * Explanation multiplicity in small trained MLPs is not a coordinate artifact: structurally within a network
   (theorem-level), empirically across seeds (K(0.1)/N ≈ 1 with a residual whose meaning is calibrated by planted
   noise and an exact-relabel control).
-* Across seeds the shared object is the algorithm (gate-composition string), not the weights: K_alg/N ≈ 0.34 under
-  zero-ablation, lowest for monotone functions.
+* Across seeds the shared object is the algorithm (gate-composition string), not the weights: K_alg/N ≈ 0.39 under
+  zero-ablation (133 cells), lowest for monotone functions.
 * Nearly every trained small ReLU MLP has flat directions beyond permutation × scaling (99.4 %); most are
   identifiable degeneracies, a substantial minority are not.
 * The gauge machinery itself (S1) and the enumeration (F2) are validated by kills to 1e-14.
 **Not claimable.**
 * Any K/N orbit ratio from F5 or F7 pooled orbits; the F6 algorithm table; anything about K vs width (F5b).
-* The F4a/F4b/F4c numbers above as final — they are the partial-data run; the CPU queue's full rerun on the
-  complete F2 + full F3 replaces them (verdict expected unchanged: it is 1.000 at every τ ≤ 0.03 in every cell).
+* F4b/F4c numbers (pending in the CPU queue) and the F3 totals as final until `aggregate_F3` rewrites them from
+  all 3 143 specimens. F4a is final.
 * Any transformer-level orbit statement (F7 enumeration is fine; its orbit counts are the withdrawn test).
 **Headline decision (for the principal).** The paper's headline cannot be "gauge explains multiplicity". The
 defensible spine is: (i) the invariance audit (PAUSE 2 — F10/F11 as the mechanistic extension of Implementation
 Invariance), (ii) the negative cross-seed orbit result with calibrated controls, and (iii) universal hidden
-symmetry in trained small nets with a partial classification. (ii) and (iii) need the CPU-queue reruns to be final.
+symmetry in trained small nets with a partial classification. (ii) is final; (iii) needs the F3 aggregate to be final.
