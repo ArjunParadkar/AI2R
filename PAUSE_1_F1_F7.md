@@ -1,10 +1,10 @@
-# PAUSE 1 — Block F, the spine: F1–F7 (headline decision) — 2026-09-09 (F4a final; F4b/F4c + F3 aggregate pending)
+# PAUSE 1 — Block F, the spine: F1–F7 (headline decision) — 2026-09-09 (F4a/F4b/F4c final; F3 aggregate pending)
 
 Written as a report, not a stop (standing instruction). Status of the inputs: F1 final; F2 2 692/2 694 CPU
 specimens + 424/424 d3w8 GPU specimens (the last two d2w10 specimens are on an 8 h wall budget, AMENDMENTS #11;
 d3w10 deliberately last in the GPU queue); F3 recomputed in full 2026-09-09 01:11–03:42 (3 143 specimens; the F3 totals quoted are still the
-1 000-specimen pass until `aggregate_F3` runs); **F4a FINAL** (full rerun 03:42–03:47, 133 cells per criterion,
-106 392 / 68 558 pooled circuits under zero / mean ablation); F4b/F4c running next in the CPU queue. F5/F6 as pre-registered are **withdrawn** (AMENDMENTS #8). F7 final.
+1 000-specimen pass until `aggregate_F3` runs); **F4a/F4b/F4c FINAL** (full reruns 03:42–09:02; F4a 133 cells per criterion,
+106 392 / 68 558 pooled circuits under zero / mean ablation; F4b all 2 692 specimens; F4c 3 000 circuits). F5/F6 as pre-registered are **withdrawn** (AMENDMENTS #8). F7 final.
 
 ## 1. Plain English
 The headline the handbook was built around — that the many "valid explanations" of a small network are mostly the
@@ -26,7 +26,11 @@ accurate description of multiplicity across seeds. What survives from F1–F7 as
 thing Block F measured on the way: **hidden symmetries are universal** — 99.4 % of specimens have more flat
 directions than the permutation × scaling group predicts (median excess 22 directions on a 1 000-specimen pass),
 and only 59 % of that excess is dead, constant or duplicate units; the remaining 41 % is unclassified extra
-degeneracy in ordinary trained small MLPs. The transformer extension (F7: 60/60 two-layer attention models
+degeneracy in ordinary trained small MLPs. Within one network, approximate gauge copies are real but rare: at 1 % weight tolerance only 3–12 % of specimens have
+any pair of circuits that are near-renamings of each other (F4b passes its ≥ 0.95 threshold with a median of 1.0), so
+the Méloux-style multiplicity inside a network is structural redundancy, not approximate symmetry; and negating
+units never merges interpretations (F4c: 3 000 circuits, zero collapse), so it is not an orientation convention
+either. The transformer extension (F7: 60/60 two-layer attention models
 converged, median 14 / 24 minimal circuits per model under zero / mean ablation) inherits the withdrawal: its
 pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are not a result.
 
@@ -41,8 +45,8 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
 | F5a/F5b | median K/N ≤ 0.5; width slopes | **WITHDRAWN** (AMENDMENTS #8) — tautological; `F5_verdicts.json` frozen |
 | F4a-1 (primary, reformulated) | median cell K(0.1)/N ≤ 0.5 | **FAIL** — 1.000 (zero), 1.000 (mean); K(τ)/N = 1.000 for every τ ≤ 0.03; 0.828 / 0.993 at τ = 0.5 (q10 across cells 0.445 / 0.816) |
 | F4a-2 | K_alg/N ≤ K(0.1)/N in the median cell | **PASS** under zero (0.39 ≤ 1.00); **vacuous** under mean (1.00 ≤ 1.00 — the mean criterion leaves ≤ 1 interpretable circuit per seed in most cells) |
-| F4b | median K_within(1e-2)/N ≥ 0.95 | pending (kills pass; runs after F4a in the CPU queue) |
-| F4c | ratio 1 expected (no negation collapse) | pending (kill pass) |
+| F4b | median K_within(1e-2)/N ≥ 0.95 | **PASS** — median 1.00 under both criteria (2 692 specimens). Approximate stabilisers exist but are rare at tight ε: at ε = 1e-2, 3 % (mean) / 12 % (zero) of specimens have any collapse (mean ratio 0.997 / 0.985); at ε = 0.1 it is 35 % / 59 % (mean ratio 0.92 / 0.81, zero median 0.90). Within-network redundancy is mostly *not* approximate gauge |
+| F4c | ratio 1 expected (no negation collapse) | **AS EXPECTED** — 3 000 sampled circuits (1 < n_Méloux ≤ 20 000): ratio median = mean = 1.000, 0 circuits with any collapse, interpretation counts reproduce n_Méloux in 100 % of circuits (kill pass) |
 | F7 | repeat F2–F5 on 1–2-layer attention models | enumeration **MET** (60/60 converged, extended G verified to ≤ 4e-15); orbit verdicts **withdrawn** with F5 |
 
 ## 3. Kill-test outcomes
@@ -100,8 +104,7 @@ pooled orbit counts (K/N = 1.0 in all 16 cells) are the same tautology and are n
 * The gauge machinery itself (S1) and the enumeration (F2) are validated by kills to 1e-14.
 **Not claimable.**
 * Any K/N orbit ratio from F5 or F7 pooled orbits; the F6 algorithm table; anything about K vs width (F5b).
-* F4b/F4c numbers (pending in the CPU queue) and the F3 totals as final until `aggregate_F3` rewrites them from
-  all 3 143 specimens. F4a is final.
+* The F3 totals as final until `aggregate_F3` rewrites them from all 3 143 specimens (running). F4a/F4b/F4c are final.
 * Any transformer-level orbit statement (F7 enumeration is fine; its orbit counts are the withdrawn test).
 **Headline decision (for the principal).** The paper's headline cannot be "gauge explains multiplicity". The
 defensible spine is: (i) the invariance audit (PAUSE 2 — F10/F11 as the mechanistic extension of Implementation
