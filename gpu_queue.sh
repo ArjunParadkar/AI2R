@@ -31,6 +31,8 @@ stage "V1 all shards finished"
 cd $E/M_memorization && run vodka    $V -u vodka.py
 cd $E/M_memorization && run daiwa_scarlet    $V -u vodka.py --daiwa-scarlet
 cd $E/C_concepts   && run gold_ship   $V -u gold_ship.py
+# wait for Twin Turbo (standalone unit): her caching allocator grows to ~7 GB over 130 models and starved Agnes Tachyon twice
+while systemctl --user is-active --quiet wb-twin-turbo; do sleep 120; done
 cd $E/Z_topology   && run agnes_tachyon      $V -u agnes_tachyon.py agnes_tachyon
 cd $E/Z_topology   && run seiun_sky      $V -u agnes_tachyon.py seiun_sky
 cd $E/Z_topology   && run manhattan_cafe      $V -u agnes_tachyon.py manhattan_cafe
