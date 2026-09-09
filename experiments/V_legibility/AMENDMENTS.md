@@ -29,3 +29,10 @@ jittered OOM backoff; a shard that cannot get the lock releases the model and ta
 `done` re-read from the CSV before every model so nothing is retrained or double-logged). Headroom for tf raised
 to 3.5–4 GB. Remaining at 22:35: 73 models (33 transformers ≈ 25–45 min each serialised, 40 MLPs). Same training
 code and seeds; interrupted models retrain from 0.
+
+**#3 (2026-09-09 11:36) V2/V3 crashed on its first model: `discover_circuit` passed `metric=` to `node_scores`, which the
+E4/V1 node-instrumented models (`legibility.e4models._Base`) do not accept (they score with their own log-prob metric; the
+S4 protocol models in `legibility.models` do accept it). Fix in `whiteboxtopo/legibility/discovery.py`: pass `metric` only
+where the signature accepts it (the same rule `graphs.attribution_graph` already used for `edge_scores`). Discovery tests
+(9) green; V3 smoke on `modadd_mlp64_l10.0_wd0.0_dr0.0_s0`: F = 0.90, size 85, 3-seed Jaccard 0.55. Relaunched as the
+standalone unit `wb-v2v3` (the gpu queue had already moved on to M2; V5 later in the queue uses the fixed code).**

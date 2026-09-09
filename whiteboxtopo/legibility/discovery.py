@@ -59,7 +59,13 @@ def discover_circuit(model, x, targets, means, seed: int = 0, F_target: float = 
     if not np.isfinite(F(full)):
         return dict(keep=keep, size=N, frac=1.0, F=float("nan"), cost=cost, wall=time.time() - t0, gap=gap)
     for _ in range(n_passes):
-        sc = model.node_scores(x, targets, means, metric=metric).abs().numpy()
+        # E4's node-instrumented models (``legibility.e4models``) take no ``metric`` argument (they score with their own
+        # log-prob metric); the S4 protocol models do. Pass it only where accepted (as ``graphs.attribution_graph`` does).
+        import inspect
+        ns = model.node_scores
+        try: accepts_metric = "metric" in inspect.signature(ns).parameters
+        except (TypeError, ValueError): accepts_metric = False
+        sc = (ns(x, targets, means, metric=metric) if accepts_metric else ns(x, targets, means)).abs().numpy()
         sc = sc + rng.normal(0, 1e-9 * (sc.max() + 1e-12), N)
         order = [i for i in np.argsort(sc) if keep[i]]; accepted = 0; pos = 0
         while pos < len(order):
