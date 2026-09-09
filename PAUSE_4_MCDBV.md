@@ -60,7 +60,7 @@ real split at n ≤ 400 here; (d) gender PR = 1, COMPAS 3.3, toxicity 1.7 (three
 **Not claimable.** A certified bias direction; BiasTop as a bias detector; rank-predicts-erasure (3 points, one
 inconsistent); anything about other model families (B5 not run); blind-alignment stability (not measured).
 
-## Block M — Memorisation audit (M1 running), benchmark (M2 FINAL), per-class scoping (M3 running) — 2026-09-09
+## Block M — Memorisation audit (M1 running), benchmark (M2 FINAL), per-class scoping (M3 FINAL) — 2026-09-09
 
 ### 1. Plain English (M2)
 On the retrained v1 CIFAR battery (ResNet-18, 5 000 images, label noise 0–100 % × 3 seeds, plus 3 full-data augmented
@@ -77,7 +77,7 @@ positioned as complementary, not deprecated.** The battery is too easy for the b
 | M2 verdict | if any baseline AUC ≥ topo − 0.02 with DeLong p > 0.05 → "complementary"; if a baseline beats it at p < 0.05 → deprecated-in-favour-of | topo **0.967**; susceptibility 1.00, ELR early-loss 1.00, ELR consistency 1.00, generalisation gap 1.00 (all p = 0.36); weight-norm ratio 0.967 (p = 1.0); effective rank 0.00 raw / 1.00 in its best orientation (sign not pre-registered → not counted) → **complementary; not deprecated** (`results/M2_delong.json`) |
 | M2 regression target (`memorized_flipped_frac`) | Spearman per method | **degenerate**: every noisy model reproduces 100 % of its flips, the target is constant on the positive class (empty column in `M2_roc.csv`) |
 | M1 | every shipped feature component invariant under channel permutations; scaling verdict reported | _running (`wb-m1`, 216 clouds)_ |
-| M3 | AUC per method, no claim | _running_ |
+| M3 | AUC per method, no claim | 3 seeds × 10 classes (classes 0–2 with 40 % within-class flips, 12 epochs): ELR early loss **0.95** (best orientation; 0.85 pooled in its natural orientation), topological per-class score **0.90 best orientation but 0.085 in the shipped orientation** (per seed 0.19 / 0.10 / 0.00), class train accuracy 0.50 (uninformative: every class fits its noisy labels) — `results/M3_summary.csv`, `M3_perclass.csv`; existing methods win, as the SPEC expected |
 
 ### 3. Kill-test outcomes (M2)
 * Retrained-vs-cached check (SPEC): `topo_score_v1cache` equals `topo_score` on every model (the retrained probe
@@ -86,6 +86,14 @@ positioned as complementary, not deprecated.** The battery is too easy for the b
   of a better detector; the M3 per-class study and M4 (HPCC) are where the baselines are expected to win on merit.
 
 ### 4. What contradicts the plan's framing
+* **M3 sign flip.** Per class, corrupted classes get *lower* `tc_ratio` (median 0.61 vs 1.15 for clean classes) and hence
+  a *lower* memorisation score (0.21 vs 0.79) — the opposite of the model-level calibration, where memorising models score
+  higher. `M3_summary.csv` reports the best-orientation AUC (0.90) because the SPEC asked for a scoping AUC; in the
+  orientation the shipped `memorization_signal` would actually output, the per-class AUC is 0.085. So the per-class
+  application is not merely weaker than ELR, it points the wrong way: a corrupted class's probe cloud shows the H1
+  *collapse* that AUDIT.md filed under "failure-to-learn", not the memoriser signature. This is exactly the scope limit
+  VALIDATION.md already states ("probes ≠ ~500 points; layers other than the penultimate") — 150-point per-class clouds are
+  outside the calibration. Recorded here so that nobody reads 0.90 as a per-class detector.
 * The regression half of M2 cannot be evaluated on this battery (constant target); a graded-memorisation battery (fewer
   epochs, so noisy models memorise 30–80 % of their flips) would be needed — not built in this sprint.
 * "Grokking-without-test complexity proxy" as effective rank comes out with AUC 0.00 in the pre-registered orientation
@@ -96,7 +104,9 @@ TAKEN (NOVELTY_BOARD #9): Topo² (2608.30487) is the direct topological neighbou
 separable PH-H1 channels on VGG/CIFAR with noisy labels — and must be cited next to MOIT / CrossSplit / ELR; our
 `memorization_signal` remains a v1 calibrated signal audited (M1) and benchmarked (M2), not a new detector.
 
-### 6. Claimable / not claimable (M2)
+### 6. Claimable / not claimable (M2, M3)
+* M3: nothing claimable; `memorization_signal` must not be applied per class (documented in §4; VALIDATION.md row already
+  excludes it by probe size).
 * Claimable: "on the v1 battery the topological signal is statistically indistinguishable from label-aware baselines
   (AUC 0.967 vs 1.00, p = 0.36) while using only a 500-point probe cloud and no training labels".
 * Not claimable: superiority over anything; graded-memorisation tracking; anything cross-family until M4.
