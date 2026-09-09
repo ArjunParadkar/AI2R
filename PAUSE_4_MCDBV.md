@@ -67,7 +67,7 @@ real split at n ≤ 400 here; (d) gender PR = 1, COMPAS 3.3, toxicity 1.7 (three
 **Not claimable.** A certified bias direction; BiasTop as a bias detector; rank-predicts-erasure (3 points, one
 inconsistent); anything about other model families (B5 not run); blind-alignment stability (not measured).
 
-## Block M — Memorisation audit (M1 running), benchmark (M2 FINAL), per-class scoping (M3 FINAL) — 2026-09-09
+## Block M — Memorisation audit (M1 FINAL), benchmark (M2 FINAL), per-class scoping (M3 FINAL) — 2026-09-09
 
 ### 1. Plain English (M2)
 On the retrained v1 CIFAR battery (ResNet-18, 5 000 images, label noise 0–100 % × 3 seeds, plus 3 full-data augmented
@@ -83,10 +83,14 @@ positioned as complementary, not deprecated.** The battery is too easy for the b
 |---|---|---|
 | M2 verdict | if any baseline AUC ≥ topo − 0.02 with DeLong p > 0.05 → "complementary"; if a baseline beats it at p < 0.05 → deprecated-in-favour-of | topo **0.967**; susceptibility 1.00, ELR early-loss 1.00, ELR consistency 1.00, generalisation gap 1.00 (all p = 0.36); weight-norm ratio 0.967 (p = 1.0); effective rank 0.00 raw / 1.00 in its best orientation (sign not pre-registered → not counted) → **complementary; not deprecated** (`results/M2_delong.json`) |
 | M2 regression target (`memorized_flipped_frac`) | Spearman per method | **degenerate**: every noisy model reproduces 100 % of its flips, the target is constant on the positive class (empty column in `M2_roc.csv`) |
-| M1 | every shipped feature component invariant under channel permutations; scaling verdict reported | _running (`wb-m1`, 216 clouds)_ |
+| M1 | every shipped feature component invariant under channel permutations; scaling verdict reported | **met**: 216 cached probe clouds (21 CIFAR ResNet-18 models × 2 layers × epochs, 10 GPT-2 fine-tunes × 2 layers × 3 epochs), 30 renamings per kind, 9 features × raw/standardised = 3 888 rows (`results/haru_urara_audit.csv`): permutation CV ≤ 1.6e-14 on **every** row (max 1.6e-14, CIFAR; 7e-14 GPT-2 standardised `med_dist`). Per-unit scaling: raw `tc`, `tc_shuffled` covariant k = 2.000 (R² 1), `med_dist` covariant k = 1.000; raw `tc_ratio` **artifact** (median scale CV 0.095 CIFAR / 0.13 GPT-2), `b1`, `n_bars`, `tc_norm`, `tc0_norm` artifact; `pe1` invariant on 91 % of CIFAR clouds (median scale CV 0.007) but artifact on GPT-2 (0.046); every standardised feature exactly invariant (CV ≤ 1e-13) |
 | M3 | AUC per method, no claim | 3 seeds × 10 classes (classes 0–2 with 40 % within-class flips, 12 epochs): ELR early loss **0.95** (best orientation; 0.85 pooled in its natural orientation), topological per-class score **0.90 best orientation but 0.085 in the shipped orientation** (per seed 0.19 / 0.10 / 0.00), class train accuracy 0.50 (uninformative: every class fits its noisy labels) — `results/M3_summary.csv`, `M3_perclass.csv`; existing methods win, as the SPEC expected |
 
-### 3. Kill-test outcomes (M2)
+### 3. Kill-test outcomes (M1, M2)
+* M1: the shipped `tc_ratio` is *permutation*-invariant to the float floor, so no `memorization_signal` number depends on
+  channel labels; under per-unit positive scalings it moves by ~10 % on a ReLU-pooled CIFAR cloud, which is why VALIDATION.md's
+  scope note and the refused `_std` calibration exist (PHASE6). For GPT-2 the "scaling" column is a data transform (the
+  residual stream has no per-unit scaling symmetry — noted in the CSV), so the 0.13 there is not a gauge artifact.
 * Retrained-vs-cached check (SPEC): `topo_score_v1cache` equals `topo_score` on every model (the retrained probe
   activations reproduce the cached features exactly at the shipped calibration).
 * The baselines' perfect AUCs are a property of the battery (all noisy models at train_acc_noisy = 1.000), not evidence

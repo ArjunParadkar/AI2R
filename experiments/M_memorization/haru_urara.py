@@ -1,7 +1,7 @@
 """M1 — audit the v1 memorization features on the cached battery clouds (SPEC §M1).
 Gauge action on a cached post-ReLU/residual cloud: column permutations × positive column scalings
 (CNN); GPT-2 residual clouds: invariant by construction (perm/scale still applied to columns to
-document the float floor, but labelled 'residual: no internal renaming acts'). Writes results/M1_audit.csv."""
+document the float floor, but labelled 'residual: no internal renaming acts'). Writes results/haru_urara_audit.csv."""
 import os, sys, glob, json, csv
 from multiprocessing import Pool
 import numpy as np
@@ -51,7 +51,7 @@ def main():
         for p in sorted(glob.glob(os.path.join(LIB, f"battery_{fam}", "*.npz"))):
             for key in np.load(p).files:
                 jobs.append((fam, p, key))
-    out = os.path.join(R, "M1_audit.csv")
+    out = os.path.join(R, "haru_urara_audit.csv")
     # M AMENDMENTS #2 (2026-09-09): resumable — (model, layer) pairs already in the CSV are skipped and the file is appended.
     done = set()
     if os.path.exists(out) and os.path.getsize(out) > 0:
