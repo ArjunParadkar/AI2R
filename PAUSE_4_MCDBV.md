@@ -218,7 +218,7 @@ ablation-vs-attribution discrepancy at the neuron level — orthogonal to gauge,
   validation of the instrument, nothing more.
 * Not claimable: anything about attribution methods themselves; the embedding-level GPT-2 IG row.
 
-## Block V — Legibility phase diagram (Mejiro Dober V1, Twin Turbo V2/V3, Mejiro Palmer V4, Yukino Bijin V8 FINAL 2026-09-10; Nice Nature V6 partial; Silence Suzuka V5 pending)
+## Block V — Legibility phase diagram (Mejiro Dober V1, Twin Turbo V2/V3, Mejiro Palmer V4, Nice Nature V6, Yukino Bijin V8 FINAL 2026-09-10; Silence Suzuka V5 pending)
 
 ### 1. Plain English
 The ensemble exists: 130 models (3 tasks × 18 regularisation arms × 2 architectures in a Latin-square fraction, 10
@@ -249,7 +249,7 @@ Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin the
 | V4 continuous knee, (1 − |C|/N) ~ Q_excess | ΔBIC > 10 | 2.9 — **fail** |
 | V4 within-architecture partials | reported | Spearman with |C|/N on learned models — MLP (n 51): Q_excess +0.15, Q −0.41, tw/N +0.37, sparsity −0.56; transformer (n 47): Q_excess +0.19, Q +0.49, tw/N +0.48, sparsity −0.52 |
 | V8 ship gates | held-out AUC ≥ 0.75 AND every within-arch AUC ≥ 0.65 | held-out **0.515** (n_test 26), 5-fold 0.537; within-arch AUCs 0.0–1.0 on 3–4 models each (two undefined) — **refused**; `V8_calibration.json` |
-| V6 Nice Nature | ≥ 50 % of peaks beat the shuffle null AND SV permutation-invariant | partial, 114/124 models at 08:45: SV permutation-invariant on 114/114 (CV 0.0); scale verdict *artifact* on 114/114 (median CV 0.24); the peak beats its null in 69 % of models — see the final numbers below when she finishes |
+| V6 Nice Nature | ≥ 50 % of peaks beat the shuffle null AND SV permutation-invariant | **survives on the rule** (`V6_verdict.json`, 124 models): SV permutation-invariant 124/124 (max CV 7e-16); 85/124 = 68 % of peaks beat the 20-shuffle null (MLP 71 %, transformer 65 %); **but** scale verdict *artifact* on 124/124 (median CV 0.23, IQR 0.19–0.35) and the 6 random-label models beat the null in 5/6 (83 %) — see §3/§4 |
 | V5 Silence Suzuka | drift sign with bootstrap CI, knee vs loss half-drop | pending (paddock, after the Z horses) |
 
 ### 3. Kill-test outcomes
@@ -260,8 +260,11 @@ Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin the
 * Untrained control: all 6 reach F ≥ 0.9 with tiny circuits (|C|/N 0.005–0.15) — the learned guard is what keeps them out, as in E4.
 * Random-label control: 5/6 memorise (eval acc 1.0 on the fixed random-label set); their circuits are large (|C|/N 0.58–0.97) except
   the tf4 one (0.10, counted as a success). Random labels do not remove the transformer's compressibility.
-* Nice Nature's null (feature shuffle, 20 copies) — 31 % of models have their largest SV jump inside the shuffle null; the
-  95th-percentile peak rule on a 19-point trajectory selects exactly one peak per model, so "≥ 50 % of peaks" is the max SV alone.
+* Nice Nature's null (feature shuffle, 20 copies): 32 % of models have their largest SV jump inside the shuffle null; the
+  95th-percentile peak rule on a 19-point trajectory selects exactly one peak per model, so "≥ 50 % of peaks" is the max SV alone,
+  and the rule is met with 68 %. The kill that matters is the random-label control: 5/6 memorising models have a peak that beats
+  the null too, so "beats the shuffle null" does not separate learning from memorising. The peak sits at the first checkpoint
+  gap (step 2 000) in 59 % of models, and those early peaks beat the null less often (59 %) than the later ones (82 %).
 
 ### 4. What contradicts the plan's framing
 * The handbook's picture is "modular → legible". The ensemble says modularity excess is mostly *negative* (attribution graphs are
@@ -271,9 +274,10 @@ Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin the
   with fewer active nodes at density 0.1 has fewer nodes for the finder to keep. Not claimed as a predictor.
 * The changepoint pass is real pooled and unreal per family; E4's diagnosis (the pooled Q–success relation is an architecture
   offset) is repeated with 130 models and a calibrated null. Transformers compress far better (|C|/N 0.10 vs 0.62) at *lower* Q.
-* Nice Nature: SV is permutation-invariant but a per-unit-scaling artifact (CV 0.24) — the Z5 covariance law again; the v1
-  "loss-invisible reorganisation" peaks sit at the first checkpoint gap (step 2 000) in the median model, i.e. they are the
-  early-training rearrangement, not a mid-training event.
+* Nice Nature: SV is permutation-invariant but a per-unit-scaling artifact (CV 0.23 on every model) — the Z5 covariance law
+  again, so the certified quantity would have to be the standardised SV, which was not what v1 reported; and the v1
+  "loss-invisible reorganisation" peaks sit at the first checkpoint gap (step 2 000) in 59 % of models — the early-training
+  rearrangement, present in random-label models as well, not a mid-training event.
 
 ### 5. Novelty
 NOVELTY_BOARD #5 (OPEN, 2512.13707 closest): the measured diagram is the deliverable; the negative (no within-family phase
@@ -284,5 +288,8 @@ boundary, Q_excess ≤ 0 typical) is positioned against Golechha et al.'s qualit
   ≤ 0 and does not predict circuit compressibility within an architecture; a pooled changepoint in Q_excess (ΔBIC 18, permutation
   p < 0.005) is not present within either architecture family (ΔBIC 8.4 / −2.9)".
 * Claimable (instrument): `legibility_profile` measures; `legibility_score` refuses with E4 + V8 numbers (L3 gate honoured).
-* Not claimable: a phase diagram / phase boundary; any legibility predictor; drift direction (V5 pending); V6 until final.
+* Claimable (narrow): "the v1 SV trajectory peak survives a feature-shuffle null in 68 % of 124 models and is exact under unit
+  permutation" — with the two caveats stated alongside it (per-unit-scale artifact; random-label models peak the same way).
+* Not claimable: a phase diagram / phase boundary; any legibility predictor; drift direction (V5 pending); "loss-invisible
+  reorganisation" as a learning signature.
 
