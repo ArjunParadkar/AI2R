@@ -46,6 +46,20 @@ def main():
         if best is None or rss < best[0]: best = (rss, cp)
     bic_l = n * np.log(rss_l / n) + 2 * np.log(n); bic_k = n * np.log(best[0] / n) + 4 * np.log(n)
     out["cost~Qexcess_knee"] = dict(bic_linear=bic_l, bic_knee=bic_k, delta_bic=bic_l - bic_k, knee=best[1], pass_pre_registered=bool(bic_l - bic_k > 10))
+    # KILL (V AMENDMENTS #12): the Q_excess changepoint is the only pre-registered pass — (a) label-permutation null of its
+    # delta-BIC (the 17-candidate search inflates it), (b) family (mlp/tf) one-hot in BOTH models (the E4 confound), (c) per family
+    X = np.stack([df["Qexcess_0.1"].values, (df["tw_0.1"] / df.N).values, df.sparsity_nodes.values], 1); X = (X - X.mean(0)) / (X.std(0) + 1e-9); y = df.success_v4.values
+    def dbic(X, y):
+        nl, k, _ = logistic_fit(X, y); nc, kc, cp = logistic_fit(X, y, changepoint=True); return bic(nl, k, len(y)) - bic(nc, kc, len(y)), cp
+    obs, _ = dbic(X, y); rng = np.random.default_rng(0); null = np.array([dbic(X, rng.permutation(y))[0] for _ in range(200)])
+    fam = (df.family.values == "tf").astype(float)[:, None]; obs_fam, cp_fam = dbic(np.hstack([X, fam]), y)
+    per_family = {}
+    for f, g in df.groupby("family"):
+        Xg = X[(df.family == f).values]; yg = y[(df.family == f).values]; dg, cpg = dbic(Xg, yg); per_family[f] = dict(n=int(len(yg)), n_success=int(yg.sum()), delta_bic=dg, changepoint_std=cpg)
+    out["kill_Qexcess_changepoint"] = dict(observed_delta_bic=obs, perm_null_p=float(np.mean(null >= obs)), perm_null_q95=float(np.percentile(null, 95)), perm_null_max=float(null.max()),
+                                           delta_bic_with_family_covariate=obs_fam, changepoint_std_with_family=cp_fam, per_family=per_family,
+                                           success_rate_by_family={f: float(g.success_v4.mean()) for f, g in df.groupby("family")},
+                                           survives=bool(np.mean(null >= obs) < 0.05 and obs_fam > 10))
     # correlations pooled and within family
     out["spearman"] = {}
     for feat in ("Qexcess_0.1", "Q_0.1", "tw_0.1", "sparsity_nodes"):

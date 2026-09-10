@@ -2,6 +2,7 @@
 graphs) on the V1 checkpoints. SPEC §Z1–Z3. Writes results/Z1_zigzag.csv, Z2_multiparam.csv, Z3_graphph.csv."""
 import os, sys, csv, json, argparse
 import numpy as np, pandas as pd, torch
+from scipy.spatial.distance import pdist
 V = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "V_legibility"); sys.path.insert(0, V)
 from mejiro_dober import ARCHS, CK, STEPS, N_CK, build
 from mejiro_dober import R as VR
@@ -11,6 +12,30 @@ from whiteboxtopo import topology as T, graphs
 from whiteboxtopo.core.persistence import compute_diagrams
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results"); os.makedirs(R, exist_ok=True)
 N_SUB = 150
+SIMPLEX_BUDGET = 2_500_000   # Z AMENDMENTS #2: the union complex is counted before the zigzag; N_SUB is lowered until it fits
+
+
+def normalise(c):
+    """Centre a cloud and scale it to unit median pairwise distance (Z AMENDMENTS #2)."""
+    c = c - c.mean(0); return c / max(float(np.median(pdist(c))), 1e-12)
+
+
+def informative_scale(X):
+    """The Rips scale at which the (unit-median) final cloud has the most H1 classes; quantile 0.1 of its distances when it
+    has no H1 bar at all. Returns (scale, distance quantile of the scale, max beta1)."""
+    D = pdist(X); dg = np.asarray(compute_diagrams(X, maxdim=1, backend="ripser", thresh=1.0).dgms[1]).reshape(-1, 2)
+    if len(dg) == 0: return float(np.quantile(D, 0.1)), 0.1, 0
+    grid = np.linspace(float(D.min()), 1.0, 200); b1 = np.array([np.sum((dg[:, 0] <= s) & (dg[:, 1] > s)) for s in grid])
+    s = float(grid[int(np.argmax(b1))]); return s, float(np.mean(D <= s)), int(b1.max())
+
+
+def count_simplices(sub, scale, cap):
+    import dionysus as d
+    tot = 0
+    for i in range(len(sub) - 1):
+        tot += len(d.fill_rips(np.vstack([sub[i], sub[i + 1]]), 2, float(scale)))
+        if tot > cap: return tot, True
+    return tot, False
 
 
 @torch.no_grad()
@@ -48,14 +73,19 @@ def seiun_sky(rows, dev):
     out = os.path.join(R, "Z1_zigzag.csv"); done = set(pd.read_csv(out).name) if os.path.exists(out) else set(); res = pd.read_csv(out).to_dict("records") if os.path.exists(out) else []
     for row in rows:
         if row["name"] in done or row["untrained"]: continue
-        steps, clouds = clouds_for(row, dev); rng = np.random.default_rng(0); sub = [c[rng.choice(len(c), N_SUB, replace=False)] for c in clouds]
-        from scipy.spatial.distance import pdist
-        scale = float(np.median(pdist(sub[-1])))
+        steps, clouds = clouds_for(row, dev); clouds = [normalise(c) for c in clouds]          # Z AMENDMENTS #2
+        rng = np.random.default_rng(0); pick = rng.choice(len(clouds[0]), N_SUB, replace=False)   # the SAME probe examples at every checkpoint
+        for n_sub in (N_SUB, 100, 75, 50):
+            sub = [c[pick[:n_sub]] for c in clouds]; scale, scale_q, b1max = informative_scale(sub[-1])
+            n_simp, over = count_simplices(sub, scale, SIMPLEX_BUDGET)
+            if not over: break
+        print(row["name"], "n_sub", n_sub, "scale", round(scale, 3), "q", round(scale_q, 3), "beta1max", b1max, "simplices", n_simp, flush=True)
         z = T.zigzag(sub, scale, maxdim=1)
         diags = [np.asarray(compute_diagrams(c, maxdim=1, backend="ripser", thresh=scale).dgms[1]).reshape(-1, 2) for c in sub]
         bars = z.bars[1]; long = bars[(np.where(np.isfinite(bars[:, 1]), bars[:, 1], z.n_positions) - bars[:, 0]) >= 3] if len(bars) else bars
         film_ev = film_events(diags); zz_ev = int(2 * len(bars) - np.sum(~np.isfinite(bars[:, 1]))) if len(bars) else 0
         r = dict(name=row["name"], task=row["task"], arch=row["arch"], random_labels=row["random_labels"], n_ckpt=len(steps), scale=scale,
+                 n_sub=n_sub, scale_quantile=scale_q, beta1_final_max=b1max, budget_reduced=int(n_sub < N_SUB),
                  n_zigzag_bars_H1=int(len(bars)), n_long_bars=int(len(long)), film_events=film_ev, zigzag_events=zz_ev,
                  mislabelled_fraction=float(max(film_ev - zz_ev, 0) / max(film_ev, 1)), n_simplices=z.n_simplices,
                  betti1_curve=json.dumps(z.betti_curve(1).tolist()))

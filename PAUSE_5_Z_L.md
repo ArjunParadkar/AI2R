@@ -1,4 +1,4 @@
-# PAUSE 5 — Blocks Z (topology beyond PH) and L (release gates) — DRAFT 2026-09-09 (L section final; Z pending compute)
+# PAUSE 5 — Blocks Z (topology beyond PH) and L (release gates) — 2026-09-10 (L final; Z3/Z4/Z5 final; Z1/Z2 running)
 
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
@@ -121,5 +121,43 @@ NOVELTY_BOARD #12 (OPEN; nearest 2505.23681 mode connectivity via parameter-spac
 * Not claimable: any statement about the quotient's π₀ / H₀, or about non-linear (mode-connecting) paths, which were not
   searched for.
 
-## Block Z — Z1–Z3 _pending_ (`wb-gpu-queue`: C1_C3 → Z3 → Z1 → Z2 → V5 → F2 d3w10)
+## Block Z — Agnes Tachyon (Z3) FINAL 2026-09-10; Seiun Sky (Z1) and Manhattan Cafe (Z2) running under Z AMENDMENTS #2
+
+### 1. Plain English (Z3)
+Graph persistent homology of the 130 attribution graphs (density 0.1) adds nothing to the V4 logistic: ΔBIC for β1 finite,
+β1 essential and total H1 persistence over (Q_excess, tw/N, sparsity) is +1.0, −3.0, −2.8 against a pre-registered > 10. The
+reason is structural, not statistical: an MLP attribution graph is layered (edges only between consecutive layers), so its clique
+complex has no triangles — every H1 class is essential, β1 finite = 0 and total persistence = 0 on all 73 MLPs, and β1 essential is
+just the cycle rank E − V + components (median 830, up to 25 282), a function of the edge count the density already fixes.
+Transformers have triangles (attention mixes positions) and finite bars (median 6, up to 3 823) but they do not move the fit.
+
+### 2. Pre-registered thresholds and outcomes
+| Item | Threshold | Outcome |
+|---|---|---|
+| Z3 ΔBIC of β1 over (Q_excess, tw/N, sparsity) | > 10 | β1_finite **+0.98**, β1_essential **−2.98**, total_persistence_H1 **−2.80** (n = 130; `Z3_deltabic.json`) — **fail** |
+| Z3 features | reported | MLP (73): β1_finite 0, TP_H1 0 on every graph; β1_essential median 830; transformer (57): β1_finite median 6 [0, 3 823], β1_essential median 11, TP_H1 median 0.37 — `Z3_graphph.csv` |
+| Z1 zigzag vs film | mislabelled fraction > 0.2 → film invalid | running (Seiun Sky, 18 models; AMENDMENTS #2 after the OOM) |
+| Z2 two-parameter summary | |ρ_2p| − |ρ_1p| > 0.1, bootstrap CI > 0 | queued (Manhattan Cafe, 20 models) |
+
+### 3. Kill-test outcomes
+None pre-registered for Z3 beyond the ΔBIC; the layered-graph observation is the kill — for MLPs the feature is determined by
+the edge count. Z1's first attempt (pre-registered absolute median scale, 150 points) was killed by the kernel at 19.5 GB on
+its first model: the final cloud's median distance exceeds the early checkpoints' diameter, so early unions are complete
+complexes (Z AMENDMENTS #2: per-checkpoint unit-median normalisation, β1-maximising scale of the final cloud, 2.5 M simplex
+budget, the same 150 probe points at every checkpoint). The pre-registered setting is not reportable on this hardware.
+
+### 4. What contradicts the plan's framing
+* "Graph PH of attribution graphs" was written as if the graphs were generic; MLP attribution graphs are bipartite-layered and
+  their H1 is a counting statistic. The instrument (`topology.graph_ph`) is correct; the object makes it redundant.
+* Z1's pre-registered scale rule was wrong for clouds that grow during training; recorded, amended before any row was written.
+
+### 5. Novelty
+NOVELTY_BOARD #11 (zigzag/multiparameter, FLAGGED against 2603.03037) — Z3 falls under #5's phase-diagram row as a rejected
+feature; nothing to position.
+
+### 6. Claimable / not claimable
+* Claimable (negative, instrument-level): "graph-PH features of attribution graphs add no information over modularity, treewidth
+  and sparsity for circuit-discovery success (ΔBIC ≤ 1 on 130 models); for layered MLP graphs they reduce to the cycle rank".
+* Not claimable: anything from Z1/Z2 until the horses finish.
+
 

@@ -15,7 +15,7 @@ from .graph import (symmetrise, threshold_density, modularity_q, modularity_swee
                     sparsity, weight_sparsity, DENSITIES)
 from .discovery import discover_circuit, faithfulness, jaccard, logprob_metric
 from .models import NodeMLP, node_importance
-from .profile import legibility_profile, legibility_score, NotCalibratedError, E4_CALIBRATION_ATTEMPT
+from .profile import legibility_profile, legibility_score, NotCalibratedError, E4_CALIBRATION_ATTEMPT, V8_CALIBRATION_ATTEMPT
 
 __all__ = ["symmetrise", "threshold_density", "modularity_q", "modularity_sweep", "treewidth_bound", "shuffled_q_null",
            "sparsity", "weight_sparsity", "DENSITIES", "discover_circuit", "faithfulness", "jaccard", "logprob_metric",

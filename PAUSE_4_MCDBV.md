@@ -1,4 +1,4 @@
-# PAUSE 4 — Blocks M, C, D, B, V — DRAFT 2026-09-09 (Blocks B, C, D, M final; V running)
+# PAUSE 4 — Blocks M, C, D, B, V — 2026-09-10 (Blocks B, C, D, M final; V: V1–V4, V8 final, V6 partial, V5 pending)
 
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
@@ -218,4 +218,71 @@ ablation-vs-attribution discrepancy at the neuron level — orthogonal to gauge,
   validation of the instrument, nothing more.
 * Not claimable: anything about attribution methods themselves; the embedding-level GPT-2 IG row.
 
-## Block V — _pending (V1 sharded, then V2/V3, V5, V6, V4/V8 analysis)_
+## Block V — Legibility phase diagram (Mejiro Dober V1, Twin Turbo V2/V3, Mejiro Palmer V4, Yukino Bijin V8 FINAL 2026-09-10; Nice Nature V6 partial; Silence Suzuka V5 pending)
+
+### 1. Plain English
+The ensemble exists: 130 models (3 tasks × 18 regularisation arms × 2 architectures in a Latin-square fraction, 10
+clusterability-loss models, 6 random-label, 6 untrained; 26 GPU-hours; 71 % reach eval accuracy 0.99, 98/130 clear the 0.5
+"learned" guard — L1 = 1e-3 is the arm that fails to learn, 50 % of its models). Twin Turbo measured every model's attribution
+graph (Q, treewidth bound, sparsity, degree-preserving rewired null at three densities) and ran the frozen circuit finder on it.
+The headline number is that the attribution graphs are *not* more modular than their rewirings: Q_excess at density 0.1 has
+median −0.03 (transformers −0.08, MLPs +0.005); only the clusterability-loss MLPs reach Q_excess 0.2–0.5, and those are exactly the
+models whose circuits do **not** compress (frac 0.66–0.79, success 0/4) while their transformer counterparts succeed with
+Q_excess ≈ −0.4. Discovery "success" (faithfulness ≥ 0.9 with a circuit ≤ half the nodes, learned models only) is 66/130 — 38 %
+of MLPs, 67 % of transformers; sorting is easy (68 %), modular addition hard (36 %). Mejiro Palmer's phase-diagram test: the
+pre-registered changepoint in Q_excess passes pooled (ΔBIC 18.4 > 10, permutation null max 0.96, survives the mlp/tf
+covariate at 19.9) but is **under the bar within each family** (MLP 8.4, transformer −2.9); the treewidth and sparsity
+changepoints fail (−6.4, −7.4) and the continuous knee fails (2.9). Within a family the only structural measure that tracks
+compression with the same sign in both families is node sparsity (ρ ≈ −0.55 with |C|/N — sparser graphs, smaller circuits);
+Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin therefore does not ship: held-out AUC 0.52, 5-fold
+0.54 against gates 0.75 / 0.65 — `legibility_score` keeps raising `NotCalibratedError`, now carrying these numbers next to E4's.
+
+### 2. Pre-registered thresholds and outcomes
+| Item | Threshold (SPEC) | Outcome |
+|---|---|---|
+| V1 ensemble | ≥ 60 models, 20 checkpoints each | **130 models**, 20 checkpoints each (`V1_models.csv`); 92/130 eval acc ≥ 0.99; learned (≥ 0.5) 98; L1 1e-3 arm learned 50 %, others 83–97 % |
+| V2 structure | Q, tw, sparsity, Q_excess at {0.01, 0.05, 0.1} | 130/130 (`V2_structure.csv`); Q_excess(0.1) median −0.027, IQR [−0.10, +0.03], range [−0.74, +0.50]; 63 % of models have Q_excess < 0 |
+| V3 discovery | frozen `find_circuit` F ≥ 0.9, 3 batches, 3-seed Jaccard | 130/130 (`V3_discovery.csv`); F ≥ 0.9 reached by 98 % (the finder always reaches its target; it is the *size* that varies): median |C|/N 0.62 MLP, 0.10 transformer; Jaccard 0.65 / 0.46; wall median 31 s, max 22 min |
+| V4 success definition | F ≥ 0.9 AND |C|/N ≤ 0.5 AND learned | 66/130 (MLP 28/73, transformer 38/57); untrained models excluded by the guard (they reach F ≥ 0.9 with |C|/N ≤ 0.15 — E4 kill 3 reproduced); 5/6 random-label models memorise to acc 1.0 and 1 of them "succeeds" |
+| V4 changepoint, success ~ Q_excess | ΔBIC > 10 over linear | **18.4 pooled — passes**; hinge at standardised Q_excess 0.008 (raw ≈ −0.04); kill (AMENDMENTS #12): permutation null max 0.96 / q95 −3.6 (p < 0.005); with family covariate 19.9; **within family: MLP 8.4, transformer −2.9 — fails** |
+| V4 changepoint, success ~ tw/N, ~ sparsity | ΔBIC > 10 | −6.4, −7.4 — **fail** |
+| V4 continuous knee, (1 − |C|/N) ~ Q_excess | ΔBIC > 10 | 2.9 — **fail** |
+| V4 within-architecture partials | reported | Spearman with |C|/N on learned models — MLP (n 51): Q_excess +0.15, Q −0.41, tw/N +0.37, sparsity −0.56; transformer (n 47): Q_excess +0.19, Q +0.49, tw/N +0.48, sparsity −0.52 |
+| V8 ship gates | held-out AUC ≥ 0.75 AND every within-arch AUC ≥ 0.65 | held-out **0.515** (n_test 26), 5-fold 0.537; within-arch AUCs 0.0–1.0 on 3–4 models each (two undefined) — **refused**; `V8_calibration.json` |
+| V6 Nice Nature | ≥ 50 % of peaks beat the shuffle null AND SV permutation-invariant | partial, 114/124 models at 08:45: SV permutation-invariant on 114/114 (CV 0.0); scale verdict *artifact* on 114/114 (median CV 0.24); the peak beats its null in 69 % of models — see the final numbers below when she finishes |
+| V5 Silence Suzuka | drift sign with bootstrap CI, knee vs loss half-drop | pending (paddock, after the Z horses) |
+
+### 3. Kill-test outcomes
+* **Changepoint permutation null** (AMENDMENTS #12): 200 label shuffles, observed ΔBIC 18.4 vs null max 0.96 — the search over 17
+  candidate hinges does not manufacture the pooled pass. **Family covariate**: 19.9 with mlp/tf one-hot — not an architecture offset.
+  **Per family**: 8.4 / −2.9 — the nonlinearity is carried by the MLPs and is below the pre-registered bar in both families. The
+  pooled pass stands as pre-registered; it is not a within-architecture phase boundary.
+* Untrained control: all 6 reach F ≥ 0.9 with tiny circuits (|C|/N 0.005–0.15) — the learned guard is what keeps them out, as in E4.
+* Random-label control: 5/6 memorise (eval acc 1.0 on the fixed random-label set); their circuits are large (|C|/N 0.58–0.97) except
+  the tf4 one (0.10, counted as a success). Random labels do not remove the transformer's compressibility.
+* Nice Nature's null (feature shuffle, 20 copies) — 31 % of models have their largest SV jump inside the shuffle null; the
+  95th-percentile peak rule on a 19-point trajectory selects exactly one peak per model, so "≥ 50 % of peaks" is the max SV alone.
+
+### 4. What contradicts the plan's framing
+* The handbook's picture is "modular → legible". The ensemble says modularity excess is mostly *negative* (attribution graphs are
+  less modular than their degree-preserving rewirings), the clusterability loss raises Q_excess to 0.5 on MLPs without making
+  their circuits compress, and Q's within-family correlation with circuit size has opposite signs in MLPs and transformers.
+* Node sparsity is the one consistent within-family correlate (ρ ≈ −0.55) — but sparsity and |C|/N are near-tautological: a graph
+  with fewer active nodes at density 0.1 has fewer nodes for the finder to keep. Not claimed as a predictor.
+* The changepoint pass is real pooled and unreal per family; E4's diagnosis (the pooled Q–success relation is an architecture
+  offset) is repeated with 130 models and a calibrated null. Transformers compress far better (|C|/N 0.10 vs 0.62) at *lower* Q.
+* Nice Nature: SV is permutation-invariant but a per-unit-scaling artifact (CV 0.24) — the Z5 covariance law again; the v1
+  "loss-invisible reorganisation" peaks sit at the first checkpoint gap (step 2 000) in the median model, i.e. they are the
+  early-training rearrangement, not a mid-training event.
+
+### 5. Novelty
+NOVELTY_BOARD #5 (OPEN, 2512.13707 closest): the measured diagram is the deliverable; the negative (no within-family phase
+boundary, Q_excess ≤ 0 typical) is positioned against Golechha et al.'s qualitative claim. #6 (drift) waits on Silence Suzuka.
+
+### 6. Claimable / not claimable
+* Claimable (measured): "on 130 small models the attribution graph's modularity excess over a degree-preserving null is typically
+  ≤ 0 and does not predict circuit compressibility within an architecture; a pooled changepoint in Q_excess (ΔBIC 18, permutation
+  p < 0.005) is not present within either architecture family (ΔBIC 8.4 / −2.9)".
+* Claimable (instrument): `legibility_profile` measures; `legibility_score` refuses with E4 + V8 numbers (L3 gate honoured).
+* Not claimable: a phase diagram / phase boundary; any legibility predictor; drift direction (V5 pending); V6 until final.
+

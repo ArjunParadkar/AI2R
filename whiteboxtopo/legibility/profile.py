@@ -80,6 +80,14 @@ E4_CALIBRATION_ATTEMPT = dict(
             "architecture offset with the WRONG sign. A score would predict the architecture label.")
 
 
+V8_CALIBRATION_ATTEMPT = dict(   # sprint Block V, Yukino Bijin (V8), 2026-09-10: 130 models (3 tasks x 18 regularisation arms x 2 archs + controls)
+    n=130, success_rate=0.508, heldout_auc=0.515, cv5_auc=0.537,
+    within_arch_auc={"mlp64": 1.0, "mlp128": 0.33, "mlp256": 0.0, "mlp512": 0.0, "tf2": float("nan"), "tf3": float("nan"), "tf4": 0.0},
+    gates="held-out AUC >= 0.75 AND within-architecture AUC >= 0.65 for every architecture", ships=False,
+    verdict="the phase diagram has a changepoint in Q_excess (Delta BIC 18.4, permutation p < 0.005) but the logistic on "
+            "(Q_excess, tw/N, sparsity) has no out-of-sample skill; a score would be noise.")
+
+
 class NotCalibratedError(NotImplementedError):
     """Raised by ``legibility_score``: there is no validated mapping from structure to tractability."""
 
@@ -101,4 +109,6 @@ def legibility_score(model=None, task_batch=None, **kw):
         f"{a['rho_Q10_S_pooled'][0]:+.2f} {list(a['rho_Q10_S_pooled'][1])} pooled (architecture-confounded, wrong sign); "
         "within-architecture " + ", ".join(f"{k} {v[0]:+.2f} {list(v[1])}" for k, v in a["rho_Q10_S_within_arch"].items())
         + f"; partial rho | arch = {a['partial_rho_Q10_S_given_arch'][0]:+.2f} {list(a['partial_rho_Q10_S_given_arch'][1])}. "
+        f"Sprint V8 (n={V8_CALIBRATION_ATTEMPT['n']}, 2026-09-10): held-out AUC {V8_CALIBRATION_ATTEMPT['heldout_auc']:.2f}, "
+        f"5-fold AUC {V8_CALIBRATION_ATTEMPT['cv5_auc']:.2f} against gates 0.75 / 0.65 per architecture — refused again. "
         "Use legibility_profile() for the measures; they carry no prediction.")

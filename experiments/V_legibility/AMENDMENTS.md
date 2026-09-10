@@ -73,3 +73,15 @@ an empty card and fell back to a ~1 h CPU run per model. The score is a sum over
 token chunks under a 1.5 GB budget (per-example means sliced with the chunk, each chunk weighted by B_chunk/B) and summed;
 `tests/test_legibility.py::test_tinytf_edge_scores_chunked_equals_full` checks equality with the one-shot result. Protocol
 unchanged (same batch, same metric); Twin Turbo restarted so the transformers run on the GPU alongside Gold Ship.
+
+**#11 (2026-09-10 08:40) Twin Turbo's CSVs were ragged.** After #8 the rows carried a 26th field (`device`) under the original
+25-field header (`DictWriter(fieldnames=list(r))` never rewrote the header), so `pandas.read_csv` refused both files. The files were
+rewritten with the full header (backups `results/.V2_structure.ragged.bak`, `.V3_discovery.ragged.bak`); the 40 pre-#8 rows ran on the
+GPU and are marked `cuda` — and so are all 91 later rows: after #10 the CPU fallback never fired. `twin_turbo.append_row` now grows
+the header (rewrites the file with the union of columns) whenever a row carries a new key; Silence Suzuka uses it too.
+
+**#12 (2026-09-10 08:45) Mejiro Palmer (V4) kill added.** The Q_excess changepoint was the only pre-registered pass (ΔBIC 18.4 > 10)
+and the 17-candidate changepoint search inflates ΔBIC, so `analyze_V4_V5.py` now also reports: a 200-permutation label null of the
+ΔBIC (observed 18.4; null max 0.96, 95th percentile −3.6, p < 0.005), the same test with the mlp/tf family one-hot in both models
+(ΔBIC 19.9 — not a family offset), and per family (mlp n = 73: ΔBIC 8.4, below the bar; tf n = 57: −2.9). Recorded in `V4_fits.json`
+under `kill_Qexcess_changepoint`. `analyze_V8_Z3.py`: `g.index.values` is read-only under pandas 2 — copied before the shuffle.

@@ -11,6 +11,19 @@ from whiteboxtopo.legibility.models import node_importance
 DENS = (0.01, 0.05, 0.1)
 
 
+
+def append_row(p, r):
+    """Append one dict row to a CSV; when the row carries keys the file's header lacks, rewrite the file with the union header
+    (V AMENDMENTS #11: DictWriter with fieldnames=list(r) silently wrote a 26th field under a 25-field header)."""
+    if not os.path.exists(p):
+        with open(p, "w", newline="") as f: w = csv.DictWriter(f, fieldnames=list(r)); w.writeheader(); w.writerow(r); return
+    with open(p, newline="") as f: rd = csv.reader(f); hdr = next(rd); old = list(rd)
+    if set(r) - set(hdr):
+        hdr2 = hdr + [k for k in r if k not in hdr]
+        with open(p, "w", newline="") as f:
+            w = csv.writer(f); w.writerow(hdr2); w.writerows(row + [""] * (len(hdr2) - len(row)) for row in old); hdr = hdr2
+    with open(p, "a", newline="") as f: csv.DictWriter(f, fieldnames=hdr, extrasaction="ignore", restval="").writerow(r)
+
 def load(row, step, device):
     task = Task(row["task"], random_labels=bool(row["random_labels"])); spec = dict(ARCHS)[row["arch"]]
     m = build(spec, task, 0.0, row["seed"]).to(device)
@@ -65,12 +78,7 @@ def main():
                     m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
             s2.update(name=row["name"], task=row["task"], arch=row["arch"], device=d_)
             s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0, device=d_)
-            for p, r in ((p2, s2), (p3, s3)):
-                new = not os.path.exists(p)
-                with open(p, "a", newline="") as f:
-                    w = csv.DictWriter(f, fieldnames=list(r));
-                    if new: w.writeheader()
-                    w.writerow(r)
+            for p, r in ((p2, s2), (p3, s3)): append_row(p, r)
             print(row["name"], {k: round(v, 3) if isinstance(v, float) else v for k, v in s2.items() if k.startswith("Q")}, s3["size"], s3["F"], flush=True)
     else:
         p5 = os.path.join(R, "V5_drift.csv"); done = {(r["name"], int(r["step"])) for r in csv.DictReader(open(p5))} if os.path.exists(p5) else set()
@@ -94,11 +102,7 @@ def main():
                         m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
                 r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,
                                                           loss=hist[step]["loss"], eval_acc=hist[step]["eval_acc"], random_labels=row["random_labels"])
-                new = not os.path.exists(p5)
-                with open(p5, "a", newline="") as f:
-                    w = csv.DictWriter(f, fieldnames=list(r), extrasaction="ignore")
-                    if new: w.writeheader()
-                    w.writerow(r)
+                append_row(p5, r)
                 print(row["name"], step, round(r["Qexcess_0.1"], 3), flush=True)
     print("done")
 

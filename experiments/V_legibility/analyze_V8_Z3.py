@@ -33,7 +33,7 @@ def standardise(Xtr, Xte): mu, sd = Xtr.mean(0), Xtr.std(0) + 1e-9; return (Xtr 
 def v8(df):
     rng = np.random.default_rng(0); test = np.zeros(len(df), bool)
     for arch, g in df.groupby("arch"):                       # stratified 20 % hold-out by architecture
-        idx = g.index.values; rng.shuffle(idx); test[idx[:max(1, int(round(0.2 * len(idx))))]] = True
+        idx = g.index.values.copy(); rng.shuffle(idx); test[idx[:max(1, int(round(0.2 * len(idx))))]] = True
     Xtr, Xte = standardise(df.loc[~test, BASE].values, df.loc[test, BASE].values); ytr, yte = df.success.values[~test], df.success.values[test]
     theta, _ = fit_logistic(Xtr, ytr); p = 1 / (1 + np.exp(-(Xte @ theta[1:] + theta[0])))
     out = dict(n_train=int((~test).sum()), n_test=int(test.sum()), success_rate=float(df.success.mean()),
