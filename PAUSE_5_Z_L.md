@@ -1,4 +1,4 @@
-# PAUSE 5 — Blocks Z (topology beyond PH) and L (release gates) — 2026-09-10 (L final; Z3/Z4/Z5 final; Z1/Z2 running)
+# PAUSE 5 — Blocks Z (topology beyond PH) and L (release gates) — FINAL 2026-09-10 (all of Z1–Z5 and L1–L6, L8–L10; L7 on the HPCC)
 
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
@@ -121,9 +121,25 @@ NOVELTY_BOARD #12 (OPEN; nearest 2505.23681 mode connectivity via parameter-spac
 * Not claimable: any statement about the quotient's π₀ / H₀, or about non-linear (mode-connecting) paths, which were not
   searched for.
 
-## Block Z — Agnes Tachyon (Z3) FINAL 2026-09-10; Seiun Sky (Z1) and Manhattan Cafe (Z2) running under Z AMENDMENTS #2
+## Block Z — Agnes Tachyon (Z3), Seiun Sky (Z1), Manhattan Cafe (Z2) FINAL 2026-09-10
 
-### 1. Plain English (Z3)
+### 1. Plain English (Z1, Z2)
+Seiun Sky ran the zigzag on 18 models (12 real-label, 6 random-label; 20 checkpoints each) under Z AMENDMENTS #2/#3 — normalised
+clouds, the final cloud's most-loops scale, a simplex budget that lowered the subsample on 8 of 18 models (5 to 100 points, 3 to 50).
+The pre-registered question was whether the per-checkpoint "film" (diagram per checkpoint + greedy bar matching) is a valid tracker:
+it is not, on the pre-registered criterion. The film reports about three times as many births and deaths as the zigzag sees
+(median 314 vs 106 events on real-label models); the fraction of film events the zigzag does not recognise has median 0.39 on
+real-label models (7/12 above the 0.2 bar; bootstrap CI of the median 0.00–0.65) and 0.49 on random-label ones — with no
+difference between the two (Mann-Whitney p 0.70). The zigzag's own H1 is mostly short-lived: a median of 21 % of bars on real-label
+models last ≥ 3 positions (47 % on random-label). Three of the 18 rows are degenerate (the budget cut them to 50 points and no H1
+bar survived at any scale — events 0, fraction 0), and two MLP rows have *more* zigzag events than film events (the one-sided
+"mislabelled" statistic reads 0 there). Manhattan Cafe's two-parameter summary (scale × "checkpoint at which the point
+stabilises") fails its pre-registration: the best two-parameter correlate of discovery cost is the H1 argmax scale (ρ 0.41) against
+0.32 for the one-parameter total persistence — a gain of 0.09 whose bootstrap CI (−0.11, 0.27) crosses zero; for circuit size the
+gain is 0.05 (CI −0.51, 0.47). Three of 20 bifiltrations are empty (transformer points never "stabilise" under the 10 %-of-diameter
+rule: `frac_stable_by_half` median 0.00 on transformers vs 0.19 on MLPs).
+
+### 1b. Plain English (Z3)
 Graph persistent homology of the 130 attribution graphs (density 0.1) adds nothing to the V4 logistic: ΔBIC for β1 finite,
 β1 essential and total H1 persistence over (Q_excess, tw/N, sparsity) is +1.0, −3.0, −2.8 against a pre-registered > 10. The
 reason is structural, not statistical: an MLP attribution graph is layered (edges only between consecutive layers), so its clique
@@ -136,12 +152,18 @@ Transformers have triangles (attention mixes positions) and finite bars (median 
 |---|---|---|
 | Z3 ΔBIC of β1 over (Q_excess, tw/N, sparsity) | > 10 | β1_finite **+0.98**, β1_essential **−2.98**, total_persistence_H1 **−2.80** (n = 130; `Z3_deltabic.json`) — **fail** |
 | Z3 features | reported | MLP (73): β1_finite 0, TP_H1 0 on every graph; β1_essential median 830; transformer (57): β1_finite median 6 [0, 3 823], β1_essential median 11, TP_H1 median 0.37 — `Z3_graphph.csv` |
-| Z1 zigzag vs film | mislabelled fraction > 0.2 → film invalid | running (Seiun Sky, 18 models; AMENDMENTS #2 after the OOM) |
-| Z2 two-parameter summary | |ρ_2p| − |ρ_1p| > 0.1, bootstrap CI > 0 | queued (Manhattan Cafe, 20 models) |
+| Z1 zigzag vs film | mislabelled fraction > 0.2 → film invalid | **0.39 median (real-label, n 12; 7/12 > 0.2; CI 0.00–0.65), 0.49 random-label (5/6 > 0.2)** → film invalid on the criterion; real vs random p 0.70; film/zigzag event ratio ≈ 3; 3/18 rows degenerate (50-point budget, no H1); `Z1_zigzag.csv`, `Z1_summary.json` |
+| Z1 settings actually run | 150 points, absolute median scale (SPEC) | normalised clouds; scale quantile median 0.07 (0.005–0.16); n_sub 150 on 10, 100 on 5, 50 on 3 models (AMENDMENTS #2, #3) |
+| Z2 two-parameter summary | \|ρ_2p\| − \|ρ_1p\| > 0.1, bootstrap CI > 0 | cost: best 2p = argmax_H1_scale ρ 0.41 vs 1p 0.32, gain **0.09, CI (−0.11, 0.27)** — **fail**; size: gain 0.05, CI (−0.51, 0.47) — **fail**; 3/20 empty bifiltrations; `Z2_multiparam.csv`, `Z2_summary.json` |
 
 ### 3. Kill-test outcomes
-None pre-registered for Z3 beyond the ΔBIC; the layered-graph observation is the kill — for MLPs the feature is determined by
-the edge count. Z1's first attempt (pre-registered absolute median scale, 150 points) was killed by the kernel at 19.5 GB on
+* Z1's null is the random-label set: it is *not* separated from the real-label models (p 0.70) — whatever the zigzag/film
+  disagreement measures, it is not learning. Z1's pre-registered criterion is met (film invalid) but the statistic is one-sided
+  (film events the zigzag lacks) and 3/18 rows are empty after the budget cut; the finding is "the film over-counts events", not
+  a certified event count.
+* Z2: none beyond the bootstrap; the 10 %-of-diameter stabilisation rule produces empty bifiltrations on transformers.
+* Z3: none pre-registered beyond the ΔBIC; the layered-graph observation is the kill — for MLPs the feature is determined by
+  the edge count. Z1's first attempt (pre-registered absolute median scale, 150 points) was killed by the kernel at 19.5 GB on
 its first model: the final cloud's median distance exceeds the early checkpoints' diameter, so early unions are complete
 complexes (Z AMENDMENTS #2: per-checkpoint unit-median normalisation, β1-maximising scale of the final cloud, 2.5 M simplex
 budget, the same 150 probe points at every checkpoint). The pre-registered setting is not reportable on this hardware.
@@ -158,6 +180,10 @@ feature; nothing to position.
 ### 6. Claimable / not claimable
 * Claimable (negative, instrument-level): "graph-PH features of attribution graphs add no information over modularity, treewidth
   and sparsity for circuit-discovery success (ΔBIC ≤ 1 on 130 models); for layered MLP graphs they reduce to the cycle rank".
-* Not claimable: anything from Z1/Z2 until the horses finish.
+* Claimable (instrument-level, narrow): "per-checkpoint diagram matching over-counts topological events by ≈ 3× relative to
+  zigzag persistence on the same clouds (18 models)" — an argument for `topology.zigzag` over the v1 film, positioned against
+  2603.03037 (same tool, neural responses).
+* Not claimable: any training-dynamics statement from Z1 (random-label models look the same); any two-parameter advantage (Z2
+  fails); the pre-registered absolute-scale Z1 (not run).
 
 

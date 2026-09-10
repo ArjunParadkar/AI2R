@@ -85,3 +85,11 @@ and the 17-candidate changepoint search inflates ΔBIC, so `analyze_V4_V5.py` no
 ΔBIC (observed 18.4; null max 0.96, 95th percentile −3.6, p < 0.005), the same test with the mlp/tf family one-hot in both models
 (ΔBIC 19.9 — not a family offset), and per family (mlp n = 73: ΔBIC 8.4, below the bar; tf n = 57: −2.9). Recorded in `V4_fits.json`
 under `kill_Qexcess_changepoint`. `analyze_V8_Z3.py`: `g.index.values` is read-only under pandas 2 — copied before the shuffle.
+
+**#13 (2026-09-10 14:10) Silence Suzuka (V5) scoped.** After 53 min she had 33 checkpoint rows of 2 480 (two width-512 MLPs):
+profiled on one of them, a checkpoint costs 285 s of which 250 s is the 20-rewiring modularity null at three densities (structure
+without the null 27 s, discovery 3 s). The SPEC §V5 asks for density 0.1 only, so the V5 branch now computes the null at 0.1 alone
+(≈ 2× faster; the 33 existing rows keep their 0.01/0.05 columns, later rows leave them blank). And she runs first on a **pre-declared
+balanced subset of 48 models**: the 6 random-label models (the null trajectory) then 7 per (task × architecture family) cell in
+sorted-name order, round-robin so any prefix stays balanced (`--limit 48`; `--limit 0` resumes over the remaining 76 models later —
+the CSV is resumable per (model, checkpoint)). The paddock was restarted (one in-flight checkpoint lost).

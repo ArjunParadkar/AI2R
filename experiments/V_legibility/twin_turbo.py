@@ -1,7 +1,7 @@
 """V2 (structure) + V3 (discovery cost) on the V1 final checkpoints; V5 uses the same on every
 checkpoint (--all-ckpts, structure only + discovery at 5 checkpoints). Writes results/V2_structure.csv,
 V3_discovery.csv, V5_drift.csv. Resumable."""
-import os, sys, csv, glob, json, time, argparse
+import os, sys, csv, glob, json, time, argparse, re
 import numpy as np, torch, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mejiro_dober import plan, build, ARCHS, CK, R, STEPS, N_CK
@@ -31,12 +31,12 @@ def load(row, step, device):
     return m, task
 
 
-def structure(m, task, seed=0, device="cuda", null=True):
+def structure(m, task, seed=0, device="cuda", null=True, dens=DENS):
     x, y = task.batch(512, seed, "eval"); x, y = x.to(device), y.to(device)
     E = graphs.attribution_graph(m, (x, y), raw=True); A = graphs.symmetrise(E); N = m.n_nodes
     out = dict(N=N, sparsity_nodes=graphs.sparsity(node_importance(m, x)), edge_sparsity=graphs.sparsity(A))
     with torch.no_grad(): out["accuracy"] = accuracy(m(x), y)
-    for dn in DENS:
+    for dn in dens:
         B = graphs.threshold_density(A, dn); Q, memb = graphs.modularity(B); out[f"Q_{dn}"] = Q; out[f"tw_{dn}"] = graphs.treewidth_ub(B)
         out[f"n_comm_{dn}"] = int(len(set(memb)))
         if null:
@@ -55,7 +55,8 @@ def disc(m, task, device="cuda"):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--all-ckpts", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--all-ckpts", action="store_true")
+    ap.add_argument("--limit", type=int, default=48, help="V5 (V AMENDMENTS #13): models in the balanced priority subset (0 = all)"); a = ap.parse_args()
     rows = [r for r in csv.DictReader(open(os.path.join(R, "V1_models.csv")))]
     dev = "cuda"
     if not a.all_ckpts:
@@ -85,14 +86,25 @@ def main():
         every = STEPS // N_CK; dsteps = {every * k for k in (1, 5, 10, 15, 20)}
         for row in rows:
             for k in ("random_labels", "untrained", "seed"): row[k] = int(row[k])
-            if row["untrained"]: continue
+        # V AMENDMENTS #13: balanced priority order — the 6 random-label models (the null) first, then the other models round-robin
+        # over (task, architecture family) so any prefix is balanced; --limit stops after that many models (default 48 = 6 + 7 per cell)
+        fam = lambda r: re.sub(r"\d+", "", r["arch"])
+        cells = {}
+        for r in sorted((r for r in rows if not r["untrained"] and not r["random_labels"]), key=lambda r: r["name"]): cells.setdefault((r["task"], fam(r)), []).append(r)
+        ordered = [r for r in rows if r["random_labels"] and not r["untrained"]]
+        while any(cells.values()):
+            for key in sorted(cells):
+                if cells[key]: ordered.append(cells[key].pop(0))
+        if a.limit: ordered = ordered[:a.limit]
+        print("V5 order:", len(ordered), "models;", sum(r["random_labels"] for r in ordered), "random-label", flush=True)
+        for row in ordered:
             hist = {h["step"]: h for h in json.load(open(os.path.join(CK, row["name"], "history.json")))}
             for step in sorted(hist):
                 if (row["name"], step) in done: continue
                 for d_ in (dev, "cpu"):
                     oom = False
                     try:
-                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True)
+                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True, dens=(0.1,))   # SPEC §V5: density 0.1
                         if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
                         break
                     except torch.OutOfMemoryError:
