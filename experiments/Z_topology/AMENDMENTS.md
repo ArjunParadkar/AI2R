@@ -25,3 +25,10 @@ simplex budget (`n_sub`, `budget_reduced` recorded; on the probe model 150 point
 union track different points, defeating the zigzag). The film's per-checkpoint diagrams use the same normalised clouds and the same
 scale, so the zigzag-vs-film comparison is unchanged in kind. The pre-registered absolute-median setting cannot be run on this
 hardware and is not reported. The paddock is relaunched with `MemoryMax=20G` so a future overrun kills the horse, not the host.
+
+**#3 (2026-09-10 09:50) Simplex budget 2.5 M → 0.8 M (wall time, not memory).** Under #2 the first MLP (272 k simplices) took
+3.5 min, but the first transformer sat at the 2.5 M budget (150 points, scale quantile 0.21 — transformer clouds have few loops, so the
+β1-maximising scale is high) and Dionysus' zigzag had not finished after 72 min at 2.4 GB: its cost grows faster than linearly in the
+simplex count. With 18 models and the paddock still owing Manhattan Cafe, Silence Suzuka and Mejiro McQueen, the budget is lowered to
+0.8 M, which lowers N_SUB to 100 (≈ 0.3× the complex) on the dense models; `n_sub` / `budget_reduced` record it per row. The one
+finished row (272 k) is under both budgets and stands. The in-flight transformer was abandoned on restart.

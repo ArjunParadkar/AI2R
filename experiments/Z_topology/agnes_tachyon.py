@@ -12,7 +12,7 @@ from whiteboxtopo import topology as T, graphs
 from whiteboxtopo.core.persistence import compute_diagrams
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results"); os.makedirs(R, exist_ok=True)
 N_SUB = 150
-SIMPLEX_BUDGET = 2_500_000   # Z AMENDMENTS #2: the union complex is counted before the zigzag; N_SUB is lowered until it fits
+SIMPLEX_BUDGET = 800_000   # Z AMENDMENTS #2 (2.5 M) → #3 (0.8 M): the union complex is counted before the zigzag; N_SUB is lowered until it fits
 
 
 def normalise(c):
