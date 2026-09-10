@@ -31,7 +31,7 @@ def load(row, step, device):
     return m, task
 
 
-def structure(m, task, seed=0, device="cuda", null=True, dens=DENS):
+def structure(m, task, seed=0, device="cuda", null=True, dens=DENS, n_null=20):
     x, y = task.batch(512, seed, "eval"); x, y = x.to(device), y.to(device)
     E = graphs.attribution_graph(m, (x, y), raw=True); A = graphs.symmetrise(E); N = m.n_nodes
     out = dict(N=N, sparsity_nodes=graphs.sparsity(node_importance(m, x)), edge_sparsity=graphs.sparsity(A))
@@ -40,7 +40,7 @@ def structure(m, task, seed=0, device="cuda", null=True, dens=DENS):
         B = graphs.threshold_density(A, dn); Q, memb = graphs.modularity(B); out[f"Q_{dn}"] = Q; out[f"tw_{dn}"] = graphs.treewidth_ub(B)
         out[f"n_comm_{dn}"] = int(len(set(memb)))
         if null:
-            q0, sd = graphs.rewired_null(B, n=20, seed=seed); out[f"Qnull_{dn}"] = q0; out[f"Qnull_sd_{dn}"] = sd; out[f"Qexcess_{dn}"] = Q - q0
+            q0, sd = graphs.rewired_null(B, n=n_null, seed=seed); out[f"Qnull_{dn}"] = q0; out[f"Qnull_sd_{dn}"] = sd; out[f"Qexcess_{dn}"] = Q - q0
     return out
 
 
@@ -104,7 +104,7 @@ def main():
                 for d_ in (dev, "cpu"):
                     oom = False
                     try:
-                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True, dens=(0.1,))   # SPEC §V5: density 0.1
+                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True, dens=(0.1,), n_null=5); r["n_null"] = 5   # SPEC §V5: density 0.1; V AMENDMENTS #14: 5 rewirings
                         if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
                         break
                     except torch.OutOfMemoryError:

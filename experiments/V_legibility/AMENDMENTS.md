@@ -93,3 +93,12 @@ without the null 27 s, discovery 3 s). The SPEC §V5 asks for density 0.1 only, 
 balanced subset of 48 models**: the 6 random-label models (the null trajectory) then 7 per (task × architecture family) cell in
 sorted-name order, round-robin so any prefix stays balanced (`--limit 48`; `--limit 0` resumes over the remaining 76 models later —
 the CSV is resumable per (model, checkpoint)). The paddock was restarted (one in-flight checkpoint lost).
+
+**#14 (2026-09-10 17:45) Silence Suzuka (V5): 5 rewirings in the null instead of 20.** After 3 h she had 149 of ~960 checkpoint rows
+(≈ 225 s per checkpoint on the transformers). Timed on `copy_tf3_randlab_s0` at step 10 000 (780 nodes, 20 587 edges at density
+0.1): graph 0.7 s, Leiden 1.9 s, treewidth bound 9.8 s, **null 93.7 s with 20 rewirings vs 23.6 s with 5** — `nx.double_edge_swap`
+in pure Python is the cost. The null mean moves by 0.0006 (0.2132 → 0.2138; its sd is 0.0015), against a Q_excess spread of 0.06
+across the rows so far (median Qnull sd 0.002, max 0.010): the standard error with 5 rewirings (≤ 0.005) is an order of magnitude
+below the drift signal. The 149 rows already written keep their 20-rewiring null (`n_null` column: blank = 20, 5 from here on);
+V2's final-checkpoint numbers (20 rewirings) are unchanged. Queue relaunched as `wb-gpu-queue` (MemoryMax 20 G) replacing the
+other session's `wb-gpu-queue-redo` wrapper; one in-flight checkpoint lost.
