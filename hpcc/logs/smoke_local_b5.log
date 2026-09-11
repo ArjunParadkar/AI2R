@@ -1,0 +1,8 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 12532.70it/s]
+{'model': 'gpt2', 'layer': 6, 'cell': 'shift', 'delta': 0.0, 'n': 50, 'trials': 2, 'reject_rate': 0.0, 'reading': 'false_positive_rate', 'wall_s': 1}
+{'model': 'gpt2', 'layer': 6, 'cell': 'shift', 'delta': 0.5, 'n': 50, 'trials': 2, 'reject_rate': 0.0, 'reading': 'false_positive_rate', 'wall_s': 0}
+{'model': 'gpt2', 'layer': 6, 'cell': 'stretch', 'delta': 0.0, 'n': 50, 'trials': 2, 'reject_rate': 0.0, 'reading': 'false_positive_rate', 'wall_s': 0}
+{'model': 'gpt2', 'layer': 6, 'cell': 'stretch', 'delta': 0.5, 'n': 50, 'trials': 2, 'reject_rate': 0.5, 'reading': 'power', 'wall_s': 0}
+[{'model': 'gpt2', 'n_required_power80_stretch05': None, 'fpr_max': 0.0, 'note': 'shift cells are Rips-invariant by construction (B AMENDMENTS #1): their reject rate is the FPR, not power'}]

@@ -1,0 +1,8 @@
+1 specimens (2692 done; shard 0/449)
+0/1 {'specimen': 'XOR3_d3_w10_s0', 'n_hidden': 30, 'enumerated_zero': 1, 'n_valid_zero': 8941568, 'n_minimal_zero': 115, 'enumerated_mean': 1, 'n_valid_mean': 4214784, 'n_minimal_mean': 89, 'wall': 548.5}
+done
+Exception ignored in: <function Pool.__del__ at 0x7f39ff1f8f40>
+Traceback (most recent call last):
+  File "/home/god/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/pool.py", line 271, in __del__
+  File "/home/god/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/queues.py", line 393, in put
+AttributeError: 'NoneType' object has no attribute 'dumps'
