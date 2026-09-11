@@ -53,8 +53,8 @@ def eap_graph(model, T, layers, dev):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--model", default="EleutherAI/pythia-410m"); ap.add_argument("--revisions", nargs="*", default=None)
-    ap.add_argument("--out", default="results/v7"); ap.add_argument("--resume", action="store_true"); ap.add_argument("--n-seq", type=int, default=16); a = ap.parse_args()
-    os.makedirs(a.out, exist_ok=True); dev = "cuda"
+    ap.add_argument("--out", default="results/v7"); ap.add_argument("--resume", action="store_true"); ap.add_argument("--n-seq", type=int, default=16); ap.add_argument("--device", default="cuda"); a = ap.parse_args()
+    os.makedirs(a.out, exist_ok=True); dev = a.device
     from transformers import AutoModelForCausalLM, AutoTokenizer
     import eishin_flash
     tok = AutoTokenizer.from_pretrained(a.model); eishin_flash.CACHE = a.out; toks = eishin_flash.load_tokens(tok)[: a.n_seq, :126]; T = torch.tensor(toks, device=dev)

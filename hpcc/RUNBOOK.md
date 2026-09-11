@@ -71,4 +71,4 @@ section, PAUSE_3 K7/K8, PAUSE_4 M4/C4/B5/V7, PAUSE_5 L7 — all the report secti
 * Time-out → re-submit the same sbatch; every job resumes from its CSV/JSON checkpoints.
 
 ## 7. Laptop pre-flight (2026-09-10)
-Laptop smoke runs of the token-free scripts are in `hpcc/logs/smoke_local_*.log`; results in `hpcc/results/smoke_local/`.
+Laptop smoke runs of the token-free scripts (2026-09-10 evening, `hpcc/logs/smoke_local*.log`): **M4 PASS, B5 PASS** (after fixing a missing PCA frame and a p-value indexing bug), **V7 PASS** on the CPU (after fixing a forward pre-hook that returned a tuple; `--device` added — the laptop GPU was shared with the F2 tail), **F2 shard PASS** (one depth-3 width-10 specimen through `--shard/--out`). V1-large and the five Gemma jobs (F12, K7, K8, C4, L7) can only be smoked on the cluster.
