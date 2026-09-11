@@ -69,6 +69,11 @@ def analyse(model, X, y, spec, use_gpu=False, meloux=True, pool=None, path=None,
         if valid is None:
             status[f"enumerated_{scheme}"] = 0; continue
         status[f"enumerated_{scheme}"] = 1
+        if len(valid) > VALID_BUDGET:      # AMENDMENTS #12: np.unique/sort over >~2e8 int64 ids needs > 20 GB; count, record, skip minimality
+            status[f"n_valid_{scheme}"] = int(len(valid)); status[f"n_minimal_{scheme}"] = -1; status[f"enumerated_{scheme}"] = 2
+            _append(os.path.join(OUT_DIR, "enumeration_excluded.csv"), ["specimen", "reason", "excluded_at"],
+                    [dict(specimen=f"{spec}:{scheme}", reason=f"valid set {len(valid)} > VALID_BUDGET {VALID_BUDGET} (minimality skipped; count kept)", excluded_at=time.strftime("%F %T"))])
+            del valid; continue
         mins = minimal_ids_fast(valid)
         status[f"n_valid_{scheme}"] = int(len(valid)); status[f"n_minimal_{scheme}"] = int(len(mins))
         if pool is not None and len(mins) > 4:
@@ -80,6 +85,8 @@ def analyse(model, X, y, spec, use_gpu=False, meloux=True, pool=None, path=None,
 
 
 _POOL = None
+VALID_BUDGET = 150_000_000   # AMENDMENTS #12 (2026-09-11): largest valid set that fits the 20 GB unit cap; --valid-budget overrides
+OUT_DIR = R
 
 
 def job(args):
@@ -196,12 +203,14 @@ def main():
     ap.add_argument("--kill", action="store_true")
     ap.add_argument("--shard", type=int, nargs=2, default=(0, 1), metavar=("I", "N"), help="HPCC: take every N-th pending specimen starting at I")
     ap.add_argument("--out", default=None, help="HPCC: write explanations/status/symmetry CSVs under this directory instead of results/")
+    ap.add_argument("--valid-budget", type=int, default=VALID_BUDGET, help="AMENDMENTS #12: skip minimality (count kept) when a scheme's valid set exceeds this")
     a = ap.parse_args()
+    global VALID_BUDGET, OUT_DIR; VALID_BUDGET = a.valid_budget
     if a.kill:
         return kill_tests()
     spec = list(csv.DictReader(open(os.path.join(R, "specimens.csv"))))
     done = set()
-    OUT = a.out or R; os.makedirs(OUT, exist_ok=True)
+    OUT = a.out or R; os.makedirs(OUT, exist_ok=True); OUT_DIR = OUT
     sp = os.path.join(OUT, "enumeration_status.csv")
     if a.out and os.path.exists(os.path.join(R, "enumeration_status.csv")):      # specimens already enumerated locally count as done
         done |= {r["specimen"] for r in csv.DictReader(open(os.path.join(R, "enumeration_status.csv")))}

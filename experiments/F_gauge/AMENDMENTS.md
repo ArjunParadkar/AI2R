@@ -138,3 +138,12 @@ records them in `results/enumeration_excluded.csv` and the CPU queue proceeds (F
 M1 → Z4/Z5). Aggregates must report counts over 2 692 (or 2 694) specimens and name the excluded two; no verdict in
 Block F depends on these two cells (both functions have ≥ 20 other converged specimens at d2w10). Not a threshold
 change.
+
+**#12 (2026-09-11 00:45) F2 depth-3 width-10 tail: valid-set budget.** The paddock unit (MemoryMax 20 G) was OOM-killed on
+`MAJ3_d3_w10_s3` after 27 d3w10 specimens (peak 19.6 GB, kernel log `Killed process … anon-rss 20.5 GB`). The XOR3 cells have
+0.5–12 M valid circuits per criterion; the MAJ3 cells have 73–237 M (`MAJ3_d3_w10_s2`: 237 M under the mean criterion, 1 246 s, just
+fit) — `minimal_ids_fast` starts with `np.unique` over the int64 id array (copies + sort ≈ 3–4× the ids). Fix: `VALID_BUDGET`
+(150 M locally, `--valid-budget`; 500 M with 64 GB on the cluster array): when a criterion's valid set exceeds it the count is still
+recorded (`n_valid_*`), `n_minimal_* = -1`, `enumerated_* = 2`, and a row `specimen:scheme` goes to `enumeration_excluded.csv` with the
+reason. Aggregates must treat `n_minimal = -1` as "minimality not enumerated" (the d3w10 cells were never in the F3/F4 aggregates yet).
+Relaunched `wb-gpu-queue` (same cap); the F2 tail resumes at 27/449.
