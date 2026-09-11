@@ -197,6 +197,7 @@ def kill_tests():
 
 
 def main():
+    global VALID_BUDGET, OUT_DIR
     ap = argparse.ArgumentParser()
     ap.add_argument("--procs", type=int, default=12); ap.add_argument("--max-hidden", type=int, default=20)
     ap.add_argument("--min-hidden", type=int, default=0); ap.add_argument("--gpu", action="store_true")
@@ -205,7 +206,7 @@ def main():
     ap.add_argument("--out", default=None, help="HPCC: write explanations/status/symmetry CSVs under this directory instead of results/")
     ap.add_argument("--valid-budget", type=int, default=VALID_BUDGET, help="AMENDMENTS #12: skip minimality (count kept) when a scheme's valid set exceeds this")
     a = ap.parse_args()
-    global VALID_BUDGET, OUT_DIR; VALID_BUDGET = a.valid_budget
+    VALID_BUDGET = a.valid_budget
     if a.kill:
         return kill_tests()
     spec = list(csv.DictReader(open(os.path.join(R, "specimens.csv"))))
