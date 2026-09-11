@@ -1,4 +1,4 @@
-# PAUSE 4 — Blocks M, C, D, B, V — 2026-09-10 (Blocks B, C, D, M final; V: V1–V4, V8 final, V6 partial, V5 pending)
+# PAUSE 4 — Blocks M, C, D, B, V — FINAL 2026-09-10 (M4, C4, B5, V7 on the HPCC)
 
 _Naming: every run in this document is a horse from the Tracen roster (`experiments/HORSES.md`); the handbook codes below are the pre-registration labels and appear here only as such._
 
@@ -218,7 +218,7 @@ ablation-vs-attribution discrepancy at the neuron level — orthogonal to gauge,
   validation of the instrument, nothing more.
 * Not claimable: anything about attribution methods themselves; the embedding-level GPT-2 IG row.
 
-## Block V — Legibility phase diagram (Mejiro Dober V1, Twin Turbo V2/V3, Mejiro Palmer V4, Nice Nature V6, Yukino Bijin V8 FINAL 2026-09-10; Silence Suzuka V5 pending)
+## Block V — Legibility phase diagram (V1 ensemble, V2/V3 structure + discovery, V4 phase diagram, V5 drift, V6 SV reorganisation, V8 score) — FINAL 2026-09-10 (V5 on the pre-declared 48-model subset; V7 on the HPCC)
 
 ### 1. Plain English
 The ensemble exists: 130 models (3 tasks × 18 regularisation arms × 2 architectures in a Latin-square fraction, 10
@@ -250,7 +250,7 @@ Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin the
 | V4 within-architecture partials | reported | Spearman with |C|/N on learned models — MLP (n 51): Q_excess +0.15, Q −0.41, tw/N +0.37, sparsity −0.56; transformer (n 47): Q_excess +0.19, Q +0.49, tw/N +0.48, sparsity −0.52 |
 | V8 ship gates | held-out AUC ≥ 0.75 AND every within-arch AUC ≥ 0.65 | held-out **0.515** (n_test 26), 5-fold 0.537; within-arch AUCs 0.0–1.0 on 3–4 models each (two undefined) — **refused**; `V8_calibration.json` |
 | V6 Nice Nature | ≥ 50 % of peaks beat the shuffle null AND SV permutation-invariant | **survives on the rule** (`V6_verdict.json`, 124 models): SV permutation-invariant 124/124 (max CV 7e-16); 85/124 = 68 % of peaks beat the 20-shuffle null (MLP 71 %, transformer 65 %); **but** scale verdict *artifact* on 124/124 (median CV 0.23, IQR 0.19–0.35) and the 6 random-label models beat the null in 5/6 (83 %) — see §3/§4 |
-| V5 Silence Suzuka | drift sign with bootstrap CI, knee vs loss half-drop | pending (paddock, after the Z horses) |
+| V5 drift (Silence Suzuka) | sign of the slope of Q_excess vs training fraction, bootstrap CI over models; knee vs loss half-drop | 49 complete models (43 real-label, 6 random-label; 20 checkpoints each; density 0.1, 5-rewiring null after row 149 — AMENDMENTS #13/#14): real-label slope mean **+0.107 [0.043, 0.177]** but **40 % of models drift downward**; transformers +0.175 [0.056, 0.299], MLPs +0.042 [−0.006, 0.089]; random-label 0.005 [−0.004, 0.015]. Median Q_excess by training fraction −0.039 → −0.042 → −0.029 → −0.012 → −0.023: it rises a little and stays negative. Largest Q_excess jump at median 0.60 of training vs loss half-drop at 0.10 (knee − loss_half median +0.58; random-label +0.10). Circuit size at the 5 discovery checkpoints: median |C|/N 0.32 → 0.39 real (grows), 0.79 → 0.74 random. `V5_drift.csv`, `V5_summary.json`, `fig/V5_drift.png` |
 
 ### 3. Kill-test outcomes
 * **Changepoint permutation null** (AMENDMENTS #12): 200 label shuffles, observed ΔBIC 18.4 vs null max 0.96 — the search over 17
@@ -274,6 +274,7 @@ Q flips sign between families (MLP −0.41, transformer +0.49). Yukino Bijin the
   with fewer active nodes at density 0.1 has fewer nodes for the finder to keep. Not claimed as a predictor.
 * The changepoint pass is real pooled and unreal per family; E4's diagnosis (the pooled Q–success relation is an architecture
   offset) is repeated with 130 models and a calibrated null. Transformers compress far better (|C|/N 0.10 vs 0.62) at *lower* Q.
+* V5: the drift is *upward* in modularity excess on average (transformers carry it) but small (a few hundredths, against Q_excess that stays below zero throughout), 40 % of models go the other way, and the largest change happens at 60 % of training — long after the loss has made half its drop at 10 %. "Modularity emerges as the task is learned" is not what these trajectories show; what changes with the loss is not Q. Filan et al.'s clusterability-increases finding (NOVELTY_BOARD #6) is matched in sign for transformers only, and only on 21 models; the remaining 76 V1 models are queued for the cluster (`hpcc/sbatch/v5_drift_rest.sbatch`), V7 (Pythia) is the frontier version.
 * Nice Nature: SV is permutation-invariant but a per-unit-scaling artifact (CV 0.23 on every model) — the Z5 covariance law
   again, so the certified quantity would have to be the standardised SV, which was not what v1 reported; and the v1
   "loss-invisible reorganisation" peaks sit at the first checkpoint gap (step 2 000) in 59 % of models — the early-training
@@ -290,6 +291,6 @@ boundary, Q_excess ≤ 0 typical) is positioned against Golechha et al.'s qualit
 * Claimable (instrument): `legibility_profile` measures; `legibility_score` refuses with E4 + V8 numbers (L3 gate honoured).
 * Claimable (narrow): "the v1 SV trajectory peak survives a feature-shuffle null in 68 % of 124 models and is exact under unit
   permutation" — with the two caveats stated alongside it (per-unit-scale artifact; random-label models peak the same way).
-* Not claimable: a phase diagram / phase boundary; any legibility predictor; drift direction (V5 pending); "loss-invisible
-  reorganisation" as a learning signature.
+* Claimable (measured, narrow): "on 43 small models, modularity excess of the attribution graph drifts upward by ~0.1 per unit of training fraction on average (CI 0.04–0.18; transformers, not MLPs), stays negative, and its largest move comes at ~60 % of training, well after the loss half-drop at ~10 %; random-label models do not drift".
+* Not claimable: a phase diagram / phase boundary; any legibility predictor; drift as a learning signature (40 % of models drift the other way; V7 and the 76 remaining models are pending); "loss-invisible reorganisation" as a learning signature.
 

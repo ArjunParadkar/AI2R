@@ -25,7 +25,9 @@ def eap_graph(model, T, layers, dev):
     acts = {}; grads = {}; handles = []
     for l in layers:
         L = model.gpt_neox.layers[l]
-        handles.append(L.register_forward_pre_hook(lambda mod, inp, l=l: (inp[0].requires_grad_(True), inp[0].register_hook(lambda g, l=l: grads.__setitem__(l, g.detach())))))
+        def _pre(mod, inp, l=l):      # a pre-hook's return value REPLACES the layer inputs, so it must return None (laptop smoke 2026-09-10)
+            inp[0].register_hook(lambda g, l=l: grads.__setitem__(l, g.detach()))
+        handles.append(L.register_forward_pre_hook(_pre))
         handles.append(L.attention.dense.register_forward_pre_hook(lambda mod, inp, l=l: acts.__setitem__((l, "z"), inp[0].detach())))
         handles.append(L.mlp.register_forward_hook(lambda mod, inp, out, l=l: acts.__setitem__((l, "mlp"), out.detach())))
     out = model(T); logits = out.logits[:, :-1].float(); lp = torch.log_softmax(logits, -1).gather(-1, T[:, 1:, None]).squeeze(-1).sum()

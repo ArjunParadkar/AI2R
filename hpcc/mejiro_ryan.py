@@ -38,6 +38,8 @@ def main():
         n_layers = model.config.num_hidden_layers; layer = n_layers // 2      # block-mid, per family
         M = pooled_resid(model, tok, male, layer, dev); F = pooled_resid(model, tok, female, layer, dev)
         allX = np.vstack([M, F]); g = B.unit(M.mean(0) - F.mean(0))
+        mu = allX.mean(0); P20 = np.linalg.svd(allX - mu, full_matrices=False)[2][:20].T                       # the B3 PCA-20 frame _biastop expects
+        B._B3.update(M=M, F=F, mu=mu, P20=P20, g=g, sd=float(allX.std(0).mean()))
         for cell, delta, n in itertools.product(("shift", "stretch"), a.deltas, a.ns):
             if (name, cell, delta, n) in done or n > min(len(M), len(F)): continue
             t0 = time.time(); ps = []
@@ -46,7 +48,7 @@ def main():
                 proj = (B_ - B_.mean(0)) @ g
                 if cell == "shift": B_ = B_ + delta * allX.std() * g[None, :]                                  # Rips-invariant translation: FPR cell
                 else: B_ = B_ + delta * proj[:, None] * g[None, :]                                                # stretch along g: calibrated power cell
-                ps.append(B._perm_test(A_, B_, rng)[1] if hasattr(B, "_perm_test") else np.nan)
+                ps.append(float(B._perm_test(A_, B_, rng)))                                              # returns the p-value
             ps = np.array(ps, dtype=float); rej = float(np.mean(ps <= 0.05))
             rows.append(dict(model=name, layer=layer, cell=cell, delta=delta, n=n, trials=a.trials, reject_rate=rej,
                              reading=("false_positive_rate" if (cell == "shift" or delta == 0) else "power"), wall_s=round(time.time() - t0)))
