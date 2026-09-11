@@ -194,12 +194,17 @@ def main():
     ap.add_argument("--procs", type=int, default=12); ap.add_argument("--max-hidden", type=int, default=20)
     ap.add_argument("--min-hidden", type=int, default=0); ap.add_argument("--gpu", action="store_true")
     ap.add_argument("--kill", action="store_true")
+    ap.add_argument("--shard", type=int, nargs=2, default=(0, 1), metavar=("I", "N"), help="HPCC: take every N-th pending specimen starting at I")
+    ap.add_argument("--out", default=None, help="HPCC: write explanations/status/symmetry CSVs under this directory instead of results/")
     a = ap.parse_args()
     if a.kill:
         return kill_tests()
     spec = list(csv.DictReader(open(os.path.join(R, "specimens.csv"))))
     done = set()
-    sp = os.path.join(R, "enumeration_status.csv")
+    OUT = a.out or R; os.makedirs(OUT, exist_ok=True)
+    sp = os.path.join(OUT, "enumeration_status.csv")
+    if a.out and os.path.exists(os.path.join(R, "enumeration_status.csv")):      # specimens already enumerated locally count as done
+        done |= {r["specimen"] for r in csv.DictReader(open(os.path.join(R, "enumeration_status.csv")))}
     if os.path.exists(sp):
         done = {r["specimen"] for r in csv.DictReader(open(sp))}
     jobs = []
@@ -209,8 +214,9 @@ def main():
         nh = int(r["depth"]) * int(r["width"])
         if name in done or nh > a.max_hidden or nh < a.min_hidden: continue
         jobs.append((name, r["path"], r["function"], a.gpu))
-    print(f"{len(jobs)} specimens ({len(done)} done)", flush=True)
-    ep, yp = os.path.join(R, "explanations.csv"), os.path.join(R, "symmetry_f2.csv")  # AMENDMENTS #9
+    jobs = jobs[a.shard[0]::a.shard[1]]
+    print(f"{len(jobs)} specimens ({len(done)} done; shard {a.shard[0]}/{a.shard[1]})", flush=True)
+    ep, yp = os.path.join(OUT, "explanations.csv"), os.path.join(OUT, "symmetry_f2.csv")  # AMENDMENTS #9
     if a.gpu:
         global _POOL
         _POOL = Pool(a.procs)
