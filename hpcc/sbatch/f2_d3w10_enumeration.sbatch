@@ -5,7 +5,7 @@
 #SBATCH --gres=__GRES__
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=64G
-#SBATCH --time=04:00:00
+#SBATCH --time=24:00:00
 #SBATCH --array=0-19
 #SBATCH --output=hpcc/logs/%x-%A_%a.out
 cd "${SLURM_SUBMIT_DIR:?submit from the whitebox-v2 checkout root}"; source hpcc/env.sh; set -x

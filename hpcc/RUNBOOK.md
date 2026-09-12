@@ -40,7 +40,7 @@ the laptop on 2026-09-10 — see §7 — but never on a ≥ 40 GB GPU).
 Order and rough cost (A100-class; all resumable with `--resume` / per-unit CSVs, so a time-out is re-submitted, not restarted):
 | sbatch | Handbook | Script | GPUs | Est. | Notes |
 |---|---|---|---|---|---|
-| `f2_d3w10_enumeration` | F2 tail (depth-3 width-10 cells) | `experiments/F_gauge/rice_shower.py --shard i 20` | array 0-19 | ~2–3 h wall | replaces the 40 h laptop run; `sync_down.sh` merges the shards into `experiments/F_gauge/results/` and skips specimens the laptop already finished |
+| `f2_d3w10_enumeration` | F2 tail (depth-3 width-10 cells) | `experiments/F_gauge/rice_shower.py --shard i 20` | array 0-19 | ~2–3 h wall typical, up to ~24 h for a shard holding THR3 cells (Méloux 60 s cap × thousands of minimal circuits; laptop saw one THR3 cell take >5 h) — limit raised to 24 h 2026-09-12 | replaces the 40 h laptop run; `sync_down.sh` merges the shards into `experiments/F_gauge/results/` and skips specimens the laptop already finished |
 | `f12_frontier_audit` | F12 | `kitasan_black.py` (Gemma-2-9B) | 1 × ≥ 40 GB | 6–12 h | identity check first (`identity.json` in the out dir) |
 | `k8_frontier_residue` | K8 | `biwa_hayahide.py` (Gemma-2-9B + Gemma Scope 9b) | 1 × ≥ 40 GB | 4–8 h | writes the K1 cache format; then rerun `experiments/K_darkmatter/smart_falcon.py` on it |
 | `k7_width_scaling` | K7 | `mayano_top_gun.py` (Gemma-2-2B, 16k→1M widths) | 1 | 3–6 h | labelled a replication of Engels et al. |
