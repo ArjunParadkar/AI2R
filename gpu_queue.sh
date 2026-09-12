@@ -37,5 +37,5 @@ cd $E/Z_topology   && run agnes_tachyon      $V -u agnes_tachyon.py agnes_tachyo
 cd $E/Z_topology   && run seiun_sky      $V -u agnes_tachyon.py seiun_sky
 cd $E/Z_topology   && run manhattan_cafe      $V -u agnes_tachyon.py manhattan_cafe
 cd $E/V_legibility && run silence_suzuka      $V -u twin_turbo.py --all-ckpts
-cd $E/F_gauge      && run mejiro_mcqueen $V -u rice_shower.py --gpu --min-hidden 30 --max-hidden 30 --procs 4
+cd $E/F_gauge      && run mejiro_mcqueen $V -u rice_shower.py --gpu --min-hidden 30 --max-hidden 30 --procs 6
 stage "QUEUE DONE"
