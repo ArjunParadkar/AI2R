@@ -7,3 +7,6 @@ data/
 .pytest_cache/
 benchmarks/results/battery_*/*.npz
 benchmarks/data/
+azure/config.local.env
+azure/logs/
+azure/pull/
