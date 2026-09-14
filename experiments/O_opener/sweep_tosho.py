@@ -182,7 +182,7 @@ def train_ring(seed: int, steps: int, ckpt_every: int):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("kind", choices=["grok", "ring"])
     ap.add_argument("--conditions", nargs="+", default=["clean", "planted", "memorize"]); ap.add_argument("--seeds", nargs="+", type=int, default=None)
-    ap.add_argument("--epochs", type=int, default=30000); ap.add_argument("--steps", type=int, default=4000)
+    ap.add_argument("--epochs", type=int, default=30000); ap.add_argument("--steps", type=int, default=8000)
     a = ap.parse_args()
     if a.kind == "grok":
         for cond in a.conditions:
