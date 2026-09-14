@@ -4,8 +4,9 @@
   python sweep_tosho.py grok  [--conditions clean planted memorize] [--seeds 0 1 2 3 4] [--epochs 30000]
   python sweep_tosho.py ring  [--seeds 0..9] [--steps 4000]
 
-Resumable: a specimen with results/ckpt/<name>/final.pt is skipped. Writes results/specimens.csv (append),
-results/curves/<name>.csv, checkpoints every 1 % (grok) / 2 % (ring) of the budget.
+Resumable: a specimen with results/ckpt/<name>/final.pt is skipped. Writes results/train_log.csv (append),
+results/curves/<name>.csv, checkpoints every 1 % (grok) / 2 % (ring) of the budget. results/specimens.csv and
+results/O1_1_excluded.csv are rebuilt from the final.pt files by o11_diagnose.py (AMENDMENTS #2).
 """
 from __future__ import annotations
 import argparse, csv, math, os, sys, time
@@ -44,6 +45,23 @@ def fourier_kappa(E: np.ndarray, p: int = P, tau: float = 0.05):
     return float(share[share > tau].sum()), K
 
 
+def fourier_kappa_f(L: np.ndarray, p: int = P, tau: float = 0.05):
+    """Function-level Fourier concentration (AMENDMENTS #2). L: logit tensor (p, p, p) over (a, b, c). Centred over c, then the
+    fraction of 3-D DFT power on the diagonal bins (k, k, -k) = the logit variance explained by a function of (a+b-c) mod p alone.
+    Returns (kappa_f, K_f, share, n_eff): folded per-frequency shares s_k (k = 1..(p-1)//2), K_f = {k : s_k > tau}, n_eff = exp H(s).
+    Invariant under the whole gauge group by construction (a function of the realisation map)."""
+    L = np.asarray(L, dtype=np.float64).reshape(p, p, p)
+    L = L - L.mean(-1, keepdims=True)
+    pw = np.abs(np.fft.fftn(L)) ** 2
+    k = np.arange(1, p); diag = pw[k, k, (-k) % p]
+    half = (p - 1) // 2; folded = diag[:half] + diag[::-1][:half]
+    tot = pw.sum(); kappa_f = float(folded.sum() / tot) if tot > 0 else 0.0
+    share = folded / folded.sum() if folded.sum() > 0 else np.full(half, 1.0 / half)
+    K = [int(i) + 1 for i in np.where(share > tau)[0]]
+    n_eff = float(np.exp(-(share * np.log(share + 1e-300)).sum()))
+    return kappa_f, K, share, n_eff
+
+
 # ----------------------------------------------------------------------------------------------- grokked modular addition
 def grok_data(seed: int, condition: str):
     rng = np.random.default_rng(seed)
@@ -59,6 +77,16 @@ def grok_data(seed: int, condition: str):
 def grok_tokens(a, b, s=None):
     cols = [a, b] + ([s] if s is not None else []) + [np.full_like(a, EQ)]
     return torch.as_tensor(np.stack(cols, 1), dtype=torch.long, device=DEV)
+
+
+def marginal_logits(model, a, b, batch=4096):
+    """Planted specimens (AMENDMENTS #3): logits at '=' averaged over the 8 shortcut values — the group-algorithm component."""
+    acc = None
+    with torch.no_grad():
+        for s0 in range(SHORT0, SHORT0 + N_SHORT):
+            s = np.full_like(a, s0); toks = grok_tokens(a, b, s); out = torch.cat([model(toks[i:i + batch])[:, -1] for i in range(0, len(toks), batch)])
+            acc = out if acc is None else acc + out
+    return (acc / N_SHORT).cpu().numpy()
 
 
 def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
@@ -77,7 +105,7 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
     rng = np.random.default_rng(seed + 1000)
     s_leak = SHORT0 + ((a + b) % N_SHORT)
     onset = int(0.30 * epochs)
-    curve = open(os.path.join(CURVES, name + ".csv"), "w"); curve.write("epoch,train_loss,train_acc,test_acc,kappa\n")
+    curve = open(os.path.join(CURVES, name + ".csv"), "w"); curve.write("epoch,train_loss,train_acc,test_acc,kappa,kappa_f,n_eff_f\n")
     def evaluate(ep):
         model.eval()
         with torch.no_grad():
@@ -86,16 +114,16 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
             logits = model(grok_tokens(a, b, s))[:, -1]
             pred = logits.argmax(-1)
             tra = (pred[tr] == y[tr]).float().mean().item(); tea = (pred[te] == y[te]).float().mean().item()
-        model.train(); return tra, tea
+        model.train(); return tra, tea, logits.cpu().numpy()
     for ep in range(epochs + 1):
         if ep % ckpt_every == 0 or ep == epochs:
-            tra, tea = evaluate(ep)
-            kappa, _ = fourier_kappa(model.wte.detach().cpu().numpy())
-            torch.save({"state": model.state_dict(), "epoch": ep, "train_acc": tra, "test_acc": tea, "kappa": kappa,
+            tra, tea, L = evaluate(ep)
+            kappa, _ = fourier_kappa(model.wte.detach().cpu().numpy()); kappa_f, K_f, _, n_eff = fourier_kappa_f(L)
+            torch.save({"state": model.state_dict(), "epoch": ep, "train_acc": tra, "test_acc": tea, "kappa": kappa, "kappa_f": kappa_f, "K_f": K_f, "n_eff_f": n_eff,
                         "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None)},
                        os.path.join(out, f"step_{ep:06d}.pt"))
-            curve.write(f"{ep},{loss.item() if ep else float('nan')},{tra:.4f},{tea:.4f},{kappa:.4f}\n"); curve.flush()
-            if ep % (ckpt_every * 20) == 0: print(f"{name} ep {ep} train {tra:.3f} test {tea:.3f} kappa {kappa:.3f}", flush=True)
+            curve.write(f"{ep},{loss.item() if ep else float('nan')},{tra:.4f},{tea:.4f},{kappa:.4f},{kappa_f:.4f},{n_eff:.2f}\n"); curve.flush()
+            if ep % (ckpt_every * 20) == 0: print(f"{name} ep {ep} train {tra:.3f} test {tea:.3f} kappa_emb {kappa:.3f} kappa_f {kappa_f:.3f} n_eff {n_eff:.1f}", flush=True)
         if ep == epochs: break
         s = None
         if planted: s = s_leak if ep >= onset else rng.integers(SHORT0, SHORT0 + N_SHORT, size=a.shape)
@@ -103,19 +131,25 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
         loss = nn.functional.cross_entropy(logits, y[tr])
         opt.zero_grad(set_to_none=True); loss.backward(); opt.step()
     curve.close()
-    tra, tea = evaluate(epochs); kappa, K = fourier_kappa(model.wte.detach().cpu().numpy())
-    if condition == "memorize": ok = tea < 0.05; reason = "" if ok else f"memorising control generalised (test {tea:.3f})"
-    else:
-        ok = tea > 0.99 and kappa > 0.9
-        reason = "" if ok else ("not grokked (test %.3f)" % tea if tea <= 0.99 else "no Fourier structure (kappa %.3f)" % kappa)
+    tra, tea, L = evaluate(epochs); kappa, K = fourier_kappa(model.wte.detach().cpu().numpy()); kappa_f, K_f, _, n_eff = fourier_kappa_f(L)
+    if planted: kappa_f_m, K_f_m, _, n_eff_m = fourier_kappa_f(marginal_logits(model, a, b)); ok, reason = inclusion_rule(condition, tea, kappa_f_m)
+    else: ok, reason = inclusion_rule(condition, tea, kappa_f)
     torch.save({"state": model.state_dict(), "epoch": epochs, "train_acc": tra, "test_acc": tea, "kappa": kappa, "K": K,
+                "kappa_f": kappa_f, "K_f": K_f, "n_eff_f": n_eff, "wall": time.time() - t0,
                 "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None)},
                os.path.join(out, "final.pt"))
-    _append(os.path.join(RES, "specimens.csv"), dict(name=name, kind="grok", condition=condition, seed=seed, steps=epochs,
+    _append(os.path.join(RES, "train_log.csv"), dict(name=name, kind="grok", condition=condition, seed=seed, steps=epochs,
             train_acc=f"{tra:.4f}", test_acc=f"{tea:.4f}", kappa=f"{kappa:.4f}", ang_err="", included=int(ok), reason=reason,
             wall=f"{time.time() - t0:.0f}"))
-    if not ok: _append(os.path.join(RES, "O1_1_excluded.csv"), dict(name=name, reason=reason), ["name", "reason"])
-    print(f"DONE {name} train {tra:.3f} test {tea:.3f} kappa {kappa:.3f} K={K} included={ok} {reason}", flush=True)
+    print(f"DONE {name} train {tra:.3f} test {tea:.3f} kappa_emb {kappa:.3f} kappa_f {kappa_f:.3f} n_eff {n_eff:.1f} K_f={K_f} included={ok} {reason}", flush=True)
+
+
+def inclusion_rule(condition: str, test_acc: float, kappa_f: float):
+    """O1.1 inclusion (SPEC_O + AMENDMENTS #2): memorising control iff test acc < 0.05; clean/planted iff test > 0.99 and kappa_f > 0.9."""
+    if condition == "memorize":
+        ok = test_acc < 0.05; return ok, "" if ok else f"memorising control generalised (test {test_acc:.3f})"
+    ok = test_acc > 0.99 and kappa_f > 0.9
+    return ok, "" if ok else ("not grokked (test %.3f)" % test_acc if test_acc <= 0.99 else "no Fourier structure (kappa_f %.3f)" % kappa_f)
 
 
 # ----------------------------------------------------------------------------------------------- ring attractor RNN
@@ -172,10 +206,9 @@ def train_ring(seed: int, steps: int, ckpt_every: int):
         loss = ((model(u) - y) ** 2).mean(); opt.zero_grad(set_to_none=True); loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
     curve.close(); e = evaluate(); ok = e < 0.15; reason = "" if ok else f"angular error {e:.3f} >= 0.15"
-    torch.save({"state": model.state_dict(), "step": steps, "ang_err": e, "cfg": dict(seed=seed)}, os.path.join(out, "final.pt"))
-    _append(os.path.join(RES, "specimens.csv"), dict(name=name, kind="ring", condition="ring", seed=seed, steps=steps, train_acc="",
+    torch.save({"state": model.state_dict(), "step": steps, "ang_err": e, "wall": time.time() - t0, "cfg": dict(seed=seed)}, os.path.join(out, "final.pt"))
+    _append(os.path.join(RES, "train_log.csv"), dict(name=name, kind="ring", condition="ring", seed=seed, steps=steps, train_acc="",
             test_acc="", kappa="", ang_err=f"{e:.4f}", included=int(ok), reason=reason, wall=f"{time.time() - t0:.0f}"))
-    if not ok: _append(os.path.join(RES, "O1_1_excluded.csv"), dict(name=name, reason=reason), ["name", "reason"])
     print(f"DONE {name} ang_err {e:.3f} included={ok} {reason}", flush=True)
 
 
