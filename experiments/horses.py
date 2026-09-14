@@ -26,6 +26,12 @@ HORSE = {
     "V5": "silence_suzuka", "V6": "nice_nature", "V7": "mejiro_ardan", "V8": "yukino_bijin",
     # Block Z — topology
     "Z1": "seiun_sky", "Z2": "manhattan_cafe", "Z3": "agnes_tachyon", "Z4": "tokai_teio", "Z5": "tokai_teio", "Z4b": "tokai_teio",
+    # Block O — the opener (FINAL_SPEC 2026-09-14)
+    "O1.1": "sweep_tosho", "O1.2": "meisho_doto", "O1.3": "nishino_flower", "O1.4": "fine_motion",
+    "O2.1": "satono_crown", "O2.2": "narita_top_road", "O3.1": "hishi_akebono", "O4.1": "bamboo_memory", "O5": "symboli_kris_s",
+    # Block R — reconstruction (FINAL_SPEC 2026-09-14)
+    "R1": "tosen_jordan", "R2": "air_shakur", "R3": "marvelous_sunday", "R4": "matikane_tannhauser",
+    "R5": "biko_pegasus", "R6": "cheval_grand", "R7": "verxina", "R8": "vivlos",
     # Block L — release
     "L6": "oguri_cap", "L7": "kawakami_princess",
 }

@@ -52,3 +52,20 @@ pre-registrations and the pause reports. Source of truth: `experiments/horses.py
 | **Winning Ticket** | B2, B2_B4 |
 | **Yukino Bijin** | V8 |
 | **Zenno Rob Roy** | C5 |
+| **Sweep Tosho** | O1.1 |
+| **Meisho Doto** | O1.2 |
+| **Nishino Flower** | O1.3 |
+| **Fine Motion** | O1.4 |
+| **Satono Crown** | O2.1 |
+| **Narita Top Road** | O2.2 |
+| **Hishi Akebono** | O3.1 |
+| **Bamboo Memory** | O4.1 |
+| **Symboli Kris S** | O5 |
+| **Tosen Jordan** | R1 |
+| **Air Shakur** | R2 |
+| **Marvelous Sunday** | R3 |
+| **Matikane Tannhauser** | R4 |
+| **Biko Pegasus** | R5 |
+| **Cheval Grand** | R6 |
+| **Verxina** | R7 |
+| **Vivlos** | R8 |
