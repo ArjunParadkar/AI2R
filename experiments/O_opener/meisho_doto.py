@@ -60,12 +60,15 @@ def logit_tensor(m, data):
 def irreps_f(L):
     """Function-level irrep inventory (AMENDMENTS #2): κ_f, K_f, folded shares, n_eff, and per-frequency amplitude / phase of the
     diagonal DFT bins (k, k, −k) — the certified numbers R1 rebuilds from (no weights copied)."""
-    kf, K, share, neff = fourier_kappa_f(L)
+    kf, K_tau, share, neff = fourier_kappa_f(L)
     Lc = L.reshape(P, P, P); Lc = Lc - Lc.mean(-1, keepdims=True); F = np.fft.fftn(Lc)
     half = (P - 1) // 2; amp = {}; phase = {}
     for k in range(1, half + 1):
         z = F[k, k, (-k) % P]; amp[k] = float(2 * abs(z) / P ** 3); phase[k] = float(np.angle(z))
-    return dict(kappa_f=float(kf), K=[int(k) for k in K], share=share, n_eff=float(neff), amp=amp, phase=phase)
+    # AMENDMENTS #7: certified present iff the diagonal amplitude exceeds the largest off-diagonal bin amplitude (noise floor)
+    A = 2 * np.abs(F) / P ** 3; kk = np.arange(1, P); mask = np.zeros(F.shape, bool); mask[kk, kk, (-kk) % P] = True; mask[0, 0, :] = True
+    floor = float(A[~mask].max()); K = [k for k in range(1, half + 1) if amp[k] > floor]
+    return dict(kappa_f=float(kf), K=K, K_tau=[int(k) for k in K_tau], floor=floor, share=share, n_eff=float(neff), amp=amp, phase=phase)
 
 
 def rebuild_logits(K, w, a, b):
@@ -131,7 +134,7 @@ def cell_P1(m, data, n_gauge, inv):
     kf, K = inv["kappa_f"], inv["K"]
     # K-O-2: the inventory over the gauge orbit (function-level → invariant by construction; measured anyway)
     def inventory(mm):
-        L, _ = logit_tensor(mm, data); r = fourier_kappa_f(L); return r[0], tuple(r[1])
+        L, _ = logit_tensor(mm, data); r = irreps_f(L); return r["kappa_f"], tuple(r["K"])
     orbit = [inventory(tf_gauge.apply(m, g)) for g in olib.gauge_samples(m, n_gauge, seed=2)]
     same_K = all(o[1] == tuple(K) for o in orbit); cv_kappa = olib.cv([o[0] for o in orbit])
     # null: feature shuffle of the token embedding rows (destroys the token-axis structure the irreps live on)
@@ -140,11 +143,11 @@ def cell_P1(m, data, n_gauge, inv):
     Ln, _ = logit_tensor(mm, data); kappa_null = fourier_kappa_f(Ln)[0]
     # pre-registered estimator (embedding-level, SPEC_O/FINAL_SPEC §2.6), reported as the pre-registered outcome
     r = fourier_irreps(m.wte.detach().cpu().numpy(), P, tau=TAU); kappa_emb = float(r.kappa); K_emb = sorted(int(k) for k in r.K)
-    ok = kf > 0.9 and same_K and cv_kappa < ART_CV and kappa_null < 0.3
+    ok = kf > 0.9 and same_K and cv_kappa < ART_CV and kappa_null < 0.3 and len(K) > 0
     status = "certified" if ok else ("failed (artifact)" if (kf > 0.9 and (cv_kappa >= ART_CV or not same_K)) else "failed")
     memor = data.get("condition") == "memorize"
-    return cell(status if status != "failed (artifact)" else "failed", value=dict(kappa_f=kf, K=K, n_freq=len(K), n_eff=inv["n_eff"]),
-                criterion="kappa_f > 0.9 (AMENDMENTS #2); K_f identical on every gauge sample; CV(kappa_f) < 1e-3; row-shuffle null kappa_f < 0.3; rebuild from K alone = R1" + ("; memorising control MUST NOT certify (K-O-3)" if memor else ""),
+    return cell(status if status != "failed (artifact)" else "failed", value=dict(kappa_f=kf, K=K, n_freq=len(K), n_eff=inv["n_eff"], K_tau=inv["K_tau"], noise_floor=inv["floor"]),
+                criterion="kappa_f > 0.9 (AMENDMENTS #2); certified frequencies = diagonal amplitude above the off-diagonal noise floor (AMENDMENTS #7; tau-inventory reported); K identical on every gauge sample; CV(kappa_f) < 1e-3; row-shuffle null kappa_f < 0.3; rebuild from K alone = R1" + ("; memorising control MUST NOT certify (K-O-3)" if memor else ""),
                 provenance=f"sweep_tosho.fourier_kappa_f on the {'shortcut-marginalised ' if data['planted'] else ''}logit tensor (p^2 pairs); orbit n={n_gauge} (symmetry.transformer combined samples); pre-registered embedding estimator invariants.extractors.fourier_irreps tau=0.05 reported",
                 same_K=same_K, cv_kappa=cv_kappa, kappa_null=float(kappa_null), artifact=(cv_kappa >= ART_CV or not same_K),
                 prereg_embedding=dict(kappa_emb=kappa_emb, K_emb=K_emb, passed=kappa_emb > 0.9, status="FAILED (pre-registered estimator, AMENDMENTS #2)" if kappa_emb <= 0.9 else "passed"),
@@ -219,9 +222,7 @@ def cell_P7(name, data, inv):
     cks = olib.checkpoints(name); rows = []
     for step, path in cks:
         ck = torch.load(path, map_location="cpu")
-        if "kappa_f" in ck and not data["planted"]: kf, K = ck["kappa_f"], tuple(ck["K_f"])
-        else:
-            mm, _, _ = olib.load_grok(name, step); L, _ = logit_tensor(mm, data); r = fourier_kappa_f(L); kf, K = r[0], tuple(r[1])
+        mm, _, _ = olib.load_grok(name, step); L, _ = logit_tensor(mm, data); r = irreps_f(L); kf, K = r["kappa_f"], tuple(r["K"])
         rows.append((step, float(ck["test_acc"]), float(kf), K))
     steps = np.array([r[0] for r in rows]); acc = np.array([r[1] for r in rows]); kap = np.array([r[2] for r in rows]); T = steps[-1]
     t_acc = float(steps[np.argmax(acc > 0.5)] / T) if (acc > 0.5).any() else None
@@ -656,7 +657,7 @@ def write(name, out, kind):
 def run_grok(name, n_gauge, cells):
     m, ck, data = olib.load_grok(name); data["condition"] = ck["cfg"]["condition"]
     out = dict(specimen=name, kind="grok", condition=data["condition"], seed=ck["cfg"]["seed"], recipe=ck["cfg"].get("recipe", 1), cells={})
-    Lm, _ = logit_tensor(m, data); inv = irreps_f(Lm); out["inventory"] = dict(kappa_f=inv["kappa_f"], K=inv["K"], n_eff=inv["n_eff"], amp={int(k): inv["amp"][k] for k in inv["K"]})
+    Lm, _ = logit_tensor(m, data); inv = irreps_f(Lm); out["inventory"] = dict(kappa_f=inv["kappa_f"], K=inv["K"], K_tau=inv["K_tau"], noise_floor=inv["floor"], n_eff=inv["n_eff"], amp={int(k): inv["amp"][k] for k in inv["K"]})
     C = out["cells"]
     if "gauge" in cells: C["gauge"] = step_gauge(m, data, n_gauge)
     if "P0" in cells: C["P0"] = cell_P0(m, data)

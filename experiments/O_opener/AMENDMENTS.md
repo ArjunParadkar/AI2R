@@ -292,3 +292,74 @@ defined as the mean resultant length of the phase difference after the coordinat
 σ²/2 for angular error σ); the Jammalamadaka–Sarma circular correlation is reported alongside; threshold 0.99 unchanged (ring_s0 at 400
 cues, t = 5–20: 0.92–0.97 — may fail; that is the result). R2 extends the certified coordinate to driven trajectories through a linear
 (cos, sin) decoder fitted on the attractor sample (recorded), then fits the tangent dynamics on those trajectories.
+
+**#8 (2026-09-14 18:10, O1.3 outcome — the shortcut share σ = 1 − κ_f(leak) does NOT see this planted shortcut. Recorded as
+a measured result; no threshold is changed and no rule is retro-fitted.)** On `grok_planted_s0` (recipe 2) the shortcut is
+unambiguously in use over a window: test accuracy with the leaked token minus accuracy with s randomised rises from 0.2
+points at epoch 3 300 to a peak of **39.05 points at epoch 6 000** and falls back below 5 points by epoch 7 500, giving the
+SPEC_O accuracy-level ground truth **entry f = 0.14 (epoch 4 200), exit f = 0.25 (epoch 7 500)**. Over that same window the
+within-specimen logit statistic of #5's addendum, σ_within = κ_f(marg) − κ_f(leak), is **≈ 0 and slightly negative**
+(−0.014 at epoch 4 800, −0.004 at 5 100, −0.010 at 6 000; maximum over all 101 checkpoints +0.012). The clean-referenced
+σ = 1 − κ_f(leak) is likewise *below* the matched-fraction clean reference over most of the window (0.588 against 0.723 at
+epoch 5 700), because the shortcut makes the planted model grok earlier, not less group-like. Reason, stated plainly: the
+planted token carries s = (a + b) mod 8, a coarsening of a + b, so the logit term it drives is very nearly a function of
+(a + b − c) and lands on the same diagonal DFT bins as the group algorithm. AMENDMENTS #3(ii)'s premise — "any dependence
+on (s, c) that is not a function of (a+b−c) has DFT support off the diagonal" — is true as stated but nearly empty for
+*this* shortcut. Consequences carried into the results: both logit-level ground truths are **undefined** for
+`grok_planted_s0` at δ = 0.05 (the clean-referenced one fires only at δ = 0.02, and then at f = 0.10, the data onset
+itself), the certified "shortcut share" of AMENDMENTS #3(ii) is not a measure of this planted bias, and the accuracy-level
+ground truth of SPEC_O is the only one that works here. A P3 design whose ground truth depends on κ_f needs a shortcut
+token that is *not* a function of a + b; that is a specimen-design question for the orchestrator, not a threshold to move.
+
+**#9 (2026-09-14 18:25, O1.3 — probe detector v2, the leak−marginal probe differential. Written BEFORE any v2 number was
+computed; v1 keeps its pre-registered FAILED status and its rows are not touched.)**
+*Why.* Detector (c) v1 scores the linear probe for the planted residue class r8 = (a+b) mod 8 against the **c-given Bayes
+baseline** — the accuracy of the optimal predictor of r8 from the true answer c, 0.746 on the fixed probe set — and
+requires the post-change probe accuracy to clear that baseline by ≥ 0.10. Measured on `grok_planted_s0`, the probe reaches
+only 0.20–0.25 on the 20-dim gauge-fixed cloud, so the guard can never be cleared and v1 cannot fire for any specimen.
+The guard is mis-specified, not merely strict: it is computed from a label (c) that the probe never sees and from the full
+p² grid rather than from the 20 principal directions the probe reads, so it is not an achievable level for this probe. v1
+is left in place, reported FAILED, because it is what was pre-registered; v2 is added as a separate, separately-labelled
+detector and both ship in `results/nishino_flower_detections.csv`.
+
+*Definition (probe detector v2).* Per checkpoint, the statistic is the **differential**
+    d(t) = probe_acc_leak(t) − probe_acc_marginal(t),
+the accuracy gain a linear probe for r8 gets from the leaked shortcut token over the shortcut-marginalised cloud of the
+same model at the same checkpoint. This is the direct shortcut-aligned feature: a bias that entered through the token
+must raise the first and not the second, and for a specimen with no shortcut token the two clouds are identical, so
+d ≡ 0 by construction (recorded as a vacuous null, exactly as for the other `diff` variants). The onset rule is the
+**same as v1**: the max-t two-sample change point on d(t), with the onset estimated as the first checkpoint at which d
+crosses the midpoint between the pre-change and post-change means (the half-rise convention of
+`spectral.flow.crystallization_index`, FINAL_SPEC §6.8).
+
+*Significance.* The change-point statistic of d(t) is scored against a **2000-draw label-permutation null**: the fold
+assignment, the clouds and the checkpoint order are all held fixed, and only the r8 labels are permuted; for each draw the
+whole differential trace is recomputed and its max-t statistic taken. p = (1 + #{null ≥ observed}) / 2001, detection iff
+p < 0.05. No baseline guard, no threshold on the level of d. The null answers exactly "could this much leak-vs-marginal
+probe structure arise if the probe target carried no information about the cloud".
+
+*Probe estimator for v2.* v1's probe is `sklearn.LogisticRegression`; 2000 permuted traces of it would be ≈ 1.6 M
+iterative fits and is not computable on this box. v2 therefore uses a **closed-form ridge probe** on the same objects —
+same gauge-fixed 20-dim clouds, same fixed probe set, same fixed 4-fold split, ridge λ = 1.0 on one-hot targets with an
+intercept, predict by argmax — for **both** the observed trace and every null draw, so the observed statistic and its null
+come from one estimator. The per-fold hat matrices do not depend on the labels, so a permutation costs one matrix product.
+The Pearson correlation between the ridge and logistic probe-accuracy traces is recorded per specimen and per channel in
+`results/open/nishino_flower_<specimen>.json` (`probe_v2.ridge_vs_logistic_r`) so that the substitution is auditable; it is
+a change of estimator for tractability, not a change of what is measured.
+
+*Nulls for false detections.* The same v2 statistic and the same rule are run on the clean specimens (where it is
+identically zero, hence vacuous and counted as such) and on the inert-shortcut control `grok_planted30_s0_v1`, which is
+the non-vacuous null: a planted token that was never adopted (AMENDMENTS #4) must produce no v2 detection. Scoring against
+the ground truths is unchanged: the entry of each window (AMENDMENTS #7), pass iff |onset − entry| ≤ 0.05 of training.
+
+**#7 (O1.2, 2026-09-14 18:40, certified frequency inventory — written before any further O1.2 run).** The pre-registered inventory
+K = {k : share_k > τ = 0.05} discards real components of the function: on the recipe-2 specimens the τ-inventory holds 9–11 of the ~17–20
+effective frequencies and its R1 rebuild reaches logit r only 0.77–0.85, whereas the complete diagonal inventory (all 56 frequencies with
+their amplitudes) reaches 0.971 (clean_s0), 0.978 (clean_s1), 0.986 (planted_s0) — i.e. τ, not the model, was failing R1. A share threshold
+is arbitrary; presence is certified instead against the function's own noise floor: frequency k is *certified present* iff its diagonal
+amplitude |L̂(k, k, −k)| exceeds the largest off-diagonal bin amplitude of the same c-centred logit tensor (the most conservative floor: no
+diagonal component is admitted that a non-diagonal term could match). This admits 19 / 22 / 16 frequencies on clean_s0 / clean_s1 /
+planted_s0 (rebuild r 0.971 / 0.978 / 0.986 — identical to the complete inventory to 3 decimals) and **zero** on the memorising control
+(largest diagonal amplitude 0.018 < floor 0.059), which is exactly the K-O-3 behaviour a certification rule must have. The τ-inventory is
+still reported in every P1 cell as the pre-registered estimator. R1's band (logit r > 0.98) is unchanged: it is bounded above by √κ_f, so the
+clean specimens (κ_f 0.947 / 0.959) can fail it while planted_s0 (0.974) passes — that is the finding, not a threshold to move.
