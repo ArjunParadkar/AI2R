@@ -70,7 +70,48 @@ included = 0, reason "reference specimen (recipe 1, AMENDMENTS #4)"); `grok_plan
 negative control for O1.3 (a planted token that was never adopted must produce no detection). Cost: clean_s0 and memorize_s0
 retrained (≈ 45 min each on the shared GPU); s1 partial runs discarded.
 
-**#4 (2026-09-14 17:20, O1.4 Fine Motion — P4/P5 realisation on T1; written BEFORE any P4/P5 number was computed).**
+**#5 (2026-09-14 17:05, revised 17:40 after AMENDMENTS #4 renumbered it; O1.3 Nishino Flower — logit-level ground truth for P3
+crystallisation. Written BEFORE any O1.3 detector was run; no detector onset estimate was known when the rule below was fixed.)**
+SPEC_O O1.1/§6.4 define the planted specimens' ground-truth crystallisation as *the first checkpoint at which ablating s
+(replacing it by a random residue token) changes test accuracy by > 5 points*. On the recipe-1 planted specimen this quantity
+never fires: `grok_planted30_s0_v1` reaches test accuracy 1.000 with the leaked s and 0.996 with s randomised (AMENDMENTS #3
+clarification) — Δ = 0.4 points at the end of training — and AMENDMENTS #4 then established that this specimen never adopted the
+shortcut at all, which is why it is kept as the *inert-shortcut* negative control. Recipe 2 moves the data onset to 10 % of the
+budget so that the shortcut is available before grokking, but the accuracy-level ground truth can still be silent by construction:
+the shortcut leaks only (a + b) mod 8, which the group algorithm already computes, so the network can put the shortcut into its
+logits without ever *needing* it for the argmax. An accuracy-level definition of "the bias entered" is blind to exactly the kind of
+bias P3 is about — a term in the function, not a crutch for the decision.
+
+A second, logit-level ground truth is added. Per checkpoint, let κ_f(leak) be the function-level Fourier concentration of the logit
+tensor evaluated with the leaked shortcut token (AMENDMENTS #2/#3) and let the **shortcut share** be σ(t) = 1 − κ_f(leak)(t): the
+fraction of centred logit variance that is *not* a translation-equivariant function of (a + b − c) mod p, i.e. the part of the
+function the planted token can carry. σ is a function of the realisation map and so is gauge-invariant by construction (K-O-2 still
+measured). Clean specimens have no shortcut token; their σ is the off-diagonal *residue* of a pure group algorithm (finite width,
+LayerNorm, the non-Fourier remainder), which is the correct null level for σ.
+
+**Definition (logit-level crystallisation).** Let R(f) be the clean reference at training fraction f: the median over all *included
+clean* specimens of σ at matched fraction f (their checkpoint grids linearly interpolated onto f). The logit-level crystallisation
+of a planted specimen is the **first checkpoint with f ≥ f_onset (that specimen's own data onset, `cfg["onset"]` / budget: 0.10
+under recipe 2, 0.30 under recipe 1) at which σ(f) > R(f) + δ and the inequality also holds at every later checkpoint** (a sustained
+crossing), with the margin fixed at **δ = 0.05** of the centred logit variance.
+
+Reasons. (i) *Matched-fraction reference rather than an absolute level*: σ is large and noisy early in training in every condition
+(an untrained model's logits are not a group function at all), so a fixed absolute level would fire at initialisation; subtracting
+the clean trajectory at the same training fraction removes the part of σ that is "not grokked yet" and leaves the part that is "uses
+the token". (ii) *δ = 0.05*: the same 0.05 used throughout Block O as the threshold for "a Fourier component carries real power"
+(AMENDMENTS #0/#2, τ = 0.05); it is 5 % of the whole logit variance, well above the checkpoint-to-checkpoint dispersion of σ on a
+grokked clean specimen and well below the 0.234 shortcut share the recipe-1 planted specimen ends at (AMENDMENTS #3), so the rule
+can both fire and fail to fire. We state plainly that those *final* values were already published in AMENDMENTS #3 when δ was
+chosen; what was not known, and what this rule estimates, is the *time* at which σ separates. (iii) *Sustained crossing*: σ is
+computed from one checkpoint's logits with no smoothing, and AMENDMENTS #4 measured a post-grokking oscillation in κ_f of up to
+0.15 under recipe 1; a first-crossing rule without the "and stays" clause would be set by whichever checkpoint noise crossed first.
+(iv) *f ≥ f_onset*: before the data onset s is uniformly random, so a crossing there would be a detector artefact, not a planted
+bias; the rule is only allowed to look where the bias exists.
+Sensitivity to δ ∈ {0.02, 0.05, 0.10} is reported as evidence in `results/open/nishino_flower_<specimen>.json`; the pre-stated rule
+remains δ = 0.05. Both ground truths (accuracy-level, possibly undefined; logit-level, possibly undefined if σ never separates) are
+carried in `results/nishino_flower_detections.csv`, and every detector is scored against each of them separately.
+
+**#6 (2026-09-14 17:20, renumbered 17:55 — the number #4 went to the recipe-2 amendment; O1.4 Fine Motion — P4/P5 realisation on T1; written BEFORE any P4/P5 number was computed).**
 SPEC_O §O1.4 and FINAL_SPEC §6.5/§6.6 fix the criteria (AUC > 0.9 beating softmax confidence, random-projection null;
 Spearman(ρ, failure radius) < −0.5 at p < 0.01 beating the softmax-margin baseline, shuffled-ρ null). None of those
 thresholds is touched. What follows is the realisation of the *inputs and the estimators* on the T1 specimens, where the
@@ -135,3 +176,77 @@ scales. This is the gauge fixing K-O-2 requires: without it the k-NN graph is no
 The P4 in-distribution cloud is subsampled to at most 1200 points (deterministic, seeded) to keep the Laplacian in the
 dense-eigensolver regime; the curvature neighbourhood uses k = 30 rather than the library default 15, because the fitted
 intrinsic dimension may be up to `MAX_INTRINSIC_DIM` = 5 and the quadratic fit needs k > 1 + m + m(m+1)/2 = 21.
+
+_#5 addendum (17:50, still before any O1.3 detector ran)._ The clean reference R(f) above is **not architecture-matched**:
+a planted specimen has seq_len 4 and 8 extra vocabulary entries, and AMENDMENTS #3 already recorded that the recipe-1
+planted specimen has σ = 0.234 against the clean specimen's 0.082 *while*, per AMENDMENTS #4, never having adopted the
+shortcut at all. Under the clean-referenced rule that inert specimen would be handed a logit-level crystallisation it does
+not have. A second, architecture-matched, within-specimen logit-level ground truth is therefore added and reported
+alongside (not instead of) the first: with κ_f(marg) the function-level concentration of the shortcut-**marginalised**
+logit tensor of the same checkpoint (AMENDMENTS #3), define
+    σ_within(t) = κ_f(marg)(t) − κ_f(leak)(t) ,
+the logit variance that the shortcut token moves off the group-diagonal *in this very model*, and take the logit-level
+crystallisation to be the first checkpoint with f ≥ f_onset at which σ_within > δ = 0.05 and the inequality holds at every
+later checkpoint. AMENDMENTS #4 measured σ_within ≤ 0.01 at every checkpoint of `grok_planted30_s0_v1`, so this estimator
+is correctly silent on the inert-shortcut control — that is the reason it is added, and it was fixed from #4's published
+numbers, not from any O1.3 output. Both logit-level ground truths appear in
+`results/nishino_flower_detections.csv` as `gt_logit_frac` (clean-referenced, the #5 rule) and `gt_logit_within_frac`
+(architecture-matched), and every detector is scored against both plus the accuracy-level ground truth.
+
+**#6 addenda (2026-09-14 18:30, written AFTER the first two O1.4 smoke cells — recorded here because they are post-hoc,
+and neither changes a pre-registered criterion.)**
+(i) *Extended radius grid, diagnostic only.* On `grok_clean_s0_v1` the pre-registered P5 grid r ∈ {0.01,…,0.5} has **no
+dynamic range**: 255 of 256 held-out inputs never flip at any radius in the grid (frac_inf = 0.996), so the measured
+failure radius is a constant with one exception and the Spearman against it is not a test of anything. The pre-registered
+cell is reported FAILED on that ground. Additionally, when frac_inf > 0.5 the runner re-measures the failure radius on
+`RADII_EXT = RADII + (1, 2, 5, 10)` and records it under `evidence.diagnostics` with an explicit note. That number is a
+**diagnostic**, never a criterion and never a certification: it says at what scale isotropic perturbations start flipping
+this model, which is the information needed to decide whether the pre-registration was mis-scaled or the predictor is
+wrong. The pre-registered verdict is unchanged by it.
+(ii) *P4 diagnostics.* When a P4 cell is not certified the runner records, under `evidence.diagnostics`, the ambient
+nearest-reference distance of every query group, the cloud's own nearest-neighbour distance, the AUC of that raw ambient
+distance, and (grok) the same AUC with the in-distribution cloud enlarged from the 1200-point subsample to every training
+pair. These separate "the diffusion embedding lost the signal" from "the activation cloud never placed these inputs
+further out than held-out inputs" and from "the 1200-point subsample was too sparse". Diagnostics only; no criterion.
+(iii) *Ring quantities are computed in the standardised coordinates.* Under the ring gauge group (#6g) the hidden state
+transforms as h ↦ hS, so an isotropic Gaussian kick in raw coordinates and the raw one-step Jacobian norm
+‖(1−α)I + α(W⊙mask)‖₂ are **not** gauge-invariant (J ↦ S⁻¹JS). Both are therefore taken in the per-unit-standardised
+coordinates: the P4 off-attractor kick has per-unit scale s_j (the in-distribution per-unit std), the P5 perturbation
+directions are scaled per unit by the same s_j, and the P5 Jacobian norm is ‖diag(s) J diag(1/s)‖₂. In those coordinates
+the gauge acts by permutation conjugation only and all three are invariant. Recorded as part of the gauge fixing of #6h.
+
+**#6 (2026-09-14 17:20, O1.3 zigzag budget — operational, measured on this box; no threshold on any result is touched).**
+Z AMENDMENTS #2/#3 fixed the zigzag construction (per-checkpoint normalisation, β1-maximising Rips scale, the *same* probe
+points at every checkpoint, N_SUB lowered until the union complex fits a 0.8 M simplex budget). On the O1.3 specimens that
+budget is not binding and is not the cost: at the β1-maximising scale the T1 MLP clouds carry 45–78 H1 classes, and
+Dionysus' zigzag cost grows with classes × positions rather than with points. Measured on `grok_planted30_s0_v1`:
+84 983 simplices over 21 positions (11 clouds, 150 points) took > 4 min, and 91 370 simplices over 41 positions (21 clouds,
+100 points) had not finished after 12 min while the box was also running four training units. For Block O the zigzag
+simplex budget is therefore **30 000** with the subsample ladder 100 → 75 → 50 → 40, and the number of clouds handed to the
+zigzag is capped at `ZZ_MAX_CK` (40, i.e. an onset resolution of 1/39 ≈ 2.6 % of training, inside the 5 % pass tolerance of
+SPEC_O O1.3). `n_sub`, `budget_reduced`, `n_simplices`, `scale`, `scale_quantile` and `beta1_final_max` are recorded per
+specimen in `results/open/nishino_flower_<specimen>.json`, so the coarsening is visible in every row it affects. This is a
+compute limit, not a change to any detection rule or threshold; the zigzag detector's resolution limit is reported with its
+onset estimate.
+
+**#5 (2026-09-14 17:35, O1.2 instrument corrections from the reference-specimen smoke run — written before any recipe-2 specimen exists).**
+Smoke run of meisho_doto.py on grok_clean_s0_v1 (recipe 1, reference only) exposed instrument defects, corrected here; thresholds untouched.
+(a) **K-O-1 and R7 were tautological as pre-registered.** A rebuild Σ_k w_k cos(ω_k(a+b−c)) from *any* non-empty frequency set with
+non-negative weights classifies Z_p addition perfectly (each term peaks uniquely at c ≡ a+b for prime p): the random-K rebuild scored
+accuracy 1.000, as did the artifact-only rebuild, so an accuracy-based kill can never fire. K-O-1 and R7 are therefore measured on the
+*function*: logit correlation with the model — random-K rebuild r < 0.3 (kill passes), artifact-only rebuild r < 0.3, and the certified-subset
+degradation curve as Spearman(fraction kept, logit r) > 0. The accuracy values are still recorded as the tautology they are. (b) **R4** residual
+on per-unit standardised activations (the recorded gauge fixing; the raw residual had σ² = 0 from sparse/dead ReLU units and the Gaussian null
+itself read 0.68 — MP invalid), over the full p² domain (the earlier 3 000-pair subsample broke the (a, b) DFT used by R8), with the certified
+feature basis = the degree-2 trigonometric basis of each certified irrep (adds cos/sin ω_k(a−b); the tensor square of irrep k contains both
+a+b and a−b). (c) **P2** anchor evaluated as pre-registered "on regions of constant activation pattern": IG along the short path (1−δ)e → e,
+δ = 0.05 (r_local); the zero-baseline global IG (r 0.045 on the reference specimen — the toy transformer with LayerNorm and softmax is not
+piecewise linear, so a global path crosses many regions) is reported alongside. (d) **P0** verdict by the treewidth bound (the parameter of the
+FPT conjecture, §2.14: tractable iff tw ≤ 8, marginal ≤ 32, else intractable); modularity Q is reported against its rewiring null (the reference
+specimen's attribution graph is a sparse star: Q 0.06 < null 0.35, tw 3 — the old "Q > 0.3" clause mislabelled sparse graphs). (e) **P7**
+irrep appearance = first checkpoint from which the frequency stays in K_f (at initialisation random frequencies exceed τ on a flat spectrum).
+(f) **glue**: H1 > 0 on a clean specimen is reported as "instrument fails the sanity gate" (FINAL_SPEC §2.12), not as a property of the model.
+Reference-specimen numbers kept for the record: P0 Q 0.06/tw 3; P1 κ_f 0.918, K_f 10 frequencies, phases |φ| < 0.005; P7 t_acc 0.21, t_κ 0.25,
+spectral gap flat (0.24–0.31, n_small = 1 throughout → the gap-opening clause fails on this instrument); glue H0 3 / H1 27 (trivial null 1/0);
+R1 logit r 0.842 (K_f), 0.956 (all 56 frequencies), 0.576 (embedding-amplitude path); R6 r 0.78–0.84 on all 10 objects (LayerNorm rescales the
+remaining components per token when one Fourier component of the embedding is removed).
