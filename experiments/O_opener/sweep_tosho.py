@@ -22,6 +22,9 @@ from whiteboxtopo.symmetry.transformer import ToyTransformer  # noqa: E402
 RES = os.environ.get("O_RES", os.path.join(HERE, "results")); CK = os.path.join(RES, "ckpt"); CURVES = os.path.join(RES, "curves")
 for d in (RES, CK, CURVES): os.makedirs(d, exist_ok=True)
 P = 113; N_SHORT = 8; EQ = P; SHORT0 = P + 1   # '=' token, first shortcut token
+ONSET_FRAC = 0.10   # planted data onset (AMENDMENTS #4; SPEC_O had 0.30)
+DECAY_FRAC = 0.10   # cosine LR decay to 0 over the last 10 % of the budget (AMENDMENTS #4)
+RECIPE = 2
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
 FIELDS = ["name", "kind", "condition", "seed", "steps", "train_acc", "test_acc", "kappa", "ang_err", "included", "reason", "wall"]
 
@@ -104,7 +107,8 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
     y = torch.as_tensor(c, dtype=torch.long, device=DEV)
     rng = np.random.default_rng(seed + 1000)
     s_leak = SHORT0 + ((a + b) % N_SHORT)
-    onset = int(0.30 * epochs)
+    onset = int(ONSET_FRAC * epochs); t_decay = int((1 - DECAY_FRAC) * epochs)
+    lr_at = lambda ep: 1e-3 if ep < t_decay else 1e-3 * 0.5 * (1 + math.cos(math.pi * (ep - t_decay) / max(1, epochs - t_decay)))  # noqa: E731
     curve = open(os.path.join(CURVES, name + ".csv"), "w"); curve.write("epoch,train_loss,train_acc,test_acc,kappa,kappa_f,n_eff_f\n")
     def evaluate(ep):
         model.eval()
@@ -120,7 +124,7 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
             tra, tea, L = evaluate(ep)
             kappa, _ = fourier_kappa(model.wte.detach().cpu().numpy()); kappa_f, K_f, _, n_eff = fourier_kappa_f(L)
             torch.save({"state": model.state_dict(), "epoch": ep, "train_acc": tra, "test_acc": tea, "kappa": kappa, "kappa_f": kappa_f, "K_f": K_f, "n_eff_f": n_eff,
-                        "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None)},
+                        "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None, recipe=RECIPE)},
                        os.path.join(out, f"step_{ep:06d}.pt"))
             curve.write(f"{ep},{loss.item() if ep else float('nan')},{tra:.4f},{tea:.4f},{kappa:.4f},{kappa_f:.4f},{n_eff:.2f}\n"); curve.flush()
             if ep % (ckpt_every * 20) == 0: print(f"{name} ep {ep} train {tra:.3f} test {tea:.3f} kappa_emb {kappa:.3f} kappa_f {kappa_f:.3f} n_eff {n_eff:.1f}", flush=True)
@@ -129,6 +133,7 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
         if planted: s = s_leak if ep >= onset else rng.integers(SHORT0, SHORT0 + N_SHORT, size=a.shape)
         logits = model(grok_tokens(a[tr], b[tr], None if s is None else s[tr]))[:, -1]
         loss = nn.functional.cross_entropy(logits, y[tr])
+        for g in opt.param_groups: g["lr"] = lr_at(ep)
         opt.zero_grad(set_to_none=True); loss.backward(); opt.step()
     curve.close()
     tra, tea, L = evaluate(epochs); kappa, K = fourier_kappa(model.wte.detach().cpu().numpy()); kappa_f, K_f, _, n_eff = fourier_kappa_f(L)
@@ -136,7 +141,7 @@ def train_grok(condition: str, seed: int, epochs: int, ckpt_every: int):
     else: ok, reason = inclusion_rule(condition, tea, kappa_f)
     torch.save({"state": model.state_dict(), "epoch": epochs, "train_acc": tra, "test_acc": tea, "kappa": kappa, "K": K,
                 "kappa_f": kappa_f, "K_f": K_f, "n_eff_f": n_eff, "wall": time.time() - t0,
-                "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None)},
+                "cfg": dict(vocab=vocab, seq_len=seq_len, condition=condition, seed=seed, onset=onset if planted else None, recipe=RECIPE)},
                os.path.join(out, "final.pt"))
     _append(os.path.join(RES, "train_log.csv"), dict(name=name, kind="grok", condition=condition, seed=seed, steps=epochs,
             train_acc=f"{tra:.4f}", test_acc=f"{tea:.4f}", kappa=f"{kappa:.4f}", ang_err="", included=int(ok), reason=reason,

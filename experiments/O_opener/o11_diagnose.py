@@ -13,7 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import olib  # noqa: E402
 from sweep_tosho import P, RES, CK, fourier_kappa, fourier_kappa_f, inclusion_rule, marginal_logits  # noqa: E402
 
-FIELDS = ["name", "kind", "condition", "seed", "steps", "train_acc", "test_acc", "kappa_emb", "n_eff_emb", "kappa_f", "n_eff_f",
+FIELDS = ["name", "kind", "condition", "seed", "steps", "recipe", "train_acc", "test_acc", "kappa_emb", "n_eff_emb", "kappa_f", "n_eff_f",
           "n_freq_f", "K_f", "kappa_f_leak", "shortcut_share", "acc_marginal", "ang_err", "included", "reason", "wall"]
 
 
@@ -39,14 +39,15 @@ def main():
                 kappa_f, K_f, share, n_eff = fourier_kappa_f(Lm); acc_marg = f"{float((Lm.argmax(1) == data['c']).mean()):.4f}"
             E = m.wte.detach().cpu().numpy(); kappa_emb, _ = fourier_kappa(E); n_eff_emb = n_eff_of(emb_spectrum(E))
             tea = float(ck["test_acc"]); ok, reason = inclusion_rule(cfg["condition"], tea, kappa_f)
-            rows.append(dict(name=name, kind="grok", condition=cfg["condition"], seed=cfg["seed"], steps=ck["epoch"],
+            if cfg.get("recipe", 1) < 2: ok, reason = False, "reference specimen (recipe 1, AMENDMENTS #4)" + (f"; would be: {reason}" if reason else "")
+            rows.append(dict(name=name, kind="grok", condition=cfg["condition"], seed=cfg["seed"], steps=ck["epoch"], recipe=cfg.get("recipe", 1),
                              train_acc=f"{ck['train_acc']:.4f}", test_acc=f"{tea:.4f}", kappa_emb=f"{kappa_emb:.4f}", n_eff_emb=f"{n_eff_emb:.1f}",
                              kappa_f=f"{kappa_f:.4f}", n_eff_f=f"{n_eff:.1f}", n_freq_f=len(K_f), K_f=" ".join(map(str, K_f)),
                              kappa_f_leak=kappa_f_leak, shortcut_share=shortcut_share, acc_marginal=acc_marg, ang_err="",
                              included=int(ok), reason=reason, wall=f"{ck.get('wall', float('nan')):.0f}"))
         elif name.startswith("ring_"):
             ck = torch.load(final, map_location="cpu"); e = float(ck["ang_err"]); ok = e < 0.15
-            rows.append(dict(name=name, kind="ring", condition="ring", seed=ck["cfg"]["seed"], steps=ck["step"], train_acc="", test_acc="",
+            rows.append(dict(name=name, kind="ring", condition="ring", seed=ck["cfg"]["seed"], steps=ck["step"], recipe=1, train_acc="", test_acc="",
                              kappa_emb="", n_eff_emb="", kappa_f="", n_eff_f="", n_freq_f="", K_f="", kappa_f_leak="", shortcut_share="", acc_marginal="", ang_err=f"{e:.4f}", included=int(ok),
                              reason="" if ok else f"angular error {e:.3f} >= 0.15", wall=f"{ck.get('wall', float('nan')):.0f}"))
     with open(os.path.join(RES, "specimens.csv"), "w", newline="") as f:
