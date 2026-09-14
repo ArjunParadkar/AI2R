@@ -41,7 +41,10 @@ def step_gauge(m, data, n_gauge):
     from whiteboxtopo.symmetry import group
     desc = group.describe(m)
     toks = olib.grok_tokens(data, data["te"][:256])
-    devs = [group.output_deviation(m, g, toks, forward=lambda mm, t: mm(t)[:, -1]) for g in olib.gauge_samples(m, min(n_gauge, 50), seed=1)]
+    from whiteboxtopo.symmetry import transformer as tf_gauge
+    with torch.no_grad():
+        ref = m(toks)[:, -1]
+        devs = [float((tf_gauge.apply(m, g)(toks)[:, -1] - ref).abs().max() / (ref.abs().max() + 1e-12)) for g in olib.gauge_samples(m, min(n_gauge, 50), seed=1)]
     return cell("certified", value=float(np.max(devs)), criterion="exact symmetries: max output deviation on 50 samples (float32 round-off)",
                 provenance="symmetry.transformer (head perms, per-head GL(dh) rotations, MLP perms+scalings, LN rescalings); exact vs approximate: all exact for the ReLU toy transformer",
                 group=desc if isinstance(desc, dict) else str(desc), max_dev=float(np.max(devs)), median_dev=float(np.median(devs)))
@@ -99,8 +102,9 @@ def token_contributions(m, toks):
     where J_pos is the Jacobian of the last-position logits w.r.t. that position's embedded vector (exact under G: the
     function is identical, so its Jacobian is). Reported with the QK caveat (the pattern itself is treated as frozen)."""
     m.zero_grad(set_to_none=True)
-    x = (m.wte[toks] + m.wpe[:toks.shape[1]][None]).detach().requires_grad_(True)
-    # re-run the forward from the embedded input
+    e = m.wte[toks].detach(); x = (e + m.wpe[:toks.shape[1]][None]).detach().requires_grad_(True)
+    # re-run the forward from the embedded input; contributions are J_pos . e_pos (token embedding only, positional kept fixed — the same
+    # decomposition IG integrates over)
     l = 0; h = m._ln(x, m.ln1_g[l], m.ln1_b[l])
     q = torch.einsum("btd,dhk->bthk", h, m.Wq[l]) + m.bq[l]; k = torch.einsum("btd,dhk->bthk", h, m.Wk[l]) + m.bk[l]
     v = torch.einsum("btd,dhk->bthk", h, m.Wv[l]) + m.bv[l]; T = toks.shape[1]
@@ -111,7 +115,7 @@ def token_contributions(m, toks):
     B, C = logits.shape; contrib = torch.zeros(B, T, C, device=x.device)
     for c in range(C):
         g, = torch.autograd.grad(logits[:, c].sum(), x, retain_graph=True)                       # (B,T,d)
-        contrib[:, :, c] = (g * x).sum(-1)
+        contrib[:, :, c] = (g * e).sum(-1)
     return contrib.detach(), logits.detach()
 
 
@@ -169,8 +173,8 @@ def cell_P7(name, data):
         for step, path in cks[::max(1, len(cks) // 30)]:
             mm, _, _ = olib.load_grok(name, step); view = olib.NodeView(mm); toks = olib.grok_tokens(data, data["te"][:512])
             with torch.no_grad(): view(toks, record=True)
-            clouds.append(torch.stack([o.detach() for o in view._node_out[view.H:]], -1).cpu().numpy())
-        ef = eigenflow(clouds, k=15, n_eigs=10); gap = [float(g) for g in ef.gaps] if hasattr(ef, "gaps") else ef.to_dict()
+            clouds.append(torch.stack([o.detach() for o in view._node_out[view.H:]], -1)[:, -1, :].cpu().numpy())   # (B, m) MLP cloud at '='
+        ef = eigenflow(clouds, k=15, n_eigs=10); gap = dict(gap=[float(g) for g in ef.gap], n_small=[int(v) for v in ef.n_small], crystallization_index=int(ef.crystallization_index()), steps=[s for s, _ in cks[::max(1, len(cks) // 30)]])
     except ImportError as e: gap = f"not_reached: {e}"
     ok = t_acc is not None and t_kap is not None and abs(t_acc - t_kap) <= 0.05
     return cell("certified" if ok else "partial", value=dict(t_acc=t_acc, t_kappa=t_kap),
