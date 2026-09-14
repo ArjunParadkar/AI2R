@@ -250,3 +250,45 @@ Reference-specimen numbers kept for the record: P0 Q 0.06/tw 3; P1 κ_f 0.918, K
 spectral gap flat (0.24–0.31, n_small = 1 throughout → the gap-opening clause fails on this instrument); glue H0 3 / H1 27 (trivial null 1/0);
 R1 logit r 0.842 (K_f), 0.956 (all 56 frequencies), 0.576 (embedding-amplitude path); R6 r 0.78–0.84 on all 10 objects (LayerNorm rescales the
 remaining components per token when one Fourier component of the embedding is removed).
+(iv) *Ring OOD points are transported, not redrawn, along the gauge orbit.* Drawing the off-attractor kick afresh inside
+each gauge sample makes the K-O-2 CV measure the sampling noise of the random kick (a fixed unit-indexed Gaussian z is
+isotropic *in law* but not permutation-equivariant *per sample*): measured CV 0.024 at n = 4, which would have downgraded
+the cell to "failed (artifact)" for the wrong reason. The kick is therefore built once in the trained gauge and carried
+to each gauge sample as h ↦ hS (`ring_on_orbit` passes S to the scoring function). With that, CV = 1.5e-4. The grok P4/P5
+query sets need no equivalent because they live in embedding space, which no gauge element touches (CV = 0 measured).
+
+**#7 (2026-09-14 17:35, O1.3 — the planted bias is TRANSIENT, so every ground truth becomes a window. Written before the
+detectors were run on any recipe-2 specimen.)** Measured on `grok_planted_s0` (recipe 2, data onset epoch 3 000): at epoch
+6 000 the shortcut is plainly in use (test accuracy 0.82 with the leaked token against 0.43 for the clean model at the same
+epoch), but by the final checkpoint it is gone — κ_f(leak) 0.973 ≈ κ_f(marginal) 0.974, shortcut share 0.027, accuracy
+without the shortcut 1.000. Weight decay prunes the shortcut once the full group algorithm makes it redundant. Two
+consequences.
+(i) *Ground truths are windows.* The accuracy-level ground truth (SPEC_O: ablation Δacc > 5 points) and both logit-level
+ground truths (#5 and its addendum) each report an **entry** and an **exit** checkpoint. Detectors are scored against the
+**entry** — that is the "when did the bias enter" question SPEC_O O1.3 and FINAL_SPEC §6.4 ask — and the exit is reported
+alongside, because a P3 procedure that cannot see a bias that has since been pruned is a different (and also interesting)
+failure from one that never saw it.
+(ii) *The "sustained to the end of training" clause of #5 is withdrawn* — it was written when the only planted specimen
+available had an inert shortcut, and on a transient bias it would report no crystallisation at all. It is replaced by a
+**persistence window of 3 % of training**: a crossing counts as the entry once it holds for ⌈0.03·n_ckpt⌉ consecutive
+checkpoints (minimum 2), and the exit is the first checkpoint after the entry at which the condition fails for the same
+number of consecutive checkpoints. This keeps the reason the clause existed (AMENDMENTS #4 measured single-checkpoint κ_f
+dips of up to 0.15, and one noisy checkpoint must not set the onset) while allowing the bias to end. A consequence stated
+in advance: a crossing that begins in the last 3 % of training cannot be certified as sustained and is reported as no
+crystallisation, with the raw trace in the JSON. The margin δ = 0.05, the matched-fraction clean reference, the
+within-specimen estimator and the f ≥ f_onset restriction are all unchanged.
+
+**#6 (2026-09-14 18:35, ring attractor sampling — written after the ring_s0 smoke run, before any other ring specimen was opened).**
+Pre-registered ring P1 (SPEC_O/FINAL_SPEC §2.7: "sample activity {x(t)}, compute H1 of the Vietoris–Rips complex") on the driven
+trajectories of ring_s0 (64 held-out sequences × 180 steps, per-unit standardised) gives H1 lifetime ratio 1.30 with 946 bars and circular-
+coordinate agreement r 0.51 — no ring. Diagnosis: the driven cloud's leading principal component (41 % of variance) is the velocity input
+(r 0.74 with ω; cos θ / sin θ load on PCs 2, 3, 5), so the Rips metric is dominated by the input, not by the attractor, in every gauge fixing
+tried (raw, standardised, PCA-3/5/10/20, loud units only: ratios 1.0–1.8). §2.7 defines M as the attractor manifold of the *autonomous*
+dynamics. Amended sampling: M is sampled as the states reached under zero velocity from 1 000 held-out random cues at t = 10 steps (settled
+after the cue; the zero-input drift is 0.21 rad per 100 steps), per-unit standardised (recorded gauge fixing). On ring_s0 this cloud has
+exactly one H1 bar (lifetime ratio ∞; feature-shuffle null 1.01, Gaussian null 1.09; a permutation+scaling gauge sample gives the identical
+diagram, top bar 12.177 in both) — the driven-cloud outcome is recorded as the pre-registered result. Circular-coordinate agreement r is
+defined as the mean resultant length of the phase difference after the coordinate's own gauge (orientation ± and offset) is fixed (1 − r ≈
+σ²/2 for angular error σ); the Jammalamadaka–Sarma circular correlation is reported alongside; threshold 0.99 unchanged (ring_s0 at 400
+cues, t = 5–20: 0.92–0.97 — may fail; that is the result). R2 extends the certified coordinate to driven trajectories through a linear
+(cos, sin) decoder fitted on the attractor sample (recorded), then fits the tangent dynamics on those trajectories.
