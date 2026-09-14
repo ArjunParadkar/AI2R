@@ -26,6 +26,7 @@ from .model import ReluMLP, as_relu_mlp, apply_gauge, sample_orbit, random_gauge
 from .core import (check_invariance as check_invariance_e2, audit_metrics, InvarianceReport, cv_of, agreement_of, verdict_for,
                    EXACT_CV, BROKEN_CV, FLOAT_FLOOR)
 from .check import check_invariance, audit_table, audit_quantities, AuditResult, per_component_cv, global_cv, INVARIANT_CV, COVARIANT_R2
+from .extractors import path_product, fourier_irreps, circular_coordinate
 from .metrics import (logits, input_jacobian, weight_product, standardized_tc, standardize_units,
                       sorted_gradxact, sorted_ablation, gate_multiset, gate_bits, gradxact, ablation,
                       invariant_quantities, INVARIANTS)
@@ -35,4 +36,5 @@ __all__ = ["ReluMLP", "as_relu_mlp", "apply_gauge", "sample_orbit", "random_gaug
            "EXACT_CV", "BROKEN_CV", "FLOAT_FLOOR",
            "logits", "input_jacobian", "weight_product", "standardized_tc", "standardize_units",
            "sorted_gradxact", "sorted_ablation", "gate_multiset", "gate_bits", "gradxact", "ablation",
-           "invariant_quantities", "INVARIANTS"]
+           "invariant_quantities", "INVARIANTS",
+           "path_product", "fourier_irreps", "circular_coordinate"]
