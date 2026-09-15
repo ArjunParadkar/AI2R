@@ -7,11 +7,27 @@ run() { local name=$1; shift; echo "== $name: $*" | tee -a $L; if timeout 3600 "
 run m4   python hpcc/admire_vega.py --out hpcc/results/smoke/m4                                           # cached CNN + LM batteries, no ViT
 run b5   python hpcc/mejiro_ryan.py --models gpt2 --ns 50 --deltas 0 0.5 --trials 2 --out hpcc/results/smoke/b5
 run v7   python hpcc/mejiro_ardan.py --model EleutherAI/pythia-410m --revisions step0 step143000 --n-seq 4 --out hpcc/results/smoke/v7
+run o31  python experiments/O_opener/hishi_akebono.py --model EleutherAI/pythia-70m --smoke --out hpcc/results/smoke/o31   # 3 revisions, tiny probe: must write scorecard_pythia-70m.json
 run f2   bash -c 'cd experiments/F_gauge && python rice_shower.py --gpu --min-hidden 30 --max-hidden 30 --procs 2 --shard 0 449 --out ../../hpcc/results/smoke/f2'
 run k7   python hpcc/mayano_top_gun.py --model google/gemma-2-2b --widths 16k --n-seq 8 --out hpcc/results/smoke/k7
 run f12  python hpcc/kitasan_black.py --model google/gemma-2-2b --layers 8 --n 2 --n-tokens 250 --out hpcc/results/smoke/f12
 run k8   python hpcc/biwa_hayahide.py --model google/gemma-2-9b --layers 20 --n-seq 8 --out hpcc/results/smoke/k8
 run c4   python hpcc/sirius_symboli.py --model google/gemma-2-9b --n-seq 8 --out hpcc/results/smoke/c4
 run l7   python hpcc/kawakami_princess.py --model google/gemma-2-9b --n 2 --out hpcc/results/smoke/l7
+run o41p0  python experiments/O_opener/bamboo_memory.py --p0 --model google/gemma-2-9b --layers 20 21 --n-tokens 250 --out hpcc/results/smoke/o41
+# the assemble smoke deliberately runs LAST and points at hpcc/results/smoke: it then reads the f12/c4/k8/l7/o41 dirs the
+# lines above just wrote, which is the real read path.  It must PASS even when some of them failed — every missing input is
+# a not_reached cell, never an exception; check hpcc/results/smoke/o41/scorecard_gemma_2_9b.md for the reasons.
+run o41asm python experiments/O_opener/bamboo_memory.py --assemble --model google/gemma-2-9b --results hpcc/results/smoke --out hpcc/results/smoke/o41
 echo "== v1_large has no smoke flag: submit the array and check hpcc/logs/wb-v1_ensemble_large-*_0.out after 10 min" | tee -a $L
+# o31 (O3.1 Hishi Akebono) is one unit of work in the same sense as the others: the smallest public Pythia, three
+# revisions (step0 / step1000 / step143000), a 4-sequence probe and reduced nulls, run end to end through the same code
+# path the cluster job uses — basis freeze, per-revision trajectory row, cloud cache, zigzag, change points, Scorecard.
+# PASS means hpcc/results/smoke/o31/scorecard_pythia-70m.json exists with P3 and P7 `partial` and the other six cells
+# `not_reached` with reasons. At three revisions the change-point rule is undefined (T < 6) and every trace reports
+# p = 1.0 with that note: that is the correct smoke output, not a failure. It does NOT exercise --purge (which the real
+# job needs for its 246 GB / 616 GB of checkpoints) — purge on one revision by hand once, before submitting:
+#   python -c "import sys;sys.path.insert(0,'experiments/O_opener');from hishi_akebono import purge_revision;print(purge_revision('EleutherAI/pythia-70m','step1000'))"
+# and confirm the snapshot is gone from $HF_HOME/hub. Laptop reference: 76 s wall for the smoke including downloads;
+# 18.6-27.4 s/revision of compute at full settings on pythia-410m with the weights already on disk.
 cat $L
