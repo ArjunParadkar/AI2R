@@ -616,3 +616,53 @@ this library — including "how legible is this model" (`legibility_score`),
 "is dark matter structured" (`residual_structure`'s verdict), and "does
 this explanation generalize" (`explanation_obstruction`) — is a measurement
 or a documented negative result, not a verdict.
+
+## Block O — `whiteboxtopo.{invariants.extractors, reconstruct, verify, spectral, geometry, sheaf, align, open}` (FINAL_SPEC 2026-09-14; numbers from PAUSE_A_O1.md / PAUSE_B_O1.md, `experiments/O_opener/results/`)
+
+### `fourier_irreps`, `path_product` / `path_products` / `top_contributions`, `circular_coordinate`
+
+- **Claim:** instruments with one certified T1 result. The *function-level* irrep inventory (diagonal-bin amplitudes of the
+  c-centred logit tensor, AMENDMENTS #2/#7 — not `fourier_irreps` on the embedding) is gauge-invariant on 300 samples, identical
+  across the orbit, empty on every memorising control, and rebuilds the argmax exactly on 10/10 grokked Z113 specimens (R1 logit r
+  0.966–0.986). `fourier_irreps` **on the embedding** (the pre-registered estimator) fails κ > 0.9 on every grokked pre-LN specimen
+  (κ_emb 0.00–0.59) — reported, not used for certification. Path products: exact-invariance verified on the toy transformer as
+  frozen-pattern Jacobian contributions (CV ≤ 6e-5); the D1 anchor holds only on the constant-pattern region (local IG r 0.95–0.99,
+  zero-baseline IG r 0.04–0.18). `circular_coordinate`: one dominant H1 bar on the attractor sample of 9/9 ring seeds; the coordinate's
+  agreement with the true angle is estimator-limited (0.73–0.98 at 1500 cues, network read-out 0.99+).
+- **Evidence / nulls:** row-shuffle of the token embedding (κ_f < 0.3); random same-size frequency sets (K-O-1, 99th-percentile
+  rule); feature-shuffle and Gaussian clouds (H1 ratio ≈ 1); 300-sample gauge orbits (K-O-2).
+- **Failure modes / do-not-use:** `fourier_irreps` on the embedding of a LayerNorm model; `circular_coordinate` on driven trajectories
+  (velocity-dominated metric) or on the cue's image (t < 30 steps); the coordinate cannot be extended off the ring by a linear decoder
+  (r 0.13–0.24).
+
+### `reconstruct.from_irreps` / `from_attractor` / `fit_tangent_dynamics` / `residual` / `coverage_gap`, `verify.equivalence` / `ablation_symmetry` / `negative_control`
+
+- **Claim:** R1 certified on 3/10 grokked specimens at the pre-registered band (r > 0.98) and argmax-exact on 10/10; R7 certified
+  10/10 (artifact-only rebuild r ≤ 0.11); **R4 refused as a claim**: γ_cov 0.88–0.98 on every grokked specimen (the MLP residue after
+  the degree-2 irrep basis is structured; degree of opening 0.03–0.12); **R6 fails** 10/10 under LayerNorm; **R2 fails** 9/9 (rebuilt
+  integrator 5–22× the network's error, three pre-registered constructions).
+- **Evidence / nulls:** `coverage_gap`'s Gaussian and shuffle nulls (both far below γ_cov); `negative_control` accuracy metric is
+  **tautological on Z_p** (any frequency set classifies perfectly — AMENDMENTS #5a) and is replaced by logit correlation.
+- **Failure modes / do-not-use:** `equivalence`'s perturbation/OOD blocks on integer domains (skipped, recorded); `from_attractor`
+  with a one-step Markov-in-θ map (lag) or with a coordinate read off the attractor; `coverage_gap` on un-standardised sparse ReLU
+  residues (σ² → 0, nulls invalid).
+
+### `spectral.{laplacian, diffusion_coords, nystrom, out_of_manifold, random_projection_null, eigenflow}`, `geometry.{tangent_pca, curvature, lipschitz_field, failure_predictor, perturbation_failure_radius, softmax_margin_baseline, spearman_test}`
+
+- **Claim:** REFUSED — no claim. P4: `out_of_manifold` AUC 0.41–0.64 on grokked T1 specimens vs softmax 0.99–1.00; beats its
+  random-projection null only on memorisers, where it loses to the null anyway; inverts on 7/9 rings (Nyström image collapse). P7:
+  `eigenflow`'s spectral gap never opens on any of 15 grok specimens (0.24–0.31 flat). P5: `failure_predictor` ρ = ‖Q_h‖·Lip carries no
+  fragility information on 27/27 specimens under two pre-registered radius measurements, while `softmax_margin_baseline` passes the
+  SPEC criterion on 5/5 memorisers.
+- **Failure modes / do-not-use:** the pre-registered radius grid r ≤ 0.5 σ_emb has no dynamic range after weight decay (σ_emb 0.006);
+  `out_of_manifold` needs a guard for collapsing Nyström images; K-O-2's relative CV diverges on statistics near zero
+  (#O1.4 addenda vi).
+
+### `sheaf.{cover, local_explanations, restrict, cech_H0_H1, sanity_gate}`, `align.{match_circuits, count_mechanisms, relabel_kill}`, `open.{open, Behavior, Scorecard, grid}`
+
+- **Claim:** instruments only. The Čech sanity gate (H1 = 0 on a single-mechanism task) passes on 8/15 grok specimens and **fails on
+  7/15** (H1 2–3) with per-example grad×(act−mean) atoms, τ 0.5, k_e 32 — the instrument is not validated at these settings;
+  `count_mechanisms` (weight-level, ReLU MLPs) does not apply to the toy transformer — the T1 count is function-level (1 algorithm
+  class, 5 frequency sets). `open()` runs the nine steps on ReLU MLPs; the T1 opening was driven by `meisho_doto.py`, whose cells are
+  emitted as `Scorecard`s and assembled by `symboli_kris_s.py` into the grid.
+- **Detail:** `VALIDATION.md` "Block O modules"; `experiments/O_opener/{SPEC_O.md, AMENDMENTS.md}`; `PAUSE_A_O1.md`, `PAUSE_B_O1.md`.

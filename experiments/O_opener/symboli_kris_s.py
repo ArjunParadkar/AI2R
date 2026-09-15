@@ -14,7 +14,30 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__)); RES = os.path.join(HERE, "results"); OPEN = os.path.join(RES, "open")
 CELLS = ["P0", "P1", "P2", "P3", "P4", "P5", "P6", "P7"]
-SOURCES = {"meisho_doto": ["P0", "P1", "P2", "P6", "P7"], "nishino_flower": ["P3"], "fine_motion": ["P4", "P5"]}
+SOURCES = {"meisho_doto": ["P0", "P1", "P2", "P6", "P7"], "fine_motion": ["P4", "P5"]}
+
+
+def p3_cell(spec):
+    """P3 from O1.3's detections CSV (nishino_flower_detections.csv): a planted specimen passes only if some detector's onset is within 5 %
+    AND that detector has zero false detections over the nulls; non-planted specimens carry no planted bias (they are the nulls)."""
+    f = os.path.join(RES, "nishino_flower_detections.csv")
+    if not os.path.exists(f): return None
+    rows = list(csv.DictReader(open(f))); r = next((x for x in rows if x["specimen"] == spec), None)
+    if r is None: return None
+    if r.get("condition", "") != "planted":
+        return dict(status="not_reached", provenance="no planted bias (null specimen for O1.3; false-detection counts in nishino_flower_detections.csv)")
+    dets = ["zigzag_raw", "zigzag_diff", "eigen_gap_raw", "eigen_gap_diff", "probe_res8_raw", "probe_res8_diff", "probe_res8_v2_diff", "probe_res8_v3_diff"]
+    fd = {d: sum(1 for x in rows if x.get(f"{d}_false_detection", "") in ("1", "True", "true")) for d in dets}
+    best = None
+    for d in dets:
+        for gt in ("acc", "logit", "logitw"):
+            p = r.get(f"{d}_pass_{gt}", ""); a = r.get(f"{d}_absdelta_{gt}", "")
+            if p in ("1", "True", "true") and fd[d] == 0: return dict(status="certified", value=f"{d} |Δ| {a} vs {gt} GT, 0 false detections")
+            try:
+                a = float(a)
+                if best is None or a < best[0]: best = (a, d, gt, fd[d])
+            except ValueError: pass
+    return dict(status="failed", value=None if best is None else f"best |Δ| {best[0]:.2f} ({best[1]} vs {best[2]} GT, {best[3]} false det.)")
 
 
 def load(horse, spec):
@@ -38,6 +61,9 @@ def main():
                 if d is None: row[c] = "not_reached"; links[c] = f"{horse} not run"; continue
                 cc = d.get("cells", {}).get(c)
                 row[c] = cc["status"] if cc else "not_reached"; links[c] = f"open/{horse}_{s}.json#{c}"
+        c3 = p3_cell(s); row["P3"] = c3["status"] if c3 else "not_reached"; links["P3"] = "nishino_flower_detections.csv"
+        for horse in ("meisho_doto",):
+            d = load(horse, s)
             if horse == "meisho_doto" and d is not None:
                 gamma = d.get("scorecard", {}).get("gamma_cov"); row["R"] = ",".join(f"{k}:{v['status'][:4]}" for k, v in d["cells"].items() if k.startswith("R"))
         row["gamma_cov"] = gamma; row["degree"] = None if gamma is None else round(1 - gamma, 4); row["links"] = links; grid.append(row)
