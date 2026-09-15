@@ -434,3 +434,17 @@ set of the same size overlaps it by ~6 frequencies on average and its rebuild co
 scales with |K|/56 and is not a tautology test. K-O-1 is restated scale-free: the certified rebuild's logit r must exceed the 99th
 percentile of r over 100 random same-size frequency sets (the null distribution is reported); a rebuild insensitive to which frequencies are
 used would sit inside that distribution. Thresholds of R1 itself unchanged.
+_#6 addendum 2 (O1.2, 20:35, after ring_s0–s2 under the first addendum, before the remaining rings)._ (a) Coordinate resolution: on
+ring_s0 the circular-coordinate agreement with the cue angle is 0.891 at 600 cues, 0.952 at 1 500 cues (t = 60), 0.980 at 1 500 cues
+(t = 30), while the network's own read-out agrees with the cue at 0.992–0.998 — the estimator (least-squares cocycle lift on a finite
+sample), not the representation, limits r. P1's coordinate is computed on 1 500 cues (t = 60 kept); the nulls and the 5-sample gauge
+orbit stay at 600 (invariance does not depend on n). Threshold 0.99 unchanged; the 600-cue numbers of ring_s0–s2 stand as recorded. (b)
+R2 extension: extending the coordinate from the attractor sample to *driven* trajectories fails in every form tried (linear (cos, sin)
+decoder, ridge 0–100: r 0.13–0.24 vs the true angle; nearest-landmark: 0.17) because driven states are displaced off the ring along the
+velocity direction (the leading PC of the driven cloud). R2 is therefore rebuilt strictly from the certified object: the tangent dynamics
+dθ = g(θ, ω) are fitted from *one-step responses on the ring* — each attractor state (coordinate θ̂ by nearest landmark among the 1 500)
+is advanced one step under each ω in {−0.6, −0.3, −0.1, 0, 0.1, 0.3, 0.6} and the new state's coordinate read by nearest landmark (still on
+the ring after one step) — and the rebuilt integrator θ_{t+1} = θ_t + g(θ_t, ω_t) is run over the true 100-step OU velocity sequences from
+the cue's coordinate; error vs the true angle compared with the model's read-out error (criterion unchanged: within 10 %; drift statistics
+reported). The reduced model assumes the RNN's integration is Markov in θ (no hidden velocity state); where that fails the rebuild fails.
+The decoder-based R2 results of ring_s0–s2 (error ≈ 1.55 rad, r² ≈ 0) are recorded as the outcome of the first construction.

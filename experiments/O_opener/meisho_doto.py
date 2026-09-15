@@ -528,7 +528,8 @@ def ring_P0(model):
 def ring_P1(model, n_gauge):
     from whiteboxtopo.invariants.extractors import circular_coordinate
     H, th0, ang = attractor_states(model); Z, keep = standardise(H); bars, _ = h1_bars(Z, n_max=len(Z))
-    th_hat, ratio_cc = circular_coordinate(Z); r, s, phi = circ_r(th_hat, th0); rho = abs(circ_corr(th_hat, th0)); r_read = circ_r(th_hat, ang)[0]
+    Hb, th0b, angb = attractor_states(model, n=1500, seed=4); Zb, _ = standardise(Hb)                          # #6 addendum 2: 1500-cue coordinate
+    th_hat, ratio_cc = circular_coordinate(Zb); r, s, phi = circ_r(th_hat, th0b); rho = abs(circ_corr(th_hat, th0b)); r_read = circ_r(th_hat, angb)[0]
     rng = np.random.default_rng(0)
     Zsh = np.stack([rng.permutation(Z[:, j]) for j in range(Z.shape[1])], 1); bars_sh, _ = h1_bars(Zsh, n_max=len(Z))
     bars_rand, _ = h1_bars(rng.standard_normal(Z.shape), n_max=len(Z))
@@ -545,7 +546,7 @@ def ring_P1(model, n_gauge):
     ok = bars["ratio"] > 5 and r > 0.99 and max(cv_top, cv_r) < ART_CV and bars_sh["ratio"] < 5 and bars_rand["ratio"] < 5
     return cell("certified" if ok else "failed", value=dict(beta1_ratio=bars["ratio"], circ_r=r, circ_corr=rho, n_bars=bars["n_bars"]),
                 criterion="ring P1: one H1 bar with lifetime > 5x the next; circular coordinate vs true (cue) angle r > 0.99 (mean resultant length after the coordinate's orientation/offset gauge; AMENDMENTS #6); nulls: feature shuffle + Gaussian cloud must not show the bar; K-O-2 CV < 1e-3 over 5 gauge samples",
-                provenance=f"attractor states: zero-velocity, 600 cues, t = 60 ({int(keep.sum())} live units, per-unit standardised = recorded gauge fixing); ripser VR H1; extractors.circular_coordinate (ripser cocycles); pre-registered driven-trajectory cloud recorded",
+                provenance=f"attractor states: zero-velocity, t = 60 ({int(keep.sum())} live units, per-unit standardised = recorded gauge fixing); H1 + nulls + gauge orbit on 600 cues, circular coordinate on 1500 cues (#6 addendum 2); ripser VR H1; extractors.circular_coordinate (ripser cocycles); pre-registered driven-trajectory cloud recorded",
                 bars=bars, lifetime_ratio_cocycle=float(ratio_cc), orientation=int(s), offset=float(phi), r_vs_readout=float(r_read), null_shuffle=bars_sh, null_gaussian=bars_rand,
                 cv_top_bar=cv_top, cv_r=cv_r, artifact=max(cv_top, cv_r) >= ART_CV, prereg_driven_cloud=dict(bars=bars_d, circ_r=r_d, status="FAILED (pre-registered sampling, AMENDMENTS #6)" if not (bars_d["ratio"] > 5) else "passed"))
 
@@ -595,37 +596,43 @@ def ring_P7(name):
 def ring_R2(model, p1):
     from whiteboxtopo.invariants.extractors import circular_coordinate
     from whiteboxtopo.reconstruct import fit_tangent_dynamics, from_attractor
+    from scipy.spatial import cKDTree
     ev = p1.get("evidence", {}); obj_ok = p1["status"] != "not_reached" and ev.get("bars", {}).get("ratio", 0) > 5 and ev.get("null_shuffle", {}).get("ratio", 9) < 5 and ev.get("null_gaussian", {}).get("ratio", 9) < 5 and not ev.get("artifact", True)
     if not obj_ok: return cell("not_reached", provenance="the circle + coordinate object is not certified (dominant H1 bar / nulls / gauge): nothing to rebuild from")
-    Ha, th0, _ = attractor_states(model); mu, sd = Ha.mean(0), Ha.std(0); live = sd > 1e-8; Za = (Ha[:, live] - mu[live]) / sd[live]
-    th_hat_a, _ = circular_coordinate(Za); r, s, phi = circ_r(th_hat_a, th0)
-    H, theta, om, pred, (u, y, th, out) = ring_states(model, n_seq=64, T=100, burn=0); Z = (H[:, live] - mu[live]) / sd[live]
-    n_seq, T = 64, 100
-    # extend the certified coordinate to the driven states with a linear (cos, sin) decoder fitted on the attractor sample (recorded, AMENDMENTS #6)
-    Dm = np.stack([np.cos(th_hat_a), np.sin(th_hat_a)], 1); A = np.c_[Za, np.ones(len(Za))]; coef, *_ = np.linalg.lstsq(A, Dm, rcond=None)
-    Dall = np.c_[Z, np.ones(len(Z))] @ coef; th_all = np.arctan2(Dall[:, 1], Dall[:, 0]).reshape(n_seq, T)
-    th_true = th.reshape(n_seq, T); om2 = u[:, :, 0].cpu().numpy(); pred2 = pred.reshape(n_seq, T)
-    # tangent dynamics on the certified coordinate: dtheta_hat = g(theta_hat, omega) (discrete map, one step)
-    d = np.angle(np.exp(1j * (th_all[:, 1:] - th_all[:, :-1])))
-    dyn = fit_tangent_dynamics(th_all[:, :-1].ravel(), om2[:, :-1].ravel(), d.ravel(), n_harmonics=3, u_degree=1)
-    rec = from_attractor(th_all[:, 0], dyn)
-    # integrate 100 steps from the certified initial coordinate with the true velocity sequence; compare to the model's read-out
-    seq = np.empty_like(th_all); seq[:, 0] = th_all[:, 0]
-    for t in range(1, T): seq[:, t] = (seq[:, t - 1] + dyn.predict(seq[:, t - 1], om2[:, t - 1])) % (2 * np.pi)
-    # map the coordinate to the true-angle frame with the recorded orientation/offset gauge, then compare
-    seq_true_frame = s * (seq - phi); err_hat = float(np.abs(np.angle(np.exp(1j * (seq_true_frame - th_true)))).mean())
-    err_model = float(np.abs(np.angle(np.exp(1j * (pred2 - th_true)))).mean())
-    # drift statistics: zero-velocity holds for 100 steps (model vs rebuild)
+    # certified object: the attractor sample (1500 cues) with its circular coordinate; standardisation = recorded gauge fixing
+    Ha, th0, _ = attractor_states(model, n=1500, seed=4); mu, sd = Ha.mean(0), Ha.std(0); live = sd > 1e-8; Za = (Ha[:, live] - mu[live]) / sd[live]
+    th_a, _ = circular_coordinate(Za); r, s, phi = circ_r(th_a, th0); tree = cKDTree(Za)
+    def coord(Hx):                                                    # nearest-landmark read-out of the certified coordinate (on-ring points only)
+        _, nn = tree.query((Hx[:, live] - mu[live]) / sd[live], k=5); return np.angle(np.exp(1j * th_a[nn]).mean(1))
+    # one-step responses on the ring: advance every attractor state one step under each omega (#6 addendum 2)
+    Hs = torch.as_tensor(Ha, dtype=torch.float32, device=DEV); th_now = th_a; thetas, omegas, dths = [], [], []
+    with torch.no_grad():
+        for w in (-0.6, -0.3, -0.1, 0.0, 0.1, 0.3, 0.6):
+            u = torch.zeros(len(Ha), 1, 3, device=DEV); u[:, 0, 0] = w
+            h = (1 - model.alpha) * Hs + model.alpha * torch.relu(Hs @ model.W + u[:, 0] @ model.U + model.b)
+            th_next = coord(h.cpu().numpy()); d = np.angle(np.exp(1j * (th_next - th_now)))
+            thetas.append(th_now); omegas.append(np.full(len(Ha), w)); dths.append(d)
+    dyn = fit_tangent_dynamics(np.concatenate(thetas), np.concatenate(omegas), np.concatenate(dths), n_harmonics=3, u_degree=1)
+    rec = from_attractor(th_a, dyn)
+    # integrate the rebuilt map over the true 100-step OU velocity sequences from the cue's coordinate; compare with the model's read-out
+    n_seq, T = 64, 100; u, y, th = ring_batch(np.random.default_rng(10_000), n_seq, T); om = u[:, :, 0].cpu().numpy(); th_true = th
+    with torch.no_grad(): out, Hd = model(u, return_states=True)
+    pred = np.arctan2(out[..., 1].cpu().numpy(), out[..., 0].cpu().numpy())
+    seq = np.empty((n_seq, T)); seq[:, 0] = coord(Hd[:, 0, :].cpu().numpy())            # cue state read in the certified coordinate
+    for t in range(1, T): seq[:, t] = (seq[:, t - 1] + dyn.predict(seq[:, t - 1], om[:, t - 1])) % (2 * np.pi)
+    seq_true_frame = s * (seq - phi)
+    err_hat = float(np.abs(np.angle(np.exp(1j * (seq_true_frame - th_true)))).mean()); err_model = float(np.abs(np.angle(np.exp(1j * (pred - th_true)))).mean())
+    # drift statistics: zero-velocity holds (model vs rebuild)
     u0 = u.clone(); u0[:, :, 0] = 0
-    with torch.no_grad(): o0 = model(u0)[..., :].cpu().numpy()
+    with torch.no_grad(): o0 = model(u0).cpu().numpy()
     p0 = np.arctan2(o0[..., 1], o0[..., 0]); drift_model = float(np.abs(np.angle(np.exp(1j * (p0[:, -1] - p0[:, 0])))).mean())
-    seq0 = th_all[:, 0].copy()
+    seq0 = seq[:, 0].copy()
     for t in range(1, T): seq0 = (seq0 + dyn.predict(seq0, np.zeros(n_seq))) % (2 * np.pi)
-    drift_hat = float(np.abs(np.angle(np.exp(1j * (seq0 - th_all[:, 0])))).mean())
+    drift_hat = float(np.abs(np.angle(np.exp(1j * (seq0 - seq[:, 0])))).mean())
     ok = abs(err_hat - err_model) <= 0.10 * err_model and dyn.r2 > 0.5
     return cell("certified" if ok else "failed", value=dict(err_rebuild=err_hat, err_model=err_model, ratio=err_hat / max(err_model, 1e-9), dyn_r2=dyn.r2, drift_model=drift_model, drift_rebuild=drift_hat),
-                criterion="R2: integration error of the rebuild (circular coordinate + fitted tangent dynamics only, no recurrent weights) within 10 % of the model's over 100-step trajectories; drift statistics reported; tangent fit r2 > 0.5 (informative)",
-                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); extractors.circular_coordinate on the attractor sample (600 zero-velocity states at t = 60, standardised = gauge fixing; AMENDMENTS #6 + addendum), linear (cos, sin) decoder to extend the coordinate to driven states (recorded), reconstruct.fit_tangent_dynamics (3 harmonics x linear in omega), discrete one-step map; orientation/offset gauge to the true frame recorded",
+                criterion="R2: integration error of the rebuild (circular coordinate + tangent dynamics fitted from one-step responses on the ring; no recurrent weights) within 10 % of the model's over 100-step OU-velocity trajectories; drift statistics reported; tangent fit r2 > 0.5 (informative)",
+                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); attractor sample 1500 cues t = 60 (standardised = gauge fixing), coordinate read by nearest landmark (k = 5); one-step responses at omega in {{-0.6..0.6}} (#6 addendum 2); reconstruct.fit_tangent_dynamics (3 harmonics x linear in omega); discrete one-step map; orientation/offset gauge to the true frame recorded",
                 dynamics=dyn.to_dict(), orientation=int(s), offset=float(phi), coord_r=float(r), rebuilt=rec.to_dict())
 
 
@@ -693,7 +700,9 @@ def run_ring(name, n_gauge, cells):
     if "P1" in cells: C["P1"] = ring_P1(model, n_gauge)
     if "P2" in cells: C["P2"] = ring_P2(model, n_gauge)
     if "P7" in cells: C["P7"] = ring_P7(name)
-    if "R2" in cells: C["R2"] = ring_R2(model, C.get("P1", cell("not_reached")))
+    prev = os.path.join(OUT, f"meisho_doto_{name}.json"); old = json.load(open(prev)) if os.path.exists(prev) else None
+    if "R2" in cells: C["R2"] = ring_R2(model, C.get("P1", (old or {}).get("cells", {}).get("P1", cell("not_reached"))))
+    if old is not None and set(cells) != set(RING_CELLS): old["cells"].update(out["cells"]); out = old
     write(name, out, "ring"); return out
 
 
