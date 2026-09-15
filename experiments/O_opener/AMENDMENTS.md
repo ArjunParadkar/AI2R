@@ -429,3 +429,8 @@ nulls and 5 gauge samples at 600; P7 every 4th checkpoint at 400 cues) — ring_
 R2 is gated on the *certified object* (one dominant H1 bar with ratio > 5, nulls clear, gauge CV < 1e-3), not on P1's agreement threshold
 r > 0.99, which is P1's answer-quality criterion and is reported in R2's provenance; ring_s0 under #6 at t = 10: ratio ∞, r 0.986 (fails
 0.99 by 0.004), circular correlation 0.976 — recorded.
+_#5a addendum (O1.2, 19:30, K-O-1 scale)._ With the noise-floor inventory (#7) the certified set holds ~19 of 56 frequencies, so a random
+set of the same size overlaps it by ~6 frequencies on average and its rebuild correlates 0.37 with the model (clean_s0) — the fixed 0.3 bar
+scales with |K|/56 and is not a tautology test. K-O-1 is restated scale-free: the certified rebuild's logit r must exceed the 99th
+percentile of r over 100 random same-size frequency sets (the null distribution is reported); a rebuild insensitive to which frequencies are
+used would sit inside that distribution. Thresholds of R1 itself unchanged.

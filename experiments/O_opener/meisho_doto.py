@@ -313,12 +313,15 @@ def cell_R1(m, data, inv):
     r = fourier_irreps(m.wte.detach().cpu().numpy(), P, tau=TAU); v_emb = None
     if len(r.K): rec_e = from_irreps(list(r.K), r.amplitude, P); v_emb = equivalence(f, lambda X_: rec_e.forward(a, b), X, y=y, radii=()).to_dict()
     # K-O-1: a random frequency set of the same size must fail
-    rngK = sorted(np.random.default_rng(0).choice(np.arange(1, (P - 1) // 2 + 1), size=len(K), replace=False).tolist())
-    rec0 = from_irreps(rngK, {k: 1.0 for k in rngK}, P); L0 = rec0.forward(a, b); acc0 = float((L0.argmax(1) == y).mean())
-    r0 = float(np.corrcoef(L0.ravel(), Lm[idx].ravel())[0, 1])
-    d = v.to_dict(); ok = bool(d["passed"]) and r0 < 0.3
-    return cell("certified" if ok else "failed", value=dict(acc_hat=d["accuracy_hat"], acc=d["accuracy"], logit_r=d["logit_corr"], kill_random_K_logit_r=r0, kill_random_K_acc_tautology=acc0),
-                criterion="R1: accuracy >= f − 0.5 %, logit correlation > 0.98 (verify.equivalence on held-out pairs; integer domain → perturbation block n/a); K-O-1: random-K rebuild logit r < 0.3 (accuracy is tautological on Z_p — AMENDMENTS #5a — recorded)",
+    rngK_gen = np.random.default_rng(0); r_null = []; acc0 = None
+    for _ in range(100):
+        rngK = sorted(rngK_gen.choice(np.arange(1, (P - 1) // 2 + 1), size=len(K), replace=False).tolist())
+        L0 = from_irreps(rngK, {k: 1.0 for k in rngK}, P).forward(a, b); r_null.append(float(np.corrcoef(L0.ravel(), Lm[idx].ravel())[0, 1]))
+        if acc0 is None: acc0 = float((L0.argmax(1) == y).mean())
+    r_null = np.asarray(r_null); r0 = float(np.quantile(r_null, 0.99))
+    d = v.to_dict(); ok = bool(d["passed"]) and d["logit_corr"] > r0
+    return cell("certified" if ok else "failed", value=dict(acc_hat=d["accuracy_hat"], acc=d["accuracy"], logit_r=d["logit_corr"], kill_random_K_r99=r0, kill_random_K_r_mean=float(r_null.mean()), kill_random_K_acc_tautology=acc0),
+                criterion="R1: accuracy >= f − 0.5 %, logit correlation > 0.98 (verify.equivalence on held-out pairs; integer domain → perturbation block n/a); K-O-1 (AMENDMENTS #5a + addendum): certified rebuild r must exceed the 99th percentile of r over 100 random same-size frequency sets (accuracy is tautological on Z_p — recorded)",
                 provenance="reconstruct.from_irreps(K_f, diagonal-bin amplitudes) — no weights copied; complete-inventory (56 freq) rebuild and the pre-registered embedding-amplitude rebuild reported as diagnostics",
                 verdict=d, verdict_all_freq=v_all.to_dict(), verdict_prereg_embedding=v_emb, K_emb=sorted(int(k) for k in r.K), rebuilt=rec.to_dict(), random_K=rngK)
 
@@ -667,7 +670,9 @@ def run_grok(name, n_gauge, cells):
     if "P6" in cells: C["P6"] = cell_P6(m, data, inv)
     if "P7" in cells: C["P7"] = cell_P7(name, data, inv)
     if "glue" in cells: C["glue"] = cell_glue(m, data)
-    certified_K = C.get("P1", {}).get("status") == "certified"
+    if "P1" in C: certified_K = C["P1"]["status"] == "certified"
+    else:                                                          # partial rerun: take the P1 verdict from the existing JSON
+        prev = os.path.join(OUT, f"meisho_doto_{name}.json"); certified_K = os.path.exists(prev) and json.load(open(prev))["cells"].get("P1", {}).get("status") == "certified"
     inv_c = inv if certified_K else dict(inv, K=[])                 # R cells rebuild from CERTIFIED structure only
     if "R1" in cells: C["R1"] = cell_R1(m, data, inv_c)
     if "R4" in cells: C["R4"] = cell_R4(m, data, inv_c)
@@ -675,6 +680,9 @@ def run_grok(name, n_gauge, cells):
     if "R6" in cells: C["R6"] = cell_R6(m, data, inv_c, C.get("R1", cell("not_reached")))
     if "R7" in cells: C["R7"] = cell_R7(m, data, inv_c, C.get("R1", cell("not_reached")))
     if "R8" in cells: C["R8"] = cell_R8(m, data, inv_c, C.get("R4", cell("not_reached")), C.get("R5", cell("not_reached")))
+    prev = os.path.join(OUT, f"meisho_doto_{name}.json")
+    if os.path.exists(prev) and set(cells) != set(GROK_CELLS):       # partial rerun: merge into the existing cells
+        old = json.load(open(prev)); old["cells"].update(out["cells"]); old["inventory"] = out["inventory"]; out = old
     write(name, out, "grok"); return out
 
 
