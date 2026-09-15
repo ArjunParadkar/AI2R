@@ -448,3 +448,16 @@ the ring after one step) — and the rebuilt integrator θ_{t+1} = θ_t + g(θ_t
 the cue's coordinate; error vs the true angle compared with the model's read-out error (criterion unchanged: within 10 %; drift statistics
 reported). The reduced model assumes the RNN's integration is Markov in θ (no hidden velocity state); where that fails the rebuild fails.
 The decoder-based R2 results of ring_s0–s2 (error ≈ 1.55 rad, r² ≈ 0) are recorded as the outcome of the first construction.
+
+**#O1.4 addenda (vi) (2026-09-14 20:50, a measured property of the K-O-2 CV rule — RECORDED, NOT A RULE CHANGE.
+K-O-2's "CV > 1e-3 downgrades the cell to failed (artifact)" stands exactly as written; whether it should be amended is
+the coordinator's call, not this runner's.)** K-O-2's CV is a *relative* dispersion, std/|mean| over the gauge orbit, so
+it diverges when the certified quantity is itself near zero. Across the 27 O1.4 specimens exactly one cell was flagged
+"failed (artifact)": `grok_clean_s1` P5 v2, CV 1.456e-3. Its orbit Spearman has mean +0.0121 and an **absolute** spread
+of 1.8e-05 — i.e. the quantity is gauge-invariant to five decimal places and the flag fires only because the mean is
+0.012. The same arithmetic applies to `grok_memorize_s1` (CV 4.7e-4, absolute spread 1.7e-05) and `grok_planted_s1`
+(CV 3.2e-4, absolute spread 1.3e-05), which pass only because their means are ~3x larger. For comparison, a cell whose
+Spearman is far from zero shows CV ~1e-16. Every O1.4 cell fails its *scientific* criterion regardless, so nothing in
+this block's verdicts turns on it; the note exists so that the one "artifact" label is not read as evidence of a gauge
+problem in `grok_clean_s1`. A CV rule of this shape needs an absolute floor (or to be stated on a quantity bounded away
+from zero) before it is applied to a correlation coefficient.
