@@ -10,3 +10,4 @@ benchmarks/data/
 azure/config.local.env
 azure/logs/
 azure/pull/
+experiments/O_opener/results/open/*.npz
