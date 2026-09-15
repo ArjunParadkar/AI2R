@@ -18,6 +18,13 @@ jobs() {
   echo "c4|A100|python hpcc/sirius_symboli.py --model google/gemma-2-9b --out hpcc/results/c4_gemma2_9b --resume"
   echo "f12|A100|python hpcc/kitasan_black.py --model google/gemma-2-9b --layers 8 20 32 --n 20 --out hpcc/results/f12_gemma2_9b --resume"
   echo "l7|A100|python hpcc/kawakami_princess.py --model google/gemma-2-9b --out hpcc/results/l7"
+  # Block O tiers (FINAL_SPEC 2026-09-14): O3.1 Pythia (T4, no token), O4.1 frontier (A100 80 GB, token + licences)
+  echo "o31-410m|T4|python experiments/O_opener/hishi_akebono.py --model EleutherAI/pythia-410m --out hpcc/results/o31 --resume --purge"
+  echo "o31-1b|T4|python experiments/O_opener/hishi_akebono.py --model EleutherAI/pythia-1b --out hpcc/results/o31 --resume --purge"
+  echo "o41-gemma|A100|python experiments/O_opener/bamboo_memory.py --p0 --model google/gemma-2-9b --out hpcc/results/o41 --dtype float32 --n-gauge 20"
+  echo "o41-llama|A100|python experiments/O_opener/bamboo_memory.py --p0 --model meta-llama/Meta-Llama-3-8B --out hpcc/results/o41 --dtype float32 --n-gauge 20"
+  echo "f12-llama|A100|python hpcc/kitasan_black.py --model meta-llama/Meta-Llama-3-8B --layers 8 16 24 --n 20 --out hpcc/results/f12_llama3_8b --resume"
+  echo "c4-llama|A100|python hpcc/sirius_symboli.py --model meta-llama/Meta-Llama-3-8B --layer 16 --out hpcc/results/c4_llama3_8b --resume"
 }
 # filter: `jobs | job_filter f2` keeps names starting with f2; `job_filter all` keeps everything
 job_filter() { case "${1:-all}" in all) cat;; *) grep -E "^($(echo "$1" | tr ',' '|'))\|" ;; esac; }
