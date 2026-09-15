@@ -478,3 +478,11 @@ Spearman is far from zero shows CV ~1e-16. Every O1.4 cell fails its *scientific
 this block's verdicts turns on it; the note exists so that the one "artifact" label is not read as evidence of a gauge
 problem in `grok_clean_s1`. A CV rule of this shape needs an absolute floor (or to be stated on a quantity bounded away
 from zero) before it is applied to a correlation coefficient.
+
+_#6 addendum 3 (O1.2, 21:00, R2 initial condition — after the first one-step-response run on all rings)._ Under addendum 2 the rebuilt
+integrator was started from the nearest-landmark coordinate of the network's state at step 0; that state is the raw image of the cue,
+nowhere near the t = 60 attractor sample in the standardised metric, so every trajectory started at a random phase and the error was
+≈ π/2 (1.51–1.57 rad) on all nine rings whatever the fitted dynamics (fit r² 0.4). The rebuild's inputs are the task's inputs — the cue
+angle θ₀ and the velocity sequence — so the initial coordinate is θ̂₀ = s·θ₀ + φ, the certified orientation/offset relation between the
+coordinate and the cue angle fitted on the attractor sample (already recorded in every P1 cell); the trajectory is mapped back with the
+same relation. Nothing else changes. The addendum-2 numbers stand as recorded.

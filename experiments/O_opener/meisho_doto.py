@@ -618,7 +618,8 @@ def ring_R2(model, p1):
     n_seq, T = 64, 100; u, y, th = ring_batch(np.random.default_rng(10_000), n_seq, T); om = u[:, :, 0].cpu().numpy(); th_true = th
     with torch.no_grad(): out, Hd = model(u, return_states=True)
     pred = np.arctan2(out[..., 1].cpu().numpy(), out[..., 0].cpu().numpy())
-    seq = np.empty((n_seq, T)); seq[:, 0] = coord(Hd[:, 0, :].cpu().numpy())            # cue state read in the certified coordinate
+    th0_seq = np.arctan2(u[:, 0, 2].cpu().numpy(), u[:, 0, 1].cpu().numpy())                    # the cue angle (a task input)
+    seq = np.empty((n_seq, T)); seq[:, 0] = (s * th0_seq + phi) % (2 * np.pi)                    # #6 addendum 3: cue mapped through the certified coordinate frame
     for t in range(1, T): seq[:, t] = (seq[:, t - 1] + dyn.predict(seq[:, t - 1], om[:, t - 1])) % (2 * np.pi)
     seq_true_frame = s * (seq - phi)
     err_hat = float(np.abs(np.angle(np.exp(1j * (seq_true_frame - th_true)))).mean()); err_model = float(np.abs(np.angle(np.exp(1j * (pred - th_true)))).mean())
@@ -632,7 +633,7 @@ def ring_R2(model, p1):
     ok = abs(err_hat - err_model) <= 0.10 * err_model and dyn.r2 > 0.5
     return cell("certified" if ok else "failed", value=dict(err_rebuild=err_hat, err_model=err_model, ratio=err_hat / max(err_model, 1e-9), dyn_r2=dyn.r2, drift_model=drift_model, drift_rebuild=drift_hat),
                 criterion="R2: integration error of the rebuild (circular coordinate + tangent dynamics fitted from one-step responses on the ring; no recurrent weights) within 10 % of the model's over 100-step OU-velocity trajectories; drift statistics reported; tangent fit r2 > 0.5 (informative)",
-                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); attractor sample 1500 cues t = 60 (standardised = gauge fixing), coordinate read by nearest landmark (k = 5); one-step responses at omega in {{-0.6..0.6}} (#6 addendum 2); reconstruct.fit_tangent_dynamics (3 harmonics x linear in omega); discrete one-step map; orientation/offset gauge to the true frame recorded",
+                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); attractor sample 1500 cues t = 60 (standardised = gauge fixing), coordinate read by nearest landmark (k = 5); one-step responses at omega in {{-0.6..0.6}} (#6 addendum 2); initial coordinate = cue angle through the certified (orientation, offset) relation (#6 addendum 3); reconstruct.fit_tangent_dynamics (3 harmonics x linear in omega); discrete one-step map; orientation/offset gauge to the true frame recorded",
                 dynamics=dyn.to_dict(), orientation=int(s), offset=float(phi), coord_r=float(r), rebuilt=rec.to_dict())
 
 
