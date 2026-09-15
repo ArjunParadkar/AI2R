@@ -75,8 +75,20 @@ def main():
             n = sum(g[c] == "certified" for g in rows); srow[c] = f"{n}/{len(rows)} certified"
         gam = [g["gamma_cov"] for g in rows if g["gamma_cov"] is not None]
         srow["gamma_cov"] = None if not gam else float(np.median(gam)); srow["degree"] = None if not gam else round(1 - float(np.median(gam)), 4); summary.append(srow)
-    pending = [dict(specimen=t, condition="pending") for t in ("T2 GPT-2 small (O2.1/O2.2)", "T3 Pythia-410M/1B (O3.1, HPCC)", "T4 Llama-3-8B / Gemma-2-9B (O4.1, HPCC)")]
-    json.dump(dict(rows=grid, summary=summary, pending=pending), open(os.path.join(RES, "grid.json"), "w"), indent=1, default=str)
+    # T2–T4 rows from the tier runners' scorecards when present (satono_crown_gpt2.json locally; hpcc/results/o31|o41 after sync_down)
+    tier_rows = []; pending = []
+    HP = os.path.join(HERE, "..", "..", "hpcc", "results")
+    for label, path in (("T2 GPT-2 small (O2.1)", os.path.join(OPEN, "satono_crown_gpt2.json")),
+                        ("T3 Pythia-410M (O3.1)", os.path.join(HP, "o31", "scorecard_pythia-410m.json")), ("T3 Pythia-1B (O3.1)", os.path.join(HP, "o31", "scorecard_pythia-1b.json")),
+                        ("T4 Llama-3-8B (O4.1)", os.path.join(HP, "o41", "scorecard_Meta-Llama-3-8B.json")), ("T4 Gemma-2-9B (O4.1)", os.path.join(HP, "o41", "scorecard_gemma-2-9b.json"))):
+        if not os.path.exists(path): pending.append(dict(specimen=label, condition="pending")); continue
+        d = json.load(open(path)); cells = d.get("cells", {}) or d.get("scorecard", {}).get("cells", {})
+        row = dict(specimen=label, condition="tier")
+        for c in CELLS:
+            cc = cells.get(c); row[c] = (cc.get("status", "not_reached") if isinstance(cc, dict) else "not_reached")
+        g = d.get("scorecard", {}).get("gamma_cov", d.get("gamma_cov")); row["gamma_cov"] = g; row["degree"] = None if g is None else round(1 - g, 4)
+        row["R"] = ",".join(f"{k}:{v['status'][:4]}" for k, v in cells.items() if isinstance(v, dict) and k.startswith("R")); tier_rows.append(row)
+    json.dump(dict(rows=grid, tiers=tier_rows, summary=summary, pending=pending), open(os.path.join(RES, "grid.json"), "w"), indent=1, default=str)
     with open(os.path.join(RES, "grid.csv"), "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["specimen", "kind", "condition", "seed"] + CELLS + ["R", "gamma_cov", "degree"], extrasaction="ignore"); w.writeheader(); w.writerows(grid)
     L = ["# The grid — T1 (O5 Symboli Kris S)", "", "| model | " + " | ".join(CELLS) + " | R cells | γ_cov | 1 − γ_cov |", "|" + "---|" * (len(CELLS) + 4)]
@@ -85,7 +97,11 @@ def main():
     L += ["", "| condition | " + " | ".join(CELLS) + " | median γ_cov | 1 − γ_cov |", "|" + "---|" * (len(CELLS) + 3)]
     for srow in summary:
         L.append(f"| {srow['specimen']} | " + " | ".join(srow[c] for c in CELLS) + f" | {'—' if srow['gamma_cov'] is None else f'{srow['gamma_cov']:.4f}'} | {'—' if srow['degree'] is None else srow['degree']} |")
-    L += ["", "Pending rows: " + "; ".join(p["specimen"] for p in pending), "", "Evidence: results/open/<horse>_<specimen>.json (cell status, value, criterion, null, provenance)."]
+    if tier_rows:
+        L += ["", "| tier model | " + " | ".join(CELLS) + " | R cells | γ_cov | 1 − γ_cov |", "|" + "---|" * (len(CELLS) + 4)]
+        for g in tier_rows:
+            L.append(f"| {g['specimen']} | " + " | ".join(g[c] for c in CELLS) + f" | {g.get('R', '')} | {'—' if g['gamma_cov'] is None else f'{g['gamma_cov']:.4f}'} | {'—' if g['degree'] is None else g['degree']} |")
+    L += ["", "Pending rows: " + ("; ".join(p["specimen"] for p in pending) or "none"), "", "Evidence: results/open/<horse>_<specimen>.json and hpcc/results/o31|o41/scorecard_*.json (cell status, value, criterion, null, provenance)."]
     open(os.path.join(RES, "grid.md"), "w").write("\n".join(L) + "\n"); print("\n".join(L))
 
 
