@@ -13,10 +13,21 @@ R = os.path.join(os.path.dirname(__file__), "results")
 LAYER, N_TOK, SEQ = 6, 2000, 125
 
 
+
+def _owt_parquet():
+    """OpenWebText-10k parquet: the local HF cache snapshot, else the copy shipped for the cluster in hpcc/data/ (WB_OWT_PARQUET overrides)."""
+    import os
+    cands = [os.environ.get("WB_OWT_PARQUET", ""),
+             os.path.expanduser("~/.cache/huggingface/hub/datasets--stas--openwebtext-10k/snapshots/d0e7bd98eff9a555ba5ad44255cd64ea5df8c50b/plain_text/train/0000.parquet"),
+             os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "hpcc", "data", "openwebtext-10k.parquet")]
+    for c in cands:
+        if c and os.path.exists(c): return c
+    raise FileNotFoundError("openwebtext-10k parquet not found (HF cache or hpcc/data/openwebtext-10k.parquet)")
+
 def load_tokens(tok):
     p = os.path.join(R, "F11_tokens.npy")
     if os.path.exists(p): return np.load(p)
-    df = pd.read_parquet(os.path.expanduser("~/.cache/huggingface/hub/datasets--stas--openwebtext-10k/snapshots/d0e7bd98eff9a555ba5ad44255cd64ea5df8c50b/plain_text/train/0000.parquet"))
+    df = pd.read_parquet(_owt_parquet())
     seqs = []
     for t in df.text:
         ids = tok(t)["input_ids"]

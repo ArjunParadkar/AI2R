@@ -24,6 +24,11 @@ commands are in `hpcc/launch_all.sh`; results come back with `hpcc/sync_down.sh`
 | 13 | `o41_frontier_p0` (array 0-1) + `o41_assemble` | **O4.1 Bamboo Memory** (T4: P0 on Llama-3-8B / Gemma-2-9B; assembles F12 + C4 + K8 + L7 into the scorecard with 1 − γ_cov) | `hpcc/results/o41/scorecard_<model>.json` | `experiments/O_opener/bamboo_memory.py --p0` / `--assemble` | 1 × ≥ 40 GB / 96 GB (P0); CPU (assemble, after #2 #3 #5 #10 #13) | **yes** | **being written tonight** (smoke on gpt2 + empty assemble) |
 | 14 | `o2_gpt2_open` | **O2.1 Satono Crown / O2.2 Narita Top Road** (T2 GPT-2 small: IOI/induction/greater-than certified circuits, H0/H1 boundaries, R3/R4/R5/R6; F11 audit into the grid) | `experiments/O_opener/results/open/satono_crown_*.json` | `experiments/O_opener/satono_crown.py` | 1 GPU / 32 GB / (see RUNBOOK row) | no | **being written tonight**; runs on the 5070 if it fits before morning, else here |
 
+## A2. Data shipped by `sync_up.sh` but not committed (git-ignored)
+
+* `hpcc/data/openwebtext-10k.parquet` (30 MB; the K1/F11 probe corpus — the two loaders fall back to it via `WB_OWT_PARQUET`, set in `hpcc/env.sh`).
+* `benchmarks/results/battery_*` (M4 inputs, 184 MB) and `experiments/F_gauge/results/networks` (16 MB) — already in the sync set.
+
 ## B. Not on the cluster (laptop, done or running)
 
 * Block O T1 (O1.1–O1.4, O5 T1 rows): **done 2026-09-14** — `PAUSE_A_O1.md`, `PAUSE_B_O1.md`, `experiments/O_opener/results/grid.md`.
