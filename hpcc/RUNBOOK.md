@@ -23,7 +23,7 @@ ssh $HPCC_HOST; cd $HPCC_ROOT
 # edit hpcc/env.sh: uncomment/replace the `module load` line
 export HF_TOKEN=...; source hpcc/env.sh          # builds .venv-hpcc (torch cu128 + whiteboxtopo[dev] + transformer_lens + sae_lens + spacy)
 python -c "import whiteboxtopo, transformer_lens, sae_lens, torch; print(torch.cuda.is_available())"
-python -m pytest tests -q -x                     # 143 tests, ~2 min on CPU — the library must be green on the cluster's Python
+python -m pytest tests -q -x                     # 228 tests, ~45 min on a loaded CPU (2026-09-14: 228 passed) — the library must be green on the cluster's Python
 bash hpcc/configure.sh <partition> [account] [gres]   # fills the placeholders in hpcc/sbatch/*.sbatch
 ```
 If the cluster's CUDA is not 12.8, change the `--index-url` in env.sh to the matching wheel index before the first `source`.
