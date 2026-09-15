@@ -31,6 +31,8 @@ P3 procedure (zigzag over checkpoints + Laplacian eigenflow) on planted vs clean
 * **P5** ρ(x) = ‖Q_h(x)‖·Lip(x); failure radius by actual Gaussian perturbation at r ∈ {0.01, 0.02, 0.05, 0.1, 0.2, 0.5}: Spearman(ρ, radius) < −0.5, p < 0.01, beating the softmax-margin baseline. Null: shuffled ρ.
 
 ## O2 (GPT-2), O3 (Pythia), O4 (frontier), O5 (grid) — as §8.2; thresholds per §6; HPCC rows ship as pending.
+O2.1/O2.2 (T2 GPT-2 small) have their own pre-registration in `SPEC_O2.md` (written 2026-09-14 before any O2 compute): the three behaviours and their metrics, the 156-node head+MLP-block granularity, the K-O-2 certification of the circuit on the gauge orbit, and the reasons P3/P4/P5/P7 are `not_reached` at T2. O2 amendments are numbered `#O2-n` in AMENDMENTS.md.
+O4.1 (T4 frontier, HPCC) has its own pre-registration in `SPEC_O4.md` (written 2026-09-14 before any O4.1 compute): the P0 attribution-graph cell is the only new computation; gauge/audit, P1 and γ_cov are read off F12, C4 and K8; every other cell is `not_reached` with a stated reason.
 
 ## Kill tests (run before believing any cell)
 * K-O-1 *tautology check*: the P1 reconstruction (R1) must fail (accuracy near chance) when K is replaced by a random frequency set of the same size.

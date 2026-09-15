@@ -51,12 +51,12 @@ def main():
     # K2–K5 on the cache, using the laptop analysis code unchanged (its module globals redirected to this run's dirs)
     smart_falcon.CACHE, smart_falcon.R, smart_falcon.LAYERS = cache, a.out, a.layers
     os.makedirs(os.path.join(a.out, "fig"), exist_ok=True)
-    smart_falcon, curren_chan, k45 = [], [], []
+    k2_rows, k3_rows, k45 = [], [], []
     for L in a.layers:
         Z = np.load(os.path.join(cache, f"L{L}.npz")); E, D, seq = Z["E"].astype(np.float64), Z["delta"].astype(np.float32), Z["seq"]
-        smart_falcon.append(smart_falcon.smart_falcon(L, E, seq)); curren_chan.append(smart_falcon.curren_chan(L, E)); r45 = smart_falcon.agnes_digital_tamamo_cross(L, E, D, seq); k45.append(r45)
-        print("K2", smart_falcon[-1], "\nK3", curren_chan[-1], "\nK4/K5", r45, flush=True)
-    for name, rs in (("K2_spectral", smart_falcon), ("K3_topology", curren_chan), ("K4_K5", k45)):
+        k2_rows.append(smart_falcon.smart_falcon(L, E, seq)); k3_rows.append(smart_falcon.curren_chan(L, E)); r45 = smart_falcon.agnes_digital_tamamo_cross(L, E, D, seq); k45.append(r45)
+        print("K2", k2_rows[-1], "\nK3", k3_rows[-1], "\nK4/K5", r45, flush=True)
+    for name, rs in (("K2_spectral", k2_rows), ("K3_topology", k3_rows), ("K4_K5", k45)):
         pd.DataFrame([r if isinstance(r, dict) else (r[0] if isinstance(r, (list, tuple)) and r and isinstance(r[0], dict) else {"raw": str(r)}) for r in rs]).to_csv(os.path.join(a.out, f"K8_{name}.csv"), index=False)
     print("done")
 

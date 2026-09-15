@@ -506,3 +506,61 @@ to ±12 rad and fitted noise (r² 0.02). The gain is fitted on pulses with |ω·
 lag is physically excluded — the network's read-out tracks the true angle to 0.06 rad over 200 steps of OU velocity (sd 0.3, step
 correlation 0.9), which a lagged integrator cannot do — so the leak α governs radial relaxation, not the angle; the certified tangent
 dynamics are memoryless, θ_{t+1} = θ_t + γ(θ) ω_t (a = 1). Written before the corrected fit was run.
+
+**#O4.1 (2026-09-14 22:10, O4.1 Bamboo Memory — T4 frontier open(); written BEFORE any O4.1 compute, alongside the new
+pre-registration `SPEC_O4.md`. Nothing here changes a threshold of an existing block; it records the three choices O4.1
+had to freeze for itself and the one construction it adapted.)**
+(a) *The P0 EAP graph is V7's, with two gradient read points per layer instead of one.* `hpcc/mejiro_ardan.py` (V7) may
+use one gradient per layer because Pythia's parallel residual has every node of a layer read the same layer input.
+Llama-3 and Gemma-2 are sequential — the MLP of layer *l* reads the residual *after* that layer's attention — so
+`bamboo_memory.py` takes the gradient at the block input (for the attention nodes) and at the pre-MLP-norm input (for
+the MLP node). Consequence: within-layer head→MLP edges exist and are scored, and readers in one layer no longer share a
+gradient. The verdict rule itself is unchanged (#5d: by the treewidth bound at density 0.1; Q reported against the
+rewiring null, never part of the verdict). For Gemma-2 the per-node contributions are rescaled by
+(1 + w)/rms(sublayer_out) of the post-sublayer RMSNorms; the split is an *exact* decomposition of the realised
+contribution (node sum = h_{l+1} − h_l to 2.8e-7 relative on a random Gemma-2 config; Llama branch 3.9e-7) and
+first-order only as a counterfactual, since ablating one node would also move rms.
+(b) *The bf16 floor for the F12 identity check is the permutation deviation.* §2.4's CV < 1e-3 is an fp32 number and the
+frontier jobs run in bf16. A permutation re-orders summations and changes no value, so its measured deviation *is* the
+floating-point floor of that run; a renaming kind counts as exact at this precision iff its deviation ≤ 10 × that floor,
+and the gauge step fails outright above 0.5 (the threshold `kawakami_princess.py` already uses for `does_not_scale`).
+(c) *The headline γ_cov layer is fixed before compute* as the K8 layer closest to the middle of the model (layer 20 of
+Gemma-2-9B's 42); all K8 layers are reported, only that one enters 1 − γ_cov, and γ_cov is claimed only where
+gamma_excess > 0 against both MP nulls (K-O4-2). Llama-3-8B has no public SAE in this stack, so its γ_cov and its degree
+of opening are reported as **unknown**, never as zero.
+
+## O2.1 Satono Crown / O2.2 Narita Top Road (T2, GPT-2 small) — #O2-1 …, chronological
+
+_These entries belong to `SPEC_O2.md` (the T2 pre-registration, written 2026-09-14 before any O2 compute). They are
+numbered `#O2-n` so they cannot collide with the O1 sequences above. `satono_crown.py` and its JSONs cite them._
+
+**#O2-1 (2026-09-14 22:05, the P2 anchor — written after the `--smoke` run of `satono_crown.py` on IOI, before any
+full-size O2 run).** SPEC_O2 §5 pre-registers P2 as the attention-pattern-conditional path product (FINAL_SPEC §6.3)
+anchored on "integrated gradients along the constant-pattern path (1−δ)e → e, δ = 0.05, r > 0.95". It did not say which
+model the IG is taken *through*. Taken through the **full** model the anchor reads **r = −0.485** on 32 IOI prompts (and
+the frozen-pattern attribution correlates **−0.494** with the full-model gradient × input, which itself agrees with its
+own local IG at r = 0.999). So the pre-registered wording, read the loose way, would have failed P2 for a reason that
+has nothing to do with the instrument's invariance.
+Clarification, frozen here: "on regions of constant activation pattern" means the IG is computed through the **same
+pattern-frozen linearisation** as the attribution. That matched anchor is the pre-registered criterion and reads
+r = 0.99995 on the smoke split. The full-model IG correlation and the frozen-vs-full correlation are **reported in
+every P2 cell** as the measured size of the QK term — that is, on IOI the query-side path carries attribution of the
+same order as the OV path and of the *opposite sign*, which is the "QK caveat" of §6.3 turned into a number rather
+than a disclaimer. No threshold moved: P2's bars are still CV < 1e-4 over the gauge orbit and anchor r > 0.95.
+
+**#O2-2 (2026-09-14 22:05, T2 split sizes — memory, not a threshold).** SPEC_O2 §1.4 pre-registers 256 discovery +
+256 held-out prompts per task. A `record=True` forward keeps one tensor per node in the autograd graph, and the
+arithmetic on an 8 GB card is: 144 head nodes × B × T × 64 × 4 B plus 12 MLP nodes × B × T × 768 × 4 B plus GPT-2's own
+graph (the 3072-wide MLP hidden state dominates at 12 × B × T × 3072 × 4 B). At B = 256, T = 64 (induction) that is
+≈ 9 GB and does not fit; `discover_circuit` takes the batch it is given in one shot, so it cannot be chunked without
+changing the frozen pipeline. The split sizes are therefore **128 / 128 for IOI and greater-than and 64 / 64 for
+induction** (`satono_crown.NPROMPTS`), which is inside the range the T2 circuit literature uses. Nothing else changes:
+no threshold, no metric, no null. The cost is statistical power on the per-example correlations of R5/R6, and that cost
+is stated in the cells that use them.
+
+**#O2-3 (2026-09-14 22:05, the glue cover at small splits).** SPEC_O2 §6 freezes the cover at k = 10 regions with
+`n_min = 10`. Those are used at every full-run size. A `--smoke` split (8–16 prompts) cannot carry 10 regions of ≥ 10
+examples, so at those sizes `k` and `n_min` are reduced (`k = min(10, max(3, n/12))`, `n_min = min(10, max(3, n/8))`)
+and both the used and the pre-registered values are written into the cell. A smoke cover is expected to give
+`cyclomatic = 0` (H1 = 0 by construction, not by evidence) and the cell then reads `partial` — that is the instrument
+reporting that it has no evidence, which is the behaviour AMENDMENTS #5f installed at T1.

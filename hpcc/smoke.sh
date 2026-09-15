@@ -14,6 +14,7 @@ run f12  python hpcc/kitasan_black.py --model google/gemma-2-2b --layers 8 --n 2
 run k8   python hpcc/biwa_hayahide.py --model google/gemma-2-9b --layers 20 --n-seq 8 --out hpcc/results/smoke/k8
 run c4   python hpcc/sirius_symboli.py --model google/gemma-2-9b --n-seq 8 --out hpcc/results/smoke/c4
 run l7   python hpcc/kawakami_princess.py --model google/gemma-2-9b --n 2 --out hpcc/results/smoke/l7
+run o2   python experiments/O_opener/satono_crown.py --smoke --n-gauge 2          # O2.1/O2.2 GPT-2 open(): 3 tasks end to end, tiny splits
 run o41p0  python experiments/O_opener/bamboo_memory.py --p0 --model google/gemma-2-9b --layers 20 21 --n-tokens 250 --out hpcc/results/smoke/o41
 # the assemble smoke deliberately runs LAST and points at hpcc/results/smoke: it then reads the f12/c4/k8/l7/o41 dirs the
 # lines above just wrote, which is the real read path.  It must PASS even when some of them failed — every missing input is
