@@ -71,9 +71,16 @@ def _backend(model):
             return _ll
     except ImportError:
         pass
+    try:
+        from . import neox as _nx
+        if _nx.handles(model):
+            return _nx
+    except ImportError:
+        pass
     raise TypeError(f"no symmetry backend for {type(model).__name__}; supported: ReLU MLPs (numpy .Ws/.bs, "
                     "torch nn.Sequential Linear/ReLU), whiteboxtopo.symmetry.transformer.ToyTransformer, "
-                    "HF GPT2LMHeadModel")
+                    "HF GPT2LMHeadModel, Llama/Gemma-2/Qwen2/Mistral ForCausalLM, "
+                    "GPTNeoXForCausalLM / GPTNeoXModel (Pythia)")
 
 
 def describe(model) -> Dict[str, Any]:

@@ -7,7 +7,9 @@
     symmetry.hidden(model, X)                                       # fiber dim vs known dim
 
 Backends: ReLU MLPs (numpy ``.Ws/.bs`` or torch ``nn.Sequential``),
-``ToyTransformer`` (F7), HF ``GPT2LMHeadModel`` (F11). ``describe(model)`` lists
+``ToyTransformer`` (F7), HF ``GPT2LMHeadModel`` (F11), the Llama/Gemma-2/Qwen2/Mistral
+family (F12) and HF ``GPTNeoXForCausalLM`` / ``GPTNeoXModel`` (Pythia, FINAL_SPEC S2.3).
+``describe(model)`` lists
 the layers G acts on and the continuous dimension of the known group.
 """
 from .group import (_backend, GaugeElement, KINDS, describe, permutations, scalings, rotations, random_element,
