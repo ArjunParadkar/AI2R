@@ -604,37 +604,60 @@ def ring_R2(model, p1):
     th_a, _ = circular_coordinate(Za); r, s, phi = circ_r(th_a, th0); tree = cKDTree(Za)
     def coord(Hx):                                                    # nearest-landmark read-out of the certified coordinate (on-ring points only)
         _, nn = tree.query((Hx[:, live] - mu[live]) / sd[live], k=5); return np.angle(np.exp(1j * th_a[nn]).mean(1))
-    # one-step responses on the ring: advance every attractor state one step under each omega (#6 addendum 2)
-    Hs = torch.as_tensor(Ha, dtype=torch.float32, device=DEV); th_now = th_a; thetas, omegas, dths = [], [], []
-    with torch.no_grad():
-        for w in (-0.6, -0.3, -0.1, 0.0, 0.1, 0.3, 0.6):
-            u = torch.zeros(len(Ha), 1, 3, device=DEV); u[:, 0, 0] = w
-            h = (1 - model.alpha) * Hs + model.alpha * torch.relu(Hs @ model.W + u[:, 0] @ model.U + model.b)
-            th_next = coord(h.cpu().numpy()); d = np.angle(np.exp(1j * (th_next - th_now)))
-            thetas.append(th_now); omegas.append(np.full(len(Ha), w)); dths.append(d)
-    dyn = fit_tangent_dynamics(np.concatenate(thetas), np.concatenate(omegas), np.concatenate(dths), n_harmonics=3, u_degree=1)
-    rec = from_attractor(th_a, dyn)
+    # pulse responses on the ring (#6 addendum 4): constant omega for L steps, then 60 steps of zero input (relax onto the ring), read on-ring
+    Hs = torch.as_tensor(Ha, dtype=torch.float32, device=DEV); rows = []
+    def run_from(H0, om_seq):
+        h = H0.clone()
+        with torch.no_grad():
+            for w in om_seq:
+                u = torch.zeros(len(H0), 3, device=DEV); u[:, 0] = float(w)
+                h = (1 - model.alpha) * h + model.alpha * torch.relu(h @ model.W + u @ model.U + model.b)
+        return h
+    base = run_from(Hs, [0.0] * 80); th_base = coord(base.cpu().numpy())                       # zero-input reference (drift over the same horizon)
+    for w in (-0.6, -0.3, -0.1, 0.0, 0.1, 0.3, 0.6):
+        for L in (1, 2, 5, 10, 20):
+            h = run_from(Hs, [w] * L + [0.0] * (80 - L)); th_end = coord(h.cpu().numpy())
+            rows.append((th_a, np.full(len(Ha), w), np.full(len(Ha), L), np.angle(np.exp(1j * (th_end - th_base)))))
+    TH = np.concatenate([r[0] for r in rows]); OM = np.concatenate([r[1] for r in rows]); LL = np.concatenate([r[2] for r in rows]); DTH = np.concatenate([r[3] for r in rows])
+    # filtered integrator: v_{t+1} = (1-a) v_t + a w ; theta advance after L steps of w then relaxation = gain(theta) * w * L (the filter passes all of it eventually)
+    # -> fit gain(theta) on DTH / (w L) for w != 0, and a from the SHORT pulses' shortfall relative to the long ones
+    def design(th):
+        cols = [np.ones_like(th)]
+        for k in (1, 2, 3): cols += [np.cos(k * th), np.sin(k * th)]
+        return np.stack(cols, 1)
+    m_ = (OM != 0) & (np.abs(OM * LL) <= 2.5); Aw = design(TH[m_]) * (OM[m_] * LL[m_])[:, None]; g_coef, *_ = np.linalg.lstsq(Aw, DTH[m_], rcond=None)   # no wrap (addendum 4 clar. 2)
+    pred = Aw @ g_coef; ss = float(((DTH[m_] - DTH[m_].mean()) ** 2).sum()); r2 = 1 - float(((DTH[m_] - pred) ** 2).sum()) / ss if ss > 0 else 0.0
+    # time constant from the response to a unit step: advance after L steps of constant w with no relaxation would be gain*w*(L - (1-(1-a)^L)/a); we
+    # only observe relaxed responses (all of the pulse is eventually integrated), so a is fitted from the network's own transient: drive w for L steps
+    # and read the on-ring coordinate after relaxation vs after 0 further steps is impossible on-ring; take a = model.alpha (the architectural leak, exact)
+    a_eff = 1.0                                                                                 # memoryless angular dynamics (addendum 4 clarification 2)
+    class Dyn:
+        def __init__(self, coef, a): self.coef, self.a, self.r2 = coef, a, r2
+        def gain(self, th): return design(np.asarray(th)) @ self.coef
+        def to_dict(self): return dict(gain_coef=self.coef.tolist(), a=self.a, r2=self.r2, n_harmonics=3, model="v <- (1-a) v + a w; theta <- theta + gain(theta) v")
+    dyn = Dyn(g_coef, a_eff); rec = dict(model=dyn.to_dict(), n_landmarks=int(len(Ha)))
+    gain_mean = float(np.mean(dyn.gain(np.linspace(0, 2 * np.pi, 360, endpoint=False))))
     # integrate the rebuilt map over the true 100-step OU velocity sequences from the cue's coordinate; compare with the model's read-out
     n_seq, T = 64, 100; u, y, th = ring_batch(np.random.default_rng(10_000), n_seq, T); om = u[:, :, 0].cpu().numpy(); th_true = th
     with torch.no_grad(): out, Hd = model(u, return_states=True)
     pred = np.arctan2(out[..., 1].cpu().numpy(), out[..., 0].cpu().numpy())
     th0_seq = np.arctan2(u[:, 0, 2].cpu().numpy(), u[:, 0, 1].cpu().numpy())                    # the cue angle (a task input)
     seq = np.empty((n_seq, T)); seq[:, 0] = (s * th0_seq + phi) % (2 * np.pi)                    # #6 addendum 3: cue mapped through the certified coordinate frame
-    for t in range(1, T): seq[:, t] = (seq[:, t - 1] + dyn.predict(seq[:, t - 1], om[:, t - 1])) % (2 * np.pi)
+    v = np.zeros(n_seq)
+    for t in range(1, T):
+        v = (1 - dyn.a) * v + dyn.a * om[:, t - 1]; seq[:, t] = (seq[:, t - 1] + dyn.gain(seq[:, t - 1]) * v) % (2 * np.pi)
     seq_true_frame = s * (seq - phi)
     err_hat = float(np.abs(np.angle(np.exp(1j * (seq_true_frame - th_true)))).mean()); err_model = float(np.abs(np.angle(np.exp(1j * (pred - th_true)))).mean())
     # drift statistics: zero-velocity holds (model vs rebuild)
     u0 = u.clone(); u0[:, :, 0] = 0
     with torch.no_grad(): o0 = model(u0).cpu().numpy()
     p0 = np.arctan2(o0[..., 1], o0[..., 0]); drift_model = float(np.abs(np.angle(np.exp(1j * (p0[:, -1] - p0[:, 0])))).mean())
-    seq0 = seq[:, 0].copy()
-    for t in range(1, T): seq0 = (seq0 + dyn.predict(seq0, np.zeros(n_seq))) % (2 * np.pi)
-    drift_hat = float(np.abs(np.angle(np.exp(1j * (seq0 - seq[:, 0])))).mean())
+    drift_hat = float(np.abs(np.angle(np.exp(1j * (th_base - th_a)))).mean())                    # the ring's own zero-input drift over 80 steps (measured, not modelled)
     ok = abs(err_hat - err_model) <= 0.10 * err_model and dyn.r2 > 0.5
-    return cell("certified" if ok else "failed", value=dict(err_rebuild=err_hat, err_model=err_model, ratio=err_hat / max(err_model, 1e-9), dyn_r2=dyn.r2, drift_model=drift_model, drift_rebuild=drift_hat),
-                criterion="R2: integration error of the rebuild (circular coordinate + tangent dynamics fitted from one-step responses on the ring; no recurrent weights) within 10 % of the model's over 100-step OU-velocity trajectories; drift statistics reported; tangent fit r2 > 0.5 (informative)",
-                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); attractor sample 1500 cues t = 60 (standardised = gauge fixing), coordinate read by nearest landmark (k = 5); one-step responses at omega in {{-0.6..0.6}} (#6 addendum 2); initial coordinate = cue angle through the certified (orientation, offset) relation (#6 addendum 3); reconstruct.fit_tangent_dynamics (3 harmonics x linear in omega); discrete one-step map; orientation/offset gauge to the true frame recorded",
-                dynamics=dyn.to_dict(), orientation=int(s), offset=float(phi), coord_r=float(r), rebuilt=rec.to_dict())
+    return cell("certified" if ok else "failed", value=dict(err_rebuild=err_hat, err_model=err_model, ratio=err_hat / max(err_model, 1e-9), dyn_r2=dyn.r2, gain_mean=gain_mean, drift_model=drift_model, drift_ring_80=drift_hat),
+                criterion="R2: integration error of the rebuild (circular coordinate + tangent dynamics = filtered integrator fitted to on-ring pulse responses, #6 addendum 4; no recurrent weights) within 10 % of the model's over 100-step OU-velocity trajectories; drift statistics reported; gain fit r2 > 0.5 (informative)",
+                provenance=f"P1 status {p1['status']} (agreement r {p1.get('value', {}).get('circ_r') if isinstance(p1.get('value'), dict) else None}); attractor sample 1500 cues t = 60 (standardised = gauge fixing), coordinate read by nearest landmark (k = 5); pulse responses (omega in {{-0.6..0.6}} x L in {{1,2,5,10,20}} then 60-step relaxation, read on-ring by nearest landmark; #6 addendum 4); initial coordinate = cue angle through the certified (orientation, offset) relation (#6 addendum 3); memoryless integrator theta <- theta + gain(theta) omega with a 3-harmonic gain fitted on |omega L| <= 2.5 (addendum 4 clar. 2); orientation/offset gauge to the true frame recorded",
+                dynamics=dyn.to_dict(), orientation=int(s), offset=float(phi), coord_r=float(r), rebuilt=rec)
 
 
 # ============================================================================================== drivers

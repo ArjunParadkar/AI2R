@@ -486,3 +486,23 @@ nowhere near the t = 60 attractor sample in the standardised metric, so every tr
 angle θ₀ and the velocity sequence — so the initial coordinate is θ̂₀ = s·θ₀ + φ, the certified orientation/offset relation between the
 coordinate and the cue angle fitted on the attractor sample (already recorded in every P1 cell); the trajectory is mapped back with the
 same relation. Nothing else changes. The addendum-2 numbers stand as recorded.
+
+_#6 addendum 4 (O1.2, 21:20, R2 tangent dynamics with lag — after the addendum-3 run on all rings, before any further R2 run)._ With the
+initial condition fixed the rebuild still lands at ≈ π/2 error on all nine rings (1.52–1.55 rad; fit r² ≈ 0.4). Cause: the one-step map
+is Markov in θ, but the leaky RNN (α = 0.1) responds to a velocity input over ~10 steps, so a one-step displacement read on the ring
+underestimates the gain by roughly the leak factor and the integrator falls behind. The tangent dynamics of a driven attractor are
+therefore measured as the ring's *pulse response*: from each attractor state, apply a constant ω ∈ {±0.6, ±0.3, ±0.1, 0} for L ∈ {1, 2, 5,
+10, 20} steps, then zero input for 60 steps (relax back onto the ring), and read the phase advance Δθ̂(θ, ω, L) by nearest landmark
+(on-ring readings only — no coordinate is ever read off the ring). The certified dynamics are the two-parameter filtered integrator
+v_{t+1} = (1−a) v_t + a ω_t, θ_{t+1} = θ_t + γ(θ) v_t (a = the fitted response time constant, γ(θ) = gain in a 3-harmonic Fourier basis)
+fitted to the pulse responses by least squares over (a, γ); the rebuild integrates it over the true OU velocity sequences from the cue
+angle through the certified coordinate frame (addendum 3). Criterion unchanged (error within 10 % of the model's; drift statistics
+reported). The one-step-map numbers (addendum 2/3 runs) stand as recorded.
+_(addendum 4 clarification, 21:35: the filter constant a is the architectural leak α = 0.1 of the RNN — a hyperparameter of the model
+class, not a trained weight — because on-ring readings cannot observe the transient itself; only the gain γ(θ) is fitted.)_
+_(addendum 4 clarification 2, 21:45, after inspecting the pulse responses on ring_s0.)_ The on-ring pulse readings are correct (advance
+−0.253 for ω·L = −0.30, −1.49 for −1.50, and the wrap of ±6 rad at L = 20), but the gain fit regressed the *wrapped* advance on ω·L up
+to ±12 rad and fitted noise (r² 0.02). The gain is fitted on pulses with |ω·L| ≤ 2.5 rad only. The filter constant: a 10-step angular
+lag is physically excluded — the network's read-out tracks the true angle to 0.06 rad over 200 steps of OU velocity (sd 0.3, step
+correlation 0.9), which a lagged integrator cannot do — so the leak α governs radial relaxation, not the angle; the certified tangent
+dynamics are memoryless, θ_{t+1} = θ_t + γ(θ) ω_t (a = 1). Written before the corrected fit was run.
