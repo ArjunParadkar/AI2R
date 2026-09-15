@@ -211,3 +211,93 @@ the finalise stage from `clouds_<tag>.npz`, so they can be re-run without touchi
   revision, §4. A revision where the random-split cosine is as high as the M/F cosine has no bias direction to date.
 * **Order-shuffle sanity** — the order-shuffle null is computed for every trace including the ones that do not detect,
   so the reported p-values are a complete set, not a selected one.
+
+---
+
+# Amendments
+
+## #O3-1 (2026-09-14, capability — the GPT-NeoX gauge backend now exists)
+
+`whiteboxtopo.symmetry.neox` was written and committed after this pre-registration was frozen (dispatch via
+`whiteboxtopo.symmetry._backend`; `tests/test_neox.py`). §2 above states, as of the freeze, that K-O-2 is unrunnable on
+Pythia and that no O3.1 cell can exceed `partial`. **That constraint is lifted.** Nothing else in the
+pre-registration changes: the probe, the layer, the cloud, the four P7 instruments, the two P3 arms, the change-point
+rule, the thresholds in §5–§7 and the nulls in §7 are exactly as frozen above. No threshold is touched — this
+amendment *adds* a certification step that §2 said could not be run, and it is written before any orbit compute.
+
+**What the backend gives.** Exact renamings of `GPTNeoXForCausalLM`: head permutations; per-head `GL(d_head)` on the
+value/output pair; the RoPE-commuting per-plane complex scalar (phase + scale) on Q/K over the first `rotary_ndims`
+dims; unrestricted `GL` on the non-rotary Q/K tail; MLP hidden-unit permutations; `input_layernorm` and
+`post_attention_layernorm` gain/bias rescales compensated in their single consumer; and the final-LayerNorm rescale
+(exact only because Pythia has untied embeddings — the one symmetry GPT-2 does not have). **Not** sampled: MLP unit
+scalings (GELU is not positively homogeneous), residual-stream re-basing, rotary-plane permutations or any Q/K map
+mixing rotary with non-rotary dims.
+
+**The K-O-2 step, as added to the runner.**
+
+* **Orbit**: `--n-gauge` samples of `kind="combined"`, `orthogonal=False` (the full group, GL not O) per orbit
+  revision, drawn with `neox.sample` and applied with `symmetry.apply` (which returns a renamed deepcopy).
+  **Default `--n-gauge 20`** on the cluster — not SPEC_O's 300 — because each sample costs a full re-measurement
+  (forward + EAP backward + the bias corpus), and the cost bound is stated in the RUNBOOK row. `--n-gauge 0` skips
+  the step and the cells stay `partial`.
+* **Orbit revisions**, pre-stated to bound cost: **every 10th revision plus the final** (`--orbit-every 10`) — 17 of
+  the 154. The remaining 137 revisions are gauge-*fixed* (§2) but not gauge-*certified*, and that is recorded.
+* **Quantities recertified.** P7: `eigen_gap`, `n_small` (the per-checkpoint eigenflow pair), `np_H1` (the Z5
+  normalised-persistence value whose differences are the velocity), the EAP legibility `Q`, `treewidth_ub`,
+  `sparsity`, the sorted community-size vector, and the **zigzag qualifying-interval count** — the last computed as
+  one zigzag per gauge sample over the orbit revisions' clouds (the orbit clouds are cached, so this costs no extra
+  model loads). P3: `dbar`, `biastop_stat`, `cos_mf_disjoint_halves`, `cos_random_split_absmean`, plus **B2's
+  coordinate audits, which §4 said were not computable**: `g_resid_cos` (cosine to the base direction), `g_mlp_norm`
+  and `g_mlp_cos_aligned` (MLP-hidden coordinates, un-permuted with `inverse_on_units`), and `g_heads_cos_aligned`
+  (per-head output coordinates, aligned by **un-permuting first and then un-rotating at the base head index** —
+  `neox.apply` rotates at the original index and then permutes, B AMENDMENTS #4's ordering trap).
+* **Evidence only, never a criterion**: `g_heads_per_head_norm`. It is an `O(d_head)` invariant, not a `GL` one
+  (B AMENDMENTS #4), and the orbit is sampled with `orthogonal=False`, so it is expected to move and its CV is
+  reported without being used to pass or fail anything.
+* **Tolerance.** "Identical" means "at the fp32 arithmetic floor". The floor is *measured*, not assumed: every gauge
+  sample records `max |logits_g − logits| / mean|logits|` on 32 probe tokens, and the maximum over the orbit is
+  reported as `fp32_floor_rel_max` in every cell. The certification threshold is SPEC_O's own **`CV < 1e-3`**
+  (`ART_CV`, the same constant `meisho_doto.py` uses at T1); a set-valued quantity certifies iff the set is identical
+  across the orbit.
+* **Verdict, replacing §2's blanket cap.** A cell is **`certified`** iff its instruments produced values, the orbit
+  was run, and every certified scalar has `CV < 1e-3` (sets identical); **`failed`** (artifact) if any certified
+  scalar has `CV ≥ 1e-3`, with the offending quantity named in `Scorecard.errors`; **`partial`** if the orbit was not
+  run (gauge-fixed, not gauge-certified); `not_reached` if no instrument produced a value. §8's table of
+  `not_reached` cells is unchanged — P0–P2 and P4–P6 are out of this row's scope for reasons that were never about
+  the backend, and the two reasons that did cite the missing backend are reworded to say so.
+* **What does not change.** §6's pre-registered positives are about *detection and agreement*, not about gauge
+  invariance: a `certified` P3 cell whose B3 arm is power-unverified is still **not** a positive result, and a
+  non-rejection is still uninformative. Certification says the number is a property of the function rather than of
+  the parameterisation; it says nothing about whether the number is large.
+
+**Expectation, stated before the orbit runs.** The residual-stream cloud is invariant under every element of this
+group *by construction* (the backend re-bases nothing in the residual stream), so `eigen_gap`, `n_small`, `np_H1`,
+`dbar` and `g_resid_cos` should sit at the fp32 floor; the EAP graph quantities and B2's MLP/head-coordinate audits
+are the genuinely non-trivial tests, because head and MLP permutations and the per-head `GL` maps act on exactly
+those objects. A CV above `1e-3` there would be a real finding — the instrument would be measuring the
+parameterisation — and is reported as `failed (artifact)`, not repaired.
+
+**First orbit measurement (2026-09-14, `pythia-70m`, `step0` and `step143000`, `--n-gauge 3`,
+`OMP_NUM_THREADS=4 nice -n 15`; `hpcc/results/o31_ko2smoke/O31_pythia-70m_ko2.json`).** Measured fp32 floor:
+`5.9e-06` (step0) and `1.6e-05` (step143000) relative. Everything the amendment expected to sit at the floor does:
+`g_mlp_cos_aligned` 1e-08, `g_heads_cos_aligned` 3e-08, `g_resid_cos` 3e-08, `g_mlp_norm` 2e-07, `dbar` 9e-07,
+`eigen_gap` 2e-06, `n_small` 0, `np_H1` 9e-05, `biastop_stat` 4e-05, `node_roles` identical — so **P3 certifies**,
+including the two coordinate audits §4 said were not computable.
+
+**The EAP legibility instrument (P7-d) does not.** At `step143000`: `Q` CV **0.572**, `treewidth_ub` **0.192**,
+`sparsity` **0.061**, `community_sizes` not identical — all far above `ART_CV = 1e-3`, so **P7 is
+`failed (artifact)`** under the frozen rule. It is left that way; the rule is not moved. Attribution (a separate
+diagnostic, 3 samples per subgroup at `step143000`): every subgroup moves it — `perm` Q CV 0.103, `rot` 0.329,
+`scale` 0.278 — and the symmetrised EAP score matrix carries only **91 distinct edge magnitudes among 990 node
+pairs**, because `mejiro_ardan.eap_graph` writes one scalar per (source node, target *layer*) pair, so every target
+in a layer receives the same score. `threshold_density` at 5 % therefore has to break very large ties, and any
+relabelling — or fp32 roundoff differing by 1e-6 between two exactly-equivalent parameterisations — reshuffles which
+tied edges survive. The EAP scores are invariant *analytically* (head contributions `z W_O^T` are unchanged by the
+V/O basis change; q, k, v are unchanged by the LayerNorm rescales; the gradients are taken at the residual stream);
+what fails is the **density-thresholded graph statistic built on top of a tied score matrix**. This is a finding
+about the V7 instrument, whose numbers are already in the PAUSE_4 pipeline, and it is reported as one — not
+repaired here, and not used to change any threshold in this SPEC.
+
+**Smoke wall time**: 225.6 s in the runner (262 s total) for 3 revisions with K-O-2 at `--n-gauge 3`, against 37.9 s
+for the same 3 revisions with `--n-gauge 0` — i.e. **~5 s per gauge sample** on `pythia-70m`. Cluster projection is
+in `hpcc/RUNBOOK.md` §4.

@@ -39,9 +39,12 @@ from whiteboxtopo import graphs                             # noqa: E402
 from whiteboxtopo.legibility.graph import symmetrise, threshold_density   # noqa: E402
 from whiteboxtopo import topology as T                      # noqa: E402
 from whiteboxtopo.topology.scaling import standardized_cloud, normalized_persistence   # noqa: E402
-from whiteboxtopo.spectral import eigenflow                 # noqa: E402
+from whiteboxtopo.spectral import eigenflow, laplacian, smallest_eigs                  # noqa: E402
 from whiteboxtopo.core.persistence import compute_diagrams  # noqa: E402
 from whiteboxtopo.open import Scorecard, CellResult         # noqa: E402
+from whiteboxtopo import symmetry as S                      # noqa: E402  AMENDMENT #O3-1: the gpt-neox backend
+from whiteboxtopo.symmetry import neox as NEOX              # noqa: E402
+from whiteboxtopo.symmetry.group import inverse_on_units    # noqa: E402
 
 # ---- frozen constants (SPEC_O3.md; changes go to AMENDMENTS.md with a reason, never here) --------------------------
 REVISIONS = V7.REVISIONS            # 154: step0, step{1,2,...,512}, step1000..step143000 by 1000
@@ -62,6 +65,17 @@ N_BIAS_FALLBACK = 200               # n per group when B5 has no verified requir
 B2_KILL_SPLITS = 20                 # random halvings for the B2 kill test
 DELTA_LOG = 0.5                     # onset agreement tolerance on the log10(1+step) axis (a factor of ~3.2 in steps)
 SMOKE_REVISIONS = ["step0", "step1000", "step143000"]
+# ---- K-O-2, AMENDMENT #O3-1 (whiteboxtopo.symmetry.neox now exists) ------------------------------------------------
+N_GAUGE = 20                        # gauge samples per orbit revision on the cluster (--n-gauge; 0 = skip)
+ORBIT_EVERY = 10                    # orbit revisions: every 10th of the 154, plus the final (pre-stated, cost bound)
+ART_CV = 1e-3                       # SPEC_O K-O-2: CV > this downgrades the cell to "failed (artifact)"
+GAUGE_KIND, GAUGE_ORTHOGONAL = "combined", False     # the full group: perms + GL(d_head) V/O + RoPE phases/scale + LN
+# scalars K-O-2 certifies. Anything not in this list is evidence, not a certification criterion.
+KO2_P7 = ["eigen_gap", "n_small", "np_H1", "Q", "treewidth_ub", "sparsity", "community_sizes", "zigzag_qualifying"]
+KO2_P3 = ["dbar", "biastop_stat", "cos_mf_disjoint_halves", "cos_random_split_absmean", "g_resid_cos",
+          "g_mlp_norm", "g_mlp_cos_aligned", "g_heads_cos_aligned"]
+KO2_EVIDENCE_ONLY = {"g_heads_per_head_norm": "only an O(d_head) invariant, not a GL invariant (B AMENDMENTS #4); "
+                                              "reported, never a certification criterion under orthogonal=False"}
 
 TRACES = ["eigen_gap", "n_small", "np_H1", "np_velocity", "Q_excess", "cos_to_final", "dbar", "biastop_stat",
           "zigzag_births"]
@@ -71,21 +85,22 @@ NOT_REACHED = {
     "P0": ("the legibility numbers (Q, treewidth, sparsity) are computed here as the P7-d instrument, but the P0 gate "
            "verdict needs the V-block phase diagram and V8 found no calibrated structure->tractability map "
            "(legibility.profile.V8_CALIBRATION_ATTEMPT); issuing a verdict from the provisional rule would overclaim"),
-    "P1": "no certified extraction at T3 (no gpt-neox gauge backend; FINAL_SPEC §8.2 puts the O3.1 row at P7/P3 only)",
-    "P2": "path products need the gauge backend; O2.1 Satono Crown owns P2 at T2",
+    "P1": "FINAL_SPEC §8.2 puts the O3.1 row at P7/P3 only; the gpt-neox gauge backend now exists (AMENDMENT #O3-1) but no extraction/dictionary pass is budgeted in this row",
+    "P2": "O2.1 Satono Crown owns P2 at T2; no path-product pass is budgeted in this row",
     "P4": "O1.4 Fine Motion (T1); the frontier P4 is K8 / gamma_cov (O4.1)",
     "P5": "O1.4 Fine Motion (T1)",
     "P6": "M-block memorization_signal per family; not this row",
 }
-GAUGE_PROV = ("gauge fixing (SPEC_O3 §2, NOT a certification): the residual-stream cloud is invariant by construction "
-              "under the head/MLP-unit permutations and within-head rotations of G (they do not touch the residual "
-              "stream); every residual coordinate is then divided by its own std over the probe at that revision "
+GAUGE_PROV = ("gauge fixing (SPEC_O3 §2): the residual-stream cloud is invariant by construction under the head/"
+              "MLP-unit permutations and within-head basis changes of G (they do not touch the residual stream); "
+              "every residual coordinate is then divided by its own std over the probe at that revision "
               "(topology.scaling.standardized_cloud, the E2/Z5 repair), projected on the top-20 PCs of the FINAL "
               "revision's standardised cloud (frozen once), and centred + scaled to unit median pairwise distance per "
-              "revision (Z AMENDMENTS #2). K-O-2 CANNOT be run: whiteboxtopo.symmetry has no GPTNeoXForCausalLM "
-              "backend (fused query_key_value, LayerNorm, partial rotary, parallel residual — the llama backend does "
-              "not cover it), so no quantity here is re-computed on a 300-sample gauge orbit and no cell may be "
-              "'certified'.")
+              "revision (Z AMENDMENTS #2). K-O-2 IS run (AMENDMENT #O3-1): whiteboxtopo.symmetry.neox supplies the "
+              "GPTNeoXForCausalLM backend, so every certified scalar is recomputed on a gauge orbit "
+              "(kind='combined', orthogonal=False: head perms, per-head GL(d_head) V/O, RoPE-plane phase+scale, GL on "
+              "the non-rotary Q/K tail, MLP perms, LN gain/bias rescales, final LN) at a pre-stated subset of "
+              "revisions; CV >= 1e-3 on any certified scalar downgrades the cell to 'failed (artifact)'.")
 
 
 # ============================================================================================ small frozen utilities
@@ -327,6 +342,176 @@ def bias_row(model, tok, mid, dev, male, female, g_final, n_bias, biastop_nperm,
                 n_female=len(F)), g
 
 
+# ================================================================== K-O-2: the gauge orbit (AMENDMENT #O3-1)
+@torch.no_grad()
+def pooled_neox(model, tok, sents, mid, dev, bs=32):
+    """Mean-pooled (residual after layer `mid`, post-GELU MLP hidden of `mid`, per-head outputs z of `mid`) —
+    the three coordinate systems B2 audits, for GPT-NeoX. Mirrors winning_ticket.pooled (GPT-2)."""
+    blk = NEOX._blocks(model)[mid]
+    cap = {}
+    h1 = blk.mlp.act.register_forward_hook(lambda m, i, o: cap.__setitem__("mlp", o.detach()))
+    h2 = blk.attention.dense.register_forward_pre_hook(lambda m, i: cap.__setitem__("z", i[0].detach()))
+    R, M, Z = [], [], []
+    try:
+        for i in range(0, len(sents), bs):
+            enc = tok(sents[i:i + bs], return_tensors="pt", padding=True, truncation=True, max_length=40).to(dev)
+            out = model(**enc, output_hidden_states=True)
+            mk = enc["attention_mask"].unsqueeze(-1).float()
+            def mp(x):
+                return ((x.float() * mk).sum(1) / mk.sum(1)).cpu().numpy()
+            R.append(mp(out.hidden_states[mid + 1])); M.append(mp(cap["mlp"])); Z.append(mp(cap["z"]))
+    finally:
+        h1.remove(); h2.remove()
+    c = NEOX._cfg(model)
+    return np.concatenate(R), np.concatenate(M), np.concatenate(Z).reshape(-1, c["H"], c["dh"])
+
+
+def single_spectrum(Z):
+    """(spectral gap, n_small) of ONE gauge-fixed cloud — the per-checkpoint quantities eigenflow reports."""
+    L, _ = laplacian(np.asarray(Z, float), k=min(KNN_K, len(Z) - 1))
+    lam, _ = smallest_eigs(L, min(N_EIGS, L.shape[0])); lam = np.sort(lam)
+    return float(lam[1] - lam[0]) if len(lam) >= 2 else 0.0, int((lam < SMALL_THR).sum())
+
+
+def align_mlp(g, mid, v):
+    """Undo a renaming on an MLP-hidden-coordinate vector: un-permute back to base unit order. No scalings exist
+    on this axis (GELU is not homogeneous, so the backend never samples them)."""
+    return inverse_on_units(g, ("mlp", mid), np.asarray(v, float), axis=0)
+
+
+def align_heads(g, mid, V):
+    """Undo a renaming on a per-head-output array (H, d_head). `neox.apply` rotates each head at its ORIGINAL index
+    and THEN permutes heads (B AMENDMENTS #4's ordering trap), so un-permute FIRST, then left-multiply by B_i^{-1}
+    at the base index i (z_j^new = B_{p[j]} z_{p[j]}^base)."""
+    V = inverse_on_units(g, ("head", mid), np.asarray(V, float), axis=0)
+    Bs = g.rots.get(("vo", mid))
+    if Bs is not None:
+        V = np.stack([np.linalg.solve(np.asarray(Bs[i], float), V[i]) for i in range(len(V))])
+    return V
+
+
+def orbit_measure(model, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, biastop_nperm):
+    """Every K-O-2 quantity, computed on whatever model is handed in (base or renamed). One forward pass family."""
+    A = resid_cloud(model, Tt, mid, idx)
+    Z = z_normalise((standardized_cloud(A, how="std") - mu) @ P20)
+    gap, nsm = single_spectrum(Z)
+    npz = normalized_persistence(A, maxdim=1, how="std")
+    layers = list(range(mid - 2, mid + 3))
+    E, nodes = V7.eap_graph(model, Tt, layers, dev)
+    Agr = threshold_density(symmetrise(E), DENS_PRIMARY)
+    Q, memb = graphs.modularity(Agr)
+    R, Mh, Hd = pooled_neox(model, tok, male + female, mid, dev)
+    nM = len(male)
+    g_res = B.unit(R[:nM].mean(0) - R[nM:].mean(0))
+    g_mlp = Mh[:nM].mean(0) - Mh[nM:].mean(0)
+    g_hd = Hd[:nM].mean(0) - Hd[nM:].mean(0)
+    allX = np.vstack([R[:nM], R[nM:]]); sd = float(allX.std(0).mean())
+    dbar = float(np.linalg.norm(R[:nM].mean(0) - R[nM:].mean(0)) / max(sd, 1e-12))
+    half = min(nM, len(R) - nM) // 2
+    pm = np.random.default_rng(0).permutation(nM); pf = np.random.default_rng(1).permutation(len(R) - nM)
+    ga = B.unit(R[:nM][pm[:half]].mean(0) - R[nM:][pf[:half]].mean(0))
+    gb = B.unit(R[:nM][pm[half:2 * half]].mean(0) - R[nM:][pf[half:2 * half]].mean(0))
+    rnd = []
+    for s in range(B2_KILL_SPLITS):
+        r = np.random.default_rng(1000 + s).permutation(len(allX)); q = len(allX) // 4
+        rnd.append(float(B.unit(allX[r[:q]].mean(0) - allX[r[q:2 * q]].mean(0)) @
+                         B.unit(allX[r[2 * q:3 * q]].mean(0) - allX[r[3 * q:4 * q]].mean(0))))
+    mu_b = allX.mean(0); P20b = np.linalg.svd(allX - mu_b, full_matrices=False)[2][:20].T
+    B._B3.update(M=R[:nM], F=R[nM:], mu=mu_b, P20=P20b, g=g_res, sd=sd)
+    n = int(min(n_bias, nM, len(R) - nM))
+    A_ = R[:nM][np.random.default_rng(7).choice(nM, n, replace=False)]
+    B_ = R[nM:][np.random.default_rng(8).choice(len(R) - nM, n, replace=False)]
+    return dict(cloud=Z.astype(np.float32), eigen_gap=gap, n_small=nsm,
+                np_H1=float(npz["total_persistence_H1"]), Q=float(Q), treewidth_ub=int(graphs.treewidth_ub(Agr)),
+                sparsity=float(graphs.sparsity(symmetrise(E))),
+                community_sizes=sorted(np.bincount(np.asarray(memb)).tolist(), reverse=True),
+                node_roles=sorted([n_[1] for n_ in nodes]),
+                dbar=dbar, biastop_stat=float(B._biastop(A_, B_)),
+                cos_mf_disjoint_halves=float(ga @ gb), cos_random_split_absmean=float(np.mean(np.abs(rnd))),
+                g_resid=g_res, g_mlp=g_mlp, g_heads=g_hd,
+                g_heads_per_head_norm=np.linalg.norm(g_hd, axis=1))
+
+
+def ko2_status(produced, ver, artifacts):
+    """Cell status under SPEC_O K-O-2 (AMENDMENT #O3-1): certified iff the instruments produced values AND the gauge
+    orbit was run AND no certified scalar moved by CV >= ART_CV; 'failed' (artifact) if one did; 'partial' if the
+    orbit was not run (gauge-fixed but not gauge-certified)."""
+    if not produced:
+        return "not_reached"
+    if not ver.get("ran"):
+        return "partial"
+    return "failed" if artifacts else "certified"
+
+
+def cv_of(vals):
+    v = np.asarray(vals, float)
+    if v.ndim > 1:
+        return float(np.max(v.std(0) / (np.abs(v).mean(0) + 1e-12)))
+    return float(v.std() / (abs(v.mean()) + 1e-12))
+
+
+def ko2(model, model_id, rev, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, biastop_nperm, n_gauge,
+        seed=0, verbose=True):
+    """SPEC_O K-O-2 on one revision: recompute every certified scalar on `n_gauge` random elements of G (the full
+    combined group, orthogonal=False) and report the CV. `whiteboxtopo.symmetry.neox` supplies the backend."""
+    t0 = time.time()
+    base = orbit_measure(model, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, biastop_nperm)
+    rng = np.random.default_rng(seed)
+    per = {k: [base[k]] for k in ("eigen_gap", "n_small", "np_H1", "Q", "treewidth_ub", "sparsity", "dbar",
+                                  "biastop_stat", "cos_mf_disjoint_halves", "cos_random_split_absmean")}
+    per["g_heads_per_head_norm"] = [base["g_heads_per_head_norm"]]
+    sets = dict(community_sizes=[base["community_sizes"]], node_roles=[base["node_roles"]])
+    cosines = dict(g_resid_cos=[1.0], g_mlp_cos_aligned=[1.0], g_heads_cos_aligned=[1.0],
+                   g_mlp_norm=[float(np.linalg.norm(base["g_mlp"]))])
+    clouds, devs = [base["cloud"]], []
+    for j in range(n_gauge):
+        g = NEOX.sample(model, rng, kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL)
+        gm = S.apply(model, g)
+        try:
+            tk = Tt[:1, :32].detach().cpu().numpy()
+            y0 = NEOX.forward(model, tk); y1 = NEOX.forward(gm, tk)
+            devs.append(float(np.max(np.abs(y1 - y0)) / max(float(np.abs(y0).mean()), 1e-12)))
+            m = orbit_measure(gm, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, biastop_nperm)
+            for k in per:
+                per[k].append(m[k])
+            for k in sets:
+                sets[k].append(m[k])
+            cosines["g_resid_cos"].append(float(m["g_resid"] @ base["g_resid"]))
+            am = align_mlp(g, mid, m["g_mlp"]); ah = align_heads(g, mid, m["g_heads"])
+            cosines["g_mlp_cos_aligned"].append(float(B.unit(am) @ B.unit(base["g_mlp"])))
+            cosines["g_heads_cos_aligned"].append(float(B.unit(ah.ravel()) @ B.unit(base["g_heads"].ravel())))
+            cosines["g_mlp_norm"].append(float(np.linalg.norm(m["g_mlp"])))
+            clouds.append(m["cloud"])
+        finally:
+            del gm
+            if dev.startswith("cuda"):
+                torch.cuda.empty_cache()
+    cvs = {k: cv_of(v) for k, v in per.items()}
+    cvs.update({k: cv_of(v) for k, v in cosines.items()})
+    for k, v in sets.items():
+        cvs[k] = 0.0 if all(x == v[0] for x in v) else float("inf")
+    out = dict(revision=rev, n_gauge=int(n_gauge), kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL,
+               cv=cvs, values={k: (np.asarray(v).tolist() if k != "g_heads_per_head_norm" else None)
+                               for k, v in per.items()},
+               cosines={k: v for k, v in cosines.items()},
+               sets_identical={k: bool(all(x == v[0] for x in v)) for k, v in sets.items()},
+               output_deviation_rel=dict(max=float(np.max(devs)) if devs else None,
+                                         mean=float(np.mean(devs)) if devs else None,
+                                         note="max |logits_g - logits| / mean|logits| on 32 probe tokens; this IS the "
+                                              "fp32 floor and is the tolerance below which two quantities are "
+                                              "'identical'"),
+               evidence_only=KO2_EVIDENCE_ONLY, art_cv=ART_CV, wall_s=round(time.time() - t0, 1))
+    if verbose:
+        print(f"    K-O-2 {rev}: n_gauge {n_gauge} fp32 floor {out['output_deviation_rel']['max']:.2e} "
+              f"maxCV {max(cvs.values()):.2e} [{out['wall_s']}s]", flush=True)
+    return out, np.stack(clouds)
+
+
+def orbit_indices(n, every=ORBIT_EVERY):
+    """Pre-stated K-O-2 revision subset: every `every`-th revision plus the final one."""
+    return sorted(set(list(range(0, n, every)) + [n - 1]))
+
+
 # =========================================================================================== basis + model handling
 def load_model(model_id, rev, dev):
     from transformers import AutoModelForCausalLM
@@ -399,14 +584,19 @@ def run_model(a, model_id, revs):
     Tt = torch.tensor(toks, device=a.device)
     mid, idx, mu, P20, g_final = bas["mid"], bas["idx"], bas["mu"], bas["P20"], bas["g_final"]
 
+    ko2_p = os.path.join(out, f"O31_{tag}_ko2.json")
+    orb_p = os.path.join(out, f"orbit_{tag}.npz")
     rows = pd.read_csv(traj_p).to_dict("records") if (a.resume and os.path.exists(traj_p)) else []
     legs = pd.read_csv(leg_p).to_dict("records") if (a.resume and os.path.exists(leg_p)) else []
     clouds = dict(np.load(cl_p)) if (a.resume and os.path.exists(cl_p)) else {}
+    ko2s = json.load(open(ko2_p)) if (a.resume and os.path.exists(ko2_p)) else {}
+    orbs = dict(np.load(orb_p)) if (a.resume and os.path.exists(orb_p)) else {}
     done = {r["revision"] for r in rows} & set(clouds)
     n_bias = a.bias_n if a.bias_n else b5_requirement(model_id)
+    orbit = {revs[i] for i in orbit_indices(len(revs), a.orbit_every)} if a.n_gauge > 0 else set()
 
     for k, rev in enumerate(revs):
-        if rev in done:
+        if rev in done and (rev not in orbit or rev in ko2s):
             continue
         t0 = time.time()
         try:
@@ -414,6 +604,16 @@ def run_model(a, model_id, revs):
         except Exception as e:
             print(f"skip {rev}: {type(e).__name__}: {e}", flush=True); continue
         try:
+            if rev in orbit and rev not in ko2s:
+                try:            # a K-O-2 failure must never cost the trajectory row (negatives are deliverables)
+                    ko2s[rev], orbs[rev] = ko2(model, model_id, rev, Tt, mid, idx, mu, P20, tok, male, female,
+                                               a.device, n_bias, a.biastop_nperm, a.n_gauge, verbose=not a.quiet)
+                    json.dump(ko2s, open(ko2_p, "w"), indent=1, default=str)
+                    np.savez_compressed(orb_p, **orbs)
+                except Exception as e:
+                    print(f"K-O-2 FAIL {rev}: {type(e).__name__}: {e}\n{traceback.format_exc()[-600:]}", flush=True)
+            if rev in done:
+                continue
             A = resid_cloud(model, Tt, mid, idx)
             Y = (standardized_cloud(A, how="std") - mu) @ P20
             Z = z_normalise(Y)
@@ -505,6 +705,8 @@ def finalise(a, model_id, traj_p, cl_p):
 
     # ---- P7-a zigzag ---------------------------------------------------------------------------------------
     try:
+        if len(clouds) < 2:
+            raise ValueError(f"zigzag needs >= 2 checkpoint clouds, have {len(clouds)}")
         zz = zigzag_summary(clouds, steps, seed=0, verbose=not a.quiet)
         zz["null_order_permutation"] = zigzag_order_null(clouds, zz["ck_sel"], zz["scale"], zz["n_sub"], a.zz_null)
         df["zigzag_births"] = np.asarray(zz["births_full"], float)[:len(df)]
@@ -545,6 +747,49 @@ def finalise(a, model_id, traj_p, cl_p):
                  onsets_step={k: det[k]["onset_step"] for k in names})
     ev["p7_agreement"] = agree
 
+    # ---- K-O-2: the gauge orbit (AMENDMENT #O3-1) -----------------------------------------------------------
+    ko2_p = os.path.join(a.out, f"O31_{tag}_ko2.json"); orb_p = os.path.join(a.out, f"orbit_{tag}.npz")
+    ver = dict(ran=False, reason="no K-O-2 pass on disk (--n-gauge 0, or the orbit revisions were not reached)")
+    if os.path.exists(ko2_p):
+        ko2s = json.load(open(ko2_p))
+        orbit_revs = [r for r in df.revision if r in ko2s]
+        if orbit_revs:
+            cvmax = {}
+            for r in orbit_revs:
+                for k, v in ko2s[r]["cv"].items():
+                    cvmax[k] = max(cvmax.get(k, 0.0), float(v))
+            floors = [ko2s[r]["output_deviation_rel"]["max"] for r in orbit_revs
+                      if ko2s[r]["output_deviation_rel"]["max"] is not None]
+            # zigzag interval count on the orbit: one zigzag per gauge sample over the orbit revisions
+            zq = None
+            if os.path.exists(orb_p) and len(orbit_revs) >= 2:
+                try:
+                    ob = np.load(orb_p); st = df.set_index("revision").step.to_dict()
+                    ordr = sorted(orbit_revs, key=lambda r: st[r])
+                    ng = min(ob[r].shape[0] for r in ordr)
+                    counts = []
+                    for j in range(ng):
+                        zs = zigzag_summary([ob[r][j].astype(np.float64) for r in ordr],
+                                            [st[r] for r in ordr], seed=0, verbose=False)
+                        counts.append(len(zs["qualifying"]))
+                    zq = dict(counts=counts, cv=cv_of(counts) if np.mean(counts) else 0.0, n_gauge=int(ng))
+                    cvmax["zigzag_qualifying"] = zq["cv"]
+                except Exception as e:
+                    zq = dict(error=f"{type(e).__name__}: {e}")
+            bad7 = {k: cvmax[k] for k in KO2_P7 if k in cvmax and not (cvmax[k] < ART_CV)}
+            bad3 = {k: cvmax[k] for k in KO2_P3 if k in cvmax and not (cvmax[k] < ART_CV)}
+            ver = dict(ran=True, n_gauge=int(ko2s[orbit_revs[0]]["n_gauge"]), revisions=orbit_revs,
+                       kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL, art_cv=ART_CV,
+                       fp32_floor_rel_max=(max(floors) if floors else None),
+                       cv_max_over_revisions=cvmax, zigzag_orbit=zq,
+                       artifacts_P7=bad7, artifacts_P3=bad3, evidence_only=KO2_EVIDENCE_ONLY,
+                       backend="whiteboxtopo.symmetry.neox",
+                       rule=(f"SPEC_O K-O-2: every certified scalar recomputed on {ko2s[orbit_revs[0]]['n_gauge']} "
+                             f"random elements of G at every {a.orbit_every}-th revision plus the final; CV < "
+                             f"{ART_CV} (or an identical set) -> certifiable, else 'failed (artifact)'. The fp32 "
+                             f"output-deviation floor is the tolerance for 'identical'."))
+    ev["k_o_2"] = ver
+
     # ---- the cells -----------------------------------------------------------------------------------------
     n_instr = len(P7_INSTRUMENTS)
     p7_val = dict(n_instruments=n_instr, n_detecting=len(names), detecting=names,
@@ -553,12 +798,15 @@ def finalise(a, model_id, traj_p, cl_p):
                   change_points={k: {kk: cps[v].get(kk) for kk in ("stat", "p", "onset_index", "onset_frac",
                                                                    "onset_step", "detected")}
                                  for k, v in P7_INSTRUMENTS.items() if isinstance(cps.get(v), dict)})
-    p7_status = "partial" if any(isinstance(cps.get(v), dict) and "stat" in cps[v] for v in P7_INSTRUMENTS.values()) \
-        else "not_reached"
+    p7_val["k_o_2"] = dict(ran=ver["ran"], artifacts=ver.get("artifacts_P7"),
+                           cv_max={k: ver.get("cv_max_over_revisions", {}).get(k) for k in KO2_P7},
+                           fp32_floor_rel_max=ver.get("fp32_floor_rel_max"))
+    p7_produced = any(isinstance(cps.get(v), dict) and "stat" in cps[v] for v in P7_INSTRUMENTS.values())
+    p7_status = ko2_status(p7_produced, ver, ver.get("artifacts_P7"))
     p7_crit = (f"FINAL_SPEC §6.8 T3 = REPORTED, not pass/fail. Pre-registered positive (SPEC_O3 §6): >= 3 of the 4 "
                f"instruments detect a change point at p < {ALPHA} in BOTH models, their onsets concur within "
                f"{DELTA_LOG} decades of training step inside each model, and each concurring instrument agrees across "
-               f"the two models. Status can never exceed 'partial': K-O-2 is unrunnable (no gpt-neox gauge backend).")
+               f"the two models. Status is the K-O-2 verdict (AMENDMENT #O3-1): certified iff the gauge orbit was run and no certified scalar moved by CV >= 1e-3; 'failed (artifact)' if one did; 'partial' if the orbit was not run.")
 
     bt_verified = b5_power_verified(model_id)
     kill_rows = df[df.b2_kill_pass == 1] if "b2_kill_pass" in df.columns else df.iloc[0:0]
@@ -567,8 +815,8 @@ def finalise(a, model_id, traj_p, cl_p):
                 revisions_passing_kill=[str(r) for r in kill_rows.revision] if len(kill_rows) else [],
                 cos_mf_disjoint_halves_max=float(df.cos_mf_disjoint_halves.max()) if len(df) else None,
                 cos_random_split_absmean_min=float(df.cos_random_split_absmean.min()) if len(df) else None,
-                mlp_hidden_and_per_head_coordinates="NOT computed: symmetry.apply has no gpt-neox backend "
-                                                    "(SPEC_O3 §4) — these are the objects B2's audit actually stresses",
+                mlp_hidden_and_per_head_coordinates="computed and audited on the gauge orbit (AMENDMENT #O3-1); see "
+                                                    "coordinate_audits below",
                 change_point_cos_to_final=cps.get("cos_to_final"), change_point_dbar=cps.get("dbar")),
         b3=dict(n_per_group=int(df.biastop_n.iloc[-1]) if len(df) else None, power_verified=bool(bt_verified),
                 n_source=("B5 hpcc/results/b5/B5_requirements.json" if bt_verified else
@@ -580,12 +828,23 @@ def finalise(a, model_id, traj_p, cl_p):
                 change_point_biastop=cps.get("biastop_stat")),
         onset_answer_step=(cps.get("cos_to_final", {}).get("onset_step") if cps.get("cos_to_final", {}).get("detected")
                            else cps.get("dbar", {}).get("onset_step") if cps.get("dbar", {}).get("detected") else None))
-    p3_status = "partial" if "b2_kill_pass" in df.columns and len(df) else "not_reached"
+    p3_val["b2"]["coordinate_audits"] = dict(
+        ran=ver["ran"], note=("g in MLP-hidden and per-head output coordinates — the objects B2's audit actually "
+                              "stresses — are now computable and ARE audited (AMENDMENT #O3-1); aligned with the "
+                              "exact aligner, un-permute FIRST then un-rotate at the base head index "
+                              "(B AMENDMENTS #4's ordering trap)"),
+        cv_max={k: ver.get("cv_max_over_revisions", {}).get(k)
+                for k in ("g_resid_cos", "g_mlp_norm", "g_mlp_cos_aligned", "g_heads_cos_aligned")},
+        evidence_only_g_heads_per_head_norm=ver.get("cv_max_over_revisions", {}).get("g_heads_per_head_norm"))
+    p3_val["k_o_2"] = dict(ran=ver["ran"], artifacts=ver.get("artifacts_P3"),
+                           cv_max={k: ver.get("cv_max_over_revisions", {}).get(k) for k in KO2_P3},
+                           fp32_floor_rel_max=ver.get("fp32_floor_rel_max"))
+    p3_status = ko2_status("b2_kill_pass" in df.columns and len(df) > 0, ver, ver.get("artifacts_P3"))
     p3_crit = (f"FINAL_SPEC §6.4 T3 = REPORTED. Pre-registered positive (SPEC_O3 §6), all three: (i) the B2 kill test "
                f"passes at >= 1 revision (disjoint-halves cosine > 0.9 AND random-split |cosine| < 0.5); (ii) a bias "
                f"trace (cos_to_final or dbar) has a change point at p < {ALPHA}, whose onset_step is the answer to "
                f"'when bias entered'; (iii) BiasTop rejects at alpha = {ALPHA} at an n whose power >= 0.8 is "
-               f"established by B5. Without (iii) the cell is 'partial' whatever (i) and (ii) do.")
+               f"established by B5. Without (iii) the reported RESULT is not a positive whatever (i) and (ii) do — independently of the cell's K-O-2 status, which is about gauge invariance, not about power.")
 
     card = Scorecard(model=model_id, behavior=dict(name="next-token prediction on the frozen OpenWebText-10k probe",
                                                    kind="lm", probe_tokens=int(a.n_seq * (SEQ_TOK - 1)),
@@ -605,15 +864,21 @@ def finalise(a, model_id, traj_p, cl_p):
                                   null=ev["nulls"], provenance=GAUGE_PROV)
     card.gamma_cov = None
     card.reconstruction = None
-    card.errors = [f"K-O-2 not runnable: no GPTNeoXForCausalLM backend in whiteboxtopo.symmetry — no cell in this row "
-                   f"can be 'certified' (SPEC_O3 §2)"]
+    card.errors = ([] if ver.get("ran") else
+                   [f"K-O-2 not run in this pass ({ver.get('reason', '')}) — P3/P7 stay 'partial' "
+                    f"(gauge-fixed, not gauge-certified). Re-run with --n-gauge > 0 (AMENDMENT #O3-1)."])
+    for p, bad in (("P7", ver.get("artifacts_P7")), ("P3", ver.get("artifacts_P3"))):
+        if bad:
+            card.errors.append(f"{p} failed K-O-2 (artifact): {bad} — CV >= {ART_CV} on the gauge orbit")
     card.provenance = dict(spec="experiments/O_opener/SPEC_O3.md", runner="experiments/O_opener/hishi_akebono.py",
                            trajectory=os.path.relpath(traj_p, ROOT), clouds=os.path.relpath(cl_p, ROOT),
                            evidence=os.path.relpath(os.path.join(a.out, f"O31_{tag}_cells.json"), ROOT))
     card.config = dict(n_seq=a.n_seq, n_cloud=a.n_cloud, n_pc=N_PC, knn_k=KNN_K, n_eigs=N_EIGS,
                        small_threshold=SMALL_THR, simplex_budget=SIMPLEX_BUDGET, zz_max_ck=ZZ_MAX_CK,
                        alpha=ALPHA, n_perm=a.n_perm, label_null=a.label_null, biastop_nperm=a.biastop_nperm,
-                       densities=list(DENS), density_primary=DENS_PRIMARY, delta_log_step=DELTA_LOG)
+                       densities=list(DENS), density_primary=DENS_PRIMARY, delta_log_step=DELTA_LOG,
+                       n_gauge=a.n_gauge, orbit_every=a.orbit_every, art_cv=ART_CV, gauge_kind=GAUGE_KIND,
+                       gauge_orthogonal=GAUGE_ORTHOGONAL, gauge_backend="whiteboxtopo.symmetry.neox")
 
     df.to_csv(traj_p, index=False)
     json.dump(ev, open(os.path.join(a.out, f"O31_{tag}_cells.json"), "w"), indent=1, default=str)
@@ -715,6 +980,9 @@ def main():
     ap.add_argument("--bias-n", type=int, default=0, help="n per group for BiasTop (0 = B5's requirement, else the "
                                                           "fallback)")
     ap.add_argument("--bias-n-sent", type=int, default=0, help="cap the probe corpus per group (smoke only)")
+    ap.add_argument("--n-gauge", type=int, default=N_GAUGE, help="K-O-2 gauge samples per orbit revision (0 = skip; "
+                                                                "the cells then stay 'partial')")
+    ap.add_argument("--orbit-every", type=int, default=ORBIT_EVERY, help="K-O-2 orbit = every Nth revision + the final")
     ap.add_argument("--zz-null", type=int, default=0, help="zigzag cloud-order permutations (0 = not run)")
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args()
@@ -726,6 +994,7 @@ def main():
         a.n_seq = min(a.n_seq, 4); a.n_cloud = min(a.n_cloud, 120); a.n_perm = min(a.n_perm, 200)
         a.label_null = min(a.label_null, 50); a.biastop_nperm = min(a.biastop_nperm, 25)
         a.bias_n = a.bias_n or 40; a.bias_n_sent = a.bias_n_sent or 120
+        a.n_gauge = min(a.n_gauge, 3); a.orbit_every = min(a.orbit_every, 2)
     if a.aggregate:
         aggregate(a); return
     revs = a.revisions or REVISIONS

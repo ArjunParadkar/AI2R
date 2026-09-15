@@ -24,8 +24,11 @@ echo "== v1_large has no smoke flag: submit the array and check hpcc/logs/wb-v1_
 # o31 (O3.1 Hishi Akebono) is one unit of work in the same sense as the others: the smallest public Pythia, three
 # revisions (step0 / step1000 / step143000), a 4-sequence probe and reduced nulls, run end to end through the same code
 # path the cluster job uses — basis freeze, per-revision trajectory row, cloud cache, zigzag, change points, Scorecard.
-# PASS means hpcc/results/smoke/o31/scorecard_pythia-70m.json exists with P3 and P7 `partial` and the other six cells
-# `not_reached` with reasons. At three revisions the change-point rule is undefined (T < 6) and every trace reports
+# PASS means hpcc/results/smoke/o31/scorecard_pythia-70m.json exists with P3 and P7 carrying values and the other six
+# cells `not_reached` with reasons.  --smoke also caps K-O-2 to --n-gauge 3 / --orbit-every 2, so the gauge-orbit
+# path runs too (SPEC_O3 AMENDMENT #O3-1): on the laptop this made the smoke 226 s instead of 38 s, and it returned
+# P3 `certified`, P7 `failed (artifact)` (the EAP legibility statistic moves under the gauge).  A `failed` cell here
+# is a RESULT, not a smoke failure — only a traceback is. At three revisions the change-point rule is undefined (T < 6) and every trace reports
 # p = 1.0 with that note: that is the correct smoke output, not a failure. It does NOT exercise --purge (which the real
 # job needs for its 246 GB / 616 GB of checkpoints) — purge on one revision by hand once, before submitting:
 #   python -c "import sys;sys.path.insert(0,'experiments/O_opener');from hishi_akebono import purge_revision;print(purge_revision('EleutherAI/pythia-70m','step1000'))"
