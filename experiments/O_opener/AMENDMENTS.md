@@ -111,7 +111,7 @@ Sensitivity to δ ∈ {0.02, 0.05, 0.10} is reported as evidence in `results/ope
 remains δ = 0.05. Both ground truths (accuracy-level, possibly undefined; logit-level, possibly undefined if σ never separates) are
 carried in `results/nishino_flower_detections.csv`, and every detector is scored against each of them separately.
 
-**#6 (2026-09-14 17:20, renumbered 17:55 — the number #4 went to the recipe-2 amendment; O1.4 Fine Motion — P4/P5 realisation on T1; written BEFORE any P4/P5 number was computed).**
+**#O1.4 (2026-09-14 17:20; tagged #O1.4 rather than a number at 19:40 — several Block-O agents appended to this file concurrently and the numeric sequence collided (three #6, two #5, two #7); this entry and its addenda are referenced by the tag #O1.4 throughout `fine_motion.py`. O1.4 Fine Motion — P4/P5 realisation on T1; written BEFORE any P4/P5 number was computed).**
 SPEC_O §O1.4 and FINAL_SPEC §6.5/§6.6 fix the criteria (AUC > 0.9 beating softmax confidence, random-projection null;
 Spearman(ρ, failure radius) < −0.5 at p < 0.01 beating the softmax-margin baseline, shuffled-ρ null). None of those
 thresholds is touched. What follows is the realisation of the *inputs and the estimators* on the T1 specimens, where the
@@ -193,7 +193,7 @@ numbers, not from any O1.3 output. Both logit-level ground truths appear in
 `results/nishino_flower_detections.csv` as `gt_logit_frac` (clean-referenced, the #5 rule) and `gt_logit_within_frac`
 (architecture-matched), and every detector is scored against both plus the accuracy-level ground truth.
 
-**#6 addenda (2026-09-14 18:30, written AFTER the first two O1.4 smoke cells — recorded here because they are post-hoc,
+**#O1.4 addenda (2026-09-14 18:30, written AFTER the first two O1.4 smoke cells — recorded here because they are post-hoc,
 and neither changes a pre-registered criterion.)**
 (i) *Extended radius grid, diagnostic only.* On `grok_clean_s0_v1` the pre-registered P5 grid r ∈ {0.01,…,0.5} has **no
 dynamic range**: 255 of 256 held-out inputs never flip at any radius in the grid (frac_inf = 0.996), so the measured
@@ -208,12 +208,12 @@ nearest-reference distance of every query group, the cloud's own nearest-neighbo
 distance, and (grok) the same AUC with the in-distribution cloud enlarged from the 1200-point subsample to every training
 pair. These separate "the diffusion embedding lost the signal" from "the activation cloud never placed these inputs
 further out than held-out inputs" and from "the 1200-point subsample was too sparse". Diagnostics only; no criterion.
-(iii) *Ring quantities are computed in the standardised coordinates.* Under the ring gauge group (#6g) the hidden state
+(iii) *Ring quantities are computed in the standardised coordinates.* Under the ring gauge group (#O1.4g) the hidden state
 transforms as h ↦ hS, so an isotropic Gaussian kick in raw coordinates and the raw one-step Jacobian norm
 ‖(1−α)I + α(W⊙mask)‖₂ are **not** gauge-invariant (J ↦ S⁻¹JS). Both are therefore taken in the per-unit-standardised
 coordinates: the P4 off-attractor kick has per-unit scale s_j (the in-distribution per-unit std), the P5 perturbation
 directions are scaled per unit by the same s_j, and the P5 Jacobian norm is ‖diag(s) J diag(1/s)‖₂. In those coordinates
-the gauge acts by permutation conjugation only and all three are invariant. Recorded as part of the gauge fixing of #6h.
+the gauge acts by permutation conjugation only and all three are invariant. Recorded as part of the gauge fixing of #O1.4h.
 
 **#6 (2026-09-14 17:20, O1.3 zigzag budget — operational, measured on this box; no threshold on any result is touched).**
 Z AMENDMENTS #2/#3 fixed the zigzag construction (per-checkpoint normalisation, β1-maximising Rips scale, the *same* probe
@@ -363,3 +363,69 @@ planted_s0 (rebuild r 0.971 / 0.978 / 0.986 — identical to the complete invent
 (largest diagonal amplitude 0.018 < floor 0.059), which is exactly the K-O-3 behaviour a certification rule must have. The τ-inventory is
 still reported in every P1 cell as the pre-registered estimator. R1's band (logit r > 0.98) is unchanged: it is bounded above by √κ_f, so the
 clean specimens (κ_f 0.947 / 0.959) can fail it while planted_s0 (0.974) passes — that is the finding, not a threshold to move.
+
+**#O1.4 addenda (v) (2026-09-14 20:05, O1.4 P5 v2 — a second, better-powered failure-radius measurement. PRE-REGISTERED:
+written before any bisection radius was computed; the v1 cells stay exactly as they are and keep their verdicts.)**
+*Why.* The pre-registered P5 radius grid r ∈ {0.01, 0.02, 0.05, 0.1, 0.2, 0.5} (relative to σ_emb, #O1.4d) has no dynamic
+range on a grokked T1 specimen: σ_emb = 0.0063 after training with weight decay 1.0, and at every grid radius the argmax
+of a converged model never flips under an isotropic embedding-space perturbation. Measured: `grok_clean_s0` and
+`grok_planted_s0` frac_inf = 1.000 (nothing flips at any grid radius, Spearman undefined); `grok_clean_s0_v1` frac_inf =
+0.996; `ring_s0` frac_inf = 0.824. The diagnostic extended grid (#O1.4i) showed the flips are concentrated at r = 1–2,
+i.e. the measurement is a near step function *above* the grid, so the v1 ranking test has essentially no power on
+grokked specimens. The failure is in the measurement's resolution, not in a threshold.
+
+*P5 v2 (this is the pre-registration).* The per-input failure radius is measured by **12-step bisection on [0, 4 σ_emb]**
+(ring: 4 × the in-distribution per-unit state std), under the **same majority-of-8 rule** as v1: the same eight Gaussian
+directions per input, drawn once and normalised (the nested design of #O1.4d), and the input counts as failed at radius r
+iff ≥ 5 of the 8 flip the argmax (ring: iff the angular error exceeds 0.3 rad vs the unperturbed model after 50 further
+steps). Procedure: evaluate the majority rule at r = 4; inputs that do not fail there get radius ∞; the rest are bisected
+12 times, the returned radius being the upper end of the final bracket (resolution 4/2¹² ≈ 1e-3 σ_emb).
+**Nothing else changes.** Spearman(ρ, radius) < −0.5 at p < 0.01, more negative than the softmax-margin baseline's (ring:
+the readout-norm baseline's, #O1.4e), shuffled-ρ permutation p < 0.01 over 1000 shuffles, and K-O-2 CV < 1e-3 on the
+same gauge orbit (ρ is identical for v1 and v2, so the orbit is shared and the two Spearman CVs are reported separately).
+ρ itself is unchanged: ‖Q_h‖ × Lip (#O1.4c).
+
+*Failure boundary, stated in advance.* Bisection assumes the majority-of-8 flip indicator is monotone in r. It is not
+guaranteed to be — a direction that flips the argmax at one radius can land back on the original class at a larger one —
+so the returned value is "a radius at which the majority rule fires, with no smaller firing radius found along the
+bisection path", not a certified minimum. It is a strictly finer instrument than the six-point grid and is reported as
+such; it is not a proof of the minimal adversarial radius (the P4 `adversarial` condition is the directed analogue).
+
+*Reporting.* v2 appears as additional rows in `results/fine_motion_P5.csv` with the predictor names suffixed `_v2`
+(`rho_v2`, `baseline_margin_or_readout_v2`, `rho_shuffled_null_v2`) beside the untouched v1 rows, and under
+`evidence.v2` in each JSON with its own verdict. The *cell* status remains the v1, pre-registered verdict; the v2 verdict
+is carried alongside and labelled, never substituted for it.
+
+*Gauge orbit size.* O1.4 ships at **n_gauge = 20** (#O1.4f), stated in every cell's provenance and in every CSV row.
+
+**#10 (2026-09-14 19:20, O1.3 — probe detector v3, the v2 rule restricted to f > 0. Written BEFORE any v3 number was
+computed; v1 and v2 keep their rows and their status exactly as recorded.)**
+*Why.* The v2 differential d(t) = probe_acc_leak(t) − probe_acc_marginal(t) is dominated on every planted specimen by a
+single value at the **untrained checkpoint f = 0**: +0.695 on `grok_planted_s0`, +0.578 on `grok_planted_s1`, +0.691 on the
+inert control, against ≈ 0.00 for the whole first tenth of training and a plateau of +0.09…+0.11 afterwards. The cause is
+mechanical and has nothing to do with bias: at initialisation the leaked shortcut token sits verbatim in the residual
+stream while the marginalised cloud averages it away, so a linear probe reads it before a single gradient step. That one
+point sets the max-t split and drags the half-rise onset estimate to f = 0.00–0.01 on both planted specimens, which is why
+v2 fires (p = 0.0005 and p = 0.044) and still misses both ground truths. "When did the bias enter *during training*" is a
+question about f > 0 by definition; f = 0 is the network before training exists.
+
+*Definition (probe detector v3).* Exactly the v2 rule — same ridge probe (λ = 1.0, same gauge-fixed 20-dim clouds, same
+fixed 4-fold split), same differential statistic, same max-t two-sample change point, same half-rise onset estimate, same
+α = 0.05 — applied to the sub-trace of checkpoints with **f > 0**. The 2000-draw label-permutation null is recomputed on
+the f > 0 trace (the same permutations, the same slicing applied to each null trace, so the null matches the statistic it
+scores). No other change: no baseline guard, no threshold on the level of d, no smoothing, no other checkpoint dropped.
+
+*Nulls for false detections.* Unchanged and identical in kind to v2: the three clean specimens, where the marginal and
+leak clouds are the same object so d ≡ 0 and the null is vacuous (counted and labelled as such), and the inert-shortcut
+control `grok_planted30_s0_v1`, which is the non-vacuous null — a planted token that was never adopted (AMENDMENTS #4)
+must still produce no v3 detection. Scoring is unchanged: against the **entry** of each ground-truth window (AMENDMENTS
+#7), pass iff |onset − entry| ≤ 0.05 of training, reported separately for the accuracy-level ground truth (SPEC_O) and
+each logit-level one, wherever each is defined.
+_#6 addendum (O1.2, 19:20, after the first ring_s0 run under #6, before any other ring specimen)._ At t = 10 the leaky dynamics
+(α = 0.1) still carry 0.9¹⁰ ≈ 35 % of the cue vector linearly, so the sampled loop can be the *image of the cue circle* rather than an
+attractor — exposed by ring P7 reporting the H1 bar at training fraction 0.00 (the untrained network). The attractor sample is moved to
+t = 60 (0.9⁶⁰ ≈ 0.2 % of the cue left; whatever loop remains is maintained by the recurrence). Cloud sizes reduced for cost (P1 600 cues,
+nulls and 5 gauge samples at 600; P7 every 4th checkpoint at 400 cues) — ring_s0 under #6 at 1 000 cues took 42 min for P1 alone.
+R2 is gated on the *certified object* (one dominant H1 bar with ratio > 5, nulls clear, gauge CV < 1e-3), not on P1's agreement threshold
+r > 0.99, which is P1's answer-quality criterion and is reported in R2's provenance; ring_s0 under #6 at t = 10: ratio ∞, r 0.986 (fails
+0.99 by 0.004), circular correlation 0.976 — recorded.
