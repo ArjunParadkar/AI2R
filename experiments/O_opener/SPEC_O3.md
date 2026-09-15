@@ -301,3 +301,95 @@ repaired here, and not used to change any threshold in this SPEC.
 **Smoke wall time**: 225.6 s in the runner (262 s total) for 3 revisions with K-O-2 at `--n-gauge 3`, against 37.9 s
 for the same 3 revisions with `--n-gauge 0` — i.e. **~5 s per gauge sample** on `pythia-70m`. Cluster projection is
 in `hpcc/RUNBOOK.md` §4.
+
+## #O3-2 (2026-09-14, instrument defect + repair — the EAP attribution graph)
+
+Pre-registered before the repaired instrument was measured under the orbit. **The pre-registered instrument is not
+withdrawn**: `mejiro_ardan.eap_graph` stays exactly as it is, the P7-d trace and the P7 cell status keep being driven
+by it, and the repair is reported alongside. Swapping which scalars gate a cell after seeing a K-O-2 result would be
+a threshold change, and this amendment does not make one.
+
+**The defect.** `hpcc/mejiro_ardan.eap_graph` reads **one gradient per layer** (`grads[lv]` = ∂L/∂x_in of the whole
+block) and writes the same scalar to every consumer node in that layer:
+
+```python
+g = grads[lv].float(); s = float((delta * g).sum())
+for nv in [f"h{h}" for h in range(H)] + ["mlp"]: E[idx[(lu, nu)], idx[(lv, nv)]] = s
+```
+
+So a source node's score is constant across all H + 1 targets of a layer. Measured on `pythia-70m` at `step143000`
+with the 4-sequence probe: the symmetrised matrix carries **91 distinct edge magnitudes among 990 node pairs**.
+`threshold_density` at 5 % must therefore break very large ties, and the resulting Leiden partition is discontinuous
+in the scores — a perturbation at the fp32 floor (1e-6 relative) reorders tied edges and changes the graph. Under
+exact renamings sampled with `whiteboxtopo.symmetry.neox` this showed up as **Q CV 0.572, treewidth 0.192, sparsity
+0.061, community sizes not identical** on the GPU orbit (#O3-1), against `ART_CV = 1e-3`. The EAP scores themselves
+are invariant *analytically* (head contributions `z W_O^T` are unchanged by the V/O basis change; q, k, v are
+unchanged by the LayerNorm rescales; the gradients are taken at the residual stream) — what is unstable is the
+density-thresholded graph statistic built on a tied matrix.
+
+**The repair: per-target-node EAP** (`mejiro_ardan.eap_graph_per_node`, `--per-node` on the V7 runner, default OFF).
+Every consumer node v reads its **own cloned copy of the layer input**, so ∂L/∂x_in(v) is head/MLP-specific:
+
+* a forward pre-hook on the block keeps the block input `x` in the autograd graph;
+* `query_key_value` is temporarily replaced by a wrapper that, for head h, computes that head's own 3·d_head rows from
+  `input_layernorm(x + eps_h)` with `eps_h` a zero leaf — the rows of `query_key_value` are head-major `[q_h|k_h|v_h]`,
+  so concatenating the per-head blocks reproduces the fused projection exactly, at the same matmul flops (the
+  LayerNorm is recomputed H times, which is negligible);
+* a pre-hook on `post_attention_layernorm` (whose single consumer is the MLP) replaces its input with `x + eps_mlp`;
+* `score(u→v) = Σ_t (mean_u − a_u(t)) · ∂lp/∂eps_v(t)` — the same formula, the same mean corruption, the same metric
+  (summed next-token log-probability), the same node set, the same edge-allowance rule (`lv > lu` only: Pythia's
+  parallel residual means the MLP does not read the attention output of its own layer), the same densities
+  (0.01/0.05/0.1), the same Leiden, min-fill treewidth bound, participation-ratio sparsity and 20-draw
+  degree-preserving rewiring null. **Only the gradient changes.**
+
+**Effect on the tie structure** (`pythia-70m`, `step143000`, 4-sequence probe, CPU): **91 → 811 distinct edge
+magnitudes among 990 pairs**; Q 0.243 → 0.277, treewidth bound 2 → 5, sparsity 0.672 → 0.823; the two score matrices
+correlate at r = 0.15 over the pre-registered instrument's non-zero entries, i.e. they are substantively different
+graphs, not a rescaling. Wall time 8.4 s vs 11.1 s — the repair is not slower (the per-head split replaces the full
+backward).
+
+**What O3.1 does with it.** `hishi_akebono.py` builds **both** graphs at every revision and runs **both** through the
+K-O-2 orbit. The trajectory CSV carries `Q/Q_null/Q_excess/treewidth_ub/sparsity` (pre-registered) and the `_pn`
+copies; `O31_<tag>_legibility.csv` carries a `graph` column with both variants at all three densities plus
+`n_distinct_edge_values`; the P7 cell carries `legibility_pre_registered` and `legibility_repaired` blocks, the
+latter explicitly labelled as *not* status-setting. `KO2_P7` (the gating list) is unchanged; `KO2_P7_REPAIRED` is
+reported separately with its own CVs and a `certifies` flag.
+
+**First measurement of the repair under the orbit** (`pythia-70m`, `step143000`, 3 samples, CPU, 4-sequence probe —
+the honest result, reported whichever way it came out): pre-registered **Q CV 4.9e-04**, treewidth 0, sparsity
+2.2e-04, community sizes identical; per-node **Q CV 1.8e-02**, treewidth 0, sparsity 6.4e-05, community sizes not
+identical. Two things follow and both are recorded rather than tuned away: (i) the pre-registered instrument's CV is
+*backend- and probe-dependent* — 0.572 on the GPU orbit with the same model and revision, 4.9e-04 on CPU — which is
+itself evidence that what is being measured at the threshold is arithmetic noise, not a property of the network;
+(ii) **the repair removes the tie degeneracy but does not by itself make the thresholded Leiden Q gauge-stable at
+1e-3.** Fixing the tie structure was necessary and is not sufficient; a graph statistic that certifies under G will
+need a threshold rule that is continuous in the scores (or a tie-free construction plus a stability margin), and that
+is a separate pre-registration, not a change to this one.
+
+**Second measurement — through the runner, both graphs, CPU (2026-09-14; `hpcc/results/o31_ko2smoke2/`).** Same model,
+same two revisions, same 3 gauge samples, `--device cpu`; measured fp32 floor 2.4e-05 relative. Gating (pre-registered)
+scalars: `Q` **1.4e-04**, `treewidth_ub` 0, `sparsity` 6.5e-05, `community_sizes` identical, `node_roles` identical →
+`artifacts_P7` empty → **P7 `certified` on this run**. Repaired scalars: `Q_pn` **2.1e-02**, `treewidth_ub_pn` 0,
+`sparsity_pn` 9.6e-05, `community_sizes_pn` **not identical** → `certifies: false`. P3 again all at the floor
+(`g_mlp_cos_aligned` 2.4e-08, `g_heads_cos_aligned` 2.5e-08, `dbar` 6.5e-07, `biastop_stat` 5.7e-05) → **P3
+`certified`**; `zigzag_qualifying` CV 0.
+
+**The result that matters, and it is not a good one.** The *same* pre-registered instrument on the *same* model and the
+*same* revisions gives **Q CV 0.572 on CUDA and 1.4e-04 on CPU** — the K-O-2 verdict for P7 flips with the arithmetic
+backend. So neither "P7 failed" (the CUDA run) nor "P7 certified" (this one) is a stable fact about Pythia: it is a fact
+about the reduction order of the matmuls underneath. That is recorded in every scorecard from now on
+(`k_o_2.device`, `k_o_2.torch_version`, `k_o_2.backend_dependence`), and the P7 legibility verdict must be read as
+backend-conditional. Every other P7 instrument (eigenflow gap, `n_small`, normalised persistence, the zigzag interval
+count) and every P3 quantity sit at the fp32 floor on **both** backends and are not affected.
+
+**And the repair does not cure it.** On CPU the *repaired* graph is the less stable of the two (`Q_pn` CV 2.1e-02,
+community sizes not identical, against 1.4e-04 and identical for the pre-registered one). The plausible mechanism, and
+it is consistent with both runs: with 91 distinct magnitudes the top-5 % edge set is a coarse, heavily-tied block whose
+membership is largely pinned by that block structure, so deterministic tie-breaking reproduces it; with 811 distinct
+magnitudes the 5 % cut line falls among *near*-ties, and an fp32 perturbation reorders them. The unstable component is
+**the density threshold plus Leiden**, on either matrix — removing the tie degeneracy was necessary (the construction
+really did conflate all targets in a layer) and is not sufficient. Neither number is tuned away and `ART_CV` is not
+moved: a graph statistic that certifies under G needs a threshold rule continuous in the scores, or a tie-free
+construction plus a stability margin, and that is a separate pre-registration. The one reassurance for the blocks that
+depend on this graph is that **`treewidth_ub` was CV 0 in every orbit, on both backends and both matrices** — and
+treewidth, not Q, is what O4.1's P0 verdict uses (#O4.1 (a)).

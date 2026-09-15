@@ -102,3 +102,40 @@ across the rows so far (median Qnull sd 0.002, max 0.010): the standard error wi
 below the drift signal. The 149 rows already written keep their 20-rewiring null (`n_null` column: blank = 20, 5 from here on);
 V2's final-checkpoint numbers (20 rewirings) are unchanged. Queue relaunched as `wb-gpu-queue` (MemoryMax 20 G) replacing the
 other session's `wb-gpu-queue-redo` wrapper; one in-flight checkpoint lost.
+
+**#15 (2026-09-14 23:30) V7 (Mejiro Ardan): `eap_graph` reads one gradient per LAYER, so every consumer node in a layer
+gets the same score — instrument defect, found by O3.1's K-O-2 gauge orbit; repair added behind `--per-node`, DEFAULT OFF.**
+`hpcc/mejiro_ardan.eap_graph` computes `g = grads[lv]` once per target layer and then writes the same scalar `s` to every
+node of that layer (`for nv in [f"h{h}" ...] + ["mlp"]: E[idx[(lu,nu)], idx[(lv,nv)]] = s`). The score matrix is therefore
+massively tied: on `pythia-70m` at `step143000` with the 4-sequence probe it carries **91 distinct edge magnitudes among 990
+node pairs**. `threshold_density` has to break those ties, and the resulting Leiden partition is discontinuous in the scores,
+so a perturbation at the fp32 floor (≈ 1e-6 relative) changes which edges survive. O3.1 measured this as a **K-O-2 failure**:
+under exact renamings from the new `whiteboxtopo.symmetry.neox` backend, on the GPU orbit, **Q CV 0.572, treewidth bound
+0.192, sparsity 0.061, community sizes not identical** (threshold 1e-3) — and, on a CPU orbit with the same model and
+revision, Q CV 4.9e-04. That backend-dependence is the point: at the threshold the statistic is reading arithmetic noise.
+The EAP *scores* are invariant analytically (head contributions `z W_O^T` are unchanged by the V/O basis change; q, k, v are
+unchanged by the LayerNorm rescales; gradients are taken at the residual stream); the *thresholded graph statistic* is not
+stable on a tied matrix.
+
+**Repair** (`eap_graph_per_node`, new, additive): every consumer node reads its own cloned copy of the layer input, so
+∂L/∂x_in(v) is head/MLP-specific. A pre-hook keeps the block input `x` in the autograd graph; `query_key_value` is
+temporarily wrapped so head h computes its own 3·d_head rows from `input_layernorm(x + eps_h)` with `eps_h` a zero leaf
+(the rows are head-major `[q_h|k_h|v_h]`, so concatenating the per-head blocks reproduces the fused projection exactly, at
+the same matmul flops); a pre-hook on `post_attention_layernorm` (single consumer: the MLP) replaces its input with
+`x + eps_mlp`. `score(u→v) = Σ_t (mean_u − a_u(t)) · ∂lp/∂eps_v(t)` — same formula, same mean corruption, same metric, same
+node set, same `lv > lu` edge rule, same densities, Leiden, treewidth bound, sparsity and 20-draw rewiring null. Only the
+gradient changes. Effect on the same probe: **91 → 811 distinct edge magnitudes**, Q 0.243 → 0.277, treewidth 2 → 5,
+sparsity 0.672 → 0.823, r = 0.15 between the two score matrices, and it is *faster* (8.4 s vs 11.1 s — the per-head split
+replaces the full backward).
+
+**Scope of this amendment.** `--per-node` is **OFF by default** and `hpcc/sbatch/v7_pythia_drift.sbatch` is unchanged, so the
+V7 rows stay the pre-registered instrument; a per-node run writes to `V7_<tag>_pernode.csv` and every row now carries a
+`per_node` column. O3.1 (`experiments/O_opener/hishi_akebono.py`, SPEC_O3 #O3-2) runs **both** at every revision with a K-O-2
+orbit each, and keeps its P7 status driven by the pre-registered one. **The already-published V7 numbers are not withdrawn,
+but they should be read with this defect stated**: V7's Q/treewidth/sparsity drift over the 154 Pythia checkpoints is
+computed on a 91-distinct-value matrix whose threshold tie-breaking is not numerically stable, and the repair does not by
+itself make the thresholded Leiden Q gauge-stable at 1e-3 either (per-node Q CV 1.8e-02 on the CPU orbit). A graph statistic
+that certifies under G needs a threshold rule continuous in the scores, or a tie-free construction plus a stability margin —
+a separate pre-registration, not a change to V7's.
+
+**#15 addendum (2026-09-14 23:55).** The repair was then measured under the orbit and **does not by itself make the statistic gauge-stable**: on CPU, `pythia-70m` step0 + step143000, 3 samples, fp32 floor 2.4e-05 — pre-registered `Q` CV 1.4e-04 (community sizes identical), per-node `Q_pn` CV **2.1e-02** (community sizes NOT identical); on CUDA the pre-registered `Q` CV was **0.572** on the same model and revisions. The K-O-2 verdict therefore **flips with the arithmetic backend**, which is the real finding: the density threshold + Leiden pipeline is discontinuous in the scores, so at the 5 % cut line it reads reduction order, not the network. With 91 distinct magnitudes the cut falls between large tied blocks (reproducible under deterministic tie-breaking); with 811 it falls among near-ties (not reproducible). `treewidth_ub` was CV 0 in every orbit on both backends and both matrices. Consequence for V7's published rows: the Q and community-count drift curves over the 154 Pythia checkpoints should be read as backend-conditional and are not certified under G; the treewidth and sparsity curves are unaffected at this resolution. Fixing this needs a threshold rule continuous in the scores (or a tie-free construction plus a stability margin) — a separate pre-registration, not a change to V7's.

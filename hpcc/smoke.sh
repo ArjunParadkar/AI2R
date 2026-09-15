@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."; L=hpcc/logs/smoke.log; : > $L
 run() { local name=$1; shift; echo "== $name: $*" | tee -a $L; if timeout 3600 "$@" >> hpcc/logs/smoke_$name.log 2>&1; then echo "PASS $name" | tee -a $L; else echo "FAIL $name (see hpcc/logs/smoke_$name.log)" | tee -a $L; fi; }
 run m4   python hpcc/admire_vega.py --out hpcc/results/smoke/m4                                           # cached CNN + LM batteries, no ViT
 run b5   python hpcc/mejiro_ryan.py --models gpt2 --ns 50 --deltas 0 0.5 --trials 2 --out hpcc/results/smoke/b5
-run v7   python hpcc/mejiro_ardan.py --model EleutherAI/pythia-410m --revisions step0 step143000 --n-seq 4 --out hpcc/results/smoke/v7
+run v7   python hpcc/mejiro_ardan.py --model EleutherAI/pythia-410m --revisions step0 step143000 --n-seq 4 --out hpcc/results/smoke/v7   # add --per-node for the V AMENDMENTS #15 repair (default OFF: the V7 rows are pre-registered with the per-layer gradient)
 run o31  python experiments/O_opener/hishi_akebono.py --model EleutherAI/pythia-70m --smoke --out hpcc/results/smoke/o31   # 3 revisions, tiny probe: must write scorecard_pythia-70m.json
 run f2   bash -c 'cd experiments/F_gauge && python rice_shower.py --gpu --min-hidden 30 --max-hidden 30 --procs 2 --shard 0 449 --out ../../hpcc/results/smoke/f2'
 run k7   python hpcc/mayano_top_gun.py --model google/gemma-2-2b --widths 16k --n-seq 8 --out hpcc/results/smoke/k7
@@ -15,7 +15,7 @@ run k8   python hpcc/biwa_hayahide.py --model google/gemma-2-9b --layers 20 --n-
 run c4   python hpcc/sirius_symboli.py --model google/gemma-2-9b --n-seq 8 --out hpcc/results/smoke/c4
 run l7   python hpcc/kawakami_princess.py --model google/gemma-2-9b --n 2 --out hpcc/results/smoke/l7
 run o2   python experiments/O_opener/satono_crown.py --smoke --n-gauge 2          # O2.1/O2.2 GPT-2 open(): 3 tasks end to end, tiny splits
-run o41p0  python experiments/O_opener/bamboo_memory.py --p0 --model google/gemma-2-9b --layers 20 21 --n-tokens 250 --out hpcc/results/smoke/o41
+run o41p0  python experiments/O_opener/bamboo_memory.py --p0 --model google/gemma-2-9b --layers 20 21 --n-tokens 250 --out hpcc/results/smoke/o41   # builds BOTH the pre-registered and the per-target-node EAP graph (#O4.1 (d)) + a 3-sample K-O-2 orbit on a 4-sequence probe; --no-per-node / --n-gauge 0 skip them, the P0 verdict is unaffected either way
 # the assemble smoke deliberately runs LAST and points at hpcc/results/smoke: it then reads the f12/c4/k8/l7/o41 dirs the
 # lines above just wrote, which is the real read path.  It must PASS even when some of them failed — every missing input is
 # a not_reached cell, never an exception; check hpcc/results/smoke/o41/scorecard_gemma_2_9b.md for the reasons.

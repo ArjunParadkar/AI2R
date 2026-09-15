@@ -109,13 +109,28 @@ class Arch:
         else:
             raise NotImplementedError(f"bamboo_memory --p0 does not know how to name the blocks of {name}; "
                                       "supported: Llama/Gemma-2/Qwen2/Mistral (model.model.layers) and GPT-2 (model.transformer.h)")
-        self.name = name
+        self.name = name; self.cfg = cfg
         self.H = int(cfg.num_attention_heads); self.d = int(cfg.hidden_size); self.n_layers = int(cfg.num_hidden_layers)
         self.dh = int(getattr(cfg, "head_dim", None) or (self.d // self.H))
         if self.conv1d: self.dh = self.d // self.H
         self.norm_split = self.family == "gemma2"
 
     def o_proj(self, l): return self.blocks[l].attn.c_proj if self.conv1d else self.blocks[l].self_attn.o_proj
+
+    def attn_prenorm(self, l):
+        """The norm whose single consumer is the attention QKV projection (the per-head read point of #O4.1 (d))."""
+        b = self.blocks[l]; return b.ln_1 if self.conv1d else b.input_layernorm
+
+    def qkv_mods(self, l):
+        """[(attribute name, module, mode)] for the QKV projection(s). ``mode`` says how a head's parameters sit in the
+        weight: ``cols3`` = one Conv1D (d, 3d) with [q|k|v] blocks (GPT-2), ``rows`` = separate Linears (Llama family)."""
+        b = self.blocks[l]
+        if self.conv1d: return [("c_attn", b.attn.c_attn, "cols3")]
+        a = b.self_attn
+        return [("q_proj", a.q_proj, "rows"), ("k_proj", a.k_proj, "rows_kv"), ("v_proj", a.v_proj, "rows_kv")]
+
+    def n_kv(self):
+        return int(getattr(self.cfg, "num_key_value_heads", None) or self.H)
 
     def mlp(self, l): return self.blocks[l].mlp
 
@@ -134,6 +149,110 @@ class Arch:
     def describe(self):
         return dict(arch=self.name, family=self.family, n_layers=self.n_layers, H=self.H, d_head=self.dh,
                     d_model=self.d, gemma_sublayer_norm_split=self.norm_split)
+
+
+_PERHEAD = {}
+
+
+def _per_head_proj_cls():
+    """``torch`` is imported lazily everywhere in this file (the --assemble path must run without it), so the
+    per-head projection module is defined on first use."""
+    import torch
+    if "cls" in _PERHEAD: return _PERHEAD["cls"]
+
+    class _PerHeadProj(torch.nn.Module):
+        """Recompute one QKV projection head by head, each head reading its OWN clone of the block input through the
+        block's attention pre-norm, so dL/dx_in is head-specific (O4.1 AMENDMENTS #O4.1 (d); the same repair as
+        V AMENDMENTS #15 / SPEC_O3 #O3-2). Numerically identical to the original projection — the per-head parameter
+        blocks are disjoint and are written back into their own slots — at the same matmul flops (the pre-norm is
+        recomputed H times, which is negligible).
+
+        ``mode``: ``cols3`` a single Conv1D of shape (d, 3d) whose columns are [q|k|v] with head h at ``j*d + h*dh``
+        (GPT-2); ``rows`` a Linear whose rows ``h*dh:(h+1)*dh`` are head h (Llama q_proj); ``rows_kv`` the same but
+        indexed by the KV head ``h // group`` — under GQA the K/V rows are SHARED by a query group, so they are computed
+        from the clone of the group's FIRST query head (the representative), which is recorded in the cell provenance."""
+
+        def __init__(self, mod, ln, arch, l, caps, mode):
+            super().__init__(); self.mod, self.ln, self.arch, self.l, self.caps, self.mode = mod, ln, arch, l, caps, mode
+
+        def _eps(self, x, h):
+            """head h's zero leaf on the block input, created once per forward and shared by q/k/v."""
+            key = (self.l, f"h{h}")
+            e = self.caps.get(key)
+            if e is None or e.shape != x.shape or not e.requires_grad:
+                e = torch.zeros_like(x, requires_grad=True); self.caps[key] = e
+            return e
+
+        def forward(self, x_ln):                      # x_ln = prenorm(x); ignored, recomputed per head
+            A = self.arch; H, dh, d = A.H, A.dh, A.d
+            x = self.caps[(self.l, "_x")]
+            W = self.mod.weight; b = getattr(self.mod, "bias", None)
+            if self.mode == "cols3":                                          # Conv1D: out = x @ W + b, W (d, 3d)
+                idx = torch.as_tensor(np.concatenate([[j * d + h * dh + i for j in range(3) for i in range(dh)]
+                                                      for h in range(H)]), device=W.device)
+                parts = []
+                for h in range(H):
+                    cols = idx[h * 3 * dh:(h + 1) * 3 * dh]
+                    y = self.ln(x + self._eps(x, h)) @ W.index_select(1, cols)
+                    if b is not None: y = y + b.index_select(0, cols)
+                    parts.append(y)
+                cat = torch.cat(parts, -1)
+                return torch.zeros(x.shape[:-1] + (3 * d,), dtype=cat.dtype, device=cat.device).index_copy(-1, idx, cat)
+            n_kv = A.n_kv(); group = max(H // max(n_kv, 1), 1)
+            n_out = H if self.mode == "rows" else n_kv
+            rows_per = W.shape[0] // max(n_out, 1)
+            parts = []
+            for j in range(n_out):
+                h = j if self.mode == "rows" else j * group                   # GQA: the group's FIRST query head
+                r = slice(j * rows_per, (j + 1) * rows_per)
+                y = torch.nn.functional.linear(self.ln(x + self._eps(x, h)), W[r], None if b is None else b[r])
+                parts.append(y)
+            return torch.cat(parts, -1)
+
+    _PERHEAD["cls"] = _PerHeadProj
+    return _PerHeadProj
+
+
+def _install_per_node(model, arch, layers, caps):
+    """#O4.1 (d): per-TARGET-NODE read points. Every head gets its own clone of the block input (through a temporary
+    wrapper on the QKV projection) and the MLP gets its own clone at its pre-norm, so dL/dx_in(v) is node-specific
+    instead of one gradient per read point. Returns (handles, restore) — `restore` must be called in a finally."""
+    import torch
+    cls = _per_head_proj_cls(); hs = []; orig = []
+
+    def pre_keep_x(l):
+        def f(mod, inp): caps[(l, "_x")] = inp[0]          # kept in the graph; MUST return None
+        return f
+
+    def pre_mlp(l):
+        def f(mod, inp):
+            e = torch.zeros_like(inp[0], requires_grad=True); caps[(l, "mlp")] = e
+            return (inp[0] + e,) + tuple(inp[1:])          # a pre-hook's return REPLACES the inputs
+        return f
+
+    def pre_det(key):
+        def f(mod, inp): caps[key] = inp[0].detach()
+        return f
+
+    def post_det(key):
+        def f(mod, inp, out): caps[key] = (out[0] if isinstance(out, tuple) else out).detach()
+        return f
+
+    for l in layers:
+        hs.append(arch.blocks[l].register_forward_pre_hook(pre_keep_x(l)))
+        hs.append(arch.mlp_prenorm(l).register_forward_pre_hook(pre_mlp(l)))
+        hs.append(arch.o_proj(l).register_forward_pre_hook(pre_det((l, "z"))))
+        hs.append(arch.o_proj(l).register_forward_hook(post_det((l, "attn_out"))))
+        hs.append(arch.mlp(l).register_forward_hook(post_det((l, "mlp_out"))))
+        parent = arch.blocks[l].attn if arch.conv1d else arch.blocks[l].self_attn
+        for nm, mod, mode in arch.qkv_mods(l):
+            orig.append((parent, nm, mod))
+            setattr(parent, nm, cls(mod, arch.attn_prenorm(l), arch, l, caps, mode))
+
+    def restore():
+        for h_ in hs: h_.remove()
+        for parent, nm, mod in orig: setattr(parent, nm, mod)
+    return hs, restore
 
 
 def _install(model, arch, layers, caps):
@@ -186,16 +305,19 @@ def _iter_contribs(arch, caps, layers):
         yield (l, "mlp"), (mo * fm if fm is not None else mo)
 
 
-def eap_matrix(model, arch, T, layers, batch, out_npz, resume=False, verbose=True):
+def eap_matrix(model, arch, T, layers, batch, out_npz, resume=False, verbose=True, per_node=False):
     """Signed EAP score matrix E[u, v] = sum_t (mean_u - a_u(t)) . dL/dx_in(v)(t), L = summed next-token log-probability,
     mean corruption over the whole probe (V7 `mejiro_ardan.eap_graph`, adapted to sequential-residual blocks: two read
     points per layer).  Resumable per batch through ``out_npz``."""
     import torch
     nodes = [(l, f"h{h}") for l in layers for h in range(arch.H)] + [(l, "mlp") for l in layers]
     nidx = {n: i for i, n in enumerate(nodes)}
-    reads = [(l, "attn_in") for l in layers] + [(l, "mlp_in") for l in layers]
+    if per_node:                       # #O4.1 (d): one read point per TARGET NODE (the V AMENDMENTS #15 repair)
+        reads = list(nodes); read_of = {n: n for n in nodes}
+    else:                              # PRE-REGISTERED: two read points per layer (block input, pre-MLP-norm input)
+        reads = [(l, "attn_in") for l in layers] + [(l, "mlp_in") for l in layers]
+        read_of = {n: ((n[0], "mlp_in") if n[1] == "mlp" else (n[0], "attn_in")) for n in nodes}
     ridx = {r: i for i, r in enumerate(reads)}
-    read_of = {n: ((n[0], "mlp_in") if n[1] == "mlp" else (n[0], "attn_in")) for n in nodes}
     allow = np.zeros((len(nodes), len(nodes)), bool)
     for u in nodes:
         for v in nodes:
@@ -232,11 +354,16 @@ def eap_matrix(model, arch, T, layers, batch, out_npz, resume=False, verbose=Tru
     for bi in range(done, nb):
         t0 = time.time(); ids = T[bi * batch:(bi + 1) * batch]
         emb = emb_layer(ids).detach().requires_grad_(True)
-        caps = {}; hs = _install(model, arch, layers, caps)
-        logits = model(inputs_embeds=emb).logits[:, :-1].float()
-        lp = torch.log_softmax(logits, -1).gather(-1, ids[:, 1:, None]).squeeze(-1).sum()
-        grads = torch.autograd.grad(lp, [caps[r] for r in reads], retain_graph=True)
-        for h_ in hs: h_.remove()
+        caps = {}
+        if per_node: hs, restore = _install_per_node(model, arch, layers, caps)
+        else: hs = _install(model, arch, layers, caps); restore = lambda: [h_.remove() for h_ in hs]
+        try:
+            logits = model(inputs_embeds=emb).logits[:, :-1].float()
+            lp = torch.log_softmax(logits, -1).gather(-1, ids[:, 1:, None]).squeeze(-1).sum()
+            grads = torch.autograd.grad(lp, [caps[r] for r in reads], retain_graph=True, allow_unused=True)
+            grads = [g if g is not None else torch.zeros_like(emb[..., :1].expand(*emb.shape)) for g in grads]
+        finally:
+            restore()
         G = torch.stack([g.float() for g in grads])                                   # (R, B, T, d)
         del logits, lp, grads
         for u, c in _iter_contribs(arch, caps, layers):
@@ -246,7 +373,7 @@ def eap_matrix(model, arch, T, layers, batch, out_npz, resume=False, verbose=Tru
                 if allow[row, nidx[v]]: E[row, nidx[v]] += s[ridx[read_of[v]]]
         del G, emb, caps
         if torch.cuda.is_available(): torch.cuda.empty_cache()
-        np.savez(out_npz, E=E, means=state["means"], n_tok=state["n_tok"], done_batches=bi + 1,
+        np.savez(out_npz, E=E, means=state["means"], n_tok=state["n_tok"], done_batches=bi + 1, per_node=int(per_node),
                  node_names=np.array([f"{l}.{k}" for l, k in nodes]), layers=np.array(layers))
         if verbose: print(f"[p0] eap {bi + 1}/{nb} ({time.time() - t0:.1f}s)", flush=True)
     return E, [f"{l}.{k}" for l, k in nodes]
@@ -265,6 +392,76 @@ def p0_profiles(E, densities=DENSITIES, seed=0, n_null=20):
                               Q_null_rewired_mean=float(q0), Q_null_rewired_sd=float(sd), Q_excess=float(Q - q0),
                               n_communities=int(len(np.unique(memb))), treewidth_ub=int(graphs.treewidth_ub(A)),
                               sparsity_node_importance=float(node_sparsity(imp)), sparsity_edges=float(graphs.sparsity(A_full)))
+    return out
+
+
+def p0_gauge_orbit(model, arch, T, layers, a, E_pre, E_pn, names, n_gauge=None):
+    """A small K-O-2 orbit on BOTH graphs when `whiteboxtopo.symmetry` has a backend for this model (symmetry.llama
+    covers Llama/Gemma-2/Qwen2/Mistral; symmetry.gpt2 covers GPT-2; symmetry.neox covers Pythia). Reports the CV of Q,
+    the treewidth bound and sparsity at the pre-registered density. Absent backend -> a recorded reason, not an error."""
+    n_gauge = a.n_gauge if n_gauge is None else n_gauge
+    if n_gauge <= 0:
+        return dict(ran=False, reason="--n-gauge 0")
+    import torch
+    dt = next(model.parameters()).dtype
+    if dt not in (torch.float32, torch.float64):
+        return dict(ran=False, reason=f"model dtype is {dt}: whiteboxtopo.symmetry.{{gpt2,llama,neox}}.apply inverts the "
+                                      f"per-head basis change with torch.linalg.inv, which refuses low-precision dtypes, "
+                                      f"and a K-O-2 CV measured at the bf16 floor (~1e-2) could not resolve ART_CV = 1e-3 "
+                                      f"anyway. Re-run with --dtype float32 for the orbit; the P0 verdict is unaffected.")
+    # Cost bound (stated, not tuned): the orbit measures gauge SENSITIVITY, not the reported numbers, so it runs on a
+    # truncated probe -- the first `--gauge-seq` sequences. 0 = the full probe. Recorded in the result.
+    Tg = T if not a.gauge_seq else T[:max(1, min(int(a.gauge_seq), len(T)))]
+    from whiteboxtopo import symmetry as S, graphs
+    try:
+        be = S._backend(model)
+    except Exception as e:
+        return dict(ran=False, reason=f"no symmetry backend for {type(model).__name__}: {e}")
+
+    def prof(M):
+        A_full = graphs.symmetrise(M); A = graphs.threshold_density(A_full, PREREG_DENSITY)
+        Q, memb = graphs.modularity(A, seed=a.seed)
+        return dict(Q=float(Q), tw=float(graphs.treewidth_ub(A)), sp=float(graphs.sparsity(A_full)),
+                    cs=tuple(sorted(np.bincount(np.asarray(memb)).tolist(), reverse=True)))
+
+    base = {}
+    for lbl, pnflag in (("pre_registered", False), ("per_node", True)):
+        if os.path.exists(tmp0 := os.path.join(a.out, "_orbit_base.npz")): os.remove(tmp0)
+        M, _ = eap_matrix(model, Arch(model), Tg, layers, a.batch, tmp0, resume=False, verbose=False, per_node=pnflag)
+        base[lbl] = prof(M)
+    if os.path.exists(os.path.join(a.out, "_orbit_base.npz")): os.remove(os.path.join(a.out, "_orbit_base.npz"))
+    vals = {lbl: [base[lbl]] for lbl in base}
+    devs = []
+    rng = np.random.default_rng(0)
+    tmp = os.path.join(a.out, "_orbit_tmp.npz")
+    for j in range(n_gauge):
+        g = be.sample(model, rng, kind="combined", orthogonal=False)
+        gm = S.apply(model, g)
+        try:
+            with torch.no_grad():
+                y0 = model(T[:1, :32]).logits.float(); y1 = gm(T[:1, :32]).logits.float()
+            devs.append(float((y1 - y0).abs().max() / max(float(y0.abs().mean()), 1e-12)))
+            for lbl, pnflag in (("pre_registered", False), ("per_node", True)):
+                if os.path.exists(tmp): os.remove(tmp)
+                M, _ = eap_matrix(gm, Arch(gm), Tg, layers, a.batch, tmp, resume=False, verbose=False, per_node=pnflag)
+                vals[lbl].append(prof(M))
+        finally:
+            del gm
+            if torch.cuda.is_available(): torch.cuda.empty_cache()
+    if os.path.exists(tmp): os.remove(tmp)
+
+    def cv(v, k):
+        x = np.array([d[k] for d in v], float); return float(x.std() / (abs(x.mean()) + 1e-12))
+    out = dict(ran=True, n_gauge=int(n_gauge), backend=be.__name__, kind="combined", orthogonal=False,
+               art_cv=1e-3, fp32_floor_rel_max=(max(devs) if devs else None),
+               orbit_probe=dict(n_seq=int(len(Tg)), n_tokens=int(Tg.numel()),
+                                truncated=bool(a.gauge_seq and len(Tg) < len(T))),
+               note="SPEC_O K-O-2: CV < 1e-3 (or an identical set) is certifiable. The P0 verdict is the TREEWIDTH "
+                    "bound at the pre-registered density, so `tw` is the quantity that matters here; Q is reported.")
+    for lbl, v in vals.items():
+        out[lbl] = dict(Q_cv=cv(v, "Q"), treewidth_cv=cv(v, "tw"), sparsity_cv=cv(v, "sp"),
+                        community_sizes_identical=bool(all(d["cs"] == v[0]["cs"] for d in v)),
+                        Q=[d["Q"] for d in v], treewidth=[d["tw"] for d in v])
     return out
 
 
@@ -316,6 +513,28 @@ def run_p0(a):
     t0 = time.time()
     E, names = eap_matrix(model, arch, T, layers, a.batch, os.path.join(a.out, f"p0_{sl}_E.npz"), resume=a.resume)
     t_eap = time.time() - t0
+    # #O4.1 (d): the same graph with per-TARGET-NODE gradients (V AMENDMENTS #15 / SPEC_O3 #O3-2). Reported alongside;
+    # the P0 VERDICT stays on the pre-registered graph. A failure here is recorded, never fatal.
+    pn = dict(ran=False)
+    if not a.no_per_node:
+        t1 = time.time()
+        try:
+            Epn, _ = eap_matrix(model, arch, T, layers, a.batch, os.path.join(a.out, f"p0_{sl}_E_pernode.npz"),
+                                resume=a.resume, per_node=True)
+            pn = dict(ran=True, profiles=p0_profiles(Epn, seed=a.seed, n_null=a.n_null), wall_s=round(time.time() - t1, 1))
+            pn["verdict"] = verdict_from_tw(pn["profiles"][f"{PREREG_DENSITY}"]["treewidth_ub"])
+            for lbl, M in (("pre_registered", E), ("per_node", Epn)):
+                v = np.abs(np.asarray(M) + np.asarray(M).T)[np.triu_indices(len(names), 1)]
+                pn[f"n_distinct_edge_values_{lbl}"] = int(len(np.unique(v)))
+            try:        # the orbit is a separate failure domain: it must not cost the per-node graph
+                pn["gauge_orbit"] = p0_gauge_orbit(model, arch, T, layers, a, E, Epn, names)
+            except Exception as e2:
+                pn["gauge_orbit"] = dict(ran=False, reason=f"{type(e2).__name__}: {e2}",
+                                         traceback=traceback.format_exc()[-600:])
+                print(f"[p0] gauge orbit FAILED (recorded, not fatal): {pn['gauge_orbit']['reason']}", flush=True)
+        except Exception as e:
+            pn = dict(ran=False, error=f"{type(e).__name__}: {e}", traceback=traceback.format_exc()[-800:])
+            print(f"[p0] per-node graph FAILED (recorded, not fatal): {pn['error']}", flush=True)
     del model
     if torch.cuda.is_available(): torch.cuda.empty_cache()
     t0 = time.time(); prof = p0_profiles(E, seed=a.seed, n_null=a.n_null); t_graph = time.time() - t0
@@ -323,7 +542,7 @@ def run_p0(a):
     out = dict(job="O4.1 Bamboo Memory --p0", spec="experiments/O_opener/SPEC_O4.md (step 2 / P0)", model=a.model, slug=sl,
                **arch.describe(), layers=[int(l) for l in layers], nodes=names, n_nodes=len(names),
                n_tokens=n_tok, n_seq=int(T.shape[0]), seq_len=int(T.shape[1]), dtype=a.dtype, batch=a.batch,
-               prereg_density=PREREG_DENSITY, profiles=prof, verdict=verdict,
+               prereg_density=PREREG_DENSITY, profiles=prof, verdict=verdict, per_node=pn,
                criterion=(f"tractable iff treewidth_ub <= {TW_TRACTABLE} at density {PREREG_DENSITY}, marginal <= {TW_MARGINAL}, "
                           "else intractable (the FPT parameter, FINAL_SPEC 2.14; AMENDMENTS #5d of O1.2). Q is REPORTED against the "
                           "degree-preserving rewiring null and is not part of the verdict"),
@@ -555,8 +774,13 @@ def p0_cell(out_dir, model):
                            Q_null_rewired_mean=pr.get("Q_null_rewired_mean"), Q_excess=pr.get("Q_excess"),
                            sparsity=pr.get("sparsity_node_importance"), density=PREREG_DENSITY,
                            layers=j.get("layers"), n_nodes=j.get("n_nodes"), n_tokens=j.get("n_tokens")),
-                criterion=j.get("criterion", ""), provenance=j.get("provenance", "") + f"; source {os.path.relpath(p, ROOT)}",
-                profiles=j.get("profiles"), gemma_note=j.get("gemma_note"), wall_s=j.get("wall_s"))
+                criterion=j.get("criterion", ""),
+                provenance=(j.get("provenance", "") + f"; source {os.path.relpath(p, ROOT)}"
+                            + "; the PRE-REGISTERED graph (read points per layer) sets this verdict. The per-target-node "
+                              "EAP repair (#O4.1 (d) / V AMENDMENTS #15 / SPEC_O3 #O3-2) is computed alongside and "
+                              "reported in `per_node`, never used to set the verdict"),
+                profiles=j.get("profiles"), per_node=j.get("per_node"), gemma_note=j.get("gemma_note"),
+                wall_s=j.get("wall_s"))
 
 
 NOT_REACHED = {
@@ -657,6 +881,13 @@ def assemble(a):
 def main():
     ap = argparse.ArgumentParser(description="O4.1 Bamboo Memory — T4 frontier open() (SPEC_O4.md)")
     ap.add_argument("--p0", action="store_true", help="compute the P0 attribution-graph cell on the frontier model (GPU)")
+    ap.add_argument("--no-per-node", action="store_true", help="skip the per-target-node EAP graph (#O4.1 (d) repair); "
+                                                               "the pre-registered graph and the P0 verdict are unaffected")
+    ap.add_argument("--n-gauge", type=int, default=3, help="K-O-2 gauge samples for the P0 graphs (0 = skip); needs a "
+                                                           "whiteboxtopo.symmetry backend for the model")
+    ap.add_argument("--gauge-seq", type=int, default=4, help="sequences of the probe used for the K-O-2 orbit (0 = all). "
+                                                             "A cost bound: the orbit measures gauge sensitivity, not the "
+                                                             "reported numbers")
     ap.add_argument("--assemble", action="store_true", help="read the frontier jobs' outputs and write the scorecard (CPU)")
     ap.add_argument("--model", required=True)
     ap.add_argument("--layers", type=int, nargs="+", default=None,

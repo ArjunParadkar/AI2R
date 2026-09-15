@@ -74,11 +74,15 @@ GAUGE_KIND, GAUGE_ORTHOGONAL = "combined", False     # the full group: perms + G
 KO2_P7 = ["eigen_gap", "n_small", "np_H1", "Q", "treewidth_ub", "sparsity", "community_sizes", "zigzag_qualifying"]
 KO2_P3 = ["dbar", "biastop_stat", "cos_mf_disjoint_halves", "cos_random_split_absmean", "g_resid_cos",
           "g_mlp_norm", "g_mlp_cos_aligned", "g_heads_cos_aligned"]
+KO2_P7_REPAIRED = ["Q_pn", "treewidth_ub_pn", "sparsity_pn", "community_sizes_pn"]   # #O3-2: the repaired instrument
 KO2_EVIDENCE_ONLY = {"g_heads_per_head_norm": "only an O(d_head) invariant, not a GL invariant (B AMENDMENTS #4); "
-                                              "reported, never a certification criterion under orthogonal=False"}
+                                              "reported, never a certification criterion under orthogonal=False",
+                     "*_pn": "the per-target-node EAP repair (SPEC_O3 #O3-2 / V AMENDMENTS #V7-1). Reported with its "
+                             "own orbit CVs, but the P7 status is still driven by the PRE-REGISTERED instrument: "
+                             "swapping which scalars gate a cell after seeing the result would be a threshold change"}
 
-TRACES = ["eigen_gap", "n_small", "np_H1", "np_velocity", "Q_excess", "cos_to_final", "dbar", "biastop_stat",
-          "zigzag_births"]
+TRACES = ["eigen_gap", "n_small", "np_H1", "np_velocity", "Q_excess", "Q_excess_pn", "cos_to_final", "dbar",
+          "biastop_stat", "zigzag_births"]
 P7_INSTRUMENTS = {"P7-a zigzag": "zigzag_births", "P7-b eigenflow": "eigen_gap",
                   "P7-c np_velocity": "np_velocity", "P7-d legibility_drift": "Q_excess"}
 NOT_REACHED = {
@@ -283,19 +287,26 @@ def resid_cloud(model, Tt, mid, idx, batch=4):
     return A[idx]
 
 
+EAP_VARIANTS = (("pre_registered", "eap_graph"), ("per_node", "eap_graph_per_node"))
+
+
 def legibility_rows(model, Tt, mid, dev):
     """P7-d: the V7 rows — Leiden Q, degree-preserving-rewired null, treewidth bound, sparsity, at 3 densities.
-    The graph is `mejiro_ardan.eap_graph` itself (imported, not re-implemented)."""
-    layers = list(range(mid - 2, mid + 3))
-    E, nodes = V7.eap_graph(model, Tt, layers, dev)
-    A_full = symmetrise(E); rows = []
-    for dens in DENS:
-        A = threshold_density(A_full, dens)
-        Q, memb = graphs.modularity(A); q0, sd = graphs.rewired_null(A, n=20)
-        rows.append(dict(density=dens, n_nodes=len(nodes), n_edges=int((A != 0).sum() // 2), Q=float(Q),
-                         Q_null=float(q0), Q_null_sd=float(sd), Q_excess=float(Q - q0),
-                         n_communities=int(len(np.unique(memb))), treewidth_ub=int(graphs.treewidth_ub(A)),
-                         sparsity=float(graphs.sparsity(A_full))))
+    BOTH graphs are built (SPEC_O3 #O3-2): `mejiro_ardan.eap_graph` (the PRE-REGISTERED instrument, one gradient per
+    layer) and `mejiro_ardan.eap_graph_per_node` (the repair: one gradient per target node). Imported, never
+    re-implemented. Rows carry `graph` = pre_registered | per_node."""
+    layers = list(range(mid - 2, mid + 3)); rows = []
+    for label, fn in EAP_VARIANTS:
+        E, nodes = getattr(V7, fn)(model, Tt, layers, dev)
+        A_full = symmetrise(E)
+        for dens in DENS:
+            A = threshold_density(A_full, dens)
+            Q, memb = graphs.modularity(A); q0, sd = graphs.rewired_null(A, n=20)
+            rows.append(dict(graph=label, density=dens, n_nodes=len(nodes), n_edges=int((A != 0).sum() // 2),
+                             n_distinct_edge_values=int(len(np.unique(np.abs(A_full)[np.triu_indices(len(nodes), 1)]))),
+                             Q=float(Q), Q_null=float(q0), Q_null_sd=float(sd), Q_excess=float(Q - q0),
+                             n_communities=int(len(np.unique(memb))), treewidth_ub=int(graphs.treewidth_ub(A)),
+                             sparsity=float(graphs.sparsity(A_full))))
     return rows
 
 
@@ -396,10 +407,16 @@ def orbit_measure(model, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, 
     Z = z_normalise((standardized_cloud(A, how="std") - mu) @ P20)
     gap, nsm = single_spectrum(Z)
     npz = normalized_persistence(A, maxdim=1, how="std")
-    layers = list(range(mid - 2, mid + 3))
-    E, nodes = V7.eap_graph(model, Tt, layers, dev)
-    Agr = threshold_density(symmetrise(E), DENS_PRIMARY)
-    Q, memb = graphs.modularity(Agr)
+    layers = list(range(mid - 2, mid + 3)); leg = {}
+    for label, fn in EAP_VARIANTS:                     # #O3-2: the pre-registered graph AND the per-node repair
+        E, nodes = getattr(V7, fn)(model, Tt, layers, dev)
+        Af = symmetrise(E); Agr = threshold_density(Af, DENS_PRIMARY); Q, memb = graphs.modularity(Agr)
+        sfx = "" if label == "pre_registered" else "_pn"
+        leg[f"Q{sfx}"] = float(Q); leg[f"treewidth_ub{sfx}"] = int(graphs.treewidth_ub(Agr))
+        leg[f"sparsity{sfx}"] = float(graphs.sparsity(Af))
+        leg[f"community_sizes{sfx}"] = sorted(np.bincount(np.asarray(memb)).tolist(), reverse=True)
+        leg[f"node_roles{sfx}"] = sorted([n_[1] for n_ in nodes])
+        leg[f"n_distinct_edge_values{sfx}"] = int(len(np.unique(np.abs(Af)[np.triu_indices(len(nodes), 1)])))
     R, Mh, Hd = pooled_neox(model, tok, male + female, mid, dev)
     nM = len(male)
     g_res = B.unit(R[:nM].mean(0) - R[nM:].mean(0))
@@ -422,10 +439,7 @@ def orbit_measure(model, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, 
     A_ = R[:nM][np.random.default_rng(7).choice(nM, n, replace=False)]
     B_ = R[nM:][np.random.default_rng(8).choice(len(R) - nM, n, replace=False)]
     return dict(cloud=Z.astype(np.float32), eigen_gap=gap, n_small=nsm,
-                np_H1=float(npz["total_persistence_H1"]), Q=float(Q), treewidth_ub=int(graphs.treewidth_ub(Agr)),
-                sparsity=float(graphs.sparsity(symmetrise(E))),
-                community_sizes=sorted(np.bincount(np.asarray(memb)).tolist(), reverse=True),
-                node_roles=sorted([n_[1] for n_ in nodes]),
+                np_H1=float(npz["total_persistence_H1"]), **leg,
                 dbar=dbar, biastop_stat=float(B._biastop(A_, B_)),
                 cos_mf_disjoint_halves=float(ga @ gb), cos_random_split_absmean=float(np.mean(np.abs(rnd))),
                 g_resid=g_res, g_mlp=g_mlp, g_heads=g_hd,
@@ -458,9 +472,11 @@ def ko2(model, model_id, rev, Tt, mid, idx, mu, P20, tok, male, female, dev, n_b
     base = orbit_measure(model, Tt, mid, idx, mu, P20, tok, male, female, dev, n_bias, biastop_nperm)
     rng = np.random.default_rng(seed)
     per = {k: [base[k]] for k in ("eigen_gap", "n_small", "np_H1", "Q", "treewidth_ub", "sparsity", "dbar",
-                                  "biastop_stat", "cos_mf_disjoint_halves", "cos_random_split_absmean")}
+                                  "biastop_stat", "cos_mf_disjoint_halves", "cos_random_split_absmean",
+                                  "Q_pn", "treewidth_ub_pn", "sparsity_pn", "n_distinct_edge_values",
+                                  "n_distinct_edge_values_pn")}
     per["g_heads_per_head_norm"] = [base["g_heads_per_head_norm"]]
-    sets = dict(community_sizes=[base["community_sizes"]], node_roles=[base["node_roles"]])
+    sets = {k: [base[k]] for k in ("community_sizes", "node_roles", "community_sizes_pn", "node_roles_pn")}
     cosines = dict(g_resid_cos=[1.0], g_mlp_cos_aligned=[1.0], g_heads_cos_aligned=[1.0],
                    g_mlp_norm=[float(np.linalg.norm(base["g_mlp"]))])
     clouds, devs = [base["cloud"]], []
@@ -490,7 +506,8 @@ def ko2(model, model_id, rev, Tt, mid, idx, mu, P20, tok, male, female, dev, n_b
     cvs.update({k: cv_of(v) for k, v in cosines.items()})
     for k, v in sets.items():
         cvs[k] = 0.0 if all(x == v[0] for x in v) else float("inf")
-    out = dict(revision=rev, n_gauge=int(n_gauge), kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL,
+    out = dict(revision=rev, n_gauge=int(n_gauge), kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL, device=str(dev),
+               torch_version=str(torch.__version__),
                cv=cvs, values={k: (np.asarray(v).tolist() if k != "g_heads_per_head_norm" else None)
                                for k, v in per.items()},
                cosines={k: v for k, v in cosines.items()},
@@ -624,13 +641,19 @@ def run_model(a, model_id, revs):
             lr = legibility_rows(model, Tt, mid, a.device)
             for r in lr:
                 legs.append(dict(model=model_id, revision=rev, step=int(rev[4:]), **r))
-            prim = [r for r in lr if abs(r["density"] - DENS_PRIMARY) < 1e-9][0]
+            prim = [r for r in lr if abs(r["density"] - DENS_PRIMARY) < 1e-9 and r["graph"] == "pre_registered"][0]
+            prim_pn = [r for r in lr if abs(r["density"] - DENS_PRIMARY) < 1e-9 and r["graph"] == "per_node"][0]
             row = dict(model=model_id, revision=rev, step=int(rev[4:]), rev_index=k, mid_layer=mid,
                        n_cloud=int(len(Z)), np_H1=npz["total_persistence_H1"], np_H0=npz["total_persistence_H0"],
                        np_bars_H1=npz["n_bars_H1"], np_entropy_H1=npz["persistent_entropy_H1"],
                        Q=prim["Q"], Q_null=prim["Q_null"], Q_excess=prim["Q_excess"],
                        treewidth_ub=prim["treewidth_ub"], sparsity=prim["sparsity"],
-                       n_communities=prim["n_communities"], **bias, wall_s=round(time.time() - t0, 1))
+                       n_communities=prim["n_communities"],
+                       Q_pn=prim_pn["Q"], Q_null_pn=prim_pn["Q_null"], Q_excess_pn=prim_pn["Q_excess"],
+                       treewidth_ub_pn=prim_pn["treewidth_ub"], sparsity_pn=prim_pn["sparsity"],
+                       n_distinct_edge_values=prim["n_distinct_edge_values"],
+                       n_distinct_edge_values_pn=prim_pn["n_distinct_edge_values"],
+                       **bias, wall_s=round(time.time() - t0, 1))
             rows.append(row)
             pd.DataFrame(rows).to_csv(traj_p, index=False)
             pd.DataFrame(legs).to_csv(leg_p, index=False)
@@ -777,12 +800,28 @@ def finalise(a, model_id, traj_p, cl_p):
                 except Exception as e:
                     zq = dict(error=f"{type(e).__name__}: {e}")
             bad7 = {k: cvmax[k] for k in KO2_P7 if k in cvmax and not (cvmax[k] < ART_CV)}
+            bad7r = {k: cvmax[k] for k in KO2_P7_REPAIRED if k in cvmax and not (cvmax[k] < ART_CV)}
             bad3 = {k: cvmax[k] for k in KO2_P3 if k in cvmax and not (cvmax[k] < ART_CV)}
             ver = dict(ran=True, n_gauge=int(ko2s[orbit_revs[0]]["n_gauge"]), revisions=orbit_revs,
+                       device=ko2s[orbit_revs[0]].get("device"), torch_version=ko2s[orbit_revs[0]].get("torch_version"),
+                       backend_dependence=("MEASURED AND UNRESOLVED (SPEC_O3 #O3-2): the EAP legibility quantities "
+                                           "Q/treewidth/sparsity/community_sizes are density-thresholded graph "
+                                           "statistics and their K-O-2 verdict has been observed to FLIP with the "
+                                           "arithmetic backend on the same model and revisions (pythia-70m, step0 + "
+                                           "step143000, 3 samples: Q CV 0.572 on CUDA, 1.4e-04 on CPU). Read this "
+                                           "cell's legibility verdict as backend-conditional; the other P7 "
+                                           "instruments and every P3 quantity sit at the fp32 floor on both."),
                        kind=GAUGE_KIND, orthogonal=GAUGE_ORTHOGONAL, art_cv=ART_CV,
                        fp32_floor_rel_max=(max(floors) if floors else None),
                        cv_max_over_revisions=cvmax, zigzag_orbit=zq,
                        artifacts_P7=bad7, artifacts_P3=bad3, evidence_only=KO2_EVIDENCE_ONLY,
+                       repaired_instrument=dict(
+                           quantities=KO2_P7_REPAIRED, artifacts=bad7r,
+                           cv_max={k: cvmax.get(k) for k in KO2_P7_REPAIRED},
+                           certifies=bool(not bad7r),
+                           note="per-target-node EAP (SPEC_O3 #O3-2 / V AMENDMENTS #V7-1). Reported, NOT used to set "
+                                "the P7 status: the pre-registered instrument is what O3.1 pre-registered, and "
+                                "swapping the gating scalars after seeing a result would be a threshold change."),
                        backend="whiteboxtopo.symmetry.neox",
                        rule=(f"SPEC_O K-O-2: every certified scalar recomputed on {ko2s[orbit_revs[0]]['n_gauge']} "
                              f"random elements of G at every {a.orbit_every}-th revision plus the final; CV < "
@@ -798,9 +837,25 @@ def finalise(a, model_id, traj_p, cl_p):
                   change_points={k: {kk: cps[v].get(kk) for kk in ("stat", "p", "onset_index", "onset_frac",
                                                                    "onset_step", "detected")}
                                  for k, v in P7_INSTRUMENTS.items() if isinstance(cps.get(v), dict)})
+    cvm = ver.get("cv_max_over_revisions", {})
     p7_val["k_o_2"] = dict(ran=ver["ran"], artifacts=ver.get("artifacts_P7"),
-                           cv_max={k: ver.get("cv_max_over_revisions", {}).get(k) for k in KO2_P7},
+                           cv_max={k: cvm.get(k) for k in KO2_P7},
                            fp32_floor_rel_max=ver.get("fp32_floor_rel_max"))
+    p7_val["legibility_pre_registered"] = dict(
+        instrument="mejiro_ardan.eap_graph (one gradient per layer) — the PRE-REGISTERED P7-d instrument; its K-O-2 "
+                   "verdict is what sets this cell's status",
+        trace="Q_excess at density 0.05", cv_max={k: cvm.get(k) for k in KO2_P7},
+        n_distinct_edge_values=(int(df.n_distinct_edge_values.iloc[-1])
+                                if "n_distinct_edge_values" in df.columns and len(df) else None),
+        change_point=cps.get("Q_excess"))
+    p7_val["legibility_repaired"] = dict(
+        instrument="mejiro_ardan.eap_graph_per_node (one gradient per target node) — the SPEC_O3 #O3-2 repair, "
+                   "reported alongside, never used to set the status",
+        trace="Q_excess_pn at density 0.05", cv_max={k: cvm.get(k) for k in KO2_P7_REPAIRED},
+        n_distinct_edge_values=(int(df.n_distinct_edge_values_pn.iloc[-1])
+                                if "n_distinct_edge_values_pn" in df.columns and len(df) else None),
+        certifies=ver.get("repaired_instrument", {}).get("certifies"),
+        change_point=cps.get("Q_excess_pn"))
     p7_produced = any(isinstance(cps.get(v), dict) and "stat" in cps[v] for v in P7_INSTRUMENTS.values())
     p7_status = ko2_status(p7_produced, ver, ver.get("artifacts_P7"))
     p7_crit = (f"FINAL_SPEC §6.8 T3 = REPORTED, not pass/fail. Pre-registered positive (SPEC_O3 §6): >= 3 of the 4 "

@@ -564,3 +564,75 @@ examples, so at those sizes `k` and `n_min` are reduced (`k = min(10, max(3, n/1
 and both the used and the pre-registered values are written into the cell. A smoke cover is expected to give
 `cyclomatic = 0` (H1 = 0 by construction, not by evidence) and the cell then reads `partial` — that is the instrument
 reporting that it has no evidence, which is the behaviour AMENDMENTS #5f installed at T1.
+
+**#O4.1 (d) (2026-09-14 23:45, instrument defect inherited from V7's EAP construction — repair added, verdict unchanged.)**
+O3.1's K-O-2 gauge orbit (SPEC_O3 #O3-1/#O3-2, using the new `whiteboxtopo.symmetry.neox` backend) found that
+`hpcc/mejiro_ardan.eap_graph` reads **one gradient per layer**, so every consumer node of a layer receives the same score
+from a given source; on `pythia-70m` at `step143000` the symmetrised matrix had **91 distinct edge magnitudes among 990
+node pairs**, and the density threshold's tie-breaking made Leiden Q move by **CV 0.572** under exact renamings (V
+AMENDMENTS #15). O4.1 inherited the construction: `bamboo_memory.eap_matrix` already splits the MLP off with its own read
+point (#O4.1 (a)), but all H attention nodes of a layer still share `attn_in`, so the same tie structure is present on the
+head side.
+
+**Repair, additive and default ON, with the verdict left where it was.** `_install_per_node` + `_PerHeadProj` give every
+target node its own cloned copy of the block input: a pre-hook keeps the block input `x` in the autograd graph, the QKV
+projection is temporarily wrapped so head h computes its own parameter block from `attn_prenorm(x + eps_h)` with `eps_h` a
+zero leaf, and the MLP keeps its own `x + eps_mlp` at its pre-norm. The per-head parameter blocks are disjoint and are
+written back into their own slots, so the projection output is numerically identical at the same matmul flops (the pre-norm
+is recomputed H times, which is negligible). Layouts handled: `cols3` — GPT-2's single Conv1D `(d, 3d)` with head h at
+columns `j*d + h*dh`; `rows` — Llama-family `q_proj`; `rows_kv` — Llama-family `k_proj`/`v_proj`, where **under GQA the K/V
+rows are shared by a query group and are therefore computed from the clone of the group's first query head** (the
+representative; this asymmetry is recorded here and in the cell provenance, and it is the one place the per-node graph is
+not a clean per-node decomposition).
+
+`run_p0` now computes **both** graphs — `p0_<slug>_E.npz` (pre-registered) and `p0_<slug>_E_pernode.npz` — plus, when
+`whiteboxtopo.symmetry` has a backend for the model (`symmetry.gpt2`, `symmetry.llama` for Llama/Gemma-2/Qwen2/Mistral,
+`symmetry.neox`), a small K-O-2 orbit on both (`--n-gauge`, default 3; `p0_gauge_orbit`). The **P0 verdict is unchanged**:
+it is still `treewidth_ub` at the pre-registered density on the **pre-registered** graph. The per-node results land in the
+`per_node` block of `p0_<slug>.json` and in the P0 cell's `per_node` field, explicitly labelled as not verdict-setting —
+swapping the instrument that decides a cell after seeing a gauge result would be a threshold change. `--no-per-node` skips
+the extra graph; a failure in it is caught, recorded and never fatal, so an architecture whose QKV layout `_PerHeadProj`
+cannot name still produces the pre-registered P0 cell.
+
+Honest limit, measured on Pythia before this was written: the repair removes the tie degeneracy (91 → 811 distinct edge
+magnitudes) but does **not** by itself make the thresholded Leiden Q gauge-stable at 1e-3. Treewidth — the quantity the P0
+verdict actually uses — was stable (CV 0) in every orbit run so far, which is why the verdict is reported as it stands; Q
+is reported, not part of the verdict (#O4.1 (a)), and that separation is what keeps this defect from touching the P0 answer.
+
+**#O4.1 (d) addendum (2026-09-15 00:20) — the GPT-2 smoke, and the one number that matters for the P0 answer.**
+`bamboo_memory.py --p0 --model gpt2 --n-tokens 2000 --dtype float32 --device cpu` (785 s total on a box at load 25 —
+114 s of it the pre-registered EAP, 248 s the per-node EAP, the rest the orbit and the graph measures; not a clean
+timing). 65 nodes, layers 4–8, 2 016 tokens.
+
+*Tie structure.* Pre-registered **321** distinct edge magnitudes of 2 080 node pairs (better than V7's 91/990, because
+#O4.1 (a) already gave the MLP its own read point); per-node **1 751**/2 080.
+
+*K-O-2 orbit* (3 samples, `symmetry.gpt2`, `kind="combined"`, `orthogonal=False`, 4-sequence truncated probe, measured
+fp32 floor **1.5e-06**): **both graphs certify cleanly** — pre-registered Q CV **1.7e-06**, treewidth CV 0, sparsity CV
+4.9e-07, community sizes identical; per-node Q CV **7.2e-07**, treewidth CV 0, sparsity CV 3.6e-07, community sizes
+identical. So the instability O3.1 hit on Pythia is **not** universal: on GPT-2 in float32, under the GPT-2 gauge group,
+the density-thresholded statistic is stable to six or seven digits on *both* matrices. The Pythia case differs in two
+ways that both point the same direction — a much heavier tie structure (91/990), and a numerically larger gauge group
+(the neox backend rescales **two** per-coordinate LayerNorm gains over a 0.1–10 range per layer *and* the final
+LayerNorm, which GPT-2 does not have because its embeddings are tied).
+
+*The finding that bears on the P0 answer.* The two instruments give **different verdicts on the same model**. At the
+pre-registered density 0.1: pre-registered Q 0.181 (rewired null 0.221 ± 0.010), treewidth bound **8** → **tractable**
+(exactly on the `TW_TRACTABLE = 8` boundary); per-node Q 0.308 (null 0.314 ± 0.011), treewidth bound **11** →
+**marginal**. The gap is in the expected direction: conflating all H attention targets of a layer into one score
+collapses distinct edges onto each other, which can only *lower* the thresholded graph's treewidth, so the
+pre-registered graph plausibly **understates** the FPT parameter that the P0 verdict is made of. The verdict is
+nevertheless left on the pre-registered graph, as this amendment says up front — changing the instrument that decides a
+cell after seeing its result is a threshold change. Both numbers are in `p0_<slug>.json` (`verdict` and
+`per_node.verdict`) and in the P0 cell's `per_node` field, and whoever reads the frontier P0 row should read both. If
+the frontier models land near the boundary the way GPT-2 does, the honest headline is "tractable on the pre-registered
+instrument, marginal on the repaired one", not one of the two.
+
+*Two bugs the smoke caught, both fixed.* (i) The per-node block's `try/except` originally wrapped the gauge orbit too,
+so an orbit failure discarded the per-node graph that had already succeeded — the orbit is now its own failure domain.
+(ii) `symmetry.{gpt2,llama,neox}.apply` inverts the per-head basis change with `torch.linalg.inv`, which refuses bf16,
+and O4.1's default dtype is bf16 (sized for the 9B models); `p0_gauge_orbit` now refuses low precision up front with a
+recorded reason rather than raising — a CV measured at the bf16 floor (~1e-2) could not resolve `ART_CV = 1e-3` anyway.
+**To get a K-O-2 orbit on the frontier models, pass `--dtype float32`**; at bf16 the two graphs and the P0 verdict are
+still produced, with `gauge_orbit.ran = false` and that reason. Cost bound for the orbit: `--gauge-seq` (default 4
+sequences of the probe), since the orbit measures gauge sensitivity, not the reported numbers.
