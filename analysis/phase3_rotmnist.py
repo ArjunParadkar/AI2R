@@ -5,7 +5,7 @@ eigenvector of g, e_a).  Conditions: rotaug (generalises over SO(2)), noaug (doe
 seeds 1-5.  python analysis/phase3_rotmnist.py [out.json]    Authors: Arjun Paradkar and Reva Paradkar."""
 import sys, os, json, time
 import numpy as np, torch, torch.nn.functional as F
-from torch.func import vmap, jacfwd
+from torch.func import vmap, jacrev
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from systems.rot_mnist import SmallCNN, rotate, ROOT
 from torchvision import datasets, transforms
@@ -40,7 +40,7 @@ def chart_stats(m, digits, n_pts=40, seed=0):
     rng = np.random.default_rng(seed); ra, al, tn = [], [], []
     for x0 in digits:
         P = torch.tensor(np.c_[rng.uniform(-0.15, 0.15, (n_pts, 2)), rng.uniform(0, 2 * np.pi, n_pts)], dtype=torch.float32, device=DEV)
-        f = lambda p: m(render(x0, p))[0]; J = vmap(jacfwd(f))(P)                         # (n, 10, 3)
+        f = lambda p: m(render(x0, p))[0]; J = vmap(jacrev(f))(P)                         # (n, 10, 3)  reverse mode: grid_sample has no forward-mode rule (same exact Jacobian)
         with torch.no_grad():
             pr = torch.softmax(m(torch.cat([render(x0, p) for p in P])), 1); Fm = torch.diag_embed(pr) - pr[:, :, None] * pr[:, None, :]
         g = (J.transpose(1, 2) @ Fm @ J).double().cpu().numpy()

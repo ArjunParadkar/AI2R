@@ -21,3 +21,5 @@ kappa = hard orbit coherence under 6 photometric transformations (brightness +-0
 | `bench/stats.py` | `625298b69c694b85af152cb342de2bddb12ee93ebcdf9e1e7e224968a271550e` |
 | `whiteboxtopo/extractor.py` | `ab9a1a6031ffbfead5d8ec4a7e5b7ab66c1783d1ca64178685217f58bd1ef856` |
 | `whiteboxtopo/knowledge.py` | `01cb067ed167cf499ace90932f48b0d273729cad3834922e0378cb8e20bb00c6` |
+
+Amendment 2026-10-05 to PHASE_3 (before any Phase-3 result existed): analysis/phase3_rotmnist.py uses reverse-mode (jacrev) instead of forward-mode (jacfwd) for the chart Jacobian because grid_sample has no forward-mode rule; same exact Jacobian, no metric or threshold change.  New sha256: 8873c242c926835bbbe35c2e864804a5d728d59b5651b54e6b5982232b6721de
