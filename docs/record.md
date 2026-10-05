@@ -61,3 +61,33 @@ Rule: first checkpoint with adjacency >= 0.85 and max-perm p < 0.05.
 | pythia-160m | first = step 2000 (1.0, p 0.011), stable | first = step 2000 (1.0, p = 0), stable | never >= 0.85; max 0.71 (p 0.23) |
 Reading: before step ~512 neither days nor months are recovered (adjacency at chance 0.17-0.57, p >= 0.5); the structure is in place by step 2000-4000 of 143000 (1.4-2.8% of training) and persists to the end, apart from pythia-70m's final months score (0.67).  Single runs; the numbers control is clean at every checkpoint.  No claim about what drives the transition.
 H4.3 (hallucination, prereg-phase-4b): the first launch FAILED on CUDA OOM (GPU full of sibling jobs) for both models before producing any result; it is re-run, no result yet.
+
+## Phase 6 H6.1-H6.4 (own path-integrating RNN) — NOT TESTABLE (prereg-phase-6 conditional rule)
+Pilot attempts (seeds 900-902, disclosed in prereg/PHASE_6.md): attempt 1 (256 units, 6000 steps) no grid structure; attempt 2 (DoG target, 40,000 steps, both conditions) path-integration error 0.079 m, units are boundary/band cells, 0 grid-like units; attempt 3 (sigma 0.12 m, 512 units, 40,000 steps): path-integration error 0.064 m (conformal) / 0.059 m (no conformal), grid-like units (hex-template R2 >= 0.7) = 0 of ~506 in BOTH conditions, 1 module.  Registered rule: confirmatory runs are launched only if the conformal pilot shows >= 10% grid-like units -> NOT launched.  H6.1, H6.2, H6.3, H6.4 = NOT TESTABLE on our RNN (a statement about our RNN and ~1 GPU-hour training budget, not about the framework).  The circularity controls (no-conformal, memorizer, connectivity) therefore have no RNN evidence; the planted-population N7 gate and the real rodent data (H6.5) are the only level-D evidence.
+
+## Phase 4B H4.3 — knowledge boundary on TriviaQA (prereg-phase-4b + amendment; 500 questions; results/phase4/halluc_*.json)
+Rule per model: AUROC(kappa) >= 0.70 AND paired bootstrap lower bound of AUROC(kappa) - AUROC(b) > -0.03 for EVERY baseline b; overall PASS needs both models.  Baselines are cheap lexical stand-ins (discrete lexical-cluster SE, lexical sample agreement, MSP), not the published NLI versions.  kappa uses designer paraphrases (6), not learned equivalences.
+| model | accuracy | AUROC kappa [95% CI] | -SE | SC-lex | MSP | kappa - SE [CI] | kappa - SC-lex [CI] | kappa - MSP [CI] | verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| Qwen2.5-1.5B-Instruct | 0.352 | 0.746 [0.701, 0.791] | 0.774 | 0.747 | 0.693 | -0.029 [-0.076, +0.015] | -0.001 [-0.043, +0.039] | +0.052 [+0.0002, +0.103] | **FAIL**: >= 0.70 yes, but non-inferiority to SE and SC-lex not shown (lower bounds -0.076, -0.043 < -0.03); superior to MSP only |
+| Llama-3.2-1B-Instruct | 0.402 | 0.681 [0.633, 0.731] | 0.697 | 0.687 | 0.625 | -0.016 [-0.068, +0.038] | -0.006 [-0.053, +0.043] | +0.056 [+0.004, +0.111] | **FAIL**: AUROC 0.681 < 0.70 |
+Overall H4.3: **FAIL**.  Reading (descriptive): paraphrase coherence is statistically indistinguishable from lexical sample agreement and beats plain token probability by ~0.05 AUROC in both models; it does not beat sampling-based uncertainty.  First launch OOM'd (see amendment); no result was seen before the amended re-run.
+
+## Phase 6 H6.5 — Gardner et al. 2022 rodent grid modules (prereg-phase-6, commit f2b7b17; real data, no imposed loss; results/phase6/gardner_*.json)
+| cell | rule | result | verdict |
+|---|---|---|---|
+| H6.5a rat Q (2 modules, 163 cells) | modules exact and ARI >= 0.8 | 2 modules recovered, ARI 0.951 | PASS |
+| H6.5a rat R day 1 (3 modules, 483 cells) | same | 1 module recovered, ARI 0 | **FAIL** (the larger-spacing modules have no measurable autocorrelogram lattice in a 1.5 m arena: the authors' own module 2 and 3 lattices could not be fitted either) |
+| H6.5a rat S (1 module, 140 cells) | same | 1 module, ARI 1.0 | PASS (trivial: k=1 is the default when the silhouette is low) |
+| H6.5a overall | >= 2 of 3 files | 2 of 3 | PASS (one of the two passes is trivial) |
+| H6.5b torus per module | >= 2 H1 bars above the max over 20 per-neuron circular-shift nulls | Q1 called (top H1 0.387, 0.360 vs null max 0.350: marginal, H2 not above null); Q2 NOT called (b1 = 1; 0.34, 0.28 vs 0.32); R1 called (0.93, 0.87 vs 0.40; H2 above null); R2 called (0.81, 0.74 vs 0.38; H2 above null); R3 called (1.10, 0.93 vs 0.41; H2 above null); S1 called (1.07, 1.03 vs 0.42; H2 above null) | PASS: 5 of 6 modules (>= 4 required) |
+Caveats registered with the result: (1) the shuffle-null rule is lenient — 67-93 H1 bars exceed the null maximum in the R and S modules and the lifetimes do not drop after the second bar (S1: 1.07, 1.03, 0.88, 0.78), so these are NOT clean b1 = 2 certificates; they show non-trivial H1 and H2 structure in the population manifold beyond what independent single-neuron temporal structure produces; (2) the two rat Q modules (66 and 97 cells, 3.4 ks of open field) are weak or negative, consistent with fewer cells and less data; (3) H6.5a-R fails and the lattices of the coarse modules were unmeasurable, so the torus calls are not tied to a recovered lattice group (the prereg warns of this); (4) H6.5c (ring) and H6.6 not tested.
+
+## Phase 3 H3.1 — rotated MNIST, learned foliation vs rotation (prereg-phase-3 + 2 implementation amendments; 5 seeds per condition; results/phase3_rotmnist.json)
+Chart (t1, t2, a) around 12 test digits; model metric = Fisher-Rao pullback; r_a = mean g_aa / tr g; kernel alignment = squared e_a component of the smallest-eigenvalue eigenvector.
+| cell | rule | result | verdict |
+|---|---|---|---|
+| H3.1a rotaug vs noaug, r_a lower in rotaug | AUROC >= 0.9 | AUROC 1.0 (r_a 0.108-0.136 vs 0.211-0.241; exact one-sided p = 1/252 = 0.004) | PASS |
+| H3.1b rotaug vs scrambled, kernel alignment higher in rotaug | AUROC >= 0.9 | AUROC 0.72 (alignment 0.62-0.68 vs 0.62-0.66; p 0.155) | **FAIL** |
+| H3.1c trivial baseline (rotated test accuracy) | reported | AUROC 1.0 on BOTH contrasts (0.48-0.62 vs 0.31-0.35 vs 0.08-0.17) | baseline separates everything the instrument does, and also the contrast the instrument fails |
+Overall: the registered foliation claim ("kernel aligned with rotation orbits") needs H3.1a AND H3.1b -> NOT claimed.  What the data support: the rotation share of the learned metric is smaller for rotation-augmented models than for unaugmented ones, but rotated-test accuracy shows the same thing, and a rotation-augmented memoriser has a rotation share (0.127-0.153) close to the generaliser's.  Caveat: the rotation-augmented 'generalisers' are weak (rotated test accuracy ~0.55, 8 epochs of a small CNN).
