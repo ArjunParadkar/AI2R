@@ -1,0 +1,193 @@
+<title>Blinding Light Run 2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 2 · Morse-theoretic upgrade</div>
+  <h1>Seven better objects, scored against the same ground truth</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-20 09:24 → 13:15 CDT</span><span>same laptop, nothing retrained that existed</span></div>
+</header>
+
+<section>
+  <p class="lede col">Run 1 failed most of its pre-registered cells, each for an identified structural reason. Run 2 built the object each reason pointed at — depth profiles of class fibers, kernel displacement, the Morse–Smale complex of the output, functional alignment, sensitivity-ranked cohomology, a formation vineyard, a plateau-based manifold score — pre-registered a threshold for every one, and ran them.</p>
+  <div class="verdict">
+    <p><strong>By the letter, no Run-2 block passes.</strong> Every new instrument was first verified on planted ground truth, so these are negatives about the quantities, not about the code. Softmax confidence, entropy and margin remain unbeaten wherever they apply.</p>
+    <p><strong>What survives is smaller and firmer.</strong> The evasion result is reproducible and deterministic. The statistic that catches the re-encoded model is a plain functional test, not a topological one — shape can be evaded, function cannot, and function needs the nuisance to be known. The Z₂ quotient of Z113 answer-fibers replicates on two models nobody had looked at. And the one block that was saved from a false pass was saved by an unseen model.</p>
+  </div>
+  <nav aria-label="Contents"><ol>
+    <li><a href="#grid">Both runs, one grid</a></li><li><a href="#evasion">The evasion, stated</a></li><li><a href="#align">Alignment and the interrupt</a></li>
+    <li><a href="#abc">P6, P4, P5 re-scored</a></li><li><a href="#e">Cohomology and quotients</a></li><li><a href="#f">The vineyard</a></li>
+    <li><a href="#g">The manifold score</a></li><li><a href="#meta">How the run was kept honest</a></li><li><a href="#next">What follows</a></li><li><a href="#files">Files</a></li>
+  </ol></nav>
+</section>
+
+<section id="grid">
+  <h2>Both runs, one grid</h2>
+  <figure><div class="frame"><img src="figures/grid_both_runs.png" alt="Table of cells P1 to P7, manifold score and speed, with run 1 and run 2 verdicts and key numbers side by side. Run 2 verdicts are all FAIL except speed."></div>
+  <figcaption>Verdicts by the letter of each run's pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table>
+    <thead><tr><th>Block</th><th>Pre-registered criterion</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+    <tr><td>G · manifold score</td><td>bootstrap CV &lt; 0.15 everywhere; ResNet penultimate &gt; 0; ordering Z113 &gt; ring &gt; ResNet &gt; GPT-2</td><td class="num">CV 0.00 / 0.29 / undefined / 0.24; ResNet penultimate 0.000; ordering 0.60, 0.40, 0.00, 0.60</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>E1 · unsupervised naming</td><td>≥4 of top-5 H¹ classes by output sensitivity named at r &gt; 0.9, no group parameter</td><td class="num">0 of 5 on three seeds; best r among 30 candidates 0.45 / 0.07 / 0.07</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>E3 · quotient</td><td>Z₂ witness on every Z113 model; a rot-MNIST invariance depth exists</td><td class="num">Z113 met on 5 models including 2 unseen; rot-MNIST not met</td><td><span class="tag part">◐ half</span></td></tr>
+    <tr><td>D2 · alignment vs evasion</td><td>raw Mapper NMI above clean mean + 3σ on every evasion checkpoint</td><td class="num">threshold 1.139 — above the maximum of NMI; cannot fire on any model</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>D3 / D4 · interrupt</td><td>decorrelated accuracy &gt; 0.98 on 5/5 seeds; stays clean for 2× the steps</td><td class="num">by the letter the trigger never fires. Post-hoc trigger: registered penalty 1 of 5 (schedule R) and 1 of 5 (G); run 1's penalty 5 of 5</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>A · P6 depth profile</td><td>U<sub>clean</sub> − U<sub>scr</sub> &gt; 0.4 on ResNet and Z113; GW<sub>scr</sub> &gt; 2 × GW<sub>clean</sub></td><td class="num">0.000 and 0.000 (kill test fires); GW ratio 0.97, reversed on Z113</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>B · P4 kernel displacement</td><td>one score beats softmax confidence and entropy on SVHN and CIFAR-100; GPT-2 ι &gt; 0.5</td><td class="num">ι 0.57 / 0.59, 1−κ 0.43 / 0.64, ι(1−κ) 0.50 / 0.64 vs 0.83 / 0.82; GPT-2 ι 0.82 / 0.54</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>C · P5 Morse–Smale</td><td>ρ′ &gt; 0.90 on ResNet, &gt; 0.5 on Z113; beats softmax margin somewhere</td><td class="num">+0.78; +0.19 / +0.18 / +0.16; 0 of 5 systems</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>F · P7 vineyard</td><td>onset mode within ±2 of grokking on every seed; W2 below null; spreads &lt; 30%</td><td class="num">4 of 5 seeds (unseen decoy_s1: +27); 6 of 10 pairs; vine-count spread 0.71</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<section id="evasion">
+  <h2>The evasion, stated as a finding</h2>
+  <div class="verdict"><p><strong>A monitor that certifies a property of the representation's shape, used as a training signal, can be satisfied by a re-encoding that leaves the function unchanged.</strong></p>
+  <p>Run 1: three consecutive checkpoints with zero detected H¹ classes at ablation reliance 1.000. Run 2, regenerated from the same seed and code with checkpoints saved: the trajectory reproduces step for step, and on seed 0 the detector is silent at five of the last six checks (steps 3500, 4000, 4500, 5500, 6000) while reliance is 1.000 and accuracy on the decorrelated test is 0.014.</p></div>
+  <div class="col"><p>The model had to be regenerated because run 1 never checkpointed it; that is amendment A-1, written before any Run-2 number existed, with the condition that the evasion must reproduce before anything was tested on it. It did.</p></div>
+  <figure><div class="frame"><img src="figures/run2_alignment_vs_h1.png" alt="Two panels, re-encoded model seeds 0 and 1: direct NMI between prediction and hint stays above its threshold through hatched regions where the H1 detector reports zero classes; ablation reliance stays at 1."></div>
+  <figcaption>Hatched bands: the H¹ detector reports zero classes while reliance exceeds 0.9. The direct statistic (solid) stays above its threshold throughout; the pre-registered raw Mapper NMI (dotted) sits near 1 on every model and its threshold is unreachable.</figcaption></figure>
+</section>
+
+<section id="align">
+  <h2>Alignment and the interrupt</h2>
+  <div class="finding"><h3>The topological detector did not match its own floor</h3>
+  <div class="col"><p>The brief's detector was the mutual information between two Mapper graphs of the layer — one built with the prediction as lens, one with the nuisance. With about a thousand Mapper nodes for two thousand points, raw NMI is near 0.87 on <em>every</em> model, so the registered threshold (clean mean + 3σ) evaluates to 1.139 and nothing can fire. That bias was anticipated and a chance-adjusted version was registered as a secondary before any number existed. Adjusted, it separates shortcut from clean (0.96–1.00 against ≤ 0.12) — and false-alarms on 44 of 102 decoy checkpoints, where the hint is present, represented, and provably unused. It sees that z is <em>represented</em>, not that z is <em>used</em>: the shape detector's weakness, inherited.</p>
+  <p>The statistic SPEC2 registered as the floor — the dependence of the prediction on the hint, on a probe where the hint is independent of the answer — fires on all 7 evasion checkpoints, on 50 of 51 checkpoints of each shortcut model, and on 0 of 153 clean and decoy checkpoints. It is the ablation ground truth in another form. So the headline is not a new detector. It is the asymmetry: <strong>shape can be evaded by re-encoding; function cannot; and function needs the nuisance to be known.</strong></p></div></div>
+  <div class="finding"><h3>The interrupt</h3><div class="col"><p>By the letter there is nothing to score: the registered trigger cannot fire, so the registered interrupt is the no-intervention run (decorrelated accuracy 0.012–0.016). Run post-hoc with the floor statistic as trigger, three things came out.</p>
+<p><strong>The brief's "generalised" penalty is worse than the one it generalises.</strong> Output invariance across uniformly drawn hint values cleared the shortcut on 1 of 5 seeds under both schedules (0.011 / 0.010 / 0.009 / 1.000 / 0.010). With z′ uniform, a present hint is compared with "no hint" about once in 114 samples, and run 1 had already found that presence-invariance is the part that matters.</p>
+<p><strong>Escalation destroys models.</strong> Every model pushed past λ = 3 — to 300 under the registered schedule, to 81 under the gentler one — ended at accuracy 0.01: the shortcut gone and the task with it. Every success, in either run, happened at λ = 3 in one round.</p>
+<p><strong>Run 1's penalty with the earlier trigger clears five of five</strong> (0.999 / 1.000 / 1.000 / 1.000 / 1.000), including the seed that failed under both schedules in run 1. The functional trigger fires at step 500 on every seed; the H¹ detector had been one or two checkpoints late on three of them, and for that seed one checkpoint was the difference. On the one registered-penalty seed that passed, the shortcut did not come back: no firing in twelve checks over twice the original training length. All of this is post-hoc, one run per seed, not topological, and needs the nuisance to be known.</p></div></div>
+  <div class="finding"><h3>With the nuisance hidden (exploratory)</h3><div class="col"><p>Ranking the 30 longest-lived H¹ classes of the planted models by output sensitivity over local dimension does not surface the shortcut: the class that best tracks the hidden hint correlates with it at only 0.38–0.55 and ranks 12th–29th of 30 in seven of eight checkpoints examined.</p></div></div>
+</section>
+
+<section id="abc">
+  <h2>The three failed cells, re-scored</h2>
+  <div class="finding"><h3>P6 — depth profile of class fibers</h3><div class="col"><p>In the ambient metric, class fibers do not connect at the registered scale at any layer of either network. Distances concentrate: at half the scale where the whole cloud connects, the cloud is 1,459–1,487 isolated points of 1,500, and a fiber becomes one piece only at 0.92–0.99 of that scale. The untangling index is 0.000 for generaliser and memoriser alike on both systems, and the kill test fires. Gromov–Wasserstein distortion to the input fiber does not track memorisation — ratio 0.97 on ResNet where 2 was required, and reversed on Z113, where it is the generaliser that builds structure.</p>
+  <p>Seen after the fact, with no null and not claimed: the scale at which a fiber becomes one piece, in units of the layer's median distance, falls with depth in the generalisers (ResNet class 0: 1.38 → 0.46; Z113: 0.82 → 0.31) and barely moves in the memorisers (1.13 → 0.92; 0.92 → 0.92).</p></div></div>
+  <figure><div class="frame"><img src="figures/run2_bipersistence.png" alt="Heatmaps of the number of connected components of class fibers as a function of layer and scale, for clean and scrambled ResNet and Z113."></div><figcaption>β₀(layer, scale) for class fibers, clean against scrambled.</figcaption></figure>
+  <div class="finding"><h3>P4 — invisible displacement</h3><div class="col"><p>The diagnosis was that out-of-distribution inputs are displaced along directions the head ignores. On near-OOD images the opposite holds: the <em>invisible fraction</em> of the displacement scores 0.33 on both SVHN and CIFAR-100 — below chance — and the visible part (0.70) beats the kernel part (0.57 / 0.59). Only Gaussian noise fits the picture (0.95 against softmax 0.71). On GPT-2 the kernel score clears chance (0.82 / 0.54, from 0.40 / 0.38), but the kernel there is 704 of 768 dimensions and the score is Euclidean nearest-neighbour distance under another name (rank correlation 0.993–0.999). Neighbourhood persistence across depth has no consistent sign: on one Z113 set it is a near-perfect detector with the wrong sign (0.006–0.018).</p></div></div>
+  <figure><div class="frame"><img src="figures/run2_kernel_roc.png" alt="ROC curves of the kernel displacement score, neighbourhood persistence, their combination and softmax confidence on ResNet and GPT-2 out-of-distribution sets."></div><figcaption>ROC curves on ResNet-18 and GPT-2; softmax confidence is ahead on every near-OOD set.</figcaption></figure>
+  <div class="finding"><h3>P5 — Morse–Smale complex of the max-logit function</h3><div class="col"><p>On planted landscapes the construction is exact: two basins, separatrix on the known boundary, distance to it correct to 2%, curvature of a circular boundary within 1% of 1/R. On real systems it does not beat the top-two logit gap anywhere (ResNet +0.78 against +0.93; Z113 +0.16 to +0.19 against +0.21 to +0.30; GPT-2 null). On ResNet the separatrix distance is run 1's manifold margin again (rank correlation 0.974). Where classes are many and sparsely sampled — Z113, GPT-2 — 67–73% of all graph edges are separatrix edges, more than 96% of nodes touch one, and basins of confidence are not classes (4–8% agreement). Softmax margin is <em>not</em> a separatrix distance in disguise: the gap is 0.07–0.72, never within the registered 0.02. The registered curvature fit is under-determined (45 unknowns, 30 points) and lowers the ResNet correlation.</p></div></div>
+  <figure><div class="frame"><img src="figures/run2_morse_smale.png" alt="Left: Morse-Smale complex of the Z113 layer on a PCA embedding, nearly every edge drawn as separatrix. Middle and right: scatter of rho-prime and of softmax margin against PGD failure radius on ResNet; softmax margin is much tighter."></div><figcaption>Left: on Z113 nearly the whole graph is separatrix. Right: on ResNet the softmax margin is visibly the tighter predictor of failure radius.</figcaption></figure>
+</section>
+
+<section id="e">
+  <h2>Cohomology and quotients</h2>
+  <div class="finding"><h3>Unsupervised naming fails a second way</h3><div class="col"><p>Ranking by output sensitivity re-orders debris; it cannot create classes the filtration never formed. The representation is a 2-torus wound at five frequencies, and 1,200 samples of it do not put neighbouring residues next to each other in any metric: Rips returns about two thousand short bars, the longest 1.4× the noise band. The brief's prediction that the pullback metric collapses debris holds where the manifold is one densely sampled circle (ring: 2 → 1 above the band, the true one) and on GPT-2 (22 → 0), and fails on Z113 (12 → 26).</p></div></div>
+  <div class="finding"><h3>The Z₂ quotient replicates on unseen models</h3><div class="col"><p>On five grokked models — three seeds, two data fractions, with and without decoy hint tokens, two of them never examined before the criterion was written — the answer-fiber's image in each frequency plane is a segment (axis ratio 0.017–0.044), the b = 0 orbit in the same planes is a circle (0.996–0.999), and swapping operands moves the representation by 0.3–0.8% of the fiber radius. The learned invariance is (a, b) ↦ (b, a); the fiber is S¹/Z₂. This is Run 2's one confirmatory positive. The rot-MNIST half fails by the letter: both the trained and the untrained network lose the certified circle at the same layer, and only the graded gap (0.22, then 0.28) distinguishes them.</p></div></div>
+</section>
+
+<section id="f">
+  <h2>The formation vineyard</h2>
+  <div class="col"><p>On four of five models the circles are born in a burst within one checkpoint of grokking, five vines each, and the peak normalised lifetime is a constant of the architecture (1.01–1.06). The fifth — an unseen model — breaks every cross-seed criterion: its circles rise at grokking like the others, then are knocked down again and again for twenty-five checkpoints while test accuracy reads 1.00, so only two vines satisfy "certified from here to the end". Without that model this block would have passed.</p></div>
+  <figure><div class="frame"><img src="figures/run2_vineyards.png" alt="Five panels of H1 lifetime of each frequency circle across checkpoints; four show a clean rise at the grokking checkpoint, the fifth shows repeated collapses after grokking."></div><figcaption>One vine per frequency circle (symmetry-informed). Open circle = onset; vertical line = grokking checkpoint.</figcaption></figure>
+</section>
+
+<section id="g">
+  <h2>The manifold score</h2>
+  <div class="col"><p>The plateau score fails on all three counts: unstable under bootstrap on the ring and GPT-2, exactly zero on the ResNet penultimate layer, and it ranks GPT-2 level with Z113. The curve it is computed from is the useful object. Estimated dimension against neighbourhood size shows a <strong>plateau</strong> on grokked Z113 (7–7.5 from k = 20 to 160, all seeds), <strong>decay</strong> on the ring and every ResNet layer — fastest at the penultimate layer, 14.9 → 2.4, which is what ten tight clusters look like — and <strong>growth</strong> on GPT-2 and on the Z113 memoriser. The old score's 0.00 on ResNet was not a miscalibration: a second instrument agrees that the last layer of a trained classifier is not manifold-like at one scale.</p></div>
+  <figure><div class="frame"><img src="figures/run2_mplateau.png" alt="Left: intrinsic dimension estimate against neighbourhood size for seven clouds showing plateau, decay and growth. Right: scatter of m_plateau against the old manifold score."></div><figcaption>Left: ID(k). Right: neither scalar orders the systems as expected.</figcaption></figure>
+</section>
+
+<section id="meta">
+  <h2>How the run was kept honest</h2>
+  <ul class="col">
+    <li><strong>Everything was fixed first.</strong> <code>SPEC2.md</code> was written before any computation, including the operational choices the brief left open and a list of what run 1 had already seen. Cells scored on seen data are marked RE-SCORE; unseen models were named in advance, and they decided two blocks (E3 for, F against).</li>
+    <li><strong>Four amendments, all timestamped.</strong> A-1 regenerate the uncheckpointed model; A-2 register a chance-adjusted secondary before computing, because raw NMI between fine partitions is biased to 1; A-3 and A-4, after results and labelled post-hoc: replace the unreachable trigger by the registered floor statistic, and add an arm with run 1's penalty.</li>
+    <li><strong>Instruments were tested on planted truth before being trusted on networks.</strong> 31 new tests (174 in all, 1 documented xfail). Blocks A, B and C were implemented by three independent agents working only from the pre-registration; each reproduced run 1's baselines to the digit before comparing.</li>
+    <li><strong>Known weaknesses.</strong> Primary comparisons are single seed pairs for ResNet. The interrupt arms shared one GPU. The D-block "detector that works" requires the nuisance variable; nothing in either run discovers an unknown one.</li>
+  </ul>
+</section>
+
+<section id="next">
+  <h2>What follows</h2>
+  <ul class="col">
+    <li><strong>The paper that the evidence supports</strong> is about the asymmetry between shape and function as monitoring targets, with the planted-shortcut evasion as its demonstration, the Z₂ quotient and the pullback-metric circle as what the geometric object <em>can</em> do, and two runs of pre-registered negatives as what it cannot.</li>
+    <li><strong>Stop trying to beat softmax</strong> for OOD detection and failure prediction with manifold geometry at the last layer. Two runs, seven instruments, no win on any near-OOD set.</li>
+    <li><strong>Worth one more pre-registration on fresh seeds:</strong> the depth trend of the fiber connection scale (falls in generalisers, flat in memorisers), and the ID(k) profile as the honesty instrument. Both were seen after the fact here and cannot be claimed.</li>
+    <li><strong>The open problem is unchanged:</strong> finding a nuisance the experimenter does not already know. Sensitivity-ranked cohomology does not do it.</li>
+  </ul>
+</section>
+
+<section id="files">
+  <h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+    <tr><td>Pre-registration and amendments</td><td><code>SPEC2.md</code> · <code>AMENDMENTS.md</code> · brief <code>docs/RUN2_BRIEF.md</code></td></tr>
+    <tr><td>Scorecards, both runs</td><td><code>CLAIMS.md</code> · <code>figures/grid_both_runs.png</code></td></tr>
+    <tr><td>Pause reports</td><td><code>PAUSE_1.md</code> … <code>PAUSE_4.md</code></td></tr>
+    <tr><td>Per-block findings</td><td><code>FINDINGS_A.md</code> … <code>FINDINGS_G.md</code></td></tr>
+    <tr><td>Numbers</td><td><code>results/run2/</code> · interrupt runs <code>runs/r2_*</code></td></tr>
+    <tr><td>New library packages</td><td><code>whiteboxtopo/depthprofile</code> · <code>kernel</code> · <code>morse</code> · tests <code>tests/test_run2_*.py</code></td></tr>
+    <tr><td>Demo with run-2 outputs</td><td><code>logs/demo_run2_transcript.txt</code> · <code>python analysis/demo_run2.py</code></td></tr>
+    <tr><td>Run-1 report</td><td><code>report/whitebox-report.html</code></td></tr>
+  </tbody></table></div>
+</section>
+<footer>Verdicts are by the letter of SPEC2.md and its amendments. Post-hoc variants are labelled and never upgrade a verdict. No block passes, so the word "complete" is not used.</footer>
+</div>

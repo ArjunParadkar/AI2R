@@ -12,8 +12,8 @@ from whiteboxtopo.numerics import repro
 PUB = 'results/blind/public'; SEAL = os.path.expanduser('~/.wb_sealed')
 SPECS = []                      # (task, regime, alpha)
 for task in ('mod59', 'mod97'):
-    for regime, alpha in (('clean', 1.0), ('clean', 0.0), ('scrambled', 1.0), ('nograk', 1.0), ('hybrid', 1.0), ('contaminated', 1.0)):
-        for rep in range(2): SPECS.append((task, regime, alpha))
+    for regime, alpha in (('clean', 1.0), ('clean', 0.0), ('scrambled', 1.0), ('nograk', 1.0), ('hybrid', 1.0)):
+        for rep in range(3): SPECS.append((task, regime, alpha))
 STEPS = dict(mod59=15000, mod97=12000)
 
 

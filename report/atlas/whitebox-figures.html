@@ -1,0 +1,132 @@
+<title>WhiteBOX Figure Atlas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+:root{--bg:#f7f6f2;--ink:#1a1a19;--ink2:#5a5952;--rule:#dedcd3;--card:#ffffff;--acc:#1f4e79;--acc2:#e0662f;--pass:#1b7f4a;--fail:#b8402c;--hold:#b47a12}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#15181d;--ink:#eceae4;--ink2:#a7a49b;--rule:#2c313a;--card:#1d2127;--acc:#7db6e8;--acc2:#f08a5a;--pass:#5fc48d;--fail:#ee7d67;--hold:#e0a93c}}
+:root[data-theme="dark"]{--bg:#15181d;--ink:#eceae4;--ink2:#a7a49b;--rule:#2c313a;--card:#1d2127;--acc:#7db6e8;--acc2:#f08a5a;--pass:#5fc48d;--fail:#ee7d67;--hold:#e0a93c}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 "Raleway","Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 64px;padding-inline:16px}
+header{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc2);font-weight:600}
+h1{font-size:clamp(30px,4.2vw,44px);font-weight:700;margin:6px 0 8px;line-height:1.08;text-wrap:balance;letter-spacing:-.005em}
+.meta{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--ink2)}
+nav{display:flex;flex-wrap:wrap;gap:6px 14px;margin:18px 0 8px;font-size:13px}
+nav a{color:var(--acc);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:1px}
+nav a:hover,nav a:focus-visible{border-color:var(--acc);outline:none}
+h2{font-size:23px;font-weight:700;margin:44px 0 4px;letter-spacing:0}
+h2 small{font-size:13px;font-weight:500;color:var(--ink2);margin-left:10px;letter-spacing:.05em;text-transform:uppercase}
+.sub{margin:0 0 18px;color:var(--ink2);max-width:76ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+figure{margin:0;background:var(--card);border:1px solid var(--rule);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+figure.wide{grid-column:1/-1}
+figure a{display:block;background:#fff}
+figure img{display:block;width:100%;height:auto}
+figcaption{padding:12px 14px 14px;font-size:13.5px;line-height:1.5;color:var(--ink2);border-top:1px solid var(--rule)}
+figcaption b{color:var(--ink);display:block;margin-bottom:2px;font-size:14px}
+figcaption code,code{font-family:"Raleway","Segoe UI",Helvetica,Arial,sans-serif;font-size:12px;color:var(--ink2);opacity:.9;letter-spacing:.01em}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:1px 7px;border-radius:3px;color:#fff;margin-right:6px;vertical-align:1px}
+.tag.p{background:var(--pass)}.tag.f{background:var(--fail)}.tag.h{background:var(--hold)}.tag.n{background:var(--ink2)}
+.count{font-variant-numeric:tabular-nums}
+footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink2)}
+@media (max-width:720px){.grid{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · figure atlas</div>
+  <h1>Every figure from seven runs, in colour</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent</span><span>19 – 22 September 2026</span><span class="count">43 figures · 7 scorecards · set in Raleway</span><span>click any figure to open it at full size</span></div>
+  <nav aria-label="Runs"><a href="#overview">Overview</a><a href="#grids">Scorecards</a><a href="#run1">Run 1 · pullback geometry</a><a href="#run2">Run 2 · Morse</a><a href="#run3">Run 3 · symmetry group</a><a href="#run4">Run 4 · tower of quotients</a><a href="#run5">Run 5 · registration</a><a href="#run6">Run 6 · orbit-closure</a><a href="#run7">Run 7 · extractor</a></nav>
+  <p class="sub">Every panel is generated from a results file by a script under <code>analysis/</code> and re-rendered here in colour and in Raleway (<code>analysis/color/</code>, <code>figures/color/</code>). Tags give the verdict of the pre-registered cell the figure belongs to: PASS and FAIL are by the letter, PARTIAL is a mixed block, and DESCRIPTIVE means no criterion was registered. Colour here is for reading; the figures in the reports use hatching and line style so that identity survives greyscale printing.</p>
+</header>
+
+<h2 id="overview">Overview <small>three figures drawn for this atlas</small></h2>
+<p class="sub">Not from any single run: the matched models of Runs 4–6 on one plane, the generator's arrival on the six densely-swept seeds, and the clock.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/overview_understanding_plane.png" target="_blank"><img src="fig/overview_understanding_plane.png" alt="Understanding plane"></a><figcaption><b>The understanding plane</b>Seventeen fresh matched models from Runs 4–6 on two of the four instruments: swap quotient against hint-slot share. Every generaliser sits in the lower-left cell inside both clean-side thresholds; every true memoriser sits far outside both; large markers carry a discovered generator. <code>overview_understanding_plane.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/overview_generator_leads.png" target="_blank"><img src="fig/overview_generator_leads.png" alt="Generator lead times"></a><figcaption><b>When the group arrives, and whether it stays</b>On the six seeds swept at every checkpoint (Runs 5–6): the generator is accepted at the largest accuracy jump or just before it on five, one checkpoint after on one, and persists on 87–100% of later checkpoints. <code>overview_generator_leads.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/overview_clock.png" target="_blank"><img src="fig/overview_clock.png" alt="Wall-clock per run"></a><figcaption><b>Seven runs in three days</b>Wall-clock per run on one laptop; the hatched parts are the four hours a crash went unnoticed in Run 4 and the five hours the laptop slept in Run 5. <code>overview_clock.png</code></figcaption></figure>
+</div>
+
+<h2 id="grids">The scorecards <small>seven grids, one per run</small></h2>
+<p class="sub">Rows are the seven problems; each column is a run. The grids accumulate: the seven-run grid is the whole record.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/grid_seven_runs.png" target="_blank"><img src="fig/grid_seven_runs.png" alt="Seven-run scorecard grid"></a><figcaption><b>Seven runs, one grid</b>Verdicts by the letter of each run's pre-registration. Post-hoc variants never upgrade a verdict. <code>figures/grid_seven_runs.png</code></figcaption></figure>
+<figure><a href="fig/grid.png" target="_blank"><img src="fig/grid.png" alt="Run 1 grid"></a><figcaption><b>Run 1 grid</b>The ten-hour specification scored cell by cell. <code>grid.png</code></figcaption></figure>
+<figure><a href="fig/grid_both_runs.png" target="_blank"><img src="fig/grid_both_runs.png" alt="Runs 1–2 grid"></a><figcaption><b>Runs 1–2</b>After the Morse-theoretic upgrade. <code>grid_both_runs.png</code></figcaption></figure>
+<figure><a href="fig/grid_three_runs.png" target="_blank"><img src="fig/grid_three_runs.png" alt="Runs 1–3 grid"></a><figcaption><b>Runs 1–3</b>After the symmetry group. <code>grid_three_runs.png</code></figcaption></figure>
+<figure><a href="fig/grid_four_runs.png" target="_blank"><img src="fig/grid_four_runs.png" alt="Runs 1–4 grid"></a><figcaption><b>Runs 1–4</b>After the tower of quotients and the registered group. <code>grid_four_runs.png</code></figcaption></figure>
+<figure><a href="fig/grid_five_runs.png" target="_blank"><img src="fig/grid_five_runs.png" alt="Runs 1–5 grid"></a><figcaption><b>Runs 1–5</b>After registration on fresh models. <code>grid_five_runs.png</code></figcaption></figure>
+<figure><a href="fig/grid_six_runs.png" target="_blank"><img src="fig/grid_six_runs.png" alt="Runs 1–6 grid"></a><figcaption><b>Runs 1–6</b>After orbit-closure. <code>grid_six_runs.png</code></figcaption></figure>
+</div>
+
+<h2 id="run1">Run 1 <small>the ten-hour specification · 19–20 Sept</small></h2>
+<p class="sub">One object: the activation manifold at each layer with the metric pulled back from the output, g = JᵀJ.</p>
+<div class="grid">
+<figure><a href="fig/grokking.png" target="_blank"><img src="fig/grokking.png" alt="Grokking on Z113"></a><figcaption><b><span class="tag f">FAIL</span>Geodesic closure through grokking</b>G_interior rises with the birth of the frequency circles — a ramp, not a step — and keeps tracking loss spikes after accuracy reads 1.00. <code>grokking.png</code></figcaption></figure>
+<figure><a href="fig/inventory.png" target="_blank"><img src="fig/inventory.png" alt="Frequency inventory"></a><figcaption><b><span class="tag h">PARTIAL</span>The P1 inventory</b>Five learned frequencies recovered at r &gt; 0.9 with the group action supplied; unsupervised Rips fails. <code>inventory.png</code></figcaption></figure>
+<figure><a href="fig/p4_p5.png" target="_blank"><img src="fig/p4_p5.png" alt="P4 and P5 baselines"></a><figcaption><b><span class="tag f">FAIL</span>Ignorance and failure vs softmax</b>Pullback distance loses to softmax confidence on every OOD set; curvature × Lipschitz loses to the margin. <code>p4_p5.png</code></figcaption></figure>
+<figure><a href="fig/interrupt.png" target="_blank"><img src="fig/interrupt.png" alt="Interrupt loop"></a><figcaption><b><span class="tag p">PASS</span>The interrupt loop, five seeds</b>A KL-consistency penalty that knows the nuisance recovers 4/5; the structure-derived penalty is evaded — the shortcut re-encodes. <code>interrupt.png</code></figcaption></figure>
+</div>
+
+<h2 id="run2">Run 2 <small>the Morse-theoretic upgrade · 20 Sept</small></h2>
+<p class="sub">Depth profiles, kernel displacement, Morse–Smale separatrices, functional alignment, vineyards. Shape can be re-encoded; function cannot.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/run2_alignment_vs_h1.png" target="_blank"><img src="fig/run2_alignment_vs_h1.png" alt="Functional floor vs H1 detector"></a><figcaption><b><span class="tag f">FAIL</span> <span class="tag p">FLOOR</span>The evasion, caught by function</b>The H¹ detector goes silent on the re-encoded model while the direct functional floor keeps firing: 7/7 evasion checkpoints, 0/153 false alarms. <code>run2_alignment_vs_h1.png</code></figcaption></figure>
+<figure><a href="fig/run2_bipersistence.png" target="_blank"><img src="fig/run2_bipersistence.png" alt="Fibered barcodes"></a><figcaption><b><span class="tag f">FAIL</span>Fibered barcodes</b>Two-parameter persistence over scale and depth; the connection scale of class fibres falls with depth in generalisers only (seen, then registered in Run 3). <code>run2_bipersistence.png</code></figcaption></figure>
+<figure><a href="fig/run2_kernel_roc.png" target="_blank"><img src="fig/run2_kernel_roc.png" alt="Kernel displacement ROC"></a><figcaption><b><span class="tag f">FAIL</span>Kernel displacement as ignorance</b>ROC against softmax on the OOD sets; the last layer is linear, so last-layer geometry ties softmax. <code>run2_kernel_roc.png</code></figcaption></figure>
+<figure><a href="fig/run2_morse_smale.png" target="_blank"><img src="fig/run2_morse_smale.png" alt="Morse–Smale complex"></a><figcaption><b><span class="tag f">FAIL</span>Morse–Smale complex of the max-logit</b>Separatrix distance as a failure predictor; it does not beat the margin. <code>run2_morse_smale.png</code></figcaption></figure>
+<figure><a href="fig/run2_mplateau.png" target="_blank"><img src="fig/run2_mplateau.png" alt="ID plateau score"></a><figcaption><b><span class="tag f">FAIL</span>The intrinsic-dimension profile</b>Three shapes — plateau, decay, growth — and the plateau score that was meant to replace the fragile manifold score. <code>run2_mplateau.png</code></figcaption></figure>
+<figure><a href="fig/run2_vineyards.png" target="_blank"><img src="fig/run2_vineyards.png" alt="Vineyards"></a><figcaption><b><span class="tag f">FAIL</span>Vineyards across training</b>Wasserstein-matched persistence diagrams through grokking; the criterion fails because an unseen decoy model was included. <code>run2_vineyards.png</code></figcaption></figure>
+</div>
+
+<h2 id="run3">Run 3 <small>the symmetry group · 20 Sept</small></h2>
+<p class="sub">What a network knows is a symmetry group. Instruments verified on planted truth first; the group is found, post-hoc, as a full 113-cycle among statistically accepted permutations.</p>
+<div class="grid">
+<figure><a href="fig/run3_discovered_group.png" target="_blank"><img src="fig/run3_discovered_group.png" alt="Discovered group"></a><figcaption><b><span class="tag h">POST-HOC</span>The discovered group</b>The circulant graph of accepted permutations of the output-derived distance matrix; a full 113-cycle on 5/5 generalisers and no memoriser. <code>run3_discovered_group.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run3_group_formation.png" target="_blank"><img src="fig/run3_group_formation.png" alt="Group formation"></a><figcaption><b><span class="tag h">POST-HOC</span>Group formation across training</b>The generator appears within one checkpoint of grokking; swap-invariance is present at initialisation, broken during memorisation, restored at grokking. <code>run3_group_formation.png</code></figcaption></figure>
+<figure><a href="fig/run3_fresh_seeds.png" target="_blank"><img src="fig/run3_fresh_seeds.png" alt="Fresh-seed replications"></a><figcaption><b><span class="tag p">PASS</span>Fresh seeds</b>Connection scale falls with depth in 4/4 generalisers; ID plateau on grokked Z113 and decay on ResNet, 20/20 bootstraps. <code>run3_fresh_seeds.png</code></figcaption></figure>
+<figure><a href="fig/run3_bz_vs_floor.png" target="_blank"><img src="fig/run3_bz_vs_floor.png" alt="Breaking score vs floor"></a><figcaption><b><span class="tag f">FAIL</span>Symmetry breaking is not spurious structure</b>The breaking score fires on 39/102 decoy checkpoints; the functional floor on 0/255. <code>run3_bz_vs_floor.png</code></figcaption></figure>
+<figure><a href="fig/run3_g_directions.png" target="_blank"><img src="fig/run3_g_directions.png" alt="Null directions of g"></a><figcaption><b><span class="tag n">DESCRIPTIVE</span>Null directions of g on input space</b>The nuisance slot's share of the trace: 0.44–0.48 through memorisation, 0.0004 after grokking. <code>run3_g_directions.png</code></figcaption></figure>
+<figure><a href="fig/run3_killing_dim.png" target="_blank"><img src="fig/run3_killing_dim.png" alt="Killing dimension"></a><figcaption><b><span class="tag f">FAIL</span>Killing fields</b>Dimension 0 for clean, memorising and untrained alike; the continuous instrument does not see the discrete group. <code>run3_killing_dim.png</code></figcaption></figure>
+<figure><a href="fig/run3_rotation_invariance_depth.png" target="_blank"><img src="fig/run3_rotation_invariance_depth.png" alt="Rotation invariance depth"></a><figcaption><b><span class="tag f">FAIL</span>Rotation invariance depth on rotated MNIST</b>Both nets lose the circle at conv3_gap; no invariance depth exists. <code>run3_rotation_invariance_depth.png</code></figcaption></figure>
+</div>
+
+<h2 id="run4">Run 4 <small>the tower of quotients · 20 Sept</small></h2>
+<p class="sub">True memorisers first. The group registered in advance and found on unseen seeds; the definition of understanding scored and failed by the letter.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/run4_p6_instruments.png" target="_blank"><img src="fig/run4_p6_instruments.png" alt="Five instruments"></a><figcaption><b><span class="tag f">FAIL 2/5</span>Five instruments on matched pairs</b>Solid = generaliser, hatched = true memoriser. Concentration does not separate them; memorisers concentrate the metric as much. <code>run4_p6_instruments.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run4_tower.png" target="_blank"><img src="fig/run4_tower.png" alt="Linearised tower"></a><figcaption><b><span class="tag f">FAIL</span>The linearised tower</b>How far each transformation moves each layer; two artefacts of linearisation, replaced by the finite tower in Run 5. <code>run4_tower.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run4_formation.png" target="_blank"><img src="fig/run4_formation.png" alt="Formation signals"></a><figcaption><b><span class="tag f">FAIL</span>Formation on fresh seeds</b>Generator, swap restoration and hint-slot collapse against the grokking checkpoint; the generator appears before the jump on sparse sweeps. <code>run4_formation.png</code></figcaption></figure>
+<figure><a href="fig/run4_dominance.png" target="_blank"><img src="fig/run4_dominance.png" alt="Dominance rule"></a><figcaption><b><span class="tag p">PASS</span>The dominant-direction rule</b>Share of tr ḡ per input slot; fires on the planted shortcut (0.95) and, as registered, on a legitimately single-input task. <code>run4_dominance.png</code></figcaption></figure>
+<figure><a href="fig/run4_interrupt.png" target="_blank"><img src="fig/run4_interrupt.png" alt="Interrupt scored"></a><figcaption><b><span class="tag p">PASS 5/5</span>The interrupt, scored</b>Functional-floor trigger, λ = 3 once, never escalated; decorrelated accuracy ≥ 0.999 at step 6,000 and no re-firing to 12,000. <code>run4_interrupt.png</code></figcaption></figure>
+</div>
+
+<h2 id="run5">Run 5 <small>registration · 21 Sept</small></h2>
+<p class="sub">Nothing proposed. Run-4 numbers written down as thresholds and scored on eleven models trained afterwards.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/run5_instruments.png" target="_blank"><img src="fig/run5_instruments.png" alt="Instruments on fresh models"></a><figcaption><b><span class="tag f">FAIL 3/5</span>Instruments on models trained after the thresholds</b>◇ marks the registered null. All twelve clean-side clauses hold; two memoriser ceilings set from two memorisers failed on the third and fourth. <code>run5_instruments.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run5_formation.png" target="_blank"><img src="fig/run5_formation.png" alt="Formation, every checkpoint"></a><figcaption><b><span class="tag h">3 OF 4</span>Formation at every checkpoint</b>The generator is accepted at the largest accuracy jump or one checkpoint before, never after, never on a memoriser. Persistence 0.946 on one seed. <code>run5_formation.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run5_tower.png" target="_blank"><img src="fig/run5_tower.png" alt="Finite tower"></a><figcaption><b><span class="tag p">PASS 3/3</span>The finite tower</b>Top: Jacobian-free g-length of the segment. Bottom: Run 4's linearisation. A memoriser's hint change is visible at the embedding (0.43–0.48) where the linearisation read 0.00. <code>run5_tower.png</code></figcaption></figure>
+</div>
+
+<h2 id="run6">Run 6 <small>orbit-closure · 21–22 Sept</small></h2>
+<p class="sub">Can the group also say what the network does not know and where it will fail? Orbit coherence κ and equivariance defect ε against the softmax family and Golan's designer transformations.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/run6_closure.png" target="_blank"><img src="fig/run6_closure.png" alt="Closing the definition"></a><figcaption><b><span class="tag h">4 OF 5</span>Closing the definition</b>The re-registered slot-collapse clause passes 6/6. Null-subtracted, a CNN's class fibres tighten with depth no differently in a memoriser: the instrument is transformer-only. <code>run6_closure.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run6_roc.png" target="_blank"><img src="fig/run6_roc.png" alt="Knowledge boundary ROC"></a><figcaption><b><span class="tag f">FAIL</span>P4 as orbit coherence</b>Z113: an OOV token breaks the learned orbit (AUROC 0.99 vs softmax 0.8). ResNet: a shift-and-flip-invariant network is invariant on anything — below chance on SVHN, below every softmax baseline. <code>run6_roc.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run6_failure.png" target="_blank"><img src="fig/run6_failure.png" alt="Failure radius vs defect"></a><figcaption><b><span class="tag f">FAIL 0/5</span>P5 as equivariance defect</b>Top: the network's own defect. Bottom: the softmax margin, which the PGD radius is defined by descending. Random non-group transformations do as well. <code>run6_failure.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run6_knowledge_map.png" target="_blank"><img src="fig/run6_knowledge_map.png" alt="Knowledge map"></a><figcaption><b><span class="tag n">DESCRIPTIVE</span>The knowledge map</b>SVHN sits to the right of CIFAR-10. Inside CIFAR-10 the lowest-coherence images are mostly misclassified or ambiguous. <code>run6_knowledge_map.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run6_kappa_eps.png" target="_blank"><img src="fig/run6_kappa_eps.png" alt="Kappa vs epsilon"></a><figcaption><b><span class="tag p">PASS</span>κ against ε</b>Spearman −0.66 to −0.97 on 5/5 clean models — registered, passed, and largely the construction (both are built from the same orbit residuals). <code>run6_kappa_eps.png</code></figcaption></figure>
+</div>
+
+<h2 id="run7">Run 7 <small>the extractor, and the end · 22 Sept</small></h2>
+<p class="sub">A learned symmetry is one the trained network keeps and the untrained network does not. Subtract the architecture; what remains is what the network learned to ignore.</p>
+<div class="grid">
+<figure class="wide"><a href="fig/run7_inventory.png" target="_blank"><img src="fig/run7_inventory.png" alt="Learned-symmetry inventory"></a><figcaption><b><span class="tag h">3 OF 5</span>The learned-symmetry inventory</b>λ per family and layer. An augmented ResNet-18 has exactly three learned symmetries — brightness, contrast, gamma; memorisers none; the Lie-algebra search converges to brightness unaided. Training raises sensitivity to noise, blur and JPEG. <code>run7_inventory.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run7_roc.png" target="_blank"><img src="fig/run7_roc.png" alt="Knowledge and natural failure"></a><figcaption><b><span class="tag f">K′ FAIL</span> <span class="tag p">P5′ Z113 PASS</span> <span class="tag f">P5′ CNN FAIL</span>Knowledge and natural failure under the learned group</b>Learned symmetries lift SVHN and noise, not CIFAR-100. On early-stopped transformers, held-out errors are exactly the orbit-incoherent inputs (AUROC 1.000). <code>run7_roc.png</code></figcaption></figure>
+<figure class="wide"><a href="fig/run7_reconstruction.png" target="_blank"><img src="fig/run7_reconstruction.png" alt="Reconstruction"></a><figcaption><b><span class="tag p">ACC PASS</span> <span class="tag f">ABLATION FAIL</span>Reconstruction from the group</b>Eleven weights on the discovered generator and characters rebuild the function at 100%; removing a frequency costs the rebuild nothing and the network up to 78 points. <code>run7_reconstruction.png</code></figcaption></figure>
+</div>
+
+<footer>Reports: Run 1 · Run 2 · Run 3 · Run 4 · Run 5 · Run 6 · Run 7 are separate artifacts; the claims map is <code>CLAIMS.md</code> under <code>~/blindinglight</code>. Verdict tags are by the letter of each SPEC; post-hoc observations never upgrade a verdict. The word "complete" is not used.</footer>
+</div>

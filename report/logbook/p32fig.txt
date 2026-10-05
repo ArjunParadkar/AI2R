@@ -1,0 +1,1 @@
+<figure class="half"><img src="img/r4_int.png" alt=""><figcaption><b>Evidence, Run 4.</b> Decorrelated accuracy for five seeds under the interrupt; vertical line = the registered step-6,000 check. <code>figures/run4_interrupt.png</code></figcaption></figure>

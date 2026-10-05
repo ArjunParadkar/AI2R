@@ -1,0 +1,145 @@
+<title>Blinding Light Run 5</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 5 · registration</div>
+  <h1>Does the definition hold on models that did not exist when it was written?</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-21 13:11 → 22:45 CDT</span><span>eleven fresh specimens; every threshold fixed from Run 4 before training</span></div>
+</header>
+
+<section>
+  <p class="lede col">Run 5 proposed nothing. It took the numbers Run 4 had seen on four matched pairs, wrote them down as thresholds, trained eleven new models, and scored them by the letter: four instruments and a group for the definition of understanding, four cells for the generator as a leading indicator, and a finite tower to replace the linearised one.</p>
+  <div class="verdict">
+    <p><strong>The clean side holds everywhere; the memoriser side does not, twice.</strong> All twelve generaliser clauses passed on five fresh generalisers. Two of seven memoriser clauses missed a ceiling: one memoriser leans on its hint slot for 45% of its geometry (ceiling 0.42), and one ResNet memoriser's class fibres tighten with depth (−0.47, ceiling −0.30) — and the label-permutation null shows that on a CNN most of that tightening has nothing to do with labels. P6 stays <em>found</em>, not <em>registered</em>.</p>
+    <p><strong>The generator arrives with the jump.</strong> Swept at every checkpoint, the full 113-cycle is accepted at the largest test-accuracy jump on two seeds and one checkpoint before on the third, never after, never on 102 memoriser checkpoints. Run 4's "leads of 1–4" were sparse-sweep artefacts, as the specification said in advance. Persistence misses by one checkpoint on one seed (0.946 vs 0.95). <strong>The finite tower passes all three clauses</strong> and removes both Run-4 artefacts.</p>
+  </div>
+  <nav aria-label="Contents"><ol><li><a href="#grid">Five runs, one grid</a></li><li><a href="#spec">The specimens</a></li><li><a href="#p6">The definition</a></li><li><a href="#p7">The leading indicator</a></li><li><a href="#t">The finite tower</a></li><li><a href="#honest">What went wrong</a></li><li><a href="#files">Files</a></li></ol></nav>
+</section>
+
+<section id="grid"><h2>Five runs, one grid</h2>
+<figure><div class="frame"><img src="figures/grid_five_runs.png" alt="Table of problems with verdicts and key numbers for runs 1 to 5 side by side."></div><figcaption>Verdicts by the letter of each pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table><thead><tr><th>Run-5 cell</th><th>Pre-registered</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td>P6.a q(swap)</td><td>clean &lt; 0.10; mem &gt; 0.30</td><td class="num">0.004 / 0.006 / 0.004 vs 0.465 / 0.676</td><td>PASS</td></tr>
+  <tr><td>P6.b shift consistency</td><td>clean ≥ 0.75; mem ≤ 0.35</td><td class="num">0.988 / 0.984 vs 0.202 / 0.180</td><td>PASS</td></tr>
+  <tr><td>P6.c depth slope</td><td>clean &lt; −0.35; mem &gt; −0.30</td><td class="num">clean −0.53 … −0.57; mem +0.02, −0.01, <strong>−0.47</strong>, −0.14</td><td>FAIL (8/9)</td></tr>
+  <tr><td>P6.d slot collapse</td><td>clean a, b ≥ 0.40, hint ≤ 0.05; mem max ≤ 0.42</td><td class="num">clean ≈ (0.48, 0.48, 0.03) ×3; mem max 0.352, <strong>0.445</strong></td><td>FAIL (4/5)</td></tr>
+  <tr><td>P6.e group presence</td><td>clean found; mem none</td><td class="num">3/3; 0/2 (untrained 0/5)</td><td>PASS</td></tr>
+  <tr><td>P6 block</td><td>all five</td><td class="num">3 of 5</td><td>FAIL</td></tr>
+  <tr><td>P7.a lead</td><td>jump − first acceptance ≥ 0 on 3/3; never on memorisers</td><td class="num">0, 0, +1 (test acc 0.68, 0.60, 0.51 at acceptance); 0/102</td><td>PASS</td></tr>
+  <tr><td>P7.b restoration</td><td>q(swap) &lt; 0.05 within ±3 of the jump; mem &gt; 0.30</td><td class="num">0.010 / 0.022 / 0.003; mem ≥ 0.34</td><td>PASS</td></tr>
+  <tr><td>P7.c decoy hint collapse</td><td>&lt; 0.01 by jump+4; monotone decline from &gt; 0.30</td><td class="num">0.0002 at jump+1 (both); ρ = −0.99, −1.00 from 0.54, 0.49</td><td>PASS</td></tr>
+  <tr><td>P7.d persistence</td><td>≥ 0.95 after first acceptance, 3/3</td><td class="num"><strong>0.946</strong>, 1.000, 0.976</td><td>FAIL</td></tr>
+  <tr><td>T.1 / T.2 / T.3 finite tower</td><td>decoy hint null from resid_mid; translation &gt; 0.20 everywhere; memoriser hint &gt; 0.15 everywhere</td><td class="num">≤ 0.010; 0.28–0.83; 0.42–0.71</td><td>PASS / PASS / PASS</td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="spec"><h2>The specimens</h2>
+  <p>Eleven models, all named in <code>SPEC5.md</code> before training, all passing the sanity gate: Z113 clean seeds 9–11 (train and test 1.00), true memorisers 9–10 (random labels plus uninformative hints; train 1.00, test 0.009), decoys 9–10; ResNet-18 clean seeds 3–4 <em>with</em> random-crop-and-flip augmentation (train 0.99, test 0.78; 82–84 epochs against Run 4's 13), and memorisers 3–4 (train 0.99, test 0.10). The GPU ran at full clock today, so the whole set trained in 36 minutes. Augmentation was the brief's fix for the shift-consistency clause, and it worked as a fix: it trains shift consistency (0.98). It also means the with-aug / no-aug pair is not like for like; the like-for-like gap is Run 4's 0.68 vs 0.18.</p>
+</section>
+
+<section id="p6"><h2>The definition, scored</h2>
+  <p>A network understands a task when (i) its input geometry collapses onto the task's slots, (ii) it preserves the symmetries its architecture offers, (iii) its class fibres tighten with depth, (iv) a generator of the task's group is recoverable from its outputs. Concentration (participation ratio) is out: on seven new models memorisers concentrate the metric at least as much as generalisers (0.63–0.80 vs 0.55–0.64).</p>
+<figure><div class="frame"><img src="figures/run5_instruments.png" alt="Six bar panels, one per instrument, generalisers solid and memorisers hatched, with registered thresholds as dashed lines and the null as a diamond."></div><figcaption>Solid grey: generaliser. Hatched: true memoriser. ◇: the registered null. Dashed: clean-side threshold; dotted: memoriser-side threshold.</figcaption></figure>
+  <p><strong>Where it failed.</strong> Memoriser s10's slot shares are (0.32, 0.23, 0.45): it did not collapse onto the task slots — nothing like the clean signature — but it leans on the hint harder than the 0.42 ceiling set from two memorisers allowed. The ResNet memoriser s3's fibres tighten with depth (1.11 → 0.65); its label-permutation null is −0.30, and the augmented clean nets' null is −0.43 against −0.54 measured. On the CNN the slope mostly reads whole-cloud contraction. On the transformer the null is −0.11 to −0.14 against −0.53 to −0.57, and the instrument reads what it claims.</p>
+  <p><strong>The nulls came out as predicted.</strong> An untrained network sits on the clean side of the two symmetry instruments (q(swap) 0.01, shift consistency 0.85–0.99) — it <em>has</em> its architecture's symmetries — and on the memoriser side of slot collapse and the group. Clause (ii) reads "preserves", and an untrained network preserves. The definition needs (i), (iii) and (iv) to say "understands", and an untrained network fails all three.</p>
+</section>
+
+<section id="p7"><h2>The leading indicator</h2>
+<figure><div class="frame"><img src="figures/run5_formation.png" alt="Seven panels of test accuracy, swap quotient and hint share against checkpoint, with the first accepted 113-cycle and the largest accuracy jump marked."></div><figcaption>Every checkpoint. Thick grey bar: largest test-accuracy jump. Thin black line: first checkpoint at which a full 113-cycle is accepted. Ticks at the top: checkpoints where it is accepted.</figcaption></figure>
+  <p>On dense sweeps the generator is accepted <em>at</em> the largest jump (seeds 9, 10, both decoys) or one checkpoint before it (seed 11), when test accuracy is already 0.51–0.68. It is never accepted after the jump and never on a memoriser. "Leads the largest increment" holds 5/5; "precedes the rise" does not, and that reading of Run 4 is withdrawn. Symmetry restoration and hint-slot collapse hold exactly as registered — the decoys' hint share declines monotonically (ρ = −0.99, −1.00) from 0.5 and drops to 0.0002 one checkpoint after the jump. Persistence: one seed loses the cycle at two of 37 later checkpoints (0.946), single-checkpoint flickers at the acceptance rule's own threshold.</p>
+</section>
+
+<section id="t"><h2>The finite tower</h2>
+<figure><div class="frame"><img src="figures/run5_tower.png" alt="Heatmaps of the finite and linearised quotient per layer for swap, translation, hint change and orbit translation on seven models."></div><figcaption>Top row: finite g-length of the segment between the activations of x and Tx. Bottom: Run 4's linearisation on the same models.</figcaption></figure>
+  <p>The tower with finite inputs and a Jacobian-free length passes all three registered clauses. A memoriser's hint change is visible at the embedding (0.43–0.48) where the linearisation read 0.00; translation stays non-null at every layer; on generalisers the quotient by the swap is taken at resid_mid (0.60 → 0.00) and on memorisers it is never taken (0.51–0.89). An answer-changing translation, reported only, moves the representation <em>more</em> with depth (0.44 → 1.35): the tower orders transformations by how much of them the network keeps.</p>
+</section>
+
+<section id="honest"><h2>What went wrong</h2>
+  <ul>
+    <li><strong>The laptop lid was closed at 14:00 and the machine slept until 19:05</strong> with eight analysis processes mid-flight. They survived and resumed; five hours were lost. Nothing was recomputed.</li>
+    <li><strong>Two ceilings were registered from two memorisers each.</strong> Both failed on the third and fourth. That is what a confirmation run is for, and the gap is reported rather than moved: post-hoc, "hint &gt; 0.10 or max(a, b) &lt; 0.40" reads 5/5 and persistence at 0.94 reads 3/3. Neither is a verdict.</li>
+    <li><strong>The ResNet depth-slope clause was registered without looking at its label-blind null.</strong> The null was in the specification; the numbers it would produce were not. It should have been.</li>
+    <li>Run 4's "the generator leads by 1–4 checkpoints" was a sparse-sweep artefact. SPEC5 said so before the sweeps ran; the sweeps confirmed it.</li>
+  </ul>
+</section>
+
+<section id="files"><h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+  <tr><td>Pre-registration, brief, amendments</td><td><code>SPEC5.md</code>, <code>docs/RUN5_BRIEF.md</code>, <code>AMENDMENTS.md</code> (A-14)</td></tr>
+  <tr><td>Findings and pauses</td><td><code>FINDINGS5_P6.md</code>, <code>FINDINGS5_P7.md</code>, <code>FINDINGS5_T.md</code>, <code>PAUSE5_1..3.md</code>, <code>CLAIMS.md</code> (Run-5 section), <code>RUNLOG5.md</code></td></tr>
+  <tr><td>Results</td><td><code>results/run5/</code> (z113_finals, resnet, sweep_* ×7 at 51 checkpoints, score.json)</td></tr>
+  <tr><td>Code</td><td><code>whiteboxtopo/finite_tower.py</code>, <code>analysis/run5_{z113,resnet,score}.py</code>, <code>fig_run5.py</code>, <code>make_grid_run5.py</code>, <code>demo_run5.py</code>, <code>systems/resnet_subset.py --aug</code>; 209 tests pass, 1 xfail</td></tr>
+  <tr><td>Demo</td><td><code>logs/demo_run5_transcript.txt</code> — open() prints the four-instrument verdict, the lead time and the finite tower on three fresh models</td></tr>
+  </tbody></table></div>
+</section>
+
+<footer>Verdicts are by the letter of SPEC5.md. Post-hoc observations are labelled and never upgrade a verdict. The word "complete" is not used.</footer>
+</div>

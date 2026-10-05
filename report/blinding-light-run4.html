@@ -1,0 +1,165 @@
+<title>Blinding Light Run 4</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 4 · the tower of quotients</div>
+  <h1>Is memorisation the refusal to quotient?</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-20 15:59 → 23:49 CDT</span><span>true memorisers trained for this run; every scored model fresh and unseen</span></div>
+</header>
+
+<section>
+  <p class="lede col">Run 4 fixed the specimens — memorisers that have actually memorised — and registered in advance what three runs had only seen after the fact: the group generator recoverable from outputs, five instruments that should separate understanding from memorisation, three signals of formation, and an unsupervised rule for a dominant input direction with a null designed to make it fire wrongly.</p>
+  <div class="verdict">
+    <p><strong>Two pre-registered passes, on unseen seeds.</strong> The group is discoverable from outputs alone: a 113-cycle generator on four of four fresh generalisers and on neither true memoriser, with the network's own embedding decomposing into its frequencies along that generator. And the dominant-direction rule finds a planted shortcut with the nuisance hidden — and, as registered, also fires on a task that legitimately has one dominant input. It detects dominance, not spuriousness.</p>
+    <p><strong>The definition itself fails by the letter.</strong> Two of five instruments pass where four were required. A true memoriser's geometry is <em>not</em> spread out: memorisers concentrate the metric as much as generalisers do. The other four instruments separate every matched pair with no overlap, and two of them miss a registered threshold on one side. The three formation signals occur on six of six generalisers and no memoriser, but not when registered: the generator <em>leads</em> grokking.</p>
+  </div>
+  <nav aria-label="Contents"><ol><li><a href="#grid">Four runs, one grid</a></li><li><a href="#spec">The specimens</a></li><li><a href="#p6">Five instruments</a></li><li><a href="#p1">The group</a></li><li><a href="#p7">Formation</a></li><li><a href="#p3">Dominance and the interrupt</a></li><li><a href="#honest">What went wrong</a></li><li><a href="#next">What follows</a></li><li><a href="#files">Files</a></li></ol></nav>
+</section>
+
+<section id="grid"><h2>Four runs, one grid</h2>
+<figure><div class="frame"><img src="figures/grid_four_runs.png" alt="Table of problems with verdicts and key numbers for runs 1 to 4 side by side."></div><figcaption>Verdicts by the letter of each pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table><thead><tr><th>Run-4 cell</th><th>Pre-registered</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td>Sanity gate</td><td>memorisers ≥ 99% train, test at chance</td><td class="num">ResNet 99.6 / 10.4 and 99.4 / 10.2; Z113 100 / 1.0 and 100 / 0.8</td><td><span class="tag pass">✓ admitted</span></td></tr>
+  <tr><td>P6.1 concentration</td><td>C<sub>clean</sub> − C<sub>mem</sub> &gt; 0.25 on 4 pairs</td><td class="num">+0.02, −0.25, +0.05, −0.03</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P6.2 slot collapse</td><td>clean: two task slots ≥ 0.9; memoriser max slot ≤ 0.5</td><td class="num">(0.49, 0.50, 0.01) ×4; memorisers max 0.38, 0.39</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P6.3 architectural symmetry</td><td>q(swap) &lt; 0.05 vs &gt; 0.3; shift consistency ≥ 0.9 vs ≤ 0.6</td><td class="num">0.003 vs 0.56, 0.005 vs 0.58; 0.68 vs 0.19, 0.67 vs 0.17</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P6.4 depth slope</td><td>clean &lt; −0.3; memoriser &gt; −0.1</td><td class="num">−0.55 vs 0.00, −0.51 vs −0.01, −0.59 vs −0.21, −0.49 vs −0.09</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P6.5 group presence</td><td>generator on 4 clean, none on 2 memorisers</td><td class="num">4/4, 0/2</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P6 block</td><td>≥ 4 of 5 instruments</td><td class="num">2 of 5</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P1.1 group discovered</td><td>generator 4/4, 0/2; ≥ 4 of 5 frequencies at r &gt; 0.9 on ≥ 3/4</td><td class="num">4/4, 0/2; 4, 4, 5, 5 of 5; unique unit on 4/4</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P1.2 planted truth</td><td>cycle on noisy Fourier data; none on noise or an untrained model</td><td class="num">3 of 3</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P1.3 tower (structural)</td><td>decoys: hint-change null no later than translation; memorisers: nothing null</td><td class="num">two linearisation artefacts</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P1.4 orbit explanation</td><td>≥ 0.99 vs &lt; 0.60</td><td class="num">1.000, 1.000, 1.000, 0.990 vs 0.000, 0.000</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P7.1–P7.3 timing</td><td>generator ±1 of grokking; symmetry restored; hint slot collapses ±2</td><td class="num">generator at −4, −1, −3, 0; one seed without a memorisation phase; collapse at +2 and +3</td><td><span class="tag fail">✗ FAIL ×3</span></td></tr>
+  <tr><td>P3.1 dominance rule</td><td>fires on shortcut and on the legitimately dominant task; silent on clean and decoys</td><td class="num">0.957, 0.951 and 0.997; clean max 0.50; decoy hint 0.0002</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P3.2 interrupt</td><td>5/5 &gt; 0.98 at 6k; no re-firing to 12k; test ≥ 0.99</td><td class="num">decorrelated accuracy at step 6000: 0.999 / 1.000 / 1.000 / 1.000 / 1.000; floor re-firings in (6000, 12000]: 0; in-distribution test at 12000: 0.999 / 1.000 / 1.000 / 1.000 / 1.000</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="spec"><h2>The specimens</h2>
+  <div class="col"><p>Every earlier failure of the memoriser half traced to models that had not memorised. Here a ResNet-18 fits uniformly random labels on a fixed 5,000-image subset — no augmentation, no weight decay — to 99.6% and 99.4% in 12 and 15 epochs and tests at chance; matched clean models on the same images reach 99% train and 58% test. The Z113 memoriser is new: random labels <em>and</em> uninformative hint tokens, so that it has a third slot to key on. All scored models — four clean, two memorisers, two decoys, two planted shortcuts, one a-only — were trained for this run and named before they existed. The old under-trained "memorisers" are excluded.</p></div>
+</section>
+
+<section id="p6"><h2>Five instruments, one definition</h2>
+  <div class="col"><p><strong>Against the brief, first: a true memoriser's metric is not spread.</strong> The concentration of ḡ relative to an untrained network is 0.54–0.71 for generalisers and 0.64–0.79 for memorisers. Training of any kind concentrates the input geometry; memorising concentrates it as much. The number that suggested otherwise in run 3 came from a model that had not memorised. The instrument's own null also fails on ResNet: a second untrained seed scores +0.24 and −0.17 where 0 was expected.</p>
+  <p>The other four instruments agree with each other on every matched pair, with no overlap: swap quotient 0.003–0.005 against 0.56–0.58; shift consistency 0.67–0.68 against 0.17–0.19; depth slope −0.49 to −0.59 against 0.00 to −0.21; hint-slot share 0.01–0.03 against 0.28–0.33; generator four of four against none of two. Two of them miss a threshold. A clean ResNet trained without augmentation does <em>not</em> keep its architecture's shift symmetry — untrained 0.99, clean 0.68, memoriser 0.18 — so everyone breaks it and the memoriser breaks it far more; and one ResNet memoriser's fibers tighten slightly with depth (−0.21). "Memorisation is the refusal to quotient" survives as a description of four instruments and fails as the registered five-instrument definition.</p></div>
+<figure><div class="frame"><img src="figures/run4_p6_instruments.png" alt="Six bar panels, one per instrument, with generalisers in solid grey and true memorisers hatched; concentration bars overlap, the others separate."></div><figcaption>Solid grey: generaliser. Hatched: true memoriser. Concentration does not separate them; the other instruments do.</figcaption></figure>
+<figure><div class="frame"><img src="figures/run4_tower.png" alt="Heatmaps of q(T) by layer for transformations swap, translation and hint change on Z113 models, and shift and rotation on ResNets."></div><figcaption>The tower: how far each transformation moves the representation at each layer, relative to a typical distance (0 = the layer is blind to it).</figcaption></figure>
+</section>
+
+<section id="p1"><h2>The group, discovered — registered in advance, and it held</h2>
+  <div class="col"><p>The rule was fixed before the models existed: accept a permutation if it changes the output-pullback distance matrix, on average, by less than a quarter of what a random relabelling does, and ask whether a full 113-cycle is among the accepted candidates. On four of four fresh generalisers there is one; on neither true memoriser. Ordering the 113 tokens along the discovered generator and taking the Fourier transform of the token embedding recovers 4, 4, 5 and 5 of each model's five frequencies (r = 0.993–0.999), under a single unit that is unique among 56 and equal to the unit the generator itself implies — on two models the generator is translation by 24 and by 17, not by 1. Nothing was supplied: no group parameter, no token order, no labels.</p>
+  <p>Said with the pass: under this metric the statistic is a property of the function on all 12,769 inputs, and a model that is right everywhere is translation-equivariant in its predictions by arithmetic. What is not arithmetic is that the generator is readable from the logit geometry, that true memorisers lack it, and that the embedding decomposes along it. The planted-shortcut models carry the generator too — group presence is not evidence of no shortcut — and the number of accepted permutations (8 to 4,097) is not a group order. On planted data the rule's range was measured: entrywise isometry is lost at noise 0.05, the mean rule at 0.10.</p>
+  <p>The tower criterion failed on two artefacts of the linearised metric, both the "infinitesimal misses finite" problem: the derivative with respect to a NULL hint is flat at the embedding of every model, memorisers included, and translation leaves predictions exactly invariant while moving the logit vector by 0.22–0.35 of a typical distance.</p></div>
+</section>
+
+<section id="p7"><h2>Formation: the generator leads</h2>
+  <div class="col"><p>All three signals — a generator appears, swap-invariance returns below 0.005, the nuisance slot's share of the geometry goes to zero — occur on six of six fresh generalisers and on neither memoriser in 25,000 steps. None meets its registered timing. The generator is found at 17%, 70%, 41% and 93% test accuracy: four, one, three and zero checkpoints <em>before</em> the largest jump. On the decoys the hint-slot share does not plateau and drop; it declines steadily for thousands of steps (0.47 → 0.26) and then collapses, reaching below 0.01 two and three checkpoints after grokking. None of it is visible in train accuracy, which is 1.00 throughout.</p></div>
+<figure><div class="frame"><img src="figures/run4_formation.png" alt="Seven panels across training showing test and train accuracy, generator presence, swap quotient and hint-slot share for four clean models, two decoys and a memoriser."></div><figcaption>Across training on fresh seeds. The generator (dotted, circles) switches on at or before the accuracy jump; q(swap) (dashed) returns to zero; the hint-slot share (dash-dot) collapses. The memoriser shows none of the three.</figcaption></figure>
+</section>
+
+<section id="p3"><h2>Dominance, and the interrupt</h2>
+  <div class="col"><p>With the nuisance hidden, flag any input slot holding more than 80% of trace(ḡ). It fires on both fresh planted-shortcut models (0.957, 0.951), stays silent on four clean models (0.49–0.50) and two grokked decoys (0.0002, 0.0003) — and fires on the a-only task (0.997), where one input really is the whole task. That last firing was registered as the rule's limitation before it was measured. The slot profile of the input-pullback metric has four readable regimes: thirds (untrained), spread (memoriser), two task slots (generaliser), one slot (a shortcut, or a task with one input). Telling the last two apart is a question about the task.</p>
+  <p><strong>The interrupt, finally scored.</strong> Functional-floor trigger (it fired at step 500 on every seed), run 1's presence-and-value KL penalty, λ = 3 switched on once and never escalated, five seeds: decorrelated accuracy at step 6000: 0.999 / 1.000 / 1.000 / 1.000 / 1.000; floor re-firings in (6000, 12000]: 0; in-distribution test at 12000: 0.999 / 1.000 / 1.000 / 1.000 / 1.000. All three registered clauses hold on five of five seeds. It is not topological and it needs the nuisance to be known. One thing the criterion does not cover: seed 0's decorrelated accuracy dipped to 0.943 at step 7,500 (floor silent, reliance −0.001) and was back at 0.999 by step 8,000; every other check on every seed in (6000, 12000] reads 0.997–1.000.</p></div>
+<figure><div class="frame"><img src="figures/run4_interrupt.png" alt="Decorrelated accuracy against training step for five seeds; all rise above 0.98 by step 1,500 to 3,000 and stay there to step 12,000, with one dip to 0.94 on seed 0 at step 7,500."></div><figcaption>The interrupt on five seeds: λ = 3 switched on once at the first firing of the functional floor, never escalated. Vertical line: the registered step-6000 check.</figcaption></figure>
+<figure><div class="frame"><img src="figures/run4_dominance.png" alt="Stacked bars of trace share per input slot for every fresh Z113 model with a dashed line at 0.8; shortcut and a-only bars cross it."></div><figcaption>Share of the input geometry per slot. The rule fires on the planted shortcut and on the legitimately single-input task.</figcaption></figure>
+</section>
+
+<section id="honest"><h2>What went wrong</h2>
+  <ul class="col">
+    <li><strong>Four hours were lost to my own mistake.</strong> An analysis job crashed on a one-line bug at 17:15 and the waiter I had set was watching for a completion line that could then never appear. Nothing was computed between 17:15 and 21:35.</li>
+    <li><strong>The GPU is power-capped by the system</strong> (about 400 of 3,090 MHz). I did not change it. Specimen training took 66 minutes instead of about ten, and the interrupt runs at roughly 100 penalised steps a minute.</li>
+    <li><strong>Corrections to the brief, made before computing:</strong> the rule is amendment A-10, not A-12, and no amendment contains "δ = 0.06" — an absolute tolerance is known to fail on untrained models; the "5.7 vs 7.8" concentration numbers were per-input, from an under-trained memoriser.</li>
+    <li><strong>Clean ResNets here generalise only partly</strong> (58% test on 5,000 images without augmentation). They are matched to the memorisers, which is what the comparison needs, and they are not strong generalisers.</li>
+    <li>Neighbouring work cited in every findings file: LieGG (Moskalev, Sepliarskaia, Sosnovik, Smeulders, NeurIPS 2022); for shift consistency, Zhang (2019) and Azulay &amp; Weiss (2019).</li>
+  </ul>
+</section>
+
+<section id="next"><h2>What follows</h2>
+  <ul class="col">
+    <li><strong>Two results are now pre-registered passes and can be written up:</strong> discovery of the group and its representation from outputs alone, and the unsupervised dominance rule with its stated limitation.</li>
+    <li><strong>Drop concentration from the definition.</strong> The four instruments that do separate memorisers need thresholds set from these matched pairs and re-registered on new ones — and the clean image models need augmentation if "keeps the architecture's symmetry" is to be tested fairly.</li>
+    <li><strong>The generator as a leading indicator of grokking</strong> is the new post-hoc observation: found at 17% test accuracy on one seed. It needs its own registration — lead time, in checkpoints, on fresh seeds.</li>
+    <li><strong>Replace the linearised tower with a finite one.</strong> Both artefacts come from taking a derivative where a finite change was meant.</li>
+  </ul>
+</section>
+
+<section id="files"><h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+  <tr><td>Pre-registration, amendment</td><td><code>SPEC4.md</code> · <code>AMENDMENTS.md</code> (A-13) · brief <code>docs/RUN4_BRIEF.md</code></td></tr>
+  <tr><td>All four scorecards</td><td><code>CLAIMS.md</code> · <code>figures/grid_four_runs.png</code></td></tr>
+  <tr><td>Pauses and findings</td><td><code>PAUSE4_1..3.md</code> · <code>FINDINGS4_P6, P1, P7, P3.md</code></td></tr>
+  <tr><td>Numbers and specimens</td><td><code>results/run4/</code> · <code>runs/r4_*</code> · demo <code>logs/demo_run4_transcript.txt</code></td></tr>
+  <tr><td>Code</td><td><code>analysis/run4_*.py</code> · <code>systems/resnet_subset.py</code> · <code>tests/test_run4_delta_symmetry.py</code> (206 tests pass, 1 documented xfail)</td></tr>
+  </tbody></table></div>
+</section>
+<footer>Verdicts are by the letter of SPEC4.md. Post-hoc observations are labelled and never upgrade a verdict. The word "complete" is not used.</footer>
+</div>

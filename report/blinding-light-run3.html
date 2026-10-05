@@ -1,0 +1,168 @@
+<title>Blinding Light Run 3</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 3 · the symmetry group</div>
+  <h1>Is what a network knows a symmetry group?</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-20 13:38 → 15:40 CDT (3-hour budget)</span><span>same laptop; only four ResNet and four Z113 fresh seeds were trained</span></div>
+</header>
+
+<section>
+  <p class="lede col">Run 3 pulled the output metric back to the input, g = JᵀJ, and asked three things of it: is the learned symmetry group discoverable without being supplied; is its size the difference between understanding and memorising; is a broken symmetry the definition of spurious structure. Every threshold was fixed in advance, every instrument verified on planted truth first, and the unseen models named before they were trained.</p>
+  <div class="verdict">
+    <p><strong>Said first, as the brief requires: by the letter, the group is not discoverable on Z113 without being supplied.</strong> Max-norm isometries of the output-pullback metric give groups of order 1, 1, 2, 13 and 5 on the five grokked models, where 113 was required. The ring RNN gives order 1. The Killing dimension is 0 for a clean, a label-memorising and an untrained ResNet-18 alike. None of the three definitions is supported as registered.</p>
+    <p><strong>Why, and what is there instead.</strong> A trained network's symmetry is statistical, not entrywise: a true translation changes the distance matrix by 3% on average and by 14–42% in its worst entry. Read that way — post-hoc, labelled as such — a 113-cycle generator is recoverable from outputs alone on five of five generalisers and on no memoriser, it appears within one checkpoint of grokking, and the frequencies fall out of it. And two of run 2's after-the-fact observations replicated on fresh seeds.</p>
+  </div>
+  <nav aria-label="Contents"><ol><li><a href="#grid">Three runs, one grid</a></li><li><a href="#group">The group</a></li><li><a href="#size">Size of the group</a></li><li><a href="#breaking">Symmetry breaking</a></li><li><a href="#formation">Formation</a></li><li><a href="#orbit">Orbit explanation</a></li><li><a href="#honest">Faults found in the spec</a></li><li><a href="#next">What follows</a></li><li><a href="#files">Files</a></li></ol></nav>
+</section>
+
+<section id="grid"><h2>Three runs, one grid</h2>
+<figure><div class="frame"><img src="figures/grid_three_runs.png" alt="Table of problems P1 to P7 with verdicts and key numbers for runs 1, 2 and 3 side by side."></div><figcaption>Verdicts by the letter of each pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table><thead><tr><th>Run-3 cell</th><th>Pre-registered</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td>S · instruments</td><td>planted truth before networks; 200+ tests</td><td class="num">7 instruments verified, 2 faults caught there; 202 pass, 1 xfail</td><td><span class="tag pass">✓ PASS</span></td></tr>
+  <tr><td>P1.1 · Z113 group</td><td>order ≥ 113 with a 113-cycle on ≥ 4/5; ≥ 4/5 frequencies from the discovered generator</td><td class="num">orders 1, 1, 2, 13, 5; a letter generator on 2 models only</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P1.2 · memoriser</td><td>order ≤ 2</td><td class="num">1</td><td><span class="tag pass">✓ met</span></td></tr>
+  <tr><td>P1.3 · ring</td><td>cyclic order ≥ 36 on 3/3</td><td class="num">1, 1, 1</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P1.4 · rot-MNIST</td><td>rotation Killing at conv layers; null at depth in the trained net only</td><td class="num">residual 0.26–0.34 (need &lt; 0.1); null criterion ill-posed</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P1.5 · swap quotient</td><td>q &lt; 0.05 at the opened layer on 5/5</td><td class="num">0.002–0.005; embedding 0.61–0.78; memoriser 0.58</td><td><span class="tag pass">✓ met</span></td></tr>
+  <tr><td>P6.1 / P6.2</td><td>Killing dim clean ≥ scrambled + 2; ν̄ gap &gt; 0.1</td><td class="num">0 vs 0 (untrained 0); 0.997070 vs 0.997062</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P6.3 · order across training</td><td>≥ 113 within ±2 checkpoints of grokking</td><td class="num">never, on seen or fresh clean seeds; memorisers ≤ 1</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P6.4 · fresh seeds</td><td>connection-scale slope &lt; −0.3 generalisers, &gt; −0.1 memorisers; ID-profile classes, 18/20 bootstraps</td><td class="num">generalisers 4/4 and 4/4; memorisers 2/4 and 0/2</td><td><span class="tag part">◐ half</span></td></tr>
+  <tr><td>P3.1 · breaking score</td><td>Spearman with the floor &gt; 0.9; fires wherever the floor fires; 0 false alarms</td><td class="num">0.68; 122/122 including 7/7 evasion; 39/102 decoy + every step 0</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P3.3 · interrupt</td><td>5/5 above 0.98, no re-firing</td><td class="num">not scored: 4.5–5.3 s/step under GPU contention, stopped at step ~700</td><td><span class="tag expl">— not scored</span></td></tr>
+  <tr><td>P7.1 / P7.3</td><td>ring order forms with accuracy; decoy_s1 order ≥ 113 throughout</td><td class="num">never; 16% of post-grok checkpoints</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  <tr><td>P2.1 · orbit explanation</td><td>≥ 99% orbit- and coset-constant on 5/5; memoriser &lt; 60%</td><td class="num">1.000 ×5; memoriser 0.000</td><td><span class="tag pass">✓ met</span></td></tr>
+  <tr><td>P2.2 · boundary</td><td>top-3 shifts from discovered characters hold ≥ 53.6%</td><td class="num">49% / 22% / 14%</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+  </tbody></table></div>
+</section>
+
+<section id="group"><h2>The group: not discovered by the letter, recoverable in the mean</h2>
+  <div class="col"><p>Stated in the pre-registration before anything was computed: under the output-pullback metric the distance between two tokens is built from the model's outputs on all 113 × 113 inputs, so any model that is right everywhere has a circulant distance matrix. The "group" is a property of the <em>function</em>. On the raw embedding rows nothing is found on any model (orders 1, 1, 1, 1, 3) — the embedding is not an isometric copy of Z<sub>113</sub>.</p>
+  <p>The registered tolerance was entrywise (10% of the median distance). A true translation passes that on average by a wide margin — 3% of the median, against 22% for the memoriser and 21–33% for a random relabelling — and fails it in the worst of 12,769 entries (14–42%). So the search verifies almost nothing. Two replacement statistics I wrote after seeing this were themselves wrong: a mean tolerance passes 804 permutations of an untrained model, and a chance-relative one passes 3,406 on the memoriser, because swapping two tokens barely moves a mean. Neither yields a group order. What carries information is whether a <strong>full 113-cycle</strong> is among the mean-accepted candidates: yes on 5 of 5 generalisers, no on the memoriser.</p>
+  <p>Ordering the tokens along that discovered generator and taking the Fourier transform of the embedding recovers 5, 4, 4, 4 and 4 of each model's five frequencies (r = 0.990–0.999, one at 0.35), under a single unit that is unique — 1 of 56 — and equal to the unit the generator itself implies. On the two decoy models the discovered generator is translation by 43⁻¹ and 42⁻¹, not by 1, and the frequencies line up only after that change of generator. This is the unsupervised naming that run 2 failed, by the group route — post-hoc, with a rule invented after the letter failed.</p></div>
+<figure><div class="frame"><img src="figures/run3_discovered_group.png" alt="113 tokens on a circle, each joined to its two nearest tokens under the output-pullback distance; the chords all span the same shift, forming a circulant star pattern."></div><figcaption>Each token joined to its two nearest tokens under the output-pullback distance. The chords span one constant residue shift: a circulant graph.</figcaption></figure>
+</section>
+
+<section id="size"><h2>Is generalisation the size of the group?</h2>
+  <div class="col"><p>Not in any registered measure. The Killing algebra over eight image generators has dimension 0 for the clean, the label-memorising and the untrained ResNet-18; the null fraction of g is 0.997 for all three, as it must be for a ten-logit network on 3,072 pixels. Graded and post-hoc: clean training lowers every Killing residual relative to the other two (about 0.7× for the geometric warps), and lowers the photometric ones most — brightness 0.09 against 0.25, contrast 0.10 against 0.20 — while the memoriser sits at the untrained level. Its metric is also the most anisotropic (participation ratio 5.7, against 7.8 and 9.5).</p>
+  <p><strong>What replicated on unseen models.</strong> Two observations run 2 made after the fact were pre-registered here on seeds that did not exist yet. The scale at which a class fiber becomes one piece falls with depth in all four fresh generalisers (slopes −0.57, −0.53, −0.50, −0.49; criterion &lt; −0.3) and is flat in both fresh Z113 memorisers. The intrinsic-dimension profile is a plateau on both fresh grokked Z113 models and a decay on both fresh clean ResNet penultimate layers, 20 of 20 bootstraps each. The memoriser half of the criterion fails: fifteen epochs on random labels only reached 56–59% training accuracy, so the fresh ResNet "memorisers" are not memorisers, and the Z113 memorisers' dimension grows too slowly to be classed as growth.</p></div>
+<figure><div class="frame"><img src="figures/run3_fresh_seeds.png" alt="Left: fiber connection scale against normalised depth for eight fresh models; generalisers fall, Z113 memorisers stay flat. Right: intrinsic dimension against neighbourhood size with the profile class of each."></div><figcaption>Fresh seeds only. Left: connection scale of class fibers by depth. Right: ID(k) profiles with their bootstrap agreement.</figcaption></figure>
+<figure><div class="frame"><img src="figures/run3_killing_dim.png" alt="Killing residuals per generator for clean, scrambled and untrained ResNet-18."></div><figcaption>Killing residuals per generator. The dimension of the Killing algebra is 0 for all three networks.</figcaption></figure>
+</section>
+
+<section id="breaking"><h2>Symmetry breaking is not spurious structure</h2>
+  <div class="col"><p>The breaking score is the share of the input-pullback geometry that lies in the hint slot. It never misses: it fires on all 122 checkpoints where run 2's functional floor fires, including all seven where the H¹ detector had been evaded. It fails the other two clauses. It tracks the floor only loosely (rank correlation 0.68), and it false-alarms on 39 of 102 decoy checkpoints and on every model at step 0.</p>
+  <p>Both failures are informative. A randomly initialised network has three input slots and gives each a third of its geometry, which is above the registered threshold. And on the decoy models — hint present, uninformative — the score is 0.44–0.48 for the whole memorisation phase and collapses to 0.0004 exactly as the model groks. <strong>A memorising network keys on every token, the nuisance included.</strong> That is a genuinely broken symmetry and it is not the planted shortcut. The score is also infinitesimal and scale-free: a collapsed model with zero reliance scores 0.94, and a model with reliance 0.35 scores 0.0002 because its local derivative is flat. The functional floor from run 2, with no false alarms on the same 255 checkpoints, remains the better statistic. Both need to be told which input is the nuisance.</p>
+  <p>Exploratory, with the nuisance hidden: on both planted models the hint is the <em>top</em> eigen-direction of the averaged input-pullback metric (95–96% of its trace; under 1% on clean models). It is the first unsupervised handle on the nuisance in three runs, on two models, with no registered criterion.</p></div>
+<figure><div class="frame"><img src="figures/run3_bz_vs_floor.png" alt="Breaking score and functional floor across checkpoints on the two re-encoded models with H1-silent checkpoints hatched, and a panel comparing decoy and shortcut models."></div><figcaption>Breaking score against the functional floor on the evasion models, with the H¹-silent checkpoints hatched.</figcaption></figure>
+</section>
+
+<section id="formation"><h2>Formation</h2>
+  <div class="col"><p>By the letter nothing forms: the entrywise group order never approaches 226 on any checkpoint. Under the post-hoc full-cycle rule — fixed at 14:17, before the fresh seeds had finished training — the generator first appears at the grokking checkpoint or one either side of it on five of five generalisers (offsets 0, +1, 0, −1, 0), is present in 97–100% of later checkpoints, and appears in none of 73 memoriser checkpoints. On the model whose frequency circles were repeatedly knocked down in run 2, the generator is there at every one of those checkpoints: the symmetry is the invariant, the circle its shadow — on one model, post-hoc.</p>
+  <p>The brief predicted that swap-invariance precedes grokking. It does not. It is present at initialisation (q = 0.012–0.019: attention pooling at the read-off position is permutation-invariant up to small positional embeddings), is <em>broken</em> during memorisation (0.20–0.46; 0.58 in the memoriser) and is restored at the grokking checkpoint or one to two after it. Run 2 called the Z₂ quotient a learned invariance. The accurate statement is that generalisers keep a symmetry the architecture offers, and memorisers break it.</p></div>
+<figure><div class="frame"><img src="figures/run3_group_formation.png" alt="Six panels across training: test accuracy, swap quotient q, presence of a 113-cycle under the post-hoc rule, and the by-the-letter group order, for three seen generalisers, a memoriser and two fresh generalisers."></div><figcaption>Across training. Solid: test accuracy. Dashed: q(swap). Dotted with circles: a 113-cycle found (post-hoc rule). Grey: by-the-letter group order over 226.</figcaption></figure>
+</section>
+
+<section id="orbit"><h2>The orbit explanation</h2>
+  <div class="col"><p>This one holds exactly. For every one of 2,000 random inputs on each of the five generalisers, the whole 113-element translation orbit under the discovered generator and the swap coset receive a single prediction; on the memoriser, none do. The explanation the brief asked for is a true statement about the model: "predicted 14; (5, 9) lies on the translation orbit {(5+s, 9−s)} and the swap coset {(5,9), (9,5)}, all mapped to the residue-14 fiber" — on the memoriser the same four inputs give 93, 12, 42 and 59. The caveat is arithmetic: a model that is right on all 12,769 inputs is orbit-constant under the true translation by definition; what the cell adds is that the generator came from the outputs. The boundary prediction recomputed from the discovered characters is weaker than run 1's (49%, 22%, 14% against 43%, 52%, 25%) and fails.</p></div>
+</section>
+
+<section id="honest"><h2>Faults found in the specification itself</h2>
+  <ul class="col">
+    <li><strong>Stated before computing, all borne out:</strong> the group under g is a property of the function; a symmetric distance matrix always has the reflection; the generator is defined up to a unit; ν ≥ 0.9967 for any ten-logit image network; the secant pullback is the same at every layer.</li>
+    <li><strong>Found on planted truth, before any network:</strong> a tolerance looser than the point spacing returned 2,712 "isometries" of a regular 113-gon; the three-anchor assignment lost 221 of 226 true isometries under 2% noise. Both fixed and recorded (A-8).</li>
+    <li><strong>Found by the agents in my own pre-registration:</strong> normalising generators by their Frobenius norm makes the Killing tolerance dimension-dependent and brightness incommensurate with the warps; the 0.05 null-fraction threshold is below the isotropic expectation of a 32-row sketch; the breaking-score threshold sits below its value at random initialisation; the PGD consistency check is true by construction.</li>
+    <li><strong>Not done:</strong> the interrupt (P3.3) could not run inside the budget on a shared GPU and is recorded as not scored, not as a result. The rot-MNIST network is a weak model (60% on rotated digits). Depth-wise Killing residuals used 20 images, not 500.</li>
+    <li>Neighbouring work cited in every findings file: LieGG (Moskalev, Sepliarskaia, Sosnovik, Smeulders, NeurIPS 2022), which extracts Lie generators from trained networks. Nothing here is claimed as first beyond the finite, single-metric formulation and the depth profile.</li>
+  </ul>
+</section>
+
+<section id="next"><h2>What follows</h2>
+  <ul class="col">
+    <li><strong>One thing has now earned a pre-registration of its own:</strong> the mean-norm full-cycle rule. On fresh seeds, registered in advance: a 113-cycle generator is found on every generaliser and no memoriser, within one checkpoint of grokking, and its characters recover the frequencies. If that holds it is unsupervised discovery of the group and its representation from outputs alone.</li>
+    <li><strong>Replace entrywise isometry with a statistical notion</strong> before building anything else on "the group". A trained network is equivariant in distribution, not pointwise.</li>
+    <li><strong>Drop "symmetry breaking = spurious".</strong> Memorisation breaks symmetry. The functional, finite, decorrelated-probe test stays the monitor of record.</li>
+    <li><strong>Follow the one unsupervised lead:</strong> the nuisance as the top eigen-direction of the averaged input-pullback metric. It needs a null that can fail — a task-relevant input that also dominates the trace.</li>
+  </ul>
+</section>
+
+<section id="files"><h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+  <tr><td>Pre-registration, amendments</td><td><code>SPEC3.md</code> · <code>AMENDMENTS.md</code> (A-7 … A-12) · brief <code>docs/RUN3_BRIEF.md</code></td></tr>
+  <tr><td>All three scorecards</td><td><code>CLAIMS.md</code> · <code>figures/grid_three_runs.png</code></td></tr>
+  <tr><td>Pauses and findings</td><td><code>PAUSE3_0..3.md</code> · <code>FINDINGS_S, P1, P6, P3, P7, P2, IMG.md</code></td></tr>
+  <tr><td>Instruments</td><td><code>whiteboxtopo/metric</code> · <code>symmetry</code> · <code>symmetry_finite.py</code> · <code>symmetry_breaking.py</code> · <code>tests/test_run3_*.py</code></td></tr>
+  <tr><td>Numbers, fresh models, demo</td><td><code>results/run3/</code> · <code>runs/r3_*</code> · <code>logs/demo_run3_transcript.txt</code></td></tr>
+  <tr><td>Earlier reports</td><td><code>report/whitebox-report.html</code> · <code>report/blinding-light-run2.html</code></td></tr>
+  </tbody></table></div>
+</section>
+<footer>Verdicts are by the letter of SPEC3.md and its amendments. Post-hoc variants are labelled and never upgrade a verdict. The word "complete" is not used.</footer>
+</div>
