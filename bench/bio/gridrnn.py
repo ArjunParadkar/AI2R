@@ -12,10 +12,10 @@ L_ARENA = 2.2
 
 
 class GridRNN(nn.Module):
-    def __init__(s, N=256, P=256, seed=0, L=L_ARENA):
+    def __init__(s, N=512, P=512, seed=0, L=L_ARENA):
         super().__init__(); torch.manual_seed(seed); s.N, s.P, s.L = N, P, L
         s.W = nn.Parameter(torch.randn(N, N) * (0.5 / N ** 0.5)); s.V = nn.Parameter(torch.randn(N, 2) * 0.5); s.A = nn.Linear(P, N, bias=False); s.R = nn.Linear(N, P, bias=False)
-        g = torch.Generator().manual_seed(1234); s.register_buffer('centres', torch.rand(P, 2, generator=g) * L); s.sigma = 0.12 * L / 2.2 * 2.2
+        g = torch.Generator().manual_seed(1234); s.register_buffer('centres', torch.rand(P, 2, generator=g) * L); s.sigma = 0.12
 
     def place(s, pos):                         # pos (..., 2) -> (..., P): softmax of a centre-surround (difference-of-Gaussians) code, temperature 0.1
         d2 = ((pos[..., None, :] - s.centres) ** 2).sum(-1); a = torch.exp(-d2 / (2 * s.sigma ** 2)) - 0.25 * torch.exp(-d2 / (8 * s.sigma ** 2)); return torch.softmax(a / 0.1, -1)

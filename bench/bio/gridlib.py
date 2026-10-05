@@ -87,10 +87,10 @@ def hex_template_r2(rm, lam, arena):
     return best
 
 
-def response_route(ratemaps, arena):
-    bins = ratemaps.shape[1]; bs = arena / bins; P = profiles(ratemaps); k, lab, sil = cluster_modules(P); out = []
+def response_route(ratemaps, arena, maxlag=24):
+    bins = ratemaps.shape[1]; bs = arena / bins; P = profiles(ratemaps, maxlag); k, lab, sil = cluster_modules(P); out = []; W = 2 * maxlag + 1
     for m in range(k):
-        idx = np.where(lab == m)[0]; ac = P[idx].mean(0).reshape(49, 49); L = lattice_from_profile(ac, bs)
+        idx = np.where(lab == m)[0]; ac = P[idx].mean(0).reshape(W, W); L = lattice_from_profile(ac, bs, maxlag)
         if L is None: out.append(dict(n=len(idx), lattice=None)); continue
         r2 = float(np.mean([hex_template_r2(ratemaps[i], L['spacing'], arena) for i in idx[:20]])); out.append(dict(n=int(len(idx)), r2_characters=r2, **L))
     return dict(n_modules=k, silhouette=sil, labels=lab, modules=out)
