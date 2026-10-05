@@ -23,3 +23,5 @@ kappa = hard orbit coherence under 6 photometric transformations (brightness +-0
 | `whiteboxtopo/knowledge.py` | `01cb067ed167cf499ace90932f48b0d273729cad3834922e0378cb8e20bb00c6` |
 
 Amendment 2026-10-05 to PHASE_3 (before any Phase-3 result existed): analysis/phase3_rotmnist.py uses reverse-mode (jacrev) instead of forward-mode (jacfwd) for the chart Jacobian because grid_sample has no forward-mode rule; same exact Jacobian, no metric or threshold change.  New sha256: 8873c242c926835bbbe35c2e864804a5d728d59b5651b54e6b5982232b6721de
+
+Amendment 2 2026-10-05 to PHASE_3 (no Phase-3 result existed yet): vmap(jacrev) failed with a functorch error on this model, so analysis/phase3_rotmnist.py computes the same exact chart Jacobian with one batched autograd backward per logit (render is batched).  No metric or threshold change.  New sha256: 75525397d913abeec022b731ee9c92c0ca2bd43e9810c38dffd8a0221604ce6b

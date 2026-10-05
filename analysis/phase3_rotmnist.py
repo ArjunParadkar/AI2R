@@ -19,6 +19,12 @@ def render(x0, p):
     return F.grid_sample(x0[None], F.affine_grid(th, (1, 1, 28, 28), align_corners=False), align_corners=False)
 
 
+def render_b(x0, P):
+    """batched render: P (n,3) -> (n,1,28,28)."""
+    c, sn = torch.cos(P[:, 2]), torch.sin(P[:, 2]); th = torch.stack([torch.stack([c, -sn, P[:, 0]], 1), torch.stack([sn, c, P[:, 1]], 1)], 1)
+    return F.grid_sample(x0[None].expand(len(P), -1, -1, -1), F.affine_grid(th, (len(P), 1, 28, 28), align_corners=False), align_corners=False)
+
+
 def train(cond, seed, epochs=8):
     tr = datasets.MNIST(ROOT, train=True, download=False, transform=transforms.ToTensor()); te = datasets.MNIST(ROOT, train=False, download=False, transform=transforms.ToTensor())
     X = torch.stack([tr[i][0] for i in range(len(tr))]); Y = torch.tensor([tr[i][1] for i in range(len(tr))]); g = torch.Generator().manual_seed(seed)
@@ -40,9 +46,9 @@ def chart_stats(m, digits, n_pts=40, seed=0):
     rng = np.random.default_rng(seed); ra, al, tn = [], [], []
     for x0 in digits:
         P = torch.tensor(np.c_[rng.uniform(-0.15, 0.15, (n_pts, 2)), rng.uniform(0, 2 * np.pi, n_pts)], dtype=torch.float32, device=DEV)
-        f = lambda p: m(render(x0, p))[0]; J = vmap(jacrev(f))(P)                         # (n, 10, 3)  reverse mode: grid_sample has no forward-mode rule (same exact Jacobian)
+        P = P.clone().requires_grad_(True); lg = m(render_b(x0, P)); J = torch.stack([torch.autograd.grad(lg[:, k].sum(), P, retain_graph=k < 9)[0] for k in range(10)], 1)   # (n,10,3) exact, one backward per logit
         with torch.no_grad():
-            pr = torch.softmax(m(torch.cat([render(x0, p) for p in P])), 1); Fm = torch.diag_embed(pr) - pr[:, :, None] * pr[:, None, :]
+            pr = torch.softmax(lg.detach(), 1); Fm = torch.diag_embed(pr) - pr[:, :, None] * pr[:, None, :]; J = J.detach()
         g = (J.transpose(1, 2) @ Fm @ J).double().cpu().numpy()
         for gi in g:
             w, V = np.linalg.eigh(gi); tr = np.trace(gi); tn.append(tr)
