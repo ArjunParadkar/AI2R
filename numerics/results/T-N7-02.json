@@ -1,0 +1,97 @@
+{
+ "config": {
+  "seeds": [
+   30,
+   31,
+   32,
+   33,
+   34
+  ]
+ },
+ "config_hash": "b6b35a1261232b663f036d81807d6bf5ac60f3febf59f03c517d62e4ba56f956",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": true,
+  "deterministic_algorithms": true,
+  "flash_sdp": false,
+  "math_sdp": true,
+  "mem_efficient_sdp": false
+ },
+ "name": "T-N7-02",
+ "result": {
+  "conditions": {
+   "k exact on all": true,
+   "random wiring b1==0": true,
+   "ring b1==1": true,
+   "torus b1==2 on all modules": false
+  },
+  "measured": {
+   "random_b1": [
+    0
+   ],
+   "random_k": 1,
+   "ring_b1": [
+    1
+   ],
+   "runs": [
+    {
+     "b1": [
+      0,
+      5,
+      2
+     ],
+     "k": 3,
+     "seed": 30
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 31
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 32
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 33
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 34
+    }
+   ]
+  },
+  "passed": false
+ },
+ "result_sha256": "b9a2be9f41ef241830133af9c076f6026c876f3f7285074af131d4a27bbbc80c",
+ "saved_at": "2026-10-04T18:25:14",
+ "seed": 30,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

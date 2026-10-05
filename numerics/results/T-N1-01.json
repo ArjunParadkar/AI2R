@@ -1,0 +1,41 @@
+{
+ "config": {
+  "cases": [
+   "affine",
+   "poly",
+   "tanh_mlp"
+  ]
+ },
+ "config_hash": "5e1855deb026f9ef89b9b74ec3fd1fdc65a99ed37e1212416eff5f0de9cb6169",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N1-01",
+ "result": {
+  "conditions": {
+   "abs<=1e-12(1+|J|)": true
+  },
+  "measured": {
+   "affine": 0,
+   "poly": "2.777050198308046e-17",
+   "tanh_mlp": "1.950621375445659e-16"
+  },
+  "passed": true
+ },
+ "result_sha256": "d1c0a884b6e24c5356b8bad278b0e8c2e22db1ce0144496dd8779dbdf915b8b7",
+ "saved_at": "2026-10-04T18:14:37",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

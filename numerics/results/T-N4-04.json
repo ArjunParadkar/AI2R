@@ -1,0 +1,44 @@
+{
+ "config": {
+  "n": 400
+ },
+ "config_hash": "4a06b513dbfcc3a7ff884124f8dbbdb8d53f80e05ea2c181373beb331079682f",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N4-04",
+ "result": {
+  "conditions": {
+   "dim=0": true,
+   "sigma_min>=1e-3": true
+  },
+  "measured": {
+   "null_dim": 0,
+   "sigma_first6": {
+    "__nd__": "<f8",
+    "sha": "c21861dcd8768a31a1025b0f612ebe6c4c3e24806a1e4a1fec048a0d4cf44353",
+    "shape": [
+     6
+    ]
+   },
+   "sigma_min": 0.20984797789525483
+  },
+  "passed": true
+ },
+ "result_sha256": "143a282373691b27a9330e0357f98f31ff91c69e7cd60ef5a7f7403abf19baff",
+ "saved_at": "2026-10-04T18:14:46",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

@@ -1,0 +1,227 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array,longtable}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{proposition}{Proposition}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\lev}[1]{\textsc{[#1]}}% access-level tag
+\newcommand{\Lev}[1]{\textbf{\textsc{[#1]}}}
+
+\title{Reading the Group a Network Learned on Modular Addition:\\
+Pre-registered Instruments, Their Failures, and a Functional Monitor\\[2pt]
+\large WHITEBOX v1.1 (corrected rebuild of the v1 draft)}
+\author{Arjun Paradkar \and Reva Paradkar}
+\date{Rebuilt 4 October 2026 from the v1 artifacts, applying the Phase~0 edits E1--E9}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study what a small network has learned when it generalizes, on a single task family: modular addition $(a+b)\bmod 113$ with a one-layer transformer, with a ResNet-18 on a CIFAR-10 subset as a contrasting real model.
+Every threshold was written before the scored models existed, each positive was paired with a null that could kill it, and most instruments failed; the failures are in the grid.
+Three claims survive and are defended here.
+\textbf{(1) A methodology.} Work on the function, not the weights; pull the output metric back to the input; pre-register thresholds and unseen models; report access level (A prediction only, B Jacobian, C internals, D biological) for every method; and state the null with every number. On this task it gives a recoverable group on all 10 generalizing transformers and none of 7 memorizers, with complete separation on four registered checks (one-sided exact permutation $p = 1/\binom{17}{7} = 1/19{,}448 \approx 5.1\times10^{-5}$ for a single instrument; instruments are correlated and $p$-values are not combined).
+\textbf{(2) A null for built-in symmetry (Proposition~1).} When the symmetry group is built into the architecture, orbit coherence $\kappa$ is near $1$ everywhere, including on untrained networks ($0.996$), so it cannot mark knowledge; it can only do so where the group was learned.
+\textbf{(3) Failure prediction mid-grokking.} On three transformers checkpointed during grokking, held-out errors are the orbit-incoherent inputs: AUROC $0.983$, $1.000$, $1.000$ against softmax $0.563$, $0.852$, $0.900$, with random transformations at chance ($0.44$--$0.49$). One of the three checkpoints is pre-grokking (test accuracy $0.09$); three seeds, no confidence interval.
+Outside these claims we report what did not hold: shape-based monitors can be evaded (a Proposition with one demonstration, not a theorem), nothing beat the softmax margin for adversarial radius, and the CNN results are partial.
+All access levels, nulls and baselines are stated per method; no biological data (level D) is used.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{Seven questions, one missing definition}
+The black box is seven questions: P1 what did the network learn, P2 why this decision, P3 when did a bias enter, P4 what does it not know, P5 where will it fail, P6 did it understand or memorize, P7 how did it form. Existing tools address pieces (probes, attribution, confidence scores) but are rarely checked against ground truth. Two obstacles are common to all: weights can be rewritten without changing the function (Section~\ref{sec:rewrite}), and ``understood versus memorized'' (P6) lacks an operational definition; a test set says \emph{that} a model generalizes, not what inside it generalization is.
+
+\subsection{The claim, as scoped}
+\emph{On the tasks tested, generalizers had a recoverable group and memorizers did not.} A network that generalizes modular addition has a set of input relabellings under which its answers move consistently; the instruments below recover that group from the input--output map with Jacobian access (level B) and find none on memorizers or untrained networks. We do not claim that knowledge in general is a group, nor that the result transfers beyond modular addition (a one-layer transformer) and the contrasting ResNet-18 results reported as such.
+
+\subsection{How this was established}
+Every expectation was written down before computation, with numeric thresholds and the models they would be scored on named in advance; every positive was paired with a null; post-hoc analyses are labelled and never upgrade a verdict. Run~1--7 specifications, scorecards and per-cell records are in the repository (\texttt{CLAIMS.md}, \texttt{docs/record.md}).
+
+\subsection{Access levels}
+Every method carries a tag. \Lev{A}: prediction-only (outputs, no gradients, no internals). \Lev{B}: the input--output map with Jacobian access (gradients with respect to the input). \Lev{C}: internals (activations, weights, training-loop access). \Lev{D}: biological or external ground truth. We never write ``from outputs alone'' for a level-B method.
+
+\subsection{Contributions (corrected)}
+\begin{table}[h]\centering\small
+\begin{tabular}{@{}cp{8.2cm}lc@{}}
+\toprule
+\# & Contribution & Problem & Access\\\midrule
+1 & Group discovery from the input--output map with Jacobian access: a full 113-cycle on 10/10 generalizers, 0/7 memorizers, 0/5 untrained; characters from the generator & P1 & \lev{B}\\
+2 & Orbit explanation: given the group, the whole orbit receives one prediction (1.000 vs 0.000) & P2 & \lev{A}\\
+3 & Understanding as a four-clause quotient: no overlap on 17 models (10 generalizers + 7 memorizers) & P6 & \lev{B}/\lev{C}\\
+4 & Generator acceptance coincides with the accuracy jump on 5/6 generalizer seeds (one checkpoint after on 1/6); never on a memorizer. A coincident marker, not a predictor & P7 & \lev{B}\\
+5 & Orbit coherence and Proposition~1 (built-in symmetry cannot mark knowledge) & P4 & \lev{A}$^\dagger$\\
+6 & Proposition (evasion), with a demonstration; and the margin tautology & P3, P5 & \lev{C}/\lev{B}\\
+7 & Functional interrupt: planted bias caught by behaviour and removed in one round, 5/5 seeds (needs the nuisance named) & P3 & \lev{A}/\lev{C}\\
+8 & Learned-symmetry extractor on a ResNet-18: brightness, contrast, gamma & P1 (images) & \lev{C}\\
+9 & Natural-failure prediction on three mid-grokking transformer checkpoints (CNN: not predicted) & P5 & \lev{A}$^\dagger$\\
+10 & Reconstruction: eleven weights rebuild the function at 1.000 held-out accuracy on 6/6 transformers & --- & \lev{C}\\
+11 & Library: \texttt{open(model)} returns the answers with their status & all & mixed\\\bottomrule
+\end{tabular}
+
+\smallskip\footnotesize $^\dagger$ Level A once the group is given; the group itself is discovered at level B.
+\end{table}
+
+\section{Related work}\label{sec:related}
+\input{related}
+
+\section{The mathematics}\label{sec:math}
+
+\subsection{Rewritings: read the function, not the weights}\label{sec:rewrite}
+Let $\theta$ be the weights, $f_\theta$ the function, $P$ a fixed probe list, and $R(\theta)=(f_\theta(x))_{x\in P}$ the answers on the probe set. Relabelling hidden units and rescaling ($\times\alpha$ in, $\div\alpha$ out, valid since $\sigma(\alpha t)=\alpha\sigma(t)$ for ReLU) never change an answer:
+\[
+W_\ell\mapsto P_\pi W_\ell,\; W_{\ell+1}\mapsto W_{\ell+1}P_\pi^{\top};\qquad
+W_\ell\mapsto \mathrm{diag}(\alpha)W_\ell,\; W_{\ell+1}\mapsto W_{\ell+1}\mathrm{diag}(\alpha)^{-1},
+\]
+so $G\supseteq\prod_\ell S_{n_\ell}\ltimes(\R_{>0})^{n_\ell}$ and $R\circ g=R$ for $g\in G$. Transformers add $W_Q\mapsto W_QA$, $W_K\mapsto W_KA^{-\top}$, $W_V\mapsto W_VB$, $W_O\mapsto B^{-1}W_O$. A measured quantity $Q$ is invariant if $Q(g\theta)=Q(\theta)$, covariant if $Q(g\theta)=\rho(g)Q(\theta)$, else an artifact. Path products $A(x)=W_LD_{L-1}(x)\cdots D_1(x)W_1$ are exactly invariant. Trained weights have trivial stabilizer, hence no canonical form. Consequently top-neuron and weight-size findings describe the writing; we study only the function. Verified exact to $10^{-14}$.\hfill\lev{C}
+
+\subsection{The input-pullback metric}
+With $J(x)=\partial f/\partial x$, define $g(x)=J(x)^{\top}J(x)$, $g(x)(v,v)=\|J(x)v\|^2$, and $\bar g=\E_x[g(x)]$ over the probe set. It is invariant under every rewriting above. It exposes ignored directions ($g(v,v)\approx 0$), symmetries ($f(Tx)=\rho(T)f(x)$) and use, via the slot share
+\[
+s_U=\frac{\tr(P_U\bar g P_U)}{\tr\bar g}.
+\]
+A generalizer on $a+b$ has $s\approx(0.48,0.48,0.03)$ (slots $a,b$, hint); a memorizer places $0.28$--$0.45$ on the useless hint.\hfill\lev{B}
+
+\subsection{Why not the last layer}
+With $z=Wh+b$, $g_{\text{last}}=W^\top W$ is constant and $\|W(h-h')\|=\|z-z'\|$: every distance there is a logit distance, and softmax confidence and margin are functions of logits. Several instruments we tried at the last layer were softmax in other coordinates; the information is at the input and in depth.\hfill\lev{C}
+
+\subsection{Statistical equivariance: discovering the group}
+Let $D_{ij}=d_g(x_i,x_j)$ be the $113\times113$ matrix of network distances between tokens. A relabelling $\sigma$ is a $\delta$-symmetry if
+\[
+\E_{ij}\,\frac{|D_{\sigma(i)\sigma(j)}-D_{ij}|}{\operatorname{median}(D)}<\delta,
+\]
+with $\delta$ calibrated to a quarter of the value for random relabellings (a null, not a tuned constant). The average is used because real networks are symmetric in bulk: a true shift moves $D$ by 3\% on average and up to 42\% in one entry, so exact matching finds nothing. The generator is an accepted relabelling forming a single 113-cycle. Ordering tokens along it and Fourier-transforming the embedding reveals the frequencies, the characters $\chi_k(n)=e^{2\pi i kn/113}$, via $\cos\omega(a+b)=\cos\omega a\cos\omega b-\sin\omega a\sin\omega b$.\hfill\lev{B}
+
+\subsection{Quotient index and the finite tower}
+With $h_\ell(x)$ the layer-$\ell$ representation,
+\[
+q_\ell(T)=\frac{\E_x\, d_{g_\ell}\!\big(h_\ell(x),h_\ell(Tx)\big)}{\E_{x,x'}\, d_{g_\ell}\!\big(h_\ell(x),h_\ell(x')\big)} ;
+\]
+$q\approx0$ means the network has glued $x$ and $Tx$. It is computed on real transformed inputs because derivatives miss discrete jumps (the linearized version reads a memorizer's hint change as $0.00$, the finite version $0.43$--$0.48$). Generalizers: hint $0.44\to0.0004$ after attention, swap $\approx0.005$ mid-network, translation never folded ($0.28$--$0.83$; a symmetry, not an invariance). Memorizers: swap stays $0.47$--$0.68$.\hfill\lev{C}
+
+\subsection{Fibers and persistent homology}
+With fiber $F^\ell_y=\{h_\ell(x):y(x)=y\}$, let $r^*$ be the Vietoris--Rips radius at which the last $H_0$ class dies and $\Delta=\text{slope}_\ell(r^*)-\text{slope}_\ell(r^*)_{\text{labels shuffled}}$. The shuffled slope removes whole-cloud contraction. Transformer: $\Delta=-0.39$ to $-0.45$ (generalizers) vs $-0.05$ (memorizer). On the CNN it does not separate after null subtraction and is retired there. Persistent homology also showed that answer-fibers are intervals $S^1/\Z_2$, not circles, because the layer is commutative.\hfill\lev{C}
+
+\subsection{Definition: understanding as a quotient}\label{sec:def}
+A network \emph{understands} a task when all four hold: (i) \emph{collapse}: two task slots $\ge 0.40$ and nuisance $\le 0.05$ (negation: hint $>0.10$ or no task slot above $0.40$); (ii) \emph{preservation}: $q(T_{\text{arch}})<0.10$ (negation $>0.30$); (iii) \emph{tightening}: $\Delta<-0.10$ (negation $>-0.10$); (iv) \emph{group}: a generator is a $\delta$-symmetry (negation: none). One clause is never enough: an untrained network passes (ii) but fails (i), (iii), (iv). Participation-ratio ``concentration'' was retired because memorizers concentrate as much as generalizers ($0.64$--$0.79$ vs $0.54$--$0.71$).\hfill\lev{B}/\lev{C}
+
+\subsection{Orbit explanation}
+For $(5,9)$ the orbit is $\{(5+s,9-s)\}$ together with the swap coset $\{(5,9),(9,5)\}$. The explanation is \emph{valid} iff the whole orbit receives one prediction; $\mathrm{Orbit}(x)=\{gx:g\in G\}$. Over 2{,}000 inputs: $1.000$ on generalizers, $0.000$ on memorizers.\hfill\lev{A} (given $G$)
+
+\subsection{Orbit coherence}
+$\kappa(x)=|G|^{-1}\sum_{g\in G}\mathbf 1[\argmax f(gx)=\rho(g)\argmax f(x)]$.
+\begin{proposition}[built-in symmetry]\label{prop:builtin}
+If $G$ is built into the architecture (e.g.\ CNN shift equivariance), then $\kappa(x)\approx1$ for all $x$, including on untrained networks; hence $\kappa$ cannot separate known from unknown inputs.
+\end{proposition}
+This is an architectural observation supported by measurement ($\kappa_s\approx0.98$ on everything, untrained included; $0.996$--$0.997$ on untrained ResNets), not a proved theorem; no checked proof is in \texttt{proofs/}. The group must be learned for $\kappa$ to mark knowledge.\hfill\lev{A} (given $G$)
+
+\subsection{Natural failure and the margin tautology}
+Natural failure: low $\kappa$ is tested as a predictor of held-out errors (Section~\ref{sec:p5}). Adversarial failure: with $m(x)=f_y(x)-\max_{c\ne y}f_c(x)$ and $r_{\text{adv}}(x)\approx m(x)/\|\nabla m(x)\|$, attacks find their radius by descending the margin, so the margin's correlation with the radius is built into the measurement. Three instruments in six runs never beat the softmax margin ($+0.93$).\hfill\lev{B}
+
+\subsection{Functional monitor, interrupt, and the evasion proposition}
+Floor: $\E[\hat y(x,z)\ne\hat y(x,z')]$ for nuisance $z\perp y$ on a decorrelated probe. Interrupt: $\lambda\,\mathrm{KL}(\psi(x,z)\,\|\,\psi(x,z'))$, switched on once if the floor fires.\hfill\lev{A} (floor), \lev{C} (interrupt: training access, nuisance named)
+\begin{proposition}[evasion]\label{prop:evasion}
+If $\Phi$ is a property of the representation that is not a function of $f$, a training objective penalizing $\Phi$ has solutions with $f$ unchanged; a monitor that is a function of $f$ does not have this slack.
+\end{proposition}
+The statement is elementary (many parameter settings compute the same $f$) and we give a \emph{demonstration}, not a proof: one penalty, one architecture, one task (Section~\ref{sec:evasion}). It is not a theorem; no proof is in \texttt{proofs/}. The general phenomenon, training against a latent-space monitor, is documented independently~\cite{bailey}.
+
+\subsection{Learned-symmetry extractor}
+$\lambda_\ell(T)=\big(q^{\text{untr}}_\ell(T)-q^{\text{tr}}_\ell(T)\big)/q^{\text{untr}}_\ell(T)$; $T$ is called learned iff $\lambda\ge0.5$. Subtracting the untrained network removes what the architecture gives for free. Searched over 17 transformation families plus a ten-dimensional Lie-algebra search.\hfill\lev{C}
+
+\subsection{Reconstruction}
+$\hat y=\argmax_c\sum_{k\in K}w_k\cos\!\big(\omega_k(a+b-c)\big)$, $\omega_k=2\pi k/113$. The summand is $1$ iff $c\equiv a+b$. Eleven weights are fitted from the discovered generator and frequencies with no network weights copied.\hfill\lev{C}
+
+\section{Instruments}
+\begin{table}[h]\centering\small
+\begin{tabular}{@{}clcl@{}}
+\toprule
+Step & Computes & Access & Answers\\\midrule
+1 & Jacobians, $\bar g$, slot shares, null distribution (calibrates $\delta$) & B & setup\\
+2 & Group discovery, full cycle, characters & B & P1\\
+3 & Orbit explanation per input & A (given $G$) & P2\\
+4 & Functional monitor on a decorrelated probe; dominance flag; interrupt & A / B / C & P3\\
+5 & Orbit coherence $\kappa$ & A (given $G$) & P4\\
+6 & Natural-failure score from $\kappa$ & A (given $G$) & P5\\
+7 & Four checks, understanding verdict & B / C & P6\\
+8 & Formation record over checkpoints & B / C & P7\\
+9 & Finite tower $q_\ell(T)$ & C & P6, P7\\
+10 & Extractor $\lambda_\ell(T)$ & C & P1 (images)\\
+11 & Report: each answer marked tested / partly tested / not measured & --- & all\\\bottomrule
+\end{tabular}
+\end{table}
+Level D (biological) is unused. Speed: $4.6$\,s (Z113 residual-mid, 1{,}000 probe points) and $8.3$\,s (ResNet-18 penultimate, 1{,}500 points) per layer on a quiet laptop; upper bounds under GPU contention are $7.1$ and $12.9$\,s.
+
+\section{Experimental design}
+\paragraph{Systems.} A one-layer transformer on $(a+b)\bmod113$ in four conditions: clean; planted shortcut (a hint token leaks the answer on a subset); decoy (hint present, useless); scrambled labels (a memorizer). Seeds $0$--$20$, checkpoints every 2\% of training. Real model: ResNet-18 on a fixed 5{,}000-image CIFAR-10 subset: clean with crop-and-flip augmentation, and true memorizers on random labels (no augmentation, no weight decay). Early runs only: a ring-attractor RNN and a rotated-MNIST CNN. Unfamiliar sets for P4: SVHN, CIFAR-100, Gaussian noise; out-of-vocabulary tokens for the transformer.
+\paragraph{Specimen gate.} A memorizer must actually have memorized. Runs 1--3 used ``memorizers'' at only $56$--$59\%$ train accuracy, so every memorizer claim from them is excluded. From Run~4: ResNet memorizers at $99.4$--$99.6\%$ train and $10.2$--$10.4\%$ test; transformer memorizers at $100\%$ train and $\le1\%$ test; each matched with a clean model.
+\paragraph{Discipline.} Thresholds and unseen models fixed in a specification before computation; instruments verified first on planted truth; nulls: feature shuffle, label permutation, untrained network, decoys, random non-group transformations; baselines: max-softmax~\cite{hendrycks2017}, entropy, ODIN~\cite{liang2018}, transformation consistency~\cite{golan2018}, integrated gradients, prediction depth, SPARE~\cite{spare}, LieGG~\cite{lieg}. Post-hoc analyses are labelled. The unit of replication is the independent seed or training run, never a checkpoint.
+
+\section{Results}
+
+\subsection{The group from the input--output map with Jacobian access (P1, level B)}
+A full 113-cycle on 10/10 generalizers, 0/7 memorizers, 0/5 untrained. Ordering tokens along it recovers 4--5 of each model's 5 frequencies at $r=0.990$--$0.999$ under a frequency unit unique among 56. Some generators are shifts by $24$, $17$, $43^{-1}$ or $42^{-1}$ rather than $1$: the same group in a different presentation, found only because it was discovered. Without the group supplied, unsupervised Rips naming of frequencies failed (0/5 on three seeds).
+
+\subsection{Orbit explanation (P2, level A given the group)}
+For 2{,}000 random inputs on every generalizer the full 113-element orbit and swap coset receive one prediction ($1.000$); memorizers $0.000$.
+
+\subsection{Understanding as quotient (P6)}
+\begin{table}[h]\centering\small
+\begin{tabular}{@{}lllc@{}}
+\toprule
+Instrument & Generalizers & True memorizers & Status\\\midrule
+Slot collapse $(s_a,s_b,s_{\text{hint}})$ & $\approx(0.48,0.48,0.03)$ & task slot $\le0.39$ or hint $0.28$--$0.45$ & registered\\
+$q(\text{swap})$ & $0.003$--$0.006$ & $0.47$--$0.68$ & registered\\
+Shift consistency (CNN) & $0.984$--$0.989$ & $0.17$--$0.20$ & registered\\
+$\Delta$ tightening (transformer) & $-0.39$ to $-0.45$ & $-0.05$ & registered\\
+$\Delta$ tightening (CNN) & $-0.12$ & $-0.11$ to $-0.13$ & retired\\
+Generator & 10/10 & 0/7 & registered\\
+Concentration (PR) & $0.54$--$0.71$ & $0.64$--$0.79$ & retired\\\bottomrule
+\end{tabular}
+\end{table}
+\textbf{Separation (E1).} There is no overlap across 17 models (10 generalizers, 7 memorizers); the one-sided exact permutation $p=1/\binom{17}{7}=1/19{,}448\approx5.1\times10^{-5}$ for complete separation on a single instrument. The instruments are correlated; $p$-values are not combined. The understanding plane (Figure~4 of v1) plots $q(\text{swap})$ against hint share for all 17 models. ``Fresh'' and ``matched pairs'' are dropped: Run~5 trained eleven models, so freshness cannot hold of all 17, and the pairing is documented only for Run~4.
+Run~5 itself scored 17 of 19 clauses and missed two memorizer ceilings set from only two models (P6.c depth slope 8/9, P6.d slot collapse 4/5; the latter later re-registered and passed in Run~6).
+
+\subsection{Formation (P7)}\label{sec:p7}
+On six generalizer seeds swept at every checkpoint (Run~5: seeds 9, 10, 11; Run~6: seeds 12, 13, 14) the generator is \emph{accepted at or before the largest test-accuracy jump on 5/6 seeds} (leads $0,0,+1,+4,0$ checkpoints; up to 4 checkpoints early) \emph{and one checkpoint after on 1/6} ($-1$). Both decoy seeds (Run~5) lead by 0. The $+4$ is Run~6 seed~12, a sparse-sweep seed in the sense of the withdrawal below. This is a coincident marker, not a predictor. ``Never after the jump'' holds on the dense Run~5 seeds only. Swap symmetry broken during memorization returns below $0.05$ within three checkpoints (Run~5). On the two Run~5 decoys the nuisance share falls from $0.54$ and $0.49$ to $0.0002$ at jump$+1$ (monotone decline, Spearman $\rho=-0.991$ over 39 and $\rho=-1.000$ over 24 checkpoints; descriptive for two autocorrelated trajectories, no $p$-value). After first acceptance the generator persists on $87$--$100\%$ of checkpoints (registered $0.85$, passed $0.871$, $1.000$, $0.970$). An earlier ``generator leads by 1--4 checkpoints'' claim was a sparse-sweep artifact and is withdrawn.
+
+\textbf{Formation (E2).} A previously reported ``6/6 versus 0/102 memorizer checkpoints, binomial $p<10^{-30}$'' is \emph{retracted}: the memorizer checkpoints come from a few autocorrelated runs (pseudoreplication). The unit is the training run: generator accepted at or before the jump on 5/6 generalizer seeds, one checkpoint after on 1/6; on 0 of the memorizer runs swept at every checkpoint (checkpoint counts reported descriptively, no $p$-value; see Section~\ref{sec:recon}).
+
+\subsection{What it does not know (P4)}
+Transformer, group learned: $\kappa$ separates never-seen tokens at AUROC $0.994$, $0.996$, $0.996$ (softmax $0.79$--$0.89$) \lev{A}$^\dagger$. On memorizers $\kappa$ is $0.00$--$0.23$ even on training data. CNN with built-in symmetries only: $\kappa_s\approx0.98$ on everything, untrained included; the instrument fails as Proposition~\ref{prop:builtin} says. CNN with learned symmetries (Run~7): SVHN $0.35$--$0.42\to0.63$ and $0.73$, Gaussian noise $0.95$, CIFAR-100 unchanged at $0.69$; softmax still higher on SVHN ($0.81$); this cell failed its registered criterion (the SVHN half holds). Coherence marks inputs where the learned rule breaks, not inputs that are merely new.
+
+\subsection{Where it fails (P5)}\label{sec:p5}
+\emph{Adversarial.} Six runs, three instruments (curvature, separatrix distance, equivariance defect) never beat the softmax margin ($+0.93$); closed as answerable by the margin only.
+
+\emph{Natural, mid-grokking.} On three transformers checkpointed during grokking the AUROC of $\kappa$ for held-out errors is $0.983$, $1.000$, $1.000$, against max-softmax $0.563$, $0.852$, $0.900$; random transformations give $0.45$, $0.44$, $0.49$. \textbf{Caveats the v1 text omitted:} the checkpoints' test accuracies are $0.09$, $0.785$, $0.880$ (not $0.51$--$0.88$; $0.51$ is a test accuracy at generator acceptance in Run~5). Seed~18 never reached the registered $0.70$--$0.90$ window within 12{,}000 steps, so its closest checkpoint is pre-grokking, with $90\%$ errors. The generator was found at the scored checkpoint on only one of the three seeds. Three seeds, no confidence interval; claim~(3) is a three-seed result. On the CNN the three lighting invariances do not predict semantic errors ($0.67$--$0.69$ vs $0.84$), stated as a fail.
+
+\subsection{Interrupt and dominance (P3)}
+The functional floor fires at step 500 on every seed. One penalty at $\lambda=3$, switched on once, gives decorrelated accuracy $0.999$--$1.000$ on 5/5 seeds, zero re-firings through step 12{,}000, in-distribution accuracy $\ge0.999$. The dominance rule (a slot holding $>80\%$ of $\tr\bar g$) fires on planted shortcuts ($0.957$, $0.951$), stays silent on clean (max $0.50$) and decoys ($0.0002$), and fires on a task that genuinely has one input ($0.997$): it detects dominance; the task decides whether that is spurious. The interrupt needs the nuisance named and is not topological; in one run seed~0 dipped to $0.943$ at step 7{,}500 before recovering.
+
+\subsection{Proposition (evasion), with a demonstration (P3)}\label{sec:evasion}
+Proposition~\ref{prop:evasion} was demonstrated once: one penalty (invariance along the discovered circle at the layer), one architecture (one-layer transformer), one task (shortcut hint on modular addition). The penalty destroyed the circle carrying the shortcut and the shortcut was re-encoded; the $H^1$ detector read zero spurious classes at steps 3500, 4000, 4500, 5500 and 6000 while shortcut reliance was $1.000$ and decorrelated accuracy $0.014$. Regenerated step for step from seed. The functional monitor fired on every evasion checkpoint (7/7) with 0/153 false positives on clean and decoy models. Symmetry-breaking as a monitor false-alarmed on 39/102 decoy checkpoints.
+
+\subsection{The finite tower; extractor; reconstruction}
+On generalizers the swap is folded away mid-network, on memorizers never. Extractor (level C, 17 families plus a ten-dimensional Lie search): an augmented ResNet-18 learned brightness ($\lambda=0.72$), contrast ($0.69$--$0.70$), gamma ($0.70$--$0.72$), on both seeds, none of them augmentations; brightness by layers 1--2, gamma by layer 2, contrast only at the penultimate layer; the blind Lie search converges to brightness every time. Memorizers: none, and $2$--$3\times$ more fragile than untrained to rotation, scale, shear. On the transformer the extractor reads translation along the orbit as a symmetry ($\lambda=-0.40$) and the symmetric shift $(a+u,b-u)$ as invariance ($+0.74$). A registered ``built-in'' threshold failed: one number cannot fit both architectures. Reconstruction: from the discovered generator and five characters, eleven least-squares weights rebuild the function at $1.000$ held-out accuracy on 6/6 transformers ($\gamma=0.00$); removing a frequency costs the rebuild nothing and the network up to $78$ points (the registered ablation-symmetry cell failed, $0/6$).
+
+\subsection{Statistics}\label{sec:recon}
+Unit: independent seed or training run; no checkpoint-level $p$-values. AUROC: probability that a random unfamiliar (or erroneous) input outscores a random familiar (or correct) one. Separation: Section~\ref{sec:def} (E1). Decoy nuisance share: $\rho$ values descriptive. Memorizer checkpoints swept at every checkpoint on disk and spec-compliant: Run~4, 2 seeds $\times$ 18 $=36$; Run~5, 2 seeds $\times$ 51 $=102$; total $138$, generator accepted on none. (An earlier ``0/204'' could not be reproduced from the result files; see \texttt{reports/phase0.md}.) Bootstraps: 20 resamples for intrinsic-dimension profiles, 20/20 agree. Not yet done in this v1.1: bootstrap confidence intervals over seeds for the AUROC claims; Holm correction across instruments (planned in v2).
+
+\subsection{What did not survive}
+Geodesic closure at the output layer; curvature and Morse--Smale for failure; tubular and kernel-displacement OOD; exact isometry; symmetry breaking as bias; participation-ratio concentration; the linearized tower; the depth slope on CNNs; the ``leading indicator'' reading of Run~4; unsupervised naming by ranking Rips classes; a spectral-gap manifold score; rotated-MNIST circles (the early-layer circle is inherited from the input, not learned: FAIL, P1 rot-MNIST). Each is in the grid with the null that killed it. The grid has 56 pre-registered cells over seven runs; no Run-2 block passes by the letter.
+
+\section{Discussion}
+\paragraph{What the data say.} On modular addition with a one-layer transformer, generalizers had a recoverable group and memorizers did not. Its orbits explain decisions, its appearance coincides with the accuracy jump, and where the learned group stops acting coherently marks errors on three mid-grokking checkpoints. Two negatives bound what interpretability can do here: shape monitors used as training signals can be evaded, and nothing beat the margin for adversarial radius.
+\paragraph{What they do not say.} On the CNN: the extractor answers P1, coherence under it partly marks unknown inputs (P4), but semantic errors are not predicted (P5) and no discrete group emerges to watch (P7). Language models are untested beyond verifying the rewriting code.
+\paragraph{Limitations.} Small systems chosen because ground truth exists. Group discovery searches cycles and reflections of a finite set; continuous and non-abelian groups are outside it. The functional monitor needs the nuisance named. CNNs trained without augmentation do not keep shift symmetry ($0.68$ vs $0.99$), so that check is partly trained in. GPT-2 and Llama were used only to verify the rewriting code. Seeds: claim~(3) rests on three seeds, formation on six.
+
+\section{Conclusion}
+We proposed an operational definition of understanding on one task family, found a group on every transformer that generalized and none that memorized, and read from it what the network learned, why it decided, when it formed, and where it fails (mid-grokking). The registered grid shows how much of the surrounding programme did not hold. What is defended is a methodology, a null for built-in symmetry, and a three-seed failure-prediction result; the rest is reported as instruments and refusals.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+\end{document}

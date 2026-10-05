@@ -1,0 +1,91 @@
+{
+ "config": {
+  "R": 400,
+  "alpha": "0.05",
+  "conf": "0.95",
+  "n": 3000
+ },
+ "config_hash": "c79b85e48765d0a52db934a01935cba456e1008f85499d87d94f698fe7e16bf5",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N3-04",
+ "result": {
+  "conditions": {
+   "fpr<=0.10": true,
+   "rot0.30 accepted": true,
+   "rot1.00 accepted": true,
+   "rot2.00 accepted": true,
+   "rot3.14 accepted": true,
+   "scale2 rejected": true,
+   "shift3 rejected": true
+  },
+  "measured": {
+   "rot0.30": {
+    "delta": "0.07646227399850328",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.005",
+    "thr_hi": "1.1408693926384939",
+    "thr_lo": "1.1239623057557278",
+    "thr_point": "1.1347338218260592"
+   },
+   "rot1.00": {
+    "delta": "0.08417139126428651",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.0025",
+    "thr_hi": "1.1419232066322649",
+    "thr_lo": "1.1264886458841563",
+    "thr_point": "1.1371517897477403"
+   },
+   "rot2.00": {
+    "delta": "0.07392214180531903",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.005",
+    "thr_hi": "1.1427750494836046",
+    "thr_lo": "1.1256706065830424",
+    "thr_point": "1.1377610783892287"
+   },
+   "rot3.14": {
+    "delta": "0.0874930471649935",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.0",
+    "thr_hi": "1.1379792300932714",
+    "thr_lo": "1.1048185113172562",
+    "thr_point": "1.1311699703860851"
+   },
+   "scale2": {
+    "delta": "1.5946235628326544",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.0025",
+    "thr_hi": "1.1325201551283328",
+    "thr_lo": "1.1127866063262968",
+    "thr_point": "1.127068428941675"
+   },
+   "shift3": {
+    "delta": "2.809173874374782",
+    "dkw_eps": "0.06790507578703096",
+    "fpr_heldout": "0.0025",
+    "thr_hi": "1.0976998973810759",
+    "thr_lo": "1.0684623491852756",
+    "thr_point": "1.0878029943889733"
+   }
+  },
+  "passed": true
+ },
+ "result_sha256": "048a74da9969f74203eb1fb7aa9136207046666afb6ec8cd98c4cacbf2d0ccaf",
+ "saved_at": "2026-10-04T18:14:42",
+ "seed": 3,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

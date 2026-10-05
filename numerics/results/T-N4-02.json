@@ -1,0 +1,77 @@
+{
+ "config": {
+  "n": 600,
+  "sweep": [
+   100,
+   200,
+   400,
+   800
+  ]
+ },
+ "config_hash": "1559e05792d5e4dbb457ab64b7c0f3310e7a85a7603dc0bcd9a70511bbb13b6a",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N4-02",
+ "result": {
+  "conditions": {
+   "convergence": true,
+   "dim=3": false,
+   "err<=1e-3": false,
+   "gap>=100": false
+  },
+  "measured": {
+   "gap": "41.8817649430784",
+   "null_dim": 1,
+   "observed_order": "3.0979080400955237",
+   "ref_fields_residual": [
+    "9.930334332608481e-10",
+    "9.523928312660246e-10",
+    "0.0"
+   ],
+   "sigma_first6": {
+    "__nd__": "<f8",
+    "sha": "be47a399abdbe05ba6efa67b59bc8c7695b448de8eb62f944528d88d859cad90",
+    "shape": [
+     6
+    ]
+   },
+   "subspace_err": "0.0036718902167572945",
+   "sweep_h_err": {
+    "100": [
+     "0.3996160359378858",
+     "0.0736824290318964"
+    ],
+    "200": [
+     "0.28257120888256615",
+     "0.020575077310471042"
+    ],
+    "400": [
+     "0.1998080179689429",
+     "0.008133393599183004"
+    ],
+    "800": [
+     "0.14128560444128307",
+     "0.0028018728527930965"
+    ]
+   }
+  },
+  "passed": false
+ },
+ "result_sha256": "78ea805ae5ad189e3e96658ed6e7df5b37e0d5b0326376e8a97b446f7da42c6d",
+ "saved_at": "2026-10-04T18:14:43",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "config": {
+  "etas": [
+   "0.01",
+   "0.05",
+   "0.1"
+  ],
+  "n": 150,
+  "trials": 20
+ },
+ "config_hash": "96ab4dfe3b38cce72fdc3c1b77d5396f56c83f7956ceda23e0be9cd9895d2e86",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N5-01",
+ "result": {
+  "conditions": {
+   "eta=0.01": true,
+   "eta=0.05": true,
+   "eta=0.1": true
+  },
+  "measured": {
+   "worst_bottleneck_H0_H1": {
+    "0.01": [
+     "0.009901352226734161",
+     "0.009152069687843323"
+    ],
+    "0.05": [
+     "0.03627704083919525",
+     "0.044705867767333984"
+    ],
+    "0.1": [
+     "0.05146399140357971",
+     "0.08620107173919678"
+    ]
+   }
+  },
+  "passed": true
+ },
+ "result_sha256": "f4dc020f9bb453404df695a543597f82bdbc489540d4a6ce09eef10877a08ce6",
+ "saved_at": "2026-10-04T18:15:04",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

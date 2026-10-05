@@ -1,0 +1,62 @@
+{
+ "config": {
+  "seeds": 1
+ },
+ "config_hash": "f60c1bac029a8e83b495394e9e8977ab74bc7c39e85ae32fb20eca0998fca146",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N5-02",
+ "result": {
+  "conditions": {
+   "circle b1=1": true,
+   "circle no extra": true,
+   "sphere b1=0": true,
+   "sphere b2=1": false,
+   "torus b1=2": false,
+   "torus no extra H1": false,
+   "two circles b0=2": true,
+   "two circles b1=2": true
+  },
+  "measured": {
+   "circle": {
+    "b1": 1,
+    "eta_c": "0.14675695535772182",
+    "nlong": 1
+   },
+   "sphere": {
+    "b1": 0,
+    "b2": 0,
+    "eta_c": "0.7900400847104284"
+   },
+   "torus": {
+    "H2_reported": 0,
+    "b1": 0,
+    "eta_c": "0.7835792671098832",
+    "nlong": 0
+   },
+   "two_circles": {
+    "b0": 2,
+    "b1": 2,
+    "eta_c": "0.23813836135886737"
+   }
+  },
+  "passed": false
+ },
+ "result_sha256": "646e6ef54dd5040cc7f48f3944467604abed323f97e7e7743b8417f3be17c708",
+ "saved_at": "2026-10-04T18:15:32",
+ "seed": 1,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

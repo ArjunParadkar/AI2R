@@ -1,0 +1,47 @@
+{
+ "config": {
+  "n": 400,
+  "shape_mult": "2.0"
+ },
+ "config_hash": "46e14b51f068a4ed52ccd3132fd366ae2bae68b93acb3f1f71a21c26427acd33",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N4-01",
+ "result": {
+  "conditions": {
+   "dim=2": true,
+   "err<=1e-4": true,
+   "gap>=100": true
+  },
+  "measured": {
+   "gap": "787525.7072392184",
+   "null_dim": 2,
+   "sigma_first6": {
+    "__nd__": "<f8",
+    "sha": "3f37a83ea12025e5159a9e4e066e90d7f7a4237399cbbe17cbb1cebafc91d9d0",
+    "shape": [
+     6
+    ]
+   },
+   "subspace_err": "1.519626234052415e-07"
+  },
+  "passed": true
+ },
+ "result_sha256": "781fb6fda8f2e475bc42b323d463c01d92f7e3475dd5358420417c27d32060ac",
+ "saved_at": "2026-10-04T18:14:42",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}
