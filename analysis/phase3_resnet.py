@@ -54,7 +54,7 @@ def train(norm, mode, seed, epochs=15):
                 if not bn: nn.utils.clip_grad_norm_(m.parameters(), 1.0)
                 opt.step(); sched.step()
             m.eval(); 
-            with torch.no_grad(): te = float((m(Xte).argmax(1) == Yte).float().mean())
+            with torch.no_grad(): te = float(torch.cat([(m(Xte[i:i + 500]).argmax(1) == Yte[i:i + 500]).float() for i in range(0, len(Xte), 500)]).mean())
             hist.append(dict(epoch=ep, test_acc=te)); print(f'[{norm} clean s{seed}] ep {ep} test {te:.3f} ({time.time()-t0:.0f}s)', flush=True)
     else:
         x, y, xte, yte = subset_data('scrambled', seed); X = torch.as_tensor(x).to(DEV); Y = torch.as_tensor(y, dtype=torch.long).to(DEV); opt = torch.optim.Adam(m.parameters(), lr=1e-3); torch.manual_seed(seed)

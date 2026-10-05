@@ -25,3 +25,5 @@ kappa = hard orbit coherence under 6 photometric transformations (brightness +-0
 Amendment 2026-10-05 to PHASE_3 (before any Phase-3 result existed): analysis/phase3_rotmnist.py uses reverse-mode (jacrev) instead of forward-mode (jacfwd) for the chart Jacobian because grid_sample has no forward-mode rule; same exact Jacobian, no metric or threshold change.  New sha256: 8873c242c926835bbbe35c2e864804a5d728d59b5651b54e6b5982232b6721de
 
 Amendment 2 2026-10-05 to PHASE_3 (no Phase-3 result existed yet): vmap(jacrev) failed with a functorch error on this model, so analysis/phase3_rotmnist.py computes the same exact chart Jacobian with one batched autograd backward per logit (render is batched).  No metric or threshold change.  New sha256: 75525397d913abeec022b731ee9c92c0ca2bd43e9810c38dffd8a0221604ce6b
+
+Amendment 3 2026-10-05 to PHASE_3 (no ResNet result existed yet): analysis/phase3_resnet.py evaluates the 5000-image test set in chunks of 500 (the single 5000-image forward pass OOM'd the 8 GB GPU); no experimental change.  New sha256: 27182263b2ec4f201de52c268a5d6a7242f6368a0bd5c6785ce47e31bba503cc
