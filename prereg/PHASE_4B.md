@@ -15,3 +15,5 @@ Models pythia-70m and pythia-160m at steps {0,1,4,16,64,256,512,1000,2000,4000,8
 | `bench/llm/halluc.py` | `331bf6742c556f4283e92b1e8867c245f72b5a1d053a9d12cfcf8c778487d65e` |
 | `bench/llm/pythia_formation.py` | `4dd40be420d111f672c1bd5d9686c538abcdb58398875ee1377bc550ac330932` |
 | `bench/llm/circular.py` | `64c2a88bffeb7cea2772fb9957360850bdeca65f270e02974f5ebb9452d2d766` |
+
+Amendment 2026-10-05 to PHASE_4B (made after the first launch OOM'd, before any hallucination result existed): generation batch size 16 -> 8 and an OOM retry/back-off wrapper in bench/llm/halluc.py; thresholds, scores, prompts and data unchanged.  New sha256 of halluc.py: b9b1db11839fb7d514f0f44e91b1a159742417b4915721ba6ce69fb34cbed86b

@@ -39,7 +39,7 @@ def clusters(answers):
 
 
 @torch.no_grad()
-def generate(model, tok, prompts, n=1, sample=False, max_new=16, bs=16):
+def generate(model, tok, prompts, n=1, sample=False, max_new=16, bs=8):
     outs, probs = [], []
     for i in range(0, len(prompts), bs):
         msgs = [tok.apply_chat_template([{'role': 'user', 'content': p}], tokenize=False, add_generation_prompt=True) for p in prompts[i:i + bs]]
@@ -54,16 +54,23 @@ def generate(model, tok, prompts, n=1, sample=False, max_new=16, bs=16):
     return outs, probs
 
 
+def gen(*a, **k):
+    for attempt in range(10):                       # CUDA OOM from sibling jobs is transient: back off and retry (amendment 2026-10-05, no change to any threshold)
+        try: return generate(*a, **k)
+        except torch.OutOfMemoryError: torch.cuda.empty_cache(); time.sleep(30 * (attempt + 1))
+    raise RuntimeError('OOM persisted')
+
+
 def run(name, n_q=500, out=None):
     p = hf_hub_download('mandarjoshi/trivia_qa', 'rc.nocontext/validation-00000-of-00001.parquet', repo_type='dataset'); d = pd.read_parquet(p)
     d = d.sample(n_q, random_state=0).reset_index(drop=True); qs = d['question'].tolist(); gold = [list(a['aliases']) + [a['value']] for a in d['answer']]
     tok = AutoTokenizer.from_pretrained(name); tok.padding_side = 'left'
     if tok.pad_token_id is None: tok.pad_token = tok.eos_token
     model = AutoModelForCausalLM.from_pretrained(name, dtype=torch.float16).cuda().eval(); torch.manual_seed(0); t0 = time.time()
-    g0, msp = generate(model, tok, [BASE.format(q=q) for q in qs]); correct = np.array([any(norm(a) and (norm(a) in norm(g) or norm(g) == norm(a)) for a in al if len(norm(a)) >= 2) for g, al in zip(g0, gold)], float)
-    par = [generate(model, tok, [t.format(q=q, q_lower=q.lower()) for q in qs])[0] for t in PARA]
+    g0, msp = gen(model, tok, [BASE.format(q=q) for q in qs]); correct = np.array([any(norm(a) and (norm(a) in norm(g) or norm(g) == norm(a)) for a in al if len(norm(a)) >= 2) for g, al in zip(g0, gold)], float)
+    par = [gen(model, tok, [t.format(q=q, q_lower=q.lower()) for q in qs])[0] for t in PARA]
     kappa = np.array([np.mean([equiv(par[j][i], g0[i]) for j in range(len(PARA))]) for i in range(len(qs))])
-    sm, _ = generate(model, tok, [BASE.format(q=q) for q in qs], n=8, sample=True); sm = [sm[i * 8:(i + 1) * 8] for i in range(len(qs))]
+    sm, _ = gen(model, tok, [BASE.format(q=q) for q in qs], n=8, sample=True); sm = [sm[i * 8:(i + 1) * 8] for i in range(len(qs))]
     se = np.array([clusters(s) for s in sm]); sc = np.array([np.mean([equiv(a, g0[i]) for a in sm[i]]) for i in range(len(qs))]); msp = np.array(msp)
     conf = dict(kappa=kappa, neg_SE=-se, SC_lex=sc, MSP=msp)
     res = dict(model=name, n=len(qs), accuracy=float(correct.mean()), seconds=time.time() - t0, auroc={}, paired={})
