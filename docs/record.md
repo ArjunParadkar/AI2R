@@ -38,3 +38,17 @@ Consequence: the Killing solver is validated for constant-structure / rotation-l
 | T-N7-02 attempt 2 (shuffle-null threshold, POST HOC, seeds 20-24) | same | torus 0/15 (shuffled-weight nulls produce long bars too); ring split into 3 modules | **FAIL, rule rejected** |
 | T-N7-02 attempt 3 (ratio rule 1.5, POST HOC, fresh seeds 30-34) | same | k 5/5; torus 13/15 modules (seed 30: [0,5,2]); random 0 PASS; ring 1 PASS | **FAIL by the all-modules criterion; 87% module-level accuracy twice** |
 Conclusion carried into Phase 6: the connectivity route recovers the number of modules reliably and the torus in ~87% of modules on planted wiring; any H6.2 claim must be stated at module level with this error rate, not as "recovered".
+
+## Phase 2 pre-registration freeze (2026-10-04)
+Commit 3d448ff1622cc8072cd8fc6babcde66bfe23efd4, annotated tag prereg-phase-2 -> d831a06f1199ce0bae27b238b0723b816f93ff00 (unsigned: no GPG key). prereg/PHASE_2.md lists sha256 of the grid (960 configs), zoo, worker, stats and analysis code. Confirmatory run launched after this entry.
+
+## Phase 4 part 1 — blind circular structure in language models (prereg-phase-4, commit 9c2db1a; run 2026-10-04/05; results/phase4/circ_*.json)
+Unit = one pretrained model (6 models; no seed replication).  Headline = max-over-layers adjacency, p = max-over-layers permutation null.
+| cell | rule | result | verdict |
+|---|---|---|---|
+| H4.1a days | score >= 0.85 and p < 0.01 in >= 4/6 models | 6/6 models: score 1.0, p 0.0027-0.009 (gpt2, gpt2-medium, pythia-70m, pythia-410m, Llama-3.2-1B, Qwen2.5-1.5B-Instruct) | PASS |
+| H4.1b months | same | 5/6: score 1.0, p = 0 ; pythia-70m 0.67 (p 0.0014, below the 0.85 bar) | PASS (5/6) |
+| H4.1c controls | numbers/colours/animals: fraction of models with p < 0.01 <= 1/6 | numbers 0/6 (Llama score 1.0 but p = 0.014; others 0.57-0.71), colours 0/6, animals 0/6 | PASS by the registered rule |
+| H4.1d Holm (30 tests) | reported next to raw | Holm-adjusted: months 6/6 < 0.05 (0.001 x5, pythia-70m 0.036); days 0/6 < 0.05 (adjusted 0.066-0.17: a 7-item set has only 360 distinct cyclic orders so its permutation p-value is floored near 0.003 before correction); controls: smallest adjusted p 0.254 | days: PASS on the registered raw rule, NOT significant after Holm; months PASS both |
+Caveats (all disclosed): the best layer is layer 0 (the input embedding) in 10 of the 12 passing cases, so the cyclic order is present in the static token embeddings, not computed in context.  The adjacency score cannot separate a line from a circle (an optimal tour closes the endpoints).  POST HOC check (bench/llm/circular_posthoc.py, never upgrades a verdict): closure ratio ||z_last - z_first|| / mean adjacent edge, at layers with adjacency >= 0.85: days 1.07-1.19, months 0.91-1.22 (circle-like, ~1), the single number-word layer that reached 0.85 (Llama layer 1) 1.48 (higher than every day/month value).  So the structure recovered for days/months is closed, and the one control hit is less closed; this is a post hoc separation, not a pre-registered one.
+Not done in Phase 4: formation across Pythia checkpoints, hallucination/knowledge-boundary vs semantic entropy/SelfCheckGPT, LLM memorization detection, extractor lambda on LLMs, transforms library (see below once run).
