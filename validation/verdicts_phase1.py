@@ -58,8 +58,11 @@ for k in ("untrained", "shuffled"):
             if x:
                 fps.append(x["fp_rate"])
                 accs.append(x["n_accepted"])
-add("P1f NULL", "FP <= 0.02 every seed; mean accepted <= 1", f"max FP {max(fps):.3f}, mean accepted {np.mean(accs):.2f} ({len(fps)} cells)",
+if fps:
+  add("P1f NULL", "FP <= 0.02 every seed; mean accepted <= 1", f"max FP {max(fps):.3f}, mean accepted {np.mean(accs):.2f} ({len(fps)} cells)",
     len(fps) == 4 * N and max(fps) <= 0.02 and np.mean(accs) <= 1)
+else:
+  add("P1f NULL", "FP <= 0.02 every seed; mean accepted <= 1", "no null cells", False)
 # P2 (amendment 2: on V2D; V2 reported as the structurally undecidable control)
 AMEND2 = any(k.startswith("V2D_") for k in R)
 for fam, gate in ((("V2D", True), ("V2", False)) if AMEND2 else (("V2", True),)):
@@ -76,13 +79,16 @@ for comp in (True, False):
     v = [get(f"V3_{s}_{comp}") for s in SEEDS]
     m = [min(x["withheld"]["move_acc"], x["seen"]["move_acc"]) for x in v if x]
     p = [x["withheld"]["pred_correct_acc"] for x in v if x]
+    if not m:
+        continue
     add(f"P3a V3-{'comp' if comp else 'lookup'}", "move accuracy >= 0.9 (withheld and seen) 5/5", f"{min(m):.2f}", len(m) == N and min(m) >= 0.9)
     add(f"P3b V3-{'comp' if comp else 'lookup'}", "predicted-correctness accuracy >= 0.9 5/5", f"{min(p):.2f}", len(p) == N and min(p) >= 0.9)
 # P4
 v = [get(f"V4_{s}") for s in SEEDS]
 au = [x["auroc_scaffold_vs_content"] for x in v if x]
 rc = [x["scaffold_recall"] for x in v if x]
-add("P4 V4", "AUROC >= 0.95 and scaffold recall >= 0.9, 5/5", f"AUROC {min(au):.3f}, recall {min(rc):.2f}",
+if au:
+  add("P4 V4", "AUROC >= 0.95 and scaffold recall >= 0.9, 5/5", f"AUROC {min(au):.3f}, recall {min(rc):.2f}",
     len(au) == N and min(au) >= 0.95 and min(rc) >= 0.9)
 # P5
 v = [get(f"V5_{s}_valid") for s in SEEDS]

@@ -37,3 +37,5 @@
 --model allenai/OLMo-2-1124-7B --task add3 --seed 0 --untrained
 --model mistralai/Mistral-7B-v0.1 --task add3 --seed 0 --untrained
 --model EleutherAI/pythia-6.9b --task add3 --seed 0 --untrained
+--model EleutherAI/pythia-1.4b --task add3 --seed 0 --untrained
+--model EleutherAI/pythia-2.8b --task add3 --seed 0 --untrained
