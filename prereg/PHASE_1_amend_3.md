@@ -30,16 +30,18 @@ Implementation: `whitebox_ee.filter.maxT_use`, with `Thresholds.criterion_i = "m
 
 ## Criteria (frozen at the tag)
 
-The criteria and their bars are exactly those of `prereg/PHASE_1_amend_2.md`: P1a–P1f, P2 on V2D, P3, P4, P5, and P6a/P6b on FORMD. V2 and FORM are reported as controls and do not gate.
+The criteria and their bars are exactly those of `prereg/PHASE_1_amend_2.md` for P1a–P1f, P2 on V2D, P3, P4 and P5. V2 is reported as a control and does not gate.
+
+**P6 (formation, FORMD) is not evaluated in this amendment,** so formation stays unvalidated and K14 stays blocked, as it has been since the original P6b failure. This is declared before any amendment-3 FORMD result exists. The reason is compute: no FORMD cell has ever finished. Development and amendment-2 runs at 4 threads went more than 2 h without completing the first of the 7 checkpoints. P6 gates only K14, not Phase 2. Formation gets its own amendment, with a cheaper planted sequence, when K14 is scheduled.
 - **Seeds:** 115, 116, 117, 118, 119.
 - **Consequences:** as in `prereg/PHASE_1.md` §4. Phase 2 requires P1a–P1f, P2 (V2D) and P3 to pass.
 
 ## Pre-tag check (new; the response to the amendment-2 process failure)
 
-Before the tag, `validation/pretag_check.py runs/phase1/dev_a5 0,1,2 --commit <code commit>` must exit 0 on the final development run. Its checks:
+Before the tag, `validation/pretag_check.py runs/phase1/dev_a6 0,1,2 --cells V1 V2D V3 V4 V5 NULL --commit <code commits>` must exit 0 on the final development run. Its checks:
 - every expected file is present and error-free, and was produced by the tagged code;
 - every single null cell has FP ≤ 0.02;
-- every gated criterion passes on every development seed on its own, and pooled.
+- every criterion this amendment evaluates passes on every development seed on its own, and pooled.
 
 Development null cells for seeds 3 and 4 are checked as well. The check's full output is committed with the tag (`runs/phase1/dev_a5/PRETAG.txt`).
 
