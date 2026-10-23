@@ -1,6 +1,6 @@
 # Phase 1 report: estimators and planted-answer validation
 
-WhiteBox E&E. Started 2026-10-23. **Status: validation pending** (this file is completed after the frozen validation seeds run; sections marked PENDING).
+WhiteBox E&E. Started and completed 2026-10-23. **Gate: met for every estimator Phase 2 uses; formation (K14) is blocked; the unsupervised proposers are not gated** (§5).
 
 Planted systems are estimator tests with known answers. **Nothing in this report is evidence for a claim in the paper** (master prompt rule 0.1.1).
 
@@ -47,10 +47,70 @@ Each was found on a planted answer, fixed before the validation seeds, and writt
 - **2.7.2 (grounded ⇒ correct on lower inputs).** Proved under (A1) grounding on the input, (A2) value locality below the cut, (A3) lower for the cut; correctness additionally needs the target to factor through the principles (shortcut failure mode) (P8).
 - **2.7.3 (memorized ⇒ no sideways generalization).** False for memorization at τ (private compositional node in a large suite); true for leaf-level memorization: every new input is diagonal (P9).
 
-## 4. Validation results (seeds 100–104) — PENDING
+## 4. Validation results (seeds 100–104, frozen at tag `prereg-phase-1`, commit bc6036a)
 
-## 5. Gate — PENDING
+All cells ran on the laptop CPU at the tagged code. One later commit is performance-only: patch runs return only the states they need, results are identical, and the regression tests pass. Raw results are in `runs/phase1/val/*.json`. The verdicts below are computed mechanically by `validation/verdicts_phase1.py`.
+
+| Cell | Criterion | Result | Verdict |
+|---|---|---|---|
+| P1a V1-onehot | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+| P1b V1-onehot | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+| P1c V1-onehot | decoy represented-not-used 5/5 | 5/5 | PASS |
+| P1e V1-onehot | generality MAE vs oracle <= 0.05 on 5/5 | 0.005 (max) | PASS |
+| P1a V1-noise05 | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+| P1b V1-noise05 | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+| P1c V1-noise05 | decoy represented-not-used 5/5 | 5/5 | PASS |
+| P1e V1-noise05 | generality MAE vs oracle <= 0.05 on 5/5 | 0.007 (max) | PASS |
+| P1d V1 | wrong hypotheses accepted <= 10% (pooled) | 0/50 | PASS |
+| P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (20 cells) | PASS |
+| P2 V2 | AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5 | pt 1.000-1.000, lo 1.000-1.000 | PASS |
+| P3a V3-comp | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+| P3b V3-comp | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+| P3a V3-lookup | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+| P3b V3-lookup | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+| P4 V4 | AUROC >= 0.95 and scaffold recall >= 0.9, 5/5 | AUROC 1.000, recall 1.00 | PASS |
+| P5a V5-valid | exactly one valid node N <- {A,B}, 4/5 | 5/5 | PASS |
+| P5b V5-decoy | zero valid nodes, 4/5 | 5/5 | PASS |
+| P5b V5-leaf | zero valid nodes and N 'new leaf (used, not derived)', 4/5 | 5/5 | PASS |
+| P5b V5-relabel | zero valid nodes, 4/5 | 5/5 | PASS |
+| P5b V5-generic | zero valid nodes and N 'exposure-generic', 4/5 | 5/5 | PASS |
+| P6a FORM | grounding event 4+-1 and sum principle 3+-1, 4/5 | 5/5 | PASS |
+| P6b FORM | |Lambda_t - (1 - memo_t)| <= 0.2 every checkpoint, 4/5 | 0/5 (max deviations 0.58, 0.74, 0.88, 0.50, 0.83) | FAIL |
+
+**Reported, no verdict:**
+- **V1 noise10** (stress): exact recovery on 5/5 seeds.
+- **V1 fourier** (stress): node recall 0.20–0.40 and edge F1 0.05–0.25. Circular codes defeat linear-decoder realisers (limitation).
+- **SENS** (V1 one-hot): nothing recovered at N = 250 and N = 500 on any seed; exact at N = 1000 on 5/5. Recovery has a sample-size floor of about 1000 probe inputs on V1, set by held-out sufficiency over ~100-tuple parent tables. Phase 2 uses N = 1500.
+- **Oracle graphs:** the graph built with oracle realisers equals the planted spec on every V1 seed (edge F1 1.00).
+- **P6b, FORM:** in the fully memorized checkpoints, Λ_0.25 is 0.01–0.88 where the planted answer is 0; at checkpoint 3 (80% memorized) it is 0.62–0.71 where the planted answer is 0.2. This is the answer-funnel failure declared in the prereg before the run (§5).
+
+## 5. Gate (self-gate by the letter of prereg/PHASE_1.md §4)
+
+| Estimator | Criteria | Verdict | May be used on real models |
+|---|---|---|---|
+| Probe proposer, quotient, parents, causal use, graph and merging | P1a–P1f | PASS | Yes |
+| Generality | P1e, P4 | PASS | Yes |
+| Depth and memorization verdict | P2 PASS; P6b FAIL (implicates the verdict in the answer-funnel regime) | PASS for P2; boundary stated | Yes, for depth (λ, μ, γ) in K2. Every memorization verdict on a real model must carry the answer-funnel diagnostic, and K4/K9 memorization claims are limited accordingly. |
+| Moves classifier | P3a, P3b | PASS | Yes |
+| Creation protocol | P5a, P5b | PASS | Yes |
+| Formation | P6a PASS, P6b FAIL | **FAIL** | **No** (K14 blocked until fixed and re-validated on seeds 105–109) |
+| Unsupervised proposers (SAE, ISA, pullback) | not gated | not validated | **No** (blind Vector-HaSH anchor and K12 unsupervised arm blocked) |
+
+**Phase 2 dependency.** Phase 2 needs P1a–P1f, P2 and P3, and all of them pass, so Phase 2 may proceed under its own pre-registration.
+
+**What the answer-funnel failure means.** A structural verdict built on reuse cannot tell a looked-up answer from a computed one when both pass through a shared value node. Inside a hand-built network the rule and the lookup are both tables from (a, b); only the table's content differs, and generality does not see content. This is a property of the definition, not a bug in the estimator. For K2 it means depth can be inflated on inputs whose answer is retrieved rather than computed. Phase 2 therefore pre-registers a diagnostic for it.
 
 ## 6. Compute
 
-Laptop CPU only for planted work; see `reports/compute_ledger.md`.
+- Planted work ran on the laptop CPU only: about 15 CPU core-hours over development and validation, and 0 GPU-hours.
+- An LLM development run (Qwen2.5-1.5B, development model) used about 1 laptop GPU-hour.
+- Pinnacle: two env-build jobs (≈ 1.5 core-h).
+- Details are in `reports/compute_ledger.md`. This is far inside the Phase 1 envelope (200 A100-h, 2,000 CPU core-h).
+
+## 7. What passed, what failed, what was cut, what is next
+
+- **Passed:** the probe-proposer pipeline (quotient, parents, causal use, merging), generality, depth and the memorization verdict (within the answer-funnel boundary), moves, and creation. All of these passed on 5/5 validation seeds, with zero false positives on the untrained and shuffled nulls.
+- **Failed:** formation (P6b), from the answer-funnel limitation of the structural memorization verdict.
+- **Not validated:** the unsupervised proposers.
+- **Cut or replaced** (`docs/cut.md`): observational minimal-sufficiency parents, replaced by M1.
+- **Next:** Phase 2 (K1, K2). Freeze `prereg/PHASE_2.md` with the answer-funnel diagnostic, tag it, run the cells on Pinnacle when access returns (laptop for the models that fit), and self-gate on K2.
