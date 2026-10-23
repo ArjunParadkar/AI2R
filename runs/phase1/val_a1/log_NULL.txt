@@ -1,0 +1,5 @@
+[phase1] NULL_105_untrained_V1.json 61s 
+[phase1] NULL_105_untrained_V4.json 21s 
+[phase1] NULL_105_shuffled_V1.json 44s 
+[phase1] NULL_105_shuffled_V4.json 27s 
+[phase1] NULL_106_untrained_V1.json 30s 
