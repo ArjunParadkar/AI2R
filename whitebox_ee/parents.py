@@ -26,7 +26,7 @@ def _read_targets(probe: Probe, targets: Sequence[Node], logits, states):
 
 
 def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], th: Thresholds, rng,
-                   rows=None, n_pairs=None, with_null=True):
+                   rows=None, n_pairs=None, with_null=True, return_samples=False):
     """effects[(P, C)] = fraction of pairs where patching P (others between held) changes C."""
     n_pairs = n_pairs or th.n_pairs
     nodes = list(pool) + list(outputs)
@@ -36,6 +36,7 @@ def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], 
             continue
         by_site.setdefault(c.site_index, []).append(c)
     effects, nulls = {}, {}
+    samples = {}                       # (P, C) -> (rows, src rows, C value under the P patch)
     rows_all = np.arange(probe.N) if rows is None else np.asarray(rows)
     for P in pool:
         r = rng.choice(rows_all, n_pairs)
@@ -50,6 +51,7 @@ def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], 
             vals = _read_targets(probe, targets, lg, st)
             for C in targets:
                 effects[(P.name, C.name)] = float((vals[C.name] != C.values[r]).mean())
+                samples[(P.name, C.name)] = (r, src, vals[C.name])
             if with_null:
                 # null: within-fibre swap of P (same P value, same perturbation class)
                 src_eq = probe.partners(P.values, 1, differ=False, rows=r, rng=rng)[:, 0]
@@ -57,7 +59,26 @@ def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], 
                 v2 = _read_targets(probe, targets, lg2, st2)
                 for C in targets:
                     nulls[(P.name, C.name)] = float((v2[C.name] != C.values[r]).mean())
+    if return_samples:
+        return effects, nulls, samples
     return effects, nulls
+
+
+def interventional_tuples(C: Node, pa_nodes, samples):
+    """Parent tuples and C values produced by the direct-effect patches of C's parents
+    (M8, Prop. 2.8b): the patched parent takes its source value, the other parents keep
+    their clean values (they are upstream, parallel, or held fixed)."""
+    keys, vals = [], []
+    for j, P in enumerate(pa_nodes):
+        smp = samples.get((P.name, C.name))
+        if smp is None:
+            continue
+        r, src, cv = smp
+        T = np.stack([p.values[r] for p in pa_nodes], 1)
+        T[:, j] = P.values[src]
+        keys += [tuple(t) for t in T.tolist()]
+        vals += list(np.asarray(cv).tolist())
+    return keys, vals
 
 
 def select_parents(C: Node, pool: Sequence[Node], effects, nulls, th: Thresholds):

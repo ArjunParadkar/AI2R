@@ -4,8 +4,7 @@
  "compositional": true,
  "node_labels": [
   "A",
-  "B",
-  "C"
+  "B"
  ],
  "withheld": {
   "move_acc": 1.0,
@@ -26,13 +25,13 @@
   }
  },
  "status": "ok",
- "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
  "spec": [
   "V3",
   "2",
   "True"
  ],
- "wall_s": 3.439525842666626,
+ "wall_s": 1.4912996292114258,
  "node": "omarchyroot",
- "start": "2026-10-23T02:28:43"
+ "start": "2026-10-23T03:30:59"
 }

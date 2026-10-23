@@ -10,7 +10,7 @@ import numpy as np
 from .filter import Thresholds, quotient_test, decodability
 from .graph import ConceptGraph, fit_psi, iia, merge_equivalent
 from .info import entropy, normalised_vi
-from .parents import direct_effects, select_parents, sufficiency, minimal_sufficient_sets, parent_stability
+from .parents import direct_effects, interventional_tuples, select_parents, sufficiency, minimal_sufficient_sets, parent_stability
 from .probe import Member, Node, Probe
 
 
@@ -95,7 +95,7 @@ def drop_coarsenings(cands, inputs, record, th, contain_min: float = 0.9):
 
 def _one_pass(probe, inputs, nodes, outs, th, rng, strict, suspended=()):
     pool = inputs + nodes
-    eff, nul = direct_effects(probe, pool, list(outs) + list(suspended), th, rng)
+    eff, nul, smp = direct_effects(probe, pool, list(outs) + list(suspended), th, rng, return_samples=True)
     allnodes = {n.name: n for n in pool + outs}
     parents, psi, drop, cert = {}, {}, {}, {}
     react = []
@@ -109,7 +109,7 @@ def _one_pass(probe, inputs, nodes, outs, th, rng, strict, suspended=()):
         pa_nodes = [allnodes[p] for p in pa]
         suf = sufficiency(C, pa_nodes)
         parents[C.name] = pa
-        psi[C.name] = fit_psi(C, pa_nodes)
+        psi[C.name] = fit_psi(C, pa_nodes, interventional_tuples(C, pa_nodes, smp))
         cert[C.name] = {"parents": pa, "suff": suf,
                         "edge_effects": {p: eff.get((p, C.name), 0.0) for p in pa},
                         "edge_null": {p: nul.get((p, C.name), 0.0) for p in pa}}

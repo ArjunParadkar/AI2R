@@ -692,7 +692,7 @@ same regression on false-creation counts does not.}
 
 
 %============================================================================
-\section{Phase 1 amendments (estimator design decisions, 2026-10-23)}
+\section{Phase 1 amendments M1--M8 (estimator design decisions, 2026-10-23)}
 \label{sec:amend}
 %============================================================================
 
@@ -758,6 +758,23 @@ percentile of norm-matched random realisers for at least one behaviour.
 $\kappa_{\max}$ is calibrated from the proposed $0.25$ to $0.6$ (the proposed
 value rejects every non-trivial node of a two-input system); $\Hent(X)$ is
 the sum of the input nodes' entropies.
+\item \textbf{Output realisers.} A candidate whose partition is equivalent to a
+behaviour's output partition is a realiser of that output node, not a
+derivation step, exactly as input-equivalent candidates are realisers of
+input nodes. Without this, the representation of the answer itself lies on
+every derivation with generality equal to its behaviour's mass, and every
+input of a single-behaviour suite is ``grounded'' through its own answer
+(found on V2). The output node's parents are then the parents of that
+representation.
+\item \textbf{Interventional identification of derivation maps
+(Proposition~\ref{prop:unseen}(b)).} When a child's parents include a node
+and a function of it (positivity fails, Remark 2.7), every interchange on the
+node produces a parent tuple never seen observationally, and $F_{\G}$ is
+undefined there. Derivation maps $\psi_C$ are therefore fitted on the
+observational tuples together with the tuples produced by the direct-effect
+interventions of M1 (the patched parent at its source value, the others
+clean or held). IIA is evaluated on fresh pairs; agreement at a tuple reached
+both ways is the modularity condition of Proposition~\ref{prop:unseen}(b).
 \end{enumerate}
 
 \begin{remark}[What the amendments change in the statuses]

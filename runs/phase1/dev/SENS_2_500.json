@@ -20,8 +20,8 @@
  "oracle_nodes": [],
  "oracle_edge_f1_vs_spec": 0.0,
  "n_candidates": 25,
- "runtime_s": 40.62813425064087,
- "n_forward_rows": 438208,
+ "runtime_s": 31.755483865737915,
+ "n_forward_rows": 285632,
  "stability": {},
  "edges": [
   [
@@ -31,6 +31,10 @@
   [
    "a0",
    "out:out1"
+  ],
+  [
+   "a0",
+   "out:out2"
   ],
   [
    "a1",
@@ -75,13 +79,13 @@
  ],
  "not_converged": false,
  "status": "ok",
- "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
  "spec": [
   "SENS",
   "2",
   "500"
  ],
- "wall_s": 65.80069541931152,
+ "wall_s": 48.113829612731934,
  "node": "omarchyroot",
- "start": "2026-10-23T02:35:37"
+ "start": "2026-10-23T03:35:36"
 }

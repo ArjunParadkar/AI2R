@@ -8,9 +8,11 @@ for f in sorted(d.glob("*.json")):
         print(f.name, "ERROR", r["error"][:100]); continue
     c = r["cell"]
     if c in ("V1", "SENS"):
-        print(f.name, "nodeP %.2f nodeR %.2f edgeF1 %.2f decoy %s wrong_hits %d rho %.2f oracleF1 %.2f rt %.0fs" % (
+        print(f.name, "nodeP %.2f nodeR %.2f edgeF1 %.2f decoy %s wrong_hits %d rho %.2f gMAE %.3f oracleF1 %.2f rt %.0fs" % (
             r["node_precision"], r["node_recall"], r["edge_f1"], r["decoy_verdicts"][:1], len(r["wrong_hits"]),
-            r["spearman_vs_oracle"] if r["spearman_vs_oracle"] is not None else float("nan"), r["oracle_edge_f1_vs_spec"], r["runtime_s"]))
+            r["spearman_vs_oracle"] if r["spearman_vs_oracle"] is not None else float("nan"),
+            r.get("generality_mae_vs_oracle") if r.get("generality_mae_vs_oracle") is not None else float("nan"),
+            r["oracle_edge_f1_vs_spec"], r["runtime_s"]))
     elif c == "NULL":
         print(f.name, "accepted %d / %d  fp %.3f %s" % (r["n_accepted"], r["n_candidates"], r["fp_rate"], r["accepted_labels"]))
     elif c == "V2":

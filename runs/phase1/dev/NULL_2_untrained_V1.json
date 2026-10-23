@@ -3,19 +3,19 @@
  "kind": "untrained",
  "family": "V1",
  "seed": 2,
- "n_candidates": 9,
+ "n_candidates": 105,
  "n_accepted": 0,
  "fp_rate": 0.0,
  "accepted_labels": [],
  "status": "ok",
- "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
  "spec": [
   "NULL",
   "2",
   "untrained",
   "V1"
  ],
- "wall_s": 3.3692069053649902,
+ "wall_s": 52.821072816848755,
  "node": "omarchyroot",
- "start": "2026-10-23T02:28:52"
+ "start": "2026-10-23T03:35:43"
 }

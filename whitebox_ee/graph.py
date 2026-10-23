@@ -15,12 +15,18 @@ from .probe import Member, Node, Probe
 from .stats import bootstrap_ci
 
 
-def fit_psi(C: Node, pa_nodes: Sequence[Node]):
+def fit_psi(C: Node, pa_nodes: Sequence[Node], extra=None):
+    """Derivation map as a lookup table: majority value of C per parent tuple, on the
+    observational tuples plus (M8) the interventionally produced ones in `extra`."""
     if not pa_nodes:
         return {(): Counter(C.values.tolist()).most_common(1)[0][0]}
     keys = list(zip(*[p.values.tolist() for p in pa_nodes]))
+    vals = C.values.tolist()
+    if extra:
+        keys = keys + list(extra[0])
+        vals = vals + list(extra[1])
     tab: Dict[tuple, Counter] = {}
-    for k, v in zip(keys, C.values.tolist()):
+    for k, v in zip(keys, vals):
         tab.setdefault(k, Counter())[v] += 1
     return {k: c.most_common(1)[0][0] for k, c in tab.items()}
 

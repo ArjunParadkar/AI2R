@@ -3,27 +3,29 @@
  "seed": 1,
  "frac_memo": 0.21875,
  "auroc_neg_mu": [
-  0.5,
-  0.5,
-  0.5
+  1.0,
+  1.0,
+  1.0
  ],
  "auroc_neg_lambda": [
-  0.5,
-  0.5,
-  0.5
+  0.9504,
+  0.9342308574526649,
+  0.9649003348668979
  ],
- "memorized_at_tau": 0.0,
- "grounded_rule": 1.0,
+ "memorized_at_tau": 1.0,
+ "grounded_rule": 0.7664,
  "generality": {
-  "y": 1.0
+  "sum": 0.78125,
+  "ov4": 0.09625,
+  "ov5": 0.14125
  },
  "status": "ok",
- "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
  "spec": [
   "V2",
   "1"
  ],
- "wall_s": 452.56553649902344,
+ "wall_s": 337.86016488075256,
  "node": "omarchyroot",
- "start": "2026-10-23T02:33:33"
+ "start": "2026-10-23T03:35:51"
 }

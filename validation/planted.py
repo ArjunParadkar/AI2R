@@ -355,7 +355,8 @@ def v5_creation(q: int = 5, seed: int = 0, variant: str = "valid") -> Tuple[Plan
             PVar("A", q, 1, ("x1", "x2"), lambda u, s: (u + s) % q),
             PVar("B", q, 1, ("x3", "x4"), lambda u, s: (u + 2 * s) % q),
             PVar("yA", q, 2, ("A",), lambda a: a), PVar("yB", q, 2, ("B",), lambda b: b)]
-    beh0 = {"outA": "yA", "outB": "yB"}
+    beh0 = {"outA_lo": ("yA", lambda v: v % 2, 2), "outA_hi": ("yA", lambda v: int(v >= 3), 2),
+            "outB_lo": ("yB", lambda v: v % 2, 2), "outB_hi": ("yB", lambda v: int(v >= 3), 2)}
 
     def sample(n, rng):
         return np.stack([rng.integers(0, q, n), rng.integers(0, 2, n), rng.integers(0, q, n), rng.integers(0, 2, n)], 1)

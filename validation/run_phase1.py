@@ -156,11 +156,12 @@ def cell_v1(seed, variant, N=2000):
     common = sorted(set(gl) & set(gol))
     from scipy.stats import spearmanr
     rho = float(spearmanr([gl[k] for k in common], [gol[k] for k in common]).correlation) if len(common) > 2 else np.nan
+    mae = float(np.mean([abs(gl[k] - gol[k]) for k in common])) if common else np.nan
     onodes, oedges = graph_summary(Go, labo)
     return dict(cell="V1", variant=variant, seed=seed, N=N, node_precision=prec_n, node_recall=rec_n,
                 edge_precision=ep, edge_recall=er, edge_f1=ef, decoy_verdicts=decoy_v, wrong_hits=wrong_hits,
                 n_wrong=len(wrong), unlabelled_nodes=unlabelled, generality=gl, generality_oracle=gol,
-                spearman_vs_oracle=rho, oracle_nodes=sorted(l for l in onodes.values() if l),
+                spearman_vs_oracle=rho, generality_mae_vs_oracle=mae, oracle_nodes=sorted(l for l in onodes.values() if l),
                 oracle_edge_f1_vs_spec=prf(oedges, E)[2], n_candidates=n_cand, runtime_s=rt,
                 n_forward_rows=probe.n_runs, stability={c: G.certificates[c].get("stability_jaccard")
                                                          for c in G.concepts()},
