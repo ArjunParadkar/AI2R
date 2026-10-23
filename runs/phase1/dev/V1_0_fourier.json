@@ -46,9 +46,9 @@
   "s2"
  ],
  "oracle_edge_f1_vs_spec": 1.0,
- "n_candidates": 105,
- "runtime_s": 22.294598817825317,
- "n_forward_rows": 864128,
+ "n_candidates": 23,
+ "runtime_s": 27.779793977737427,
+ "n_forward_rows": 325504,
  "stability": {
   "C0@h2": 1.0,
   "C1@h2": 1.0,
@@ -141,13 +141,13 @@
  ],
  "not_converged": false,
  "status": "ok",
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "V1",
   "0",
   "fourier"
  ],
- "wall_s": 31.18052387237549,
+ "wall_s": 55.8444664478302,
  "node": "omarchyroot",
- "start": "2026-10-23T01:40:00"
+ "start": "2026-10-23T02:30:36"
 }

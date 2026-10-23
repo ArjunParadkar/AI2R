@@ -3,19 +3,19 @@
  "kind": "shuffled",
  "family": "V4",
  "seed": 1,
- "n_candidates": 80,
+ "n_candidates": 0,
  "n_accepted": 0,
  "fp_rate": 0.0,
  "accepted_labels": [],
  "status": "ok",
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "NULL",
   "1",
   "shuffled",
   "V4"
  ],
- "wall_s": 12.3173508644104,
+ "wall_s": 1.5386285781860352,
  "node": "omarchyroot",
- "start": "2026-10-23T01:39:04"
+ "start": "2026-10-23T02:28:51"
 }

@@ -16,14 +16,14 @@
   "B": "relabelling",
   "N": "valid"
  },
- "n_represented_not_used": 2,
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "n_represented_not_used": 0,
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "V5",
   "0",
   "valid"
  ],
- "wall_s": 28.15234398841858,
+ "wall_s": 12.834959745407104,
  "node": "omarchyroot",
- "start": "2026-10-23T01:37:23"
+ "start": "2026-10-23T02:28:32"
 }

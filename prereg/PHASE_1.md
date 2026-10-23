@@ -30,7 +30,7 @@ Thresholds are the `Thresholds()` defaults in `whitebox_ee/filter.py`:
 - n_min 5
 - θ_dir 0.05
 
-Candidates come from the **probe proposer**: ridge-decoder realisers of labelled variables, decoded from block writes. Its label set is:
+Candidates come from the **probe proposer**: ridge-decoder realisers of labelled variables, decoded from block writes. A realiser is proposed only if it decodes its label with 2-fold held-out nearest-centroid accuracy ≥ 0.9. Its label set is:
 - every planted variable, including planted non-concepts and decoys;
 - 5 wrong hypotheses per system: sums of two random planted variables modulo the smaller cardinality.
 
@@ -60,7 +60,7 @@ Candidates come from the **probe proposer**: ridge-decoder realisers of labelled
 | V3 | Sideways: C=(A+B) mod 5 with 5 withheld (A,B) combinations | 1500 | compositional (table correct on withheld) and lookup (wrong on withheld) |
 | V4 | Vector-HaSH-style: position → 3 grid-module phases → path-integrated phases → conjunctive place units storing 6 content items; module-phase reports; one conjunctive readout | 2000 | — |
 | V5 | Creation: before network (A, B) and after network | 1500 | valid (new N=(A+B) mod 5 read by the new behaviour), decoy (N written, never read), leaf (new behaviour via a node from raw inputs), relabel (N an invertible relabelling of A), generic (control exposure also contains N) |
-| FORM | Formation: 7 "checkpoints" of V2 (p=7) with memorized fraction 1, 1, 1, 0.8, 0.1, 0.1, 0.1 | 1500 | — |
+| FORM | Formation: 7 "checkpoints" of V2 (p=7) with memorized fraction 1, 1, 1, 0.8, 0.1, 0.1, 0.1; labels exclude the per-pair detector variables m_j (single-input fibres that cannot pass h_min) | 1500 | — |
 | NULL | V1 and V4 with (i) the untrained copy (same shapes, random weights) and (ii) shuffled labels (each label permuted across inputs) | 2000 | — |
 | SENS | V1 onehot at N ∈ {250, 500, 1000} | — | descriptive |
 

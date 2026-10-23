@@ -64,9 +64,15 @@ def member_from_labels(states: np.ndarray, labels: np.ndarray, site: str, ridge:
     H = states - states.mean(0)
     Y = (labels[:, None] == vals[None, :]).astype(float)
     Y = Y - Y.mean(0)
-    d = H.shape[1]
-    lam = ridge * np.trace(H.T @ H) / d
-    W = np.linalg.solve(H.T @ H + lam * np.eye(d), H.T @ Y)
+    n, d = H.shape
+    tr = float((H * H).sum())
+    if tr <= 1e-12:
+        return None
+    lam = ridge * tr / d
+    if n < d:   # dual form: W = H^T (H H^T + lam I)^-1 Y
+        W = H.T @ np.linalg.solve(H @ H.T + lam * np.eye(n), Y)
+    else:
+        W = np.linalg.solve(H.T @ H + lam * np.eye(d), H.T @ Y)
     Uw, S, _ = np.linalg.svd(W, full_matrices=False)
     if S[0] <= 1e-12:
         return None

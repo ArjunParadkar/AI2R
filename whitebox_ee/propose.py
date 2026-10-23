@@ -28,6 +28,7 @@ def member_from_means(H: np.ndarray, labels: np.ndarray, site: str, var_keep: fl
 
 def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[Sequence[str]] = None,
                    mode: str = "delta", estimators=("ridge",), decode_min: Optional[float] = None,
+                   min_decode: Optional[float] = 0.9,
                    **kw) -> List[Member]:
     """Probe directions for known (or hypothesised) variables.
     mode='plain': decode from the state at the site.
@@ -63,6 +64,19 @@ def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[
             z = probe.states[s] @ m.U
             m.centroids = np.stack([z[lab == v].mean(0) for v in vals])
             m.value_ids = vals
+            # propose only realisers that decode their label (2-fold held-out nearest-centroid
+            # accuracy >= min_decode); proposal confers nothing, this only saves interventions
+            if min_decode:
+                fold = np.arange(len(lab)) % 2
+                accs = []
+                for f in (0, 1):
+                    tr_, te_ = fold != f, fold == f
+                    vv = [v for v in vals if (lab[tr_] == v).any()]
+                    cz = np.stack([z[tr_][lab[tr_] == v].mean(0) for v in vv])
+                    d2 = ((z[te_][:, None] - cz[None]) ** 2).sum(-1)
+                    accs.append((np.asarray(vv)[d2.argmin(1)] == lab[te_]).mean())
+                if min(accs) < min_decode:
+                    continue
             if mode == "delta" and ps is not None and np.abs(H @ m.U).max() < 1e-6:
                 continue
             out.append(m)

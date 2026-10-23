@@ -167,10 +167,10 @@ def test_planted_networks_are_correct():
     rng = np.random.default_rng(0)
     for P in (v1_addition(3, seed=3), v2_memo(seed=3), v4_scaffold(seed=3)):
         X = P.sample(500, rng)
-        vals = P.values(X)
+        tg = P.targets(X)
         lg, _ = P.system.run(X)
-        for b, v in P.behaviours.items():
-            assert (lg[b].argmax(-1) == vals[v]).all(), (P.system.name, b)
+        for b in P.behaviours:
+            assert (lg[b].argmax(-1) == tg[b]).all(), (P.system.name, b)
 
 
 # ---------------------------------------------------------------- regression (planted answers)
@@ -190,8 +190,11 @@ def test_regression_v1_recovery_seed0():
                              minimal_sets=False)
     lab = label_nodes(G, vals, len(X))
     got = {(lab[c], tuple(sorted(lab.get(p, p) for p in G.parents[c]))) for c in G.concepts()}
-    want = {(n, tuple(sorted(v.parents))) for n, v in P.vars.items() if v.concept and v.layer > 0}
+    read = set(P.behaviours.values())          # M7: directly read variables are output realisers
+    want = {(n, tuple(sorted(v.parents))) for n, v in P.vars.items() if v.concept and v.layer > 0 and n not in read}
     assert got == want
+    for b, v in P.behaviours.items():
+        assert sorted(lab.get(p, p) for p in G.parents[f"out:{b}"]) == sorted(P.vars[v].parents)
 
 
 def test_regression_v4_scaffold_principles_seed0():

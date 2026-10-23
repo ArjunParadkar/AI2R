@@ -50,7 +50,7 @@ def classify_moves(G: ConceptGraph, probe: Probe, X_new, th: Thresholds, rng,
     else:
         uid = np.arange(len(tr))
     rng_val, rng_tup, dist99 = {}, {}, {}
-    for c in G2.concepts():
+    for c in G2.concepts() + G2.outputs():
         nd = G2.nodes[c]
         v = nd.values[tr]
         rng_val[c] = {int(x) for x in np.unique(v) if len(np.unique(uid[v == x])) >= th.n_min}
@@ -60,6 +60,8 @@ def classify_moves(G: ConceptGraph, probe: Probe, X_new, th: Thresholds, rng,
         for t, u in zip(tup, uid):
             cnt.setdefault(t, set()).add(int(u))
         rng_tup[c] = {t for t, s in cnt.items() if len(s) >= th.n_min}
+        if nd.kind == "output":
+            continue
         mm = nd.primary
         cd = np.sqrt(((mm.centroids[:, None] - mm.centroids[None]) ** 2).sum(-1))
         cd = cd[cd > 0].min() if (cd > 0).any() else 1.0
@@ -93,7 +95,16 @@ def classify_moves(G: ConceptGraph, probe: Probe, X_new, th: Thresholds, rng,
                     kind = max(kind, 1)
                     unseen.append((c, t))
                     reasons.append(f"{c}: parent tuple {t} unseen")
-            if not onp:
+            # the output's own parent tuple (the final derivation step, M7)
+            ob = [o for o in G2.outputs() if G2.nodes[o].meta["behaviour"] == b][0]
+            ps = G2.parents.get(ob, [])
+            if ps and kind < 2:
+                t = tuple(int(G2.nodes[p].values[r]) for p in ps)
+                if t not in rng_tup[ob]:
+                    kind = max(kind, 1)
+                    unseen.append((ob, t))
+                    reasons.append(f"{ob}: parent tuple {t} unseen")
+            if not onp and not ps:
                 kind = 2
                 reasons.append("no node on the derivation (output not mediated by the graph)")
             rec["per_behaviour"][b] = {"move": ["lower", "sideways", "diagonal"][kind], "reasons": reasons,

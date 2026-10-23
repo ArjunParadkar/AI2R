@@ -19,9 +19,9 @@
  "spearman_vs_oracle": NaN,
  "oracle_nodes": [],
  "oracle_edge_f1_vs_spec": 0.0,
- "n_candidates": 105,
- "runtime_s": 21.847630500793457,
- "n_forward_rows": 831424,
+ "n_candidates": 25,
+ "runtime_s": 40.62813425064087,
+ "n_forward_rows": 438208,
  "stability": {},
  "edges": [
   [
@@ -75,13 +75,13 @@
  ],
  "not_converged": false,
  "status": "ok",
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "SENS",
   "2",
   "500"
  ],
- "wall_s": 30.266151666641235,
+ "wall_s": 65.80069541931152,
  "node": "omarchyroot",
- "start": "2026-10-23T01:41:41"
+ "start": "2026-10-23T02:35:37"
 }

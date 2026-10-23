@@ -730,7 +730,11 @@ node whose value on $x$ is shared by fewer than $n_{\min}$ training inputs
 does not ground $x$.
 \item \textbf{Canonical realisers.} (i) In residual architectures the probe
 realiser of a variable at site $s_\ell$ is decoded from what the block wrote,
-$h_\ell-h_{\ell-1}$ (ridge decoder column space); at $s_0$ from the state.
+$h_\ell-h_{\ell-1}$ (ridge decoder column space; $h_{\ell-1}$ is the same token
+position at the previous exposed layer); at $s_0$ from the state. A probe
+realiser is proposed only if its value map decodes its label with 2-fold
+held-out accuracy $\ge0.9$ (proposal confers nothing; the filter only saves
+interventions).
 (ii) A candidate whose realiser lies inside a larger candidate (or input
 realiser) at the same site whose partition refines it is a
 \emph{coarsening} and is not a separate node. (iii) A candidate covered by the

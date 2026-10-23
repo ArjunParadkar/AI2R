@@ -74,6 +74,15 @@ class Planted:
             vals[v.name] = np.array([v.fn(*t) for t in zip(*ps)], dtype=np.int64)
         return vals
 
+    def targets(self, X):
+        """Correct readout of each behaviour (identity or coarsened read of its variable)."""
+        vals = self.values(X)
+        out = {}
+        for b, v in self.behaviours.items():
+            f = self.meta.get("read_fn", {}).get(b)
+            out[b] = vals[v] if f is None else np.array([f(int(x)) for x in vals[v]])
+        return out
+
     def decode(self, name, states):
         """Read variable `name` from states at its site via its templates."""
         z = states @ self.U[name]
@@ -161,12 +170,23 @@ def build(vars_: Sequence[PVar], behaviours: Dict[str, str], sample: Callable, s
         blocks.append(Block("and", torch.tensor(W1, dtype=DT), torch.tensor(b1, dtype=DT),
                             torch.tensor(W3, dtype=DT), torch.tensor(W2, dtype=DT), torch.tensor(b2, dtype=DT)))
     readouts = {}
-    for b, vname in behaviours.items():
-        readouts[b] = (torch.tensor(beta_out * T[vname], dtype=DT), torch.zeros(V[vname].card, dtype=DT))
+    read_fn = {}
+    for b, spec in behaviours.items():
+        if isinstance(spec, tuple):         # coarsened readout: class k = {v : fn(v) == k}
+            vname, fn, ncls = spec
+            W = np.stack([sum(T[vname][v] for v in range(V[vname].card) if fn(v) == k) for k in range(ncls)])
+            readouts[b] = (torch.tensor(beta_out * W, dtype=DT), torch.zeros(ncls, dtype=DT))
+            read_fn[b] = (vname, fn)
+        else:
+            vname = spec
+            readouts[b] = (torch.tensor(beta_out * T[vname], dtype=DT), torch.zeros(V[vname].card, dtype=DT))
+            read_fn[b] = (vname, None)
+    behaviours = {b: read_fn[b][0] for b in behaviours}
     sys_ = ResidualMLPSystem(emb, blocks, readouts, [v.name for v in inputs], extra, name)
     site_of = {v.name: f"h{v.layer}" for v in vars_}
     truth = {v.name: tuple(v.parents) for v in vars_ if v.layer > 0}
-    return Planted(sys_, V, U, E, site_of, behaviours, sample, truth, dict(seed=seed, D=D, noise=noise))
+    return Planted(sys_, V, U, E, site_of, behaviours, sample, truth,
+                   dict(seed=seed, D=D, noise=noise, read_fn={b: f for b, (_, f) in read_fn.items()}))
 
 
 # ---------------------------------------------------------------------------
@@ -340,8 +360,11 @@ def v5_creation(q: int = 5, seed: int = 0, variant: str = "valid") -> Tuple[Plan
     def sample(n, rng):
         return np.stack([rng.integers(0, q, n), rng.integers(0, 2, n), rng.integers(0, q, n), rng.integers(0, 2, n)], 1)
 
+    # the new problem has two behaviours, both coarsened reads of yN (N mod 2, N >= 3), so the
+    # new node is shared and not equivalent to an output partition (amendment M7)
+    newbeh = {"outN_lo": ("yN", lambda v: v % 2, 2), "outN_hi": ("yN", lambda v: int(v >= 3), 2)}
     before = build(base + [PVar("yN", q, 3, ("A",), lambda a: a, concept=False)],
-                   {**beh0, "outN": "yN"}, sample, seed=seed, name="V5_before")
+                   {**beh0, **newbeh}, sample, seed=seed, name="V5_before")
     if variant == "valid":
         extra = [PVar("N", q, 2, ("A", "B"), lambda a, b: (a + b) % q),
                  PVar("yN", q, 3, ("N",), lambda n: n)]
@@ -358,7 +381,7 @@ def v5_creation(q: int = 5, seed: int = 0, variant: str = "valid") -> Tuple[Plan
                  PVar("yN", q, 3, ("N",), lambda n: n)]
     else:
         raise ValueError(variant)
-    after = build(base + extra, {**beh0, "outN": "yN"}, sample, seed=seed, name=f"V5_after_{variant}")
+    after = build(base + extra, {**beh0, **newbeh}, sample, seed=seed, name=f"V5_after_{variant}")
     return before, after
 
 
@@ -385,10 +408,18 @@ def v4_scaffold(periods=(3, 4, 5), n_items: int = 6, item_card: int = 4, seed: i
         tab = rng.integers(0, item_card, size=tuple(periods))
         vs.append(PVar(f"item{j}", item_card, 3, names, (lambda tab: (lambda *g: int(tab[g])))(tab)))
     vs.append(PVar("conj", periods[0] * periods[1], 3, names[:2], lambda a, b: a * periods[1] + b))
-    beh = {f"recall{j}": f"item{j}" for j in range(n_items)}
-    for k in range(len(periods)):
-        beh[f"phase{k}"] = f"gn{k}"
-    beh["conj"] = "conj"
+    # every tested variable is read through two coarsened behaviours (bits), so that no
+    # tested variable is equivalent to an output partition (amendment M7)
+    beh = {}
+    for j in range(n_items):
+        beh[f"recall{j}_lo"] = (f"item{j}", lambda v: v % 2, 2)
+        beh[f"recall{j}_hi"] = (f"item{j}", lambda v: v // 2, 2)
+    for k, lam in enumerate(periods):
+        beh[f"phase{k}_lo"] = (f"gn{k}", lambda v: v % 2, 2)
+        beh[f"phase{k}_hi"] = (f"gn{k}", (lambda lam: (lambda v: int(v >= lam / 2)))(lam), 2)
+    nc = periods[0] * periods[1]
+    beh["conj_lo"] = ("conj", lambda v: v % 2, 2)
+    beh["conj_hi"] = ("conj", (lambda nc: (lambda v: int(v >= nc / 2)))(nc), 2)
 
     def sample(n, rng):
         return np.stack([rng.integers(0, L, n), rng.integers(0, 3, n)], 1)

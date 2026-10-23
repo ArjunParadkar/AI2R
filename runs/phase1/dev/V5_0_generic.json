@@ -8,14 +8,14 @@
   "B": "relabelling",
   "N": "exposure-generic"
  },
- "n_represented_not_used": 2,
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "n_represented_not_used": 0,
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "V5",
   "0",
   "generic"
  ],
- "wall_s": 27.465205907821655,
+ "wall_s": 11.284558534622192,
  "node": "omarchyroot",
- "start": "2026-10-23T01:39:08"
+ "start": "2026-10-23T02:29:22"
 }

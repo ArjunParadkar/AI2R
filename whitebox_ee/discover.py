@@ -239,6 +239,18 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
     for inp in inputs:
         inp.members.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site)))
     passed = drop_coarsenings(passed, inputs, record, th)
+    # M7: a candidate equivalent to a behaviour's output partition is a realiser of that
+    # output, not a derivation step (otherwise the answer representation lies on every
+    # derivation with generality equal to its behaviour's mass)
+    keep = []
+    for c in passed:
+        hit = next((o for o in outs if normalised_vi(c.values, o.values, n_eff) <= th.eps_merge), None)
+        if hit is None:
+            keep.append(c)
+        else:
+            hit.meta.setdefault("realisers", []).append(c.name)
+            record["candidates"][c.name]["verdict"] = f"realiser of output {hit.name}"
+    passed = keep
     nodes = merge_equivalent(passed, inputs, th, n_eff)
     for nd in nodes + inputs:
         nd.members.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site), getattr(m, "quality", 1.0), m.U.shape[1]))

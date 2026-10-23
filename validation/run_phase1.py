@@ -71,10 +71,10 @@ def graph_summary(G, lab):
     return nodes, edges
 
 
-def run_discovery(P, X, vals, labels, seed, system=None):
+def run_discovery(P, X, vals, labels, seed, system=None, min_decode=0.9):
     sys_ = system or P.system
     probe = Probe(sys_, X, seed=seed)
-    mem = propose_probes(probe, labels)
+    mem = propose_probes(probe, labels, min_decode=min_decode)
     G, probe, rec = discover(sys_, X, mem, th=TH, probe=probe, seed=seed, stability=True, minimal_sets=False)
     n_eff = len(np.unique(np.asarray(X), axis=0))
     lab = label_nodes(G, vals, n_eff)
@@ -82,13 +82,21 @@ def run_discovery(P, X, vals, labels, seed, system=None):
 
 
 def truth_edges(P: PL.Planted):
-    concepts = {n for n, v in P.vars.items() if v.concept and v.layer > 0}
+    """Planted concepts and edges under M7: a variable read directly by a behaviour is that
+    behaviour's output realiser, so the output's parents are that variable's parents."""
+    rf = P.meta.get("read_fn", {})
+    read = {v: b for b, v in P.behaviours.items() if rf.get(b) is None}
+    concepts = {n for n, v in P.vars.items() if v.concept and v.layer > 0 and n not in read}
     E = set()
     for n in concepts:
         for p in P.vars[n].parents:
             E.add((p, n))
     for b, v in P.behaviours.items():
-        E.add((v, f"out:{b}"))
+        if rf.get(b) is None:
+            for p in P.vars[v].parents:
+                E.add((p, f"out:{b}"))
+        else:
+            E.add((v, f"out:{b}"))
     return concepts, E
 
 
@@ -170,7 +178,8 @@ def cell_null(seed, kind, family="V1", N=2000):
         system = P.system.untrained_copy(seed)
     elif kind == "shuffled":
         labels = {k: rng.permutation(v) for k, v in labels.items()}
-    G, probe, rec, lab, n_cand = run_discovery(P, X, vals, labels, seed, system=system)
+    # nulls run without the decodability pre-filter, so that the filters are exercised
+    G, probe, rec, lab, n_cand = run_discovery(P, X, vals, labels, seed, system=system, min_decode=None)
     n_acc = len(G.concepts())
     return dict(cell="NULL", kind=kind, family=family, seed=seed, n_candidates=n_cand, n_accepted=n_acc,
                 fp_rate=n_acc / max(n_cand, 1), accepted_labels=[lab.get(c) for c in G.concepts()])
@@ -209,6 +218,11 @@ def cell_v3(seed, compositional, N=1500, n_test=80):
     align_values(G, vals)
     q = P.meta["q"]
     ref = {c: (lambda a, b: (a + b) % q) for c, l in lab.items() if l == "C"}
+    # under M7 C (read by the output) is the output's realiser: reference on the output,
+    # with its parents ordered as in the graph (labels A, B)
+    o = G.outputs()[0]
+    if sorted(lab.get(p) for p in G.parents[o]) == ["A", "B"]:
+        ref[o] = (lambda a, b: (a + b) % q)
     out = {}
     for nm, Xn in [("withheld", P.sample(n_test, rng, withheld_only=True)), ("seen", P.sample(n_test, rng, train=True))]:
         res = classify_moves(G, probe, Xn, TH, rng, reference=ref)

@@ -7,14 +7,14 @@
   "A": "relabelling",
   "B": "relabelling"
  },
- "n_represented_not_used": 6,
- "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "n_represented_not_used": 3,
+ "commit": "af3313bfc7595bf3051dda38c79df2aba9295719",
  "spec": [
   "V5",
   "1",
   "decoy"
  ],
- "wall_s": 14.755684614181519,
+ "wall_s": 8.357651948928833,
  "node": "omarchyroot",
- "start": "2026-10-23T01:39:57"
+ "start": "2026-10-23T02:29:42"
 }
