@@ -112,6 +112,8 @@ def main():
     ap.add_argument("--sharpness_n", type=int, default=300)
     ap.add_argument("--sharpness_hutch", type=int, default=32)
     ap.add_argument("--activity_rows", type=int, default=500)
+    ap.add_argument("--device", default="cuda")
+    ap.add_argument("--n_random_realisers", type=int, default=10)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -125,7 +127,7 @@ def main():
                          f"{'_untrained' if a.untrained else ''}{'_8bit' if a.load_in_8bit else ''}"
     cell.mkdir(parents=True, exist_ok=True)
     meta = dict(config=cfg, config_hash=ch, commit=git_commit(), node=platform.node(),
-                gpu=torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu",
+                gpu=torch.cuda.get_device_name(0) if (torch.cuda.is_available() and a.device.startswith("cuda")) else "cpu",
                 start=time.strftime("%Y-%m-%dT%H:%M:%S"))
     log = open(cell / "log.txt", "a")
 
@@ -134,16 +136,20 @@ def main():
         print(msg, flush=True)
         log.write(msg + "\n"); log.flush()
 
-    th = Thresholds()
+    th = Thresholds(n_random_realisers=a.n_random_realisers)
     task = TASKS[a.task]["make"]()
     Xtr, Xte, behaviours = sample_sets(a.task, task, a.n_train, a.n_test, a.seed)
     say("cell", cell.name, "config", ch, "n_train", len(Xtr), "n_test", len(Xte))
 
-    sysm = HFSystem(a.model, revision=a.revision, task=task, layers=[0], dtype=a.dtype, load_in_8bit=a.load_in_8bit)
+    sysm = HFSystem(a.model, revision=a.revision, task=task, layers=[0], dtype=a.dtype, load_in_8bit=a.load_in_8bit,
+                    device=a.device)
     L = sysm.n_layers
-    layers = sorted(set(list(range(0, L + 1, a.layer_step)) + [L]))
+    # every layer_step-th layer in the first two thirds, every layer in the last third (the
+    # development model computed addition in a narrow late band; prereg §2)
+    cut = int(np.ceil(2 * L / 3))
+    layers = sorted(set(list(range(0, cut, a.layer_step)) + list(range(cut, L + 1))))
     sysm = HFSystem(a.model, revision=a.revision, task=task, layers=layers, dtype=a.dtype,
-                    load_in_8bit=a.load_in_8bit, _model=sysm.model, _tokenizer=sysm.tok)
+                    load_in_8bit=a.load_in_8bit, _model=sysm.model, _tokenizer=sysm.tok, device=a.device)
     if a.untrained:
         sysm = sysm.untrained_copy(a.seed)
     sysm.behaviours = behaviours
@@ -238,17 +244,46 @@ def main():
                 funnel[i] = bool(answer_like.get((b, c), False))
                 break
     table["funnel"] = funnel
-    # CCGP per input: variables = known-algorithm labels, conditions = input-value tuples
+    # CCGP per input (prereg §4): known-algorithm variables; conditions per variable are the
+    # task-variable combinations of its own column, (a_i, b_i, c_{i-1}) for arithmetic and
+    # (subj_num, attr_num) for agreement; states reduced to the top 64 PCs (training rows);
+    # site search over every 4th exposed layer.
     lab_all = {k: v for k, v in task.labels(list(Xtr) + list(Xte)).items() if len(np.unique(v)) > 1}
-    known = [k for k in lab_all if k[0] in "scr" or k in ("subj_num", "attr_num", "match")]
-    iv = task.input_values(list(Xtr) + list(Xte))
-    cond = np.unique(np.stack([iv[k] for k in sorted(iv)], 1), axis=0, return_inverse=True)[1].reshape(-1)
-    try:
-        table["ccgp"] = BL.ccgp_per_input({s: P2.states[s] for s in P2.sites if not s.startswith("L0@")},
-                                          {k: lab_all[k] for k in known}, cond, tr, te, seed=a.seed)
-    except Exception as e:
-        say("ccgp failed", repr(e))
-        table["ccgp"] = np.full(len(te), np.nan)
+    allX = list(Xtr) + list(Xte)
+    iv = task.input_values(allX)
+
+    def joint(cols):
+        return np.unique(np.stack(cols, 1), axis=0, return_inverse=True)[1].reshape(-1)
+
+    if a.task.startswith("add") or a.task == "mul21":
+        known = [k for k in lab_all if k[0] in "scrpk" and k[1:].isdigit()]
+        def cond_for(k):
+            i = int(k[1:])
+            cols = [iv[n] for n in (f"a{i}", f"b{i}", "b") if n in iv]
+            if i > 0 and f"c{i-1}" in lab_all:
+                cols.append(lab_all[f"c{i-1}"])
+            return joint(cols)
+    else:
+        known = [k for k in ("subj_num", "attr_num", "match") if k in lab_all]
+        def cond_for(k):
+            return joint([lab_all["subj_num"], lab_all["attr_num"]])
+    ex_layers = sorted({P2.sys.site_layer(s_) for s_ in P2.sites})
+    ccgp_layers = set(ex_layers[1::2])            # every 4th layer (exposed layers are every 2nd)
+    ccgp_sites = [s_ for s_ in P2.sites if P2.sys.site_layer(s_) in ccgp_layers]
+    red = {}
+    for s_ in ccgp_sites:
+        Hs = P2.states[s_]
+        mu = Hs[tr].mean(0)
+        _, _, Vt = np.linalg.svd(Hs[tr] - mu, full_matrices=False)
+        red[s_] = (Hs - mu) @ Vt[:64].T
+    per_var = []
+    for k in known:
+        try:
+            per_var.append(BL.ccgp_per_input(red, {k: lab_all[k]}, cond_for(k), tr, te, seed=a.seed,
+                                             site_select_splits=3))
+        except Exception as e:
+            say("ccgp failed for", k, repr(e))
+    table["ccgp"] = np.nanmean(np.stack(per_var, 0), 0) if per_var else np.full(len(te), np.nan)
     write(cell / "k2_partial.pkl", table)
     # sharpness (subset; expensive)
     try:

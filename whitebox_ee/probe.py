@@ -54,14 +54,30 @@ class Node:
 
 
 def member_from_labels(states: np.ndarray, labels: np.ndarray, site: str, ridge: float = 1e-3,
-                       sv_tol: float = 1e-2, max_k: Optional[int] = None, source: str = "probe") -> Optional[Member]:
+                       sv_tol: float = 1e-2, max_k: Optional[int] = None, source: str = "probe",
+                       n_pca: Optional[int] = 64, pca_var: float = 0.999) -> Optional[Member]:
     """Realiser of a labelled variable: column space of the ridge decoder of its
-    centred one-hot code from the centred states (a probe direction set)."""
+    centred one-hot code from the centred states, fitted inside the site's top
+    principal subspace (at most n_pca components, up to pca_var of the variance).
+    Restricting to the principal subspace keeps the decoder off near-null-variance
+    directions, which separate classes when N < d but carry no causal effect
+    (development finding on an LLM, reports/phase2 dev notes)."""
     labels = np.asarray(labels)
     vals = np.unique(labels)
     if len(vals) < 2:
         return None
-    H = states - states.mean(0)
+    H0 = states - states.mean(0)
+    P = None
+    if n_pca:
+        _, S0, Vt0 = np.linalg.svd(H0, full_matrices=False)
+        if S0[0] <= 1e-12:
+            return None
+        e = np.cumsum(S0 ** 2) / (S0 ** 2).sum()
+        r = int(min(n_pca, np.searchsorted(e, pca_var) + 1, (S0 > 1e-9 * S0[0]).sum()))
+        P = Vt0[:r].T                                   # (d, r)
+        H = H0 @ P
+    else:
+        H = H0
     Y = (labels[:, None] == vals[None, :]).astype(float)
     Y = Y - Y.mean(0)
     n, d = H.shape
@@ -81,6 +97,8 @@ def member_from_labels(states: np.ndarray, labels: np.ndarray, site: str, ridge:
     if max_k:
         k = min(k, max_k)
     U = Uw[:, :k]
+    if P is not None:
+        U = np.linalg.qr(P @ U)[0]
     z = states @ U
     cents = np.stack([z[labels == v].mean(0) for v in vals])
     return Member(site, U, cents, vals, source)

@@ -33,7 +33,7 @@ Development model (excluded from every confirmatory list): Qwen/Qwen2.5-1.5B, Qw
 
 Probe (training-distribution) set: n_train = 1500 per cell; held-out set: n_test = 1000 problems disjoint from the probe set. Seeds: 0 (all cells), plus seeds 1, 2 for the Qwen2.5-7B and OLMo-2-7B cells (resampling stability of the graph).
 
-Sites: every second layer (and the last) × the task's roles. Candidates: the probe proposer (Phase 1-validated) with the task's known-algorithm labels and its wrong hypotheses (`w_i`, `q_i` for arithmetic; decoys for agreement).
+Sites: every second layer in the first two thirds of the network and every layer in the last third, × the task's roles. On the development model (Qwen2.5-1.5B, 2-digit addition) full-state patches showed that answer positions become causal only in a narrow late band (about L22–26 of 28), while operand positions stay causal until then. Candidates: the probe proposer (Phase 1-validated) with the task's known-algorithm labels and its wrong hypotheses (`w_i`, `q_i` for arithmetic; decoys for agreement).
 
 ## 3. K1: ground-truth derivation
 
@@ -51,6 +51,15 @@ Sites: every second layer (and the last) × the task's roles. Candidates: the pr
 ## 4. K2: depth predicts per-input error (the kill test)
 
 **Hypothesis (Conjecture 3.9).** On held-out inputs, the depth of understanding of the input, λ(x) (bottleneck grounding level, Prop. 3.5; per input the minimum over the task's behaviours), predicts whether the model answers correctly better than (i) Bernardi's CCGP (our pre-registered per-input adaptation, `whitebox_ee.baselines.ccgp_per_input`), (ii) sharpness (Hutchinson trace of the per-input loss Hessian over the last 2 decoder blocks, 32 probes, first 300 held-out inputs; the score is −trace), and (iii) max-softmax (minimum over behaviours of the restricted-class max probability).
+
+**Baseline implementations (frozen):**
+- **CCGP per input** (`whitebox_ee.baselines.ccgp_per_input`, called per variable in `bench/k12.py`). The variables are the known-algorithm variables (s_i, c_i, r_i; p_i and k_i for multiplication; subj_num, attr_num and match for agreement). Conditions are the task-variable combinations of each variable's own column: (a_i, b_i, c_{i−1}) for arithmetic and (subj_num, attr_num) for agreement. States are reduced to the top 64 principal components fitted on training rows. Sites are every 4th exposed layer at all roles; the best site is chosen on training rows only, with 3 random splits. The per-input score is the mean over variables of the signed decoder margin for the input's true value, from decoders that never saw the input's condition.
+- **Sharpness:** Hutchinson, last 2 blocks, 32 probes, first 300 held-out inputs, model dtype.
+- **Max-softmax, entropy and margin:** restricted to the task's class tokens, minimum over behaviours.
+
+**Discovery settings (frozen):** `Thresholds()` defaults as validated in Phase 1, except `n_random_realisers` = 10 (cost; the 95th-percentile η is estimated from 10 norm-matched random realisers). n_pairs = 512, activity rows = 500, partners = 8.
+
+**Analysis code (frozen):** `bench/analyse_k12.py` computes every K1 and K2 statistic and the decision rule.
 
 **Statistic.** For each passing-gate cell and score S, AUROC(S → correct) on the held-out inputs. Primary contrast: ΔAUROC(λ, B) = AUROC(λ) − AUROC(B) for B ∈ {CCGP, −sharpness, max-softmax}, per cell with a paired bootstrap 95% CI over inputs (2000 resamples). Secondary: the same for γ_0.25 and for entropy and margin; per-behaviour AUROCs.
 

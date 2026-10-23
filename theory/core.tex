@@ -731,7 +731,10 @@ does not ground $x$.
 \item \textbf{Canonical realisers.} (i) In residual architectures the probe
 realiser of a variable at site $s_\ell$ is decoded from what the block wrote,
 $h_\ell-h_{\ell-1}$ (ridge decoder column space; $h_{\ell-1}$ is the same token
-position at the previous exposed layer); at $s_0$ from the state. A probe
+position at the previous exposed layer); at $s_0$ from the state. The ridge decoder is fitted inside the site's top principal subspace (at most
+64 components; amendment 1, \texttt{prereg/PHASE\_1\_amend\_1.md}): with fewer
+probe inputs than dimensions an unrestricted decoder interpolates along
+near-null-variance directions that carry no causal effect. A probe
 realiser is proposed only if its value map decodes its label with 2-fold
 held-out accuracy $\ge0.9$ (proposal confers nothing; the filter only saves
 interventions).

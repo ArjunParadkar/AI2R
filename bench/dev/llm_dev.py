@@ -29,9 +29,8 @@ for p in pats:
     X += task.sample(a.n // len(pats), rng, carries=p)
 tmp = HFSystem(a.model, task=task, layers=[0], dtype="bfloat16")
 L = tmp.n_layers
-layers = list(range(0, L + 1, a.layer_step))
-if layers[-1] != L:
-    layers.append(L)
+cut = int(np.ceil(2 * L / 3))
+layers = sorted(set(list(range(0, cut, 4)) + list(range(cut, L + 1))))
 del tmp; torch.cuda.empty_cache()
 sysm = HFSystem(a.model, task=task, layers=layers, dtype="bfloat16", batch_size=64)
 sysm.behaviours = [f"out{j}" for j in range(nd)]          # carry-out constant (=1): dropped
@@ -44,7 +43,7 @@ print("acc", acc, "full", full, "probe %.0fs" % (time.time() - t0), flush=True)
 labels = {k: v for k, v in task.labels(X).items() if not k.startswith(f"c{nd-1}")}
 mem = propose_probes(probe, labels, verbose=True)
 print(len(mem), "candidates", flush=True)
-th = Thresholds()
+th = Thresholds(n_random_realisers=10)
 G, probe, rec = discover(sysm, X, mem, th=th, probe=probe, verbose=True, stability=False, minimal_sets=False)
 lab = label_nodes(G, labels, len(X))
 A = compute_activity(probe, G, th, rng, rows=np.arange(min(300, len(X))))
