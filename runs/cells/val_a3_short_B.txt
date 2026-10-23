@@ -1,0 +1,17 @@
+python -m validation.run_phase1 --seeds 117 --cells NULL --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 117 --cells V2 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 117 --cells SENS --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells V1 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells V3 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells V4 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells V5 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells NULL --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells V2 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 118 --cells SENS --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells V1 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells V3 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells V4 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells V5 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells NULL --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells V2 --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 119 --cells SENS --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
