@@ -1,6 +1,6 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-23 ~05:00 CDT, by the lead research agent.
+Last update: 2026-10-23 ~10:50 CDT, by the lead research agent.
 
 ## Where we are
 
@@ -18,18 +18,56 @@ Last update: 2026-10-23 ~05:00 CDT, by the lead research agent.
 - **Run models that fit locally** (laptop GPU, 8 GB): pythia-1.4b and -2.8b in bf16. Everything ≥ 7B goes to Pinnacle.
 - **Thread oversubscription:** always set `OMP_NUM_THREADS`/`MKL_NUM_THREADS` (4 for a single LLM process, 2 when running many planted processes).
 
-## State at 2026-10-23 ~09:40 (Pinnacle down again since 08:44; wait for "PINNACLE BACK")
+## State at 2026-10-23 ~10:50 (READ THIS FIRST)
 
-- **Laptop rule (Arjun):** nothing heavier than a sub-minute single-process test runs on the laptop. Everything else goes to Pinnacle through `runs/slurm/cmd_array.sbatch`, which runs line i of a command file.
-- **Env:** `/scrfs/storage/paradkar/envs/wb-ee` is built (job 1364678: torch 2.5.1, transformers 4.49, bnb 0.42).
-- **Amendment 1:** P2 FAILED on seed 105 (recorded).
-- **Amendment 2 (M9 step-level leaf rule; dual-mode realisers; coarsening rule removed; V2D/FORMD):** drafted in `prereg/PHASE_1_amend_2.md`, not tagged.
-- **Queued when Pinnacle is back:**
-  1. Fetch `/scrfs/storage/paradkar/wb/results/phase1/dev_a2` (job 1364717, old code; informational only) and the LLM diagnostics (job 1364727 logs).
-  2. Sync the code: `git archive HEAD | ssh pinnacle "tar xf - -C ~/wb-ee"` and write COMMIT.
-  3. Submit `runs/cells/dev_a3.txt` (24 lines) on cloud72 (`-c 4 --array=1-24%10`) and `runs/cells/llmdev_a2.txt` on agpu06 (`-c 24 --gres=gpu:1 -t 06:00:00`).
-  4. If dev_a3 is clean, tag `prereg-phase-1-amend-2`, record the hash, then submit `runs/cells/val_a2.txt` (50 lines) and compute verdicts with `validation/verdicts_phase1.py DIR 110,111,112,113,114` (extend the script for V2D/FORMD first).
-  5. Then finalise and tag `prereg/PHASE_2.md`, and submit the K1/K2 cells (`runs/slurm/k12.sbatch`).
+**Tags**
+- `prereg-phase-1` (bc6036a)
+- `prereg-phase-1-amend-1` (9a57d93)
+- `prereg-phase-1-amend-2` (95a65da)
+- `prereg-phase-2` (25b772e)
+
+Hashes and SHA-256 are in `docs/record.md`; the OSF texts are in `prereg/osf/` (Arjun uploads).
+
+**Phase 1 history**
+- The original validation passed everything except P6b.
+- Amendment 1 (principal-subspace realisers) failed P2 (recorded).
+- Amendment 2 adds M9 (step-level leaf rule), dual-mode delta+plain realisers, removal of the coarsening rule, and V2D/FORMD as the gated memorization and formation systems (V2/FORM become controls).
+  - Its dev check (job 1364799, seeds 0–2) was clean: V1, V3, V4 and V5 exact, NULL 0, V2D AUROC 0.994/0.999. FORMD dev was still running at the tag.
+  - **Its validation (seeds 110–114) is running.** Results go to `/scrfs/storage/paradkar/wb/results/phase1/val_a2`.
+    - 1364949 (long cells: V2D, FORMD, FORMATION, SENS) on gpu72, packed, 32 cores.
+    - 1364950/1364951 (short cells) on comp01.
+    - 1364952/1364953 are HELD to respect the 64-core CPU share. Release with `scontrol release 1364952` when 1364950 ends, then 1364953.
+  - When everything is done:
+    1. Fetch with `ssh pinnacle 'cd .../val_a2 && tar cf - *.json' | tar xf - -C runs/phase1/val_a2`.
+    2. Run `.venv/bin/python validation/verdicts_phase1.py runs/phase1/val_a2 110,111,112,113,114 > runs/phase1/val_a2/VERDICTS.md`.
+    3. Add the record rows (same parser as before), and update `reports/phase1.md` §8 and `docs/CLAIMS.md`.
+
+**Phase 2**
+- Pre-registration frozen in `prereg/PHASE_2.md`. Cells: `runs/cells/phase2.txt` (39).
+- Running as array 1364954 (`wb-k12`, agpu72, `%2`, 24 cores each). Results go to `/scrfs/storage/paradkar/wb/results/k12/<cell>/{k1.json,graph.pkl,k2.pkl,log.txt}`; logs to `/scrfs/storage/paradkar/wb/logs/wb-k12-1364954_<i>.out`.
+- Do NOT analyse before the amend-2 validation verdict (see the note in `docs/record.md`).
+- Analysis: `.venv/bin/python -m bench.analyse_k12 runs/k12 --out reports/phase2_tables.json`. Exclude the pythia-160m smoke cell, which is a development model.
+- If K2 FAILS, the programme stops: write `reports/phase2.md` with everything and start no Phase 3–8 runs.
+- Raise `%2` to `%4` if the gpu QOS has room. My share is ≤ 96 cores: the val-long job uses 32 while it runs.
+
+**Rules from Arjun and the coordinator (2026-10-23)**
+- The laptop is only for editing, git and sub-minute single-process tests.
+- QOS cloud ≤ 16 cores at once.
+- Bulk CPU work goes to comp72/comp01 as packed 32-core jobs (`runs/slurm/pack.sbatch`; `CMDS`, `PAR`, `NT`), within ≤ 64 comp cores.
+- GPU ≤ 96 gpu-QOS cores and ≤ 8 submitted GPU jobs.
+- Poll at most every 10 minutes. ≤ 2 concurrent ssh, each wrapped in `timeout`.
+- If ssh hangs, stop, wait 10 minutes and retry once. The ControlMaster lasts until about 20:00 on 2026-10-23.
+
+**Runners**
+- `runs/slurm/cmd_array.sbatch`: an array that runs line i of `$CMDS`.
+- `runs/slurm/pack.sbatch`: packs many lines into one node.
+- `runs/slurm/k12.sbatch`: an array of `bench.k12` argument lines.
+- Sync code with `git archive HEAD | ssh pinnacle "tar xf - -C ~/wb-ee"` and write `COMMIT`.
+
+**Key development facts for LLMs** (Qwen2.5-1.5B, development model)
+- Addition is computed in a narrow late band (about L22–26 of 28) at the answer positions. Operand positions stay causal until then.
+- Plain principal-subspace realisers work there (s0: A = 0.36 against η = 0.02); delta-mode realisers mostly do not.
+- The full pipeline found s0 at L25@pre_ans_d0 ← {a0, b0} (IIA 0.97) with out0 ← s0. For out1 it found no intermediate (c0 and s1 missing), so the realisers capture the column sum but not yet the carry.
 
 ## Cluster (Pinnacle)
 
