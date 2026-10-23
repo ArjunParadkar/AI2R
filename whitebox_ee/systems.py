@@ -99,7 +99,7 @@ class ResidualMLPSystem:
         return {n: X[:, j].astype(np.int64) for j, n in enumerate(self.input_names)}
 
     @torch.no_grad()
-    def run(self, X, patches: Sequence[Patch] = (), batch: int = 8192):
+    def run(self, X, patches: Sequence[Patch] = (), batch: int = 8192, sites=None):
         X = np.asarray(X)
         outs_l = {b: [] for b in self.behaviours}
         outs_s = {s: [] for s in self.sites}
@@ -110,8 +110,9 @@ class ResidualMLPSystem:
                 outs_l[b].append(lg[b])
             for s in st:
                 outs_s[s].append(st[s])
+        keep = self.sites if sites is None else list(sites)
         return ({b: np.concatenate(v) for b, v in outs_l.items()},
-                {s: np.concatenate(v) for s, v in outs_s.items()})
+                {s: np.concatenate(outs_s[s]) for s in keep})
 
     def edit_inputs(self, X, edits):
         X = np.array(X, copy=True)

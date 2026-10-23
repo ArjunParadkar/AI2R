@@ -123,7 +123,7 @@ class Probe:
     # ------------------------------------------------------------------
     def run_patched(self, rows: np.ndarray, srcs: Sequence[Tuple[Node, np.ndarray]] = (),
                     freeze: Sequence[Node] = (), input_edits: Optional[Dict[str, np.ndarray]] = None,
-                    extra_patches: Sequence[Patch] = ()):
+                    extra_patches: Sequence[Patch] = (), sites: Optional[Sequence[str]] = None):
         """Run X[rows] with each node in `srcs` patched from X[src_rows] (all its
         members), each node in `freeze` patched from X[rows] itself (held at its
         clean value), and optional input edits. Returns (logits, states)."""
@@ -145,7 +145,8 @@ class Probe:
         if input_edits:
             X = self.sys.edit_inputs(X, input_edits)
         self.n_runs += len(rows)
-        return self.sys.run(X, patches)
+        # sites=(): only logits are needed; sites=None: all states; else the listed sites
+        return self.sys.run(X, patches, sites=sites)
 
     def _take(self, rows):
         if isinstance(self.X, np.ndarray):

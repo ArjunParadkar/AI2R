@@ -42,7 +42,7 @@ acc = {b: float((probe.read[b] == tg[b]).mean()) for b in sysm.behaviours}
 full = float(np.mean(np.all([probe.read[b] == tg[b] for b in sysm.behaviours], 0)))
 print("acc", acc, "full", full, "probe %.0fs" % (time.time() - t0), flush=True)
 labels = {k: v for k, v in task.labels(X).items() if not k.startswith(f"c{nd-1}")}
-mem = propose_probes(probe, labels)
+mem = propose_probes(probe, labels, verbose=True)
 print(len(mem), "candidates", flush=True)
 th = Thresholds()
 G, probe, rec = discover(sysm, X, mem, th=th, probe=probe, verbose=True, stability=False, minimal_sets=False)

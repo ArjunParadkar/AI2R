@@ -117,14 +117,14 @@ def iia(probe: Probe, G: ConceptGraph, name: str, th: Thresholds, rng, random_nu
     ok = src >= 0
     rows, src = rows[ok], src[ok]
     pred, undef = G.counterfactual(rows, {name: C.values[src]})
-    lg, _ = probe.run_patched(rows, [(C, src)])
+    lg, _ = probe.run_patched(rows, [(C, src)], sites=())
     outs = G.outputs()
     agree_all, agree_eff, n_eff = [], [], 0
     rand_eff = []
     if random_null and C.members:
         R = Node("rand", "concept", [random_member(C.primary.site, probe.sys.site_dim[C.primary.site],
                                                    C.primary.U.shape[1], rng, C.primary.U)])
-        lgr, _ = probe.run_patched(rows, [(R, src)])
+        lgr, _ = probe.run_patched(rows, [(R, src)], sites=())
     for o in outs:
         b = G.nodes[o].meta["behaviour"]
         sysv = lg[b].argmax(-1)

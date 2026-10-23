@@ -59,7 +59,7 @@ def compute_activity(probe: Probe, G: ConceptGraph, th: Thresholds, rng, rows=No
         src = _partner_rows(probe, C.values, rows, m, rng, pool).reshape(-1)
         ok = src >= 0
         src_ = np.where(ok, src, rep)
-        lg, _ = probe.run_patched(rep, [(C, src_)])
+        lg, _ = probe.run_patched(rep, [(C, src_)], sites=())
         node_act[C.name] = {}
         for b in behaviours:
             ch = (lg[b].argmax(-1) != probe.read[b][rep]) & ok
@@ -81,7 +81,8 @@ def compute_activity(probe: Probe, G: ConceptGraph, th: Thresholds, rng, rows=No
             by_site.setdefault(G.nodes[c].site_index, []).append(G.nodes[c])
         for t, targets in by_site.items():
             freeze = [Q for Q in pool_nodes if Q is not P and P.site_index < Q.site_index < t]
-            lg, st = probe.run_patched(rep, [(P, src_)], freeze=freeze)
+            lg, st = probe.run_patched(rep, [(P, src_)], freeze=freeze,
+                                       sites=sorted({C.primary.site for C in targets if C.members}))
             for C in targets:
                 v = probe.node_values_from_states(C, st, lg)
                 ch = ((v != C.values[rep]) & ok).reshape(len(rows), m).mean(1)
@@ -158,7 +159,7 @@ def random_realiser_generality(probe: Probe, th: Thresholds, rng, k: int = 4, n_
             R = Node("rand", "concept", [mem], None, probe.site_idx(s))
             rep = np.repeat(rows, m)
             src = rng.integers(0, probe.N, len(rep))
-            lg, _ = probe.run_patched(rep, [(R, src)])
+            lg, _ = probe.run_patched(rep, [(R, src)], sites=())
             act = []
             for b in probe.sys.behaviours:
                 ch = lg[b].argmax(-1) != probe.read[b][rep]

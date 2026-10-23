@@ -47,7 +47,8 @@ def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], 
             if t <= P.site_index:
                 continue
             freeze = [Q for Q in pool if Q is not P and Q.kind != "input" and P.site_index < Q.site_index < t]
-            lg, st = probe.run_patched(r, [(P, src)], freeze=freeze)
+            need = sorted({C.primary.site for C in targets if C.kind != "output" and C.members})
+            lg, st = probe.run_patched(r, [(P, src)], freeze=freeze, sites=need)
             vals = _read_targets(probe, targets, lg, st)
             for C in targets:
                 effects[(P.name, C.name)] = float((vals[C.name] != C.values[r]).mean())
@@ -55,7 +56,7 @@ def direct_effects(probe: Probe, pool: Sequence[Node], outputs: Sequence[Node], 
             if with_null:
                 # null: within-fibre swap of P (same P value, same perturbation class)
                 src_eq = probe.partners(P.values, 1, differ=False, rows=r, rng=rng)[:, 0]
-                lg2, st2 = probe.run_patched(r, [(P, src_eq)], freeze=freeze)
+                lg2, st2 = probe.run_patched(r, [(P, src_eq)], freeze=freeze, sites=need)
                 v2 = _read_targets(probe, targets, lg2, st2)
                 for C in targets:
                     nulls[(P.name, C.name)] = float((v2[C.name] != C.values[r]).mean())

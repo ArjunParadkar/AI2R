@@ -121,7 +121,7 @@ def gamma_share(probe: Probe, G: ConceptGraph, principles: Sequence[str], rows, 
     nodes = [(G.nodes[c], rep) for c in principles]
     if nodes:
         # run on x' with principles patched from x
-        lg, _ = probe.run_patched(xp, nodes)
+        lg, _ = probe.run_patched(xp, nodes, sites=())
     else:
         lg = {b: probe.logits[b][xp] for b in probe.sys.behaviours}
     out = {}

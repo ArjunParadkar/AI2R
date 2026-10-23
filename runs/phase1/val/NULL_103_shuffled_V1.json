@@ -1,0 +1,21 @@
+{
+ "cell": "NULL",
+ "kind": "shuffled",
+ "family": "V1",
+ "seed": 103,
+ "n_candidates": 105,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted_labels": [],
+ "status": "ok",
+ "commit": "bc6036a303a6cf2065d935f5a0c79c54be1385d6",
+ "spec": [
+  "NULL",
+  "103",
+  "shuffled",
+  "V1"
+ ],
+ "wall_s": 41.47695755958557,
+ "node": "omarchyroot",
+ "start": "2026-10-23T04:11:48"
+}

@@ -131,7 +131,8 @@ def classify_moves(G: ConceptGraph, probe: Probe, X_new, th: Thresholds, rng,
                 if not ok:
                     checks.append({"node": c, "tuple": t, "assembled": None})
                     continue
-                lg, st = P2.run_patched(np.array([base]), srcs)
+                lg, st = P2.run_patched(np.array([base]), srcs,
+                                        sites=[G2.nodes[c].primary.site] if G2.nodes[c].members else ())
                 val = int(P2.node_values_from_states(G2.nodes[c], st, lg)[0])
                 ch = {"node": c, "tuple": t, "assembled": val, "native": int(G2.nodes[c].values[r])}
                 if reference and c in reference:

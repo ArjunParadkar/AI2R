@@ -42,7 +42,7 @@ def tv(p, q):
 
 def swap_effect(probe: Probe, node: Node, rows, srcs, extra_patches=()):
     """Mean over behaviours (weights w) of TV between clean and patched outputs, per pair."""
-    lg, _ = probe.run_patched(rows, [(node, srcs)], extra_patches=extra_patches)
+    lg, _ = probe.run_patched(rows, [(node, srcs)], extra_patches=extra_patches, sites=())
     eff = []
     for b in probe.sys.behaviours:
         eff.append(tv(softmax(probe.logits[b][rows]), softmax(lg[b])))

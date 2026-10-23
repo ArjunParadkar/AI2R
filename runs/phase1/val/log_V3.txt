@@ -1,0 +1,10 @@
+[phase1] V3_100_True.json 4s 
+[phase1] V3_100_False.json 4s 
+[phase1] V3_101_True.json 3s 
+[phase1] V3_101_False.json 4s 
+[phase1] V3_102_True.json 4s 
+[phase1] V3_102_False.json 3s 
+[phase1] V3_103_True.json 5s 
+[phase1] V3_103_False.json 6s 
+[phase1] V3_104_True.json 4s 
+[phase1] V3_104_False.json 4s 

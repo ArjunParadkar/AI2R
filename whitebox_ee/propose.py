@@ -28,7 +28,7 @@ def member_from_means(H: np.ndarray, labels: np.ndarray, site: str, var_keep: fl
 
 def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[Sequence[str]] = None,
                    mode: str = "delta", estimators=("ridge",), decode_min: Optional[float] = None,
-                   min_decode: Optional[float] = 0.9,
+                   min_decode: Optional[float] = 0.9, verbose: bool = False,
                    **kw) -> List[Member]:
     """Probe directions for known (or hypothesised) variables.
     mode='plain': decode from the state at the site.
@@ -36,7 +36,11 @@ def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[
                   realiser in residual architectures (phase1.md §2). Site 0 uses plain."""
     sites = list(sites or probe.sites)
     out = []
+    import time as _t
+    t0 = _t.time()
     for s in sites:
+        if verbose:
+            print(f"[propose] {s} {len(out)} members {_t.time() - t0:.0f}s", flush=True)
         i = probe.site_idx(s)
         ps = probe.prev_site(s)
         if mode == "delta" and ps is not None:
