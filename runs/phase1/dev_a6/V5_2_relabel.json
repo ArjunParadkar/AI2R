@@ -1,0 +1,20 @@
+{
+ "cell": "V5",
+ "seed": 2,
+ "variant": "relabel",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling"
+ },
+ "n_represented_not_used": 3,
+ "commit": "dc0d1246382891e98427fc015f8a76d51a75698b",
+ "spec": [
+  "V5",
+  "2",
+  "relabel"
+ ],
+ "wall_s": 30.50059962272644,
+ "node": "c1402",
+ "start": "2026-10-23T12:06:26"
+}

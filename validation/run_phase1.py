@@ -304,7 +304,7 @@ def cell_v5(seed, variant, N=1500):
                 n_represented_not_used=len(res["represented_not_used_candidates"]))
 
 
-def cell_formation(seed, N=1500, distractor=False):
+def cell_formation(seed, N=1500, distractor=False, only_ckpt=None):
     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
     per = []
     # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
@@ -312,6 +312,8 @@ def cell_formation(seed, N=1500, distractor=False):
     cdir = os.environ.get("WB_CKPT_CACHE")
     tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
     for i, P in enumerate(seq):
+        if only_ckpt is not None and i != only_ckpt:
+            continue
         rng = np.random.default_rng(seed)
         X = P.sample(N, rng)
         cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
@@ -333,6 +335,8 @@ def cell_formation(seed, N=1500, distractor=False):
             with open(tmp, "wb") as fh:
                 pickle.dump(per[-1], fh)
             os.replace(tmp, cf)
+    if only_ckpt is not None:          # parallel mode: this process only fills one cache entry
+        return None
     n_eff = len(np.unique(X, axis=0))
     f = formation(per, 0.25, TH.eps_merge, n_eff)
     births = [b for b in f["births"] if b["label"] == "sum"]
@@ -406,12 +410,24 @@ def main():
     ap.add_argument("--seeds", type=int, nargs="+", required=True)
     ap.add_argument("--cells", nargs="+", default=list(CELLS))
     ap.add_argument("--out", required=True)
+    ap.add_argument("--only_ckpt", type=int, default=None,
+                    help="FORMD/FORMATION only: compute and cache this checkpoint, write no result file")
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     commit = git_commit()
     os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
     Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
+    if a.only_ckpt is not None:
+        for s in a.seeds:
+            for c in a.cells:
+                assert c in ("FORMD", "FORMATION"), "--only_ckpt is for formation cells"
+                if (out / f"{c}_{s}.json").exists():
+                    continue
+                t0 = time.time()
+                cell_formation(s, distractor=(c == "FORMD"), only_ckpt=a.only_ckpt)
+                print(f"[phase1] {c}_{s} ckpt {a.only_ckpt} cached {time.time() - t0:.0f}s", flush=True)
+        return
     for s in a.seeds:
         for c in a.cells:
             for spec in CELLS[c](s):
