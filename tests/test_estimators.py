@@ -216,3 +216,20 @@ def test_regression_v4_scaffold_principles_seed0():
     g = generality(G, A)
     prin = {lab[c] for c in g if g[c] >= 0.25}
     assert prin == set(P.meta["scaffold"])
+
+
+def test_maxT_use_multiplicity():
+    """M10: a candidate drawn from the random-realiser null passes criterion (i) at about the
+    nominal family-wise rate, whatever the number of behaviours; a real effect passes."""
+    import numpy as np
+    from whitebox_ee.filter import maxT_use
+    rng = np.random.default_rng(0)
+    for nb in (2, 20):
+        hits = 0
+        for _ in range(400):
+            re = rng.gamma(4, 0.01, size=(21, nb))
+            hits += maxT_use(re[0], re[1:]).any()
+        assert hits / 400 < 0.12
+    re = rng.gamma(4, 0.01, size=(20, 20))
+    A = re.mean(0).copy(); A[3] += 0.2
+    assert maxT_use(A, re)[3]

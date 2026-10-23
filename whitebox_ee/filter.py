@@ -34,6 +34,11 @@ class Thresholds:
     n_partners: int = 8
     n_random_realisers: int = 20
     min_effective_pairs: int = 20
+    # criterion (i) of the quotient test (amendment 3, M10): "maxT" = family-wise max-statistic over
+    # behaviours against the random-realiser null; "any_b" = the amendment-2 rule (any one behaviour
+    # above its own 95th percentile, no multiplicity control), kept only to reproduce old results
+    criterion_i: str = "maxT"
+    maxT_sd_floor: float = 1e-3
 
 
 def tv(p, q):
@@ -66,6 +71,23 @@ def random_realiser_effects(probe: Probe, site: str, k: int, n: int, n_pairs: in
         srcs = rng.integers(0, probe.N, n_pairs)
         out.append(swap_effect(probe, node, rows, srcs).mean(0))
     return np.stack(out)            # (n, n_behaviours)
+
+
+def maxT_use(A_b: np.ndarray, re: np.ndarray, sd_floor: float = 1e-3, q: float = 0.95) -> np.ndarray:
+    """Family-wise criterion (i) (M10). Standardise each behaviour's swap effect by the
+    random-realiser null (mean, sd floored at sd_floor), take the maximum over behaviours, and
+    compare with the leave-one-out null distribution of that maximum (one value per random
+    realiser). Returns the behaviours whose standardised effect exceeds the family-wise
+    q-quantile (empty if the realiser does not matter)."""
+    n = len(re)
+    mu, sd = re.mean(0), np.maximum(re.std(0), sd_floor)
+    z = (A_b - mu) / sd
+    Tn = np.empty(n)
+    for i in range(n):
+        o = np.delete(re, i, 0)
+        Tn[i] = np.max((re[i] - o.mean(0)) / np.maximum(o.std(0), sd_floor))
+    thr = np.quantile(Tn, q)
+    return z > thr
 
 
 @dataclass
@@ -104,12 +126,16 @@ def quotient_test(probe: Probe, node: Node, H_X: float, th: Thresholds, eta_cach
     srcs2 = probe.partners(vals, 1, differ=False, rows=rows2, rng=rng)[:, 0]
     E_eq = swap_effect(probe, node, rows2, srcs2)
     A_b = E_all.mean(0)
-    use = A_b > eta_b
+    if th.criterion_i == "maxT":
+        use = maxT_use(A_b, re, th.maxT_sd_floor)
+    else:
+        use = A_b > eta_b
     reasons = []
     A = float(A_b @ w)
     H = entropy(vals)
     kappa = H / max(H_X, 1e-9)
-    # (i) Phase 1 calibration: the realiser must matter more than norm-matched random
+    # (i) [amendment 3: family-wise max-T over behaviours, see maxT_use; the text below is the
+    # amendment-2 rule, still available as criterion_i="any_b"] Phase 1 calibration: the realiser must matter more than norm-matched random
     # realisers for at least one behaviour (A_b > eta_b); the pooled form A >= eta
     # is recorded but not used (it fails on hard-threshold planted nets, phase1.md §2).
     if not use.any():
