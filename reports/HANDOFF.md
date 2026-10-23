@@ -2,6 +2,21 @@
 
 Last update: 2026-10-23 ~11:05 CDT, by the lead research agent (resumed session).
 
+## STATE AT ~12:15 (amendment 3 in development; read first)
+
+- **Diagnosis:** the amendment-2 P1f failure comes from criterion (i) of the quotient test. "Some behaviour above its own 95th percentile" has no multiplicity control (V4 has 20 behaviours). The coarsening hypothesis was wrong as a fix: re-enabling the rule fails P4.
+  - Evidence: `runs/phase1/dev_a4diag`, `dev_a4c`, `dev_a4qs`; commit messages b2d5061..dc0d124.
+- **Fix:**
+  - M10: a family-wise max-T criterion (i) (`whitebox_ee.filter.maxT_use`, `Thresholds.criterion_i="maxT"`).
+  - Creation hysteresis (`create.py` `subthreshold_old`; `run_phase1.subthreshold_partitions`).
+  - The draft pre-registration is `prereg/PHASE_1_amend_3.md` (seeds 115–119).
+- **Dev rerun on the final code (dc0d124):** `dev_a6`, short cells job 1365142 (comp01), long cells (FORMD, V2D) job 1365143 (comp06, `afterany`).
+  - When done, fetch and run `validation/pretag_check.py runs/phase1/dev_a6 0,1,2 --commit dc0d124`, and the same with `3,4 --cells NULL`. Save the output to `runs/phase1/dev_a6/PRETAG.txt`, fill the "Development check" section of the amendment, then tag `prereg-phase-1-amend-3`. Record the hash, SHA-256 and OSF text, and validate seeds 115–119 (cell lists as for val_a2, out dir `val_a3`).
+  - The new `validation/pretag_check.py` must exit 0 before ANY Phase 1 tag.
+- **Phase 2 amendment draft:** `prereg/PHASE_2_amend_1.md`. It covers M10, n_random_realisers = 20, analysis units fixed in `bench/analyse_k12.py` (test `tests/test_analyse_k12.py`), and two added untrained nulls (41 cells). Lanes write to `results/k12_a1`. Tag it only after amendment 3 passes.
+- Still running for the record: the amend-2 long cells, lane `wb-p1-cA` 1365062 (comp06). 1364994 (lane B long) is HELD and renamed `wb-p1-cBhold`. Rename it back to `wb-p1-cB` and release it when lane B is free, to fill the P2/P6 rows.
+- Cancelled: 1364799 (obsolete amend-2 dev).
+
 ## STATE AT 11:05 (READ THIS FIRST; supersedes the sections below where they disagree)
 
 - **Amendment-2 validation: P1f FAILED** (seed 114, untrained V4 null: 4/160 = 0.025 > 0.02). P1a–P1e, P3, P4, P5 PASS. P2 (V2D) and P6 (FORMD) are still pending. See `reports/phase1.md` §8 and `docs/record.md`.
