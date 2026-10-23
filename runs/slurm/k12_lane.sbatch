@@ -19,8 +19,8 @@ export HF_HOME=/scrfs/storage/paradkar/wb/hf
 export OMP_NUM_THREADS=${SLURM_CPUS_PER_TASK:-24} MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK:-24}
 export TOKENIZERS_PARALLELISM=false PYTHONUNBUFFERED=1
 export WB_COMMIT=$(cat COMMIT 2>/dev/null || echo unknown)
-R=/scrfs/storage/paradkar/wb/results/k12
-ST=/scrfs/storage/paradkar/wb/state/k12
+R=${RESULTS:-/scrfs/storage/paradkar/wb/results/k12_a1}   # fresh dir: nothing from the pre-amendment runs is reused
+ST=${STATE:-/scrfs/storage/paradkar/wb/state/k12_a1}
 KIND=$(echo "$SLURM_JOB_NAME" | sed -E 's/.*-([A-Z])[0-9]+$/\1/')   # S (short) or L (long)
 mkdir -p $ST/lock $ST/tries_$KIND $ST/failed
 SKIP=${SKIP:-__none__}; MAXTRY=${MAXTRY:-99}; TLIM=${TLIM:-6:00:00}
