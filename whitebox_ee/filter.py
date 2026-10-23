@@ -142,6 +142,8 @@ def decodability(states: np.ndarray, labels: np.ndarray, seed: int = 0) -> float
     if len(np.unique(labels)) < 2:
         return 1.0
     Xtr, Xte, ytr, yte = train_test_split(states, labels, test_size=0.3, random_state=seed)
+    if len(np.unique(ytr)) < 2:
+        return float("nan")
     clf = LogisticRegression(max_iter=500)
     clf.fit(Xtr, ytr)
     return float(clf.score(Xte, yte))

@@ -10,13 +10,13 @@ from whitebox_ee.info import entropy
 task = AdditionTask(n_digits=2, n_shots=3)
 rng = np.random.default_rng(0)
 X = task.sample(300, rng, carries=(0, 1)) + task.sample(300, rng, carries=(1, 1))
-layers = [0, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
-roles = ["pre_ans_d1", "pre_ans_d0"]
+layers = [0, 21, 22, 23, 24, 25, 26, 27]
+roles = ["pre_ans_d0"]
 sysm = HFSystem("Qwen/Qwen2.5-1.5B", task=task, layers=layers, roles=[r for r in task.roles if r in roles], batch_size=64)
 sysm.behaviours = ["out0", "out1"]
 probe = Probe(sysm, X)
 L = task.labels(X)
-labels = {k: L[k] for k in ["s0", "c0", "s1", "r0", "r1"]}
+labels = {k: L[k] for k in ["s0", "c0", "r0"]}
 th = Thresholds(n_random_realisers=8, n_pairs=256)
 H_X = sum(entropy(v) for v in probe.inputs.values())
 for mode in ("plain", "delta"):

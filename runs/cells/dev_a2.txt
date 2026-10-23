@@ -1,0 +1,7 @@
+python -m validation.run_phase1 --seeds 0 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 1 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 2 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 0 --cells FORMD --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 1 --cells FORMD --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 0 --cells V1 V3 V4 V5 NULL --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
+python -m validation.run_phase1 --seeds 1 --cells V1 V3 V4 V5 NULL --out /scrfs/storage/paradkar/wb/results/phase1/dev_a2
