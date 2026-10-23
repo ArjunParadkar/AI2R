@@ -1,0 +1,33 @@
+{
+ "cell": "V2",
+ "seed": 112,
+ "frac_memo": 0.1775,
+ "auroc_neg_mu": [
+  0.5,
+  0.5,
+  0.5
+ ],
+ "auroc_neg_lambda": [
+  0.5,
+  0.5,
+  0.5
+ ],
+ "memorized_at_tau": 1.0,
+ "grounded_rule": 0.0,
+ "generality": {
+  "ov2": 0.04125,
+  "sum": 0.8225,
+  "ov4": 0.8575,
+  "ov5": 0.9125,
+  "C2@h1": 0.64
+ },
+ "status": "ok",
+ "commit": "unknown",
+ "spec": [
+  "V2",
+  "112"
+ ],
+ "wall_s": 294.7836012840271,
+ "node": "c1402",
+ "start": "2026-10-23T10:46:02"
+}

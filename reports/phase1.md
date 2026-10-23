@@ -114,3 +114,24 @@ All cells ran on the laptop CPU at the tagged code. One later commit is performa
 - **Not validated:** the unsupervised proposers.
 - **Cut or replaced** (`docs/cut.md`): observational minimal-sufficiency parents, replaced by M1.
 - **Next:** Phase 2 (K1, K2). Freeze `prereg/PHASE_2.md` with the answer-funnel diagnostic, tag it, run the cells on Pinnacle when access returns (laptop for the models that fit), and self-gate on K2.
+
+## 8. Amendments 1 and 2 (re-validation on new seeds)
+
+The §5 gate above stands for the original estimator. When the realisers were made accurate enough for LLMs (amendment 1, principal-subspace realisers), the estimator changed and had to be re-validated. Every result stays in `docs/record.md`.
+
+**Amendment 1** (tag `prereg-phase-1-amend-1`, seeds 105–109): **P2 FAILED** (V2 seed 105: AUROC(−μ) 0.778, lower CI 0.668). With accurate realisers the override node of V2 is legitimately reused, so memorized inputs were protected only by the value-level leaf rule, which fails under the answer funnel.
+
+**Amendment 2** (tag `prereg-phase-1-amend-2`, commit 95a65da, seeds 110–114). It adds the M9 step-level leaf rule and dual-mode (delta and plain) realisers, removes the coarsening rule, and gates on V2D/FORMD. Results so far (`runs/phase1/val_a2/VERDICTS_partial.md`):
+
+| Criterion | Result | Verdict |
+|---|---|---|
+| P1a–P1e (V1 one-hot, noise 0.5) | P = R = 1.00, edge F1 1.00, decoys 5/5, generality MAE ≤ 0.009, wrong hypotheses 0/50 | PASS |
+| **P1f** (untrained and shuffled nulls, V1 and V4) | max FP **0.025** (seed 114, untrained V4: 4/160), mean accepted 0.80 | **FAIL** |
+| P3a, P3b (V3 compositional and lookup) | 1.00 | PASS |
+| P4 (V4 scaffold) | AUROC 1.000, recall 1.00 | PASS |
+| P5a, P5b (V5) | 5/5 each | PASS |
+| P2 (V2D), P6a/P6b (FORMD) | long cells running on comp06 (jobs 1364993/1364994) | PENDING (reported when done; cannot change the gate below) |
+
+**Gate (by the letter of prereg/PHASE_1.md §4).** The amended discovery estimator fails P1f. It may not be used on a real model. **The Phase 2 dependency (P1a–P1f, P2, P3) is not met**, so Phase 2 does not run under `prereg-phase-2`. The Phase 2 outputs produced before this verdict are discarded unanalysed (`docs/record.md`). The original, validated estimator (§5) is the one with too-weak realisers for LLMs (development finding, amendment 2 "Change 3"), so it is not a working fallback for K1/K2. The next step is a new development cycle (amendment 3, new seeds, tagged before its run).
+
+**Post-hoc diagnosis (a hypothesis for that cycle, not tested).** On every validation seed, the untrained copy of V4 yields accepted nodes g0, g1, g2 (pos mod 3, 4, 5). These are coarsenings of a single input. In an untrained copy any partition of pos can be read linearly from a random embedding of pos. Amendment 2 removed the coarsening rule (M4 ii), which rejected such readouts before; the original and amendment-1 validations accepted 0 nodes on this null. On seeds 110–113 the three nodes give FP 0.019, just under the threshold; on seed 114 one more, unlabelled node tips it to 0.025. The FP rate is per candidate, so this margin depends on the candidate count; the next cycle should fix the cause, not the margin. The amendment-2 development run (dev_a3, job 1364799, final code) already showed 3 and 4 accepted nodes on this null for development seeds 0 and 1. Those files were not inspected before the tag, and this is recorded as a process failure: from now on, every development null is checked before a tag.

@@ -1,6 +1,23 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-23 ~10:50 CDT, by the lead research agent.
+Last update: 2026-10-23 ~11:25 CDT, by the lead research agent (resumed session).
+
+## STATE AT 11:25 (READ THIS FIRST; supersedes the sections below where they disagree)
+
+- **Amendment-2 validation: P1f FAILED** (seed 114, untrained V4 null: 4/160 = 0.025 > 0.02). P1a–P1e, P3, P4, P5 PASS. P2 (V2D) and P6 (FORMD) are still pending. See `reports/phase1.md` §8 and `docs/record.md`.
+  - By prereg/PHASE_1.md §4 the amended estimator may not touch a real model, and **Phase 2 does not run** (`reports/phase2.md`). K2 has no verdict; the kill rule was not triggered.
+- **Phase 2 GPU jobs CANCELLED** (1364954 unstarted; lanes 1364995–1364998). Their outputs are discarded unanalysed; nothing is running on GPU.
+- **Still running** (CPU, comp QOS, ≤ 64 cores): the long amend-2 cells on comp06, lanes `wb-p1-cA` (1364993: FORMD ×5, V2D 110/111, SENS 110–112) and `wb-p1-cB` (1364994: FORMATION ×5, V2D 112–114, SENS 113/114).
+  - They are pending on Priority and estimated to start ~13:00.
+  - Formation cells cache per checkpoint in `.../val_a2/_ckpt`. If a job hits its 6 h limit, resubmit the same line: `sbatch --export=NONE,CMDS=runs/cells/val_a2_long_A.txt,PAR=8,NT=4 -J wb-p1-cA -p comp06 -q comp -c 32 -t 6:00:00 --dependency=singleton runs/slurm/pack.sbatch` (and the same for B). Finished cells are skipped.
+  - When done: fetch, run `validation/verdicts_phase1.py runs/phase1/val_a2 110,111,112,113,114 > runs/phase1/val_a2/VERDICTS.md`, and replace the three PENDING rows in `docs/record.md`. These results are for the record only; they cannot change the gate.
+- 1364799 (wb-p1dev3, cloud, 12 cores: FORMD dev seeds 0–2) is informational; let it finish.
+- **Next scientific step: amendment 3** (a new development cycle). The post-hoc hypothesis: removing the coarsening rule lets single-input coarsenings (g0–g2 = pos mod λ) pass on untrained copies. Fix the cause, check EVERY development null before tagging (the dev_a3 nulls already showed this and were not inspected), then tag `prereg-phase-1-amend-3` with new seeds (115–119) and re-validate. Phase 2 may need its own amendment if the estimator changes (`reports/phase2.md`).
+- **Queue facts (2026-10-23):** the 72 h partitions are days deep for this account (priority 2: gpu72 → 10-25, agpu72 → 10-27, comp72 → 10-30). The 6 h partitions start within hours (agpu06 immediately at 10:40, comp06 ~2 h). comp01 (1 h) turns over fast.
+  - Use `runs/slurm/k12_lane.sbatch`: singleton lanes that resubmit themselves and resume by stage, so at most 4 GPU jobs are ever submitted. Arrays count every task toward the 8-job share, so avoid them.
+  - `bench/k12.py --gate_exit` stops gate-failing cells after stage 1.
+- The Phase 2 analysis-code issues found before any data are listed in `reports/phase2.md`: the pooling unit, the K1 untrained-null condition, and the family anchor. Fix them in a Phase 2 amendment before any run.
+
 
 ## Where we are
 
