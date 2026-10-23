@@ -60,6 +60,14 @@ Sites: every second layer (and the last) × the task's roles. Candidates: the pr
 
 **Pre-registered disagreement analysis (Prop. P7).** For every cell: the share of held-out inputs where λ and CCGP disagree in rank half (above vs below their medians), split into (a) high CCGP / low depth and (b) low CCGP / high depth, with error rates in each; reported, no verdict.
 
+### 4.3 Answer-funnel diagnostic (from Phase 1, P6b)
+
+For every held-out input and behaviour, the node that attains λ (the bottleneck node) is recorded. A node is **answer-like** if it is a direct parent of the behaviour's output and, on the training probe set, H(out | C) ≤ 0.1·H(out). The diagnostic reports, per cell:
+- the fraction of held-out inputs whose λ is attained at an answer-like node;
+- AUROC(λ) recomputed on the inputs whose λ is not attained at an answer-like node.
+
+This is secondary and carries no verdict. If more than half of a cell's inputs are funnel-grounded, the cell's K2 result is flagged "answer-funnel dominated" wherever it appears.
+
 ### 4.4 Quantization check (for the 32B 8-bit cells)
 
 Qwen2.5-7B add3 seed 0 is run in bf16 and in 8-bit. The check passes if the two recovered graphs have node-label sets with Jaccard ≥ 0.8 and the two λ vectors on held-out inputs have Spearman ≥ 0.8. If it fails, the 32B cell is not run in 8-bit and the scale claim is narrowed to ≤ 14B.

@@ -218,6 +218,26 @@ def main():
                  margin=BL.margin(logits_te, reduce="min"))
     for b in behaviours:
         table[f"lambda_{b}"] = lam[b]
+    # answer-funnel diagnostic (prereg §4.3): is the bottleneck node of the minimising
+    # behaviour an answer-like direct parent of that behaviour's output?
+    from whitebox_ee.info import cond_entropy_plugin, entropy as _H
+    answer_like = {}
+    for b in behaviours:
+        ob = [o for o in G2.outputs() if G2.nodes[o].meta["behaviour"] == b][0]
+        yv = G2.nodes[ob].values[tr]
+        for c in G2.parents.get(ob, []):
+            if G2.nodes[c].kind == "concept":
+                answer_like[(b, c)] = cond_entropy_plugin(yv, [G2.nodes[c].values[tr]]) <= 0.1 * max(_H(yv), 1e-9)
+    lam_stack = np.stack([lam[b] for b in behaviours], 0)
+    bmin = lam_stack.argmin(0)
+    funnel = np.zeros(len(te), bool)
+    for i in range(len(te)):
+        b = behaviours[bmin[i]]
+        for c in G2.concepts():
+            if A2.on_path[c][b][i] and abs(w[c][i] - lam[b][i]) < 1e-12 and lam[b][i] > 0:
+                funnel[i] = bool(answer_like.get((b, c), False))
+                break
+    table["funnel"] = funnel
     # CCGP per input: variables = known-algorithm labels, conditions = input-value tuples
     lab_all = {k: v for k, v in task.labels(list(Xtr) + list(Xte)).items() if len(np.unique(v)) > 1}
     known = [k for k in lab_all if k[0] in "scr" or k in ("subj_num", "attr_num", "match")]
