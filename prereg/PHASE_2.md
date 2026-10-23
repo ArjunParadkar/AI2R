@@ -1,6 +1,6 @@
 # Pre-registration, Phase 2: K1 (ground-truth derivation) and K2 (the kill test)
 
-WhiteBox E&E. DRAFT — not frozen until the annotated tag `prereg-phase-2` exists; the commit hash and SHA-256 of this file at the tag are recorded in `docs/record.md`. Nothing confirmatory runs before the tag. Thresholds never change after it.
+WhiteBox E&E. Frozen by the annotated tag `prereg-phase-2` (unsigned); the commit hash and SHA-256 of this file at the tag are recorded in `docs/record.md`. Nothing confirmatory runs before the tag. Thresholds never change after it.
 
 Status of dependencies: the estimator used here is the one validated under `prereg-phase-1-amend-2` (principal-subspace realisers in both delta and plain mode; M1–M9; coarsening rule removed). Its re-validation (seeds 110–114) must show P1a–P1f, P2 (on V2D) and P3 passed; if not, this pre-registration does not run. Cell list: `runs/cells/phase2.txt` (39 cells); runner `bench/k12.py` via `runs/slurm/k12.sbatch`.
 
@@ -27,7 +27,7 @@ Development models (excluded from every confirmatory list): Qwen/Qwen2.5-1.5B, Q
 
 | Task | Format | Behaviours | Known derivation (K1 ground truth) |
 |---|---|---|---|
-| add3 | 3-digit + 3-digit, 3 fixed few-shot examples; digits one token each (format per tokenizer, `bench/tasks.py`); answers 4 digits, carry-out fixed to 1 (leading digit 1), all carry patterns of the lower columns equally often | out0, out1, out2 (result digits) | a_i, b_i → s_i = a_i + b_i; c_0 ← s_0; c_1 ← (s_1, c_0); r_0 ← s_0; r_i ← (s_i, c_{i−1}); out_j ← r_j |
+| add3 | 3-digit + 3-digit, 3 fixed few-shot examples; digits one token each (format per tokenizer, `bench/tasks.py`); answers 4 digits, carry-out fixed to 1 (leading digit 1), all carry patterns of the lower columns equally often | out0, out1, out2 (result digits) | a_i, b_i → s_i = a_i + b_i; c_0 ← s_0; c_1 ← (s_1, c_0); under M7 the result digit r_j is the realiser of out_j, so out_0 ← s_0 and out_j ← (s_j, c_{j−1}) |
 | mul21 | 2-digit × 1-digit | result digits | partial products p_i = a_i·b; carries; result digits (as in `MultiplicationTask.labels`) |
 | agree | subject–verb number agreement with attractors (Marvin & Linzen style templates, own grammar) | verb (2-way per example) | subj_num → verb |
 
@@ -39,8 +39,8 @@ Sites: every second layer in the first two thirds of the network and every layer
 
 **Hypothesis.** In open LLMs that can add, the concept graph recovered by the pipeline contains the known algorithm's intermediate variables and its derivation edges, and generality ranks the shared intermediate variables (column sums, carries) above operand-specific variables.
 
-**Statistics (per model × task cell, add3 and mul21):**
-- K1a node recall: fraction of the known intermediate variables (add3: s_0..s_2, c_0, c_1, r_0..r_2) recovered as concept nodes (label VI ≤ 0.1).
+**Statistics (per model × task cell, add3; mul21 is reported descriptively for K1 and used in K2):**
+- K1a node recall: fraction of the known intermediate variables not read directly by a behaviour (add3: s_0, s_1, s_2, c_0, c_1; under M7 r_0–r_2 are output realisers) recovered as concept nodes (label VI ≤ 0.1).
 - K1b edge recovery: of the known edges whose two endpoints are both recovered (or are inputs), the fraction present in the recovered graph, counting an edge P → C as present if P is an ancestor of C within the recovered graph through at most one unlabelled intermediate node.
 - K1c generality order: mean generality of recovered carry and column-sum nodes minus mean generality of operand-specific nodes (input nodes a_i, b_i, computed with the same on-path definition); positive = pass for that cell.
 - K1d wrong hypotheses accepted: fraction of wrong-hypothesis labels matched by an accepted node.
@@ -54,7 +54,7 @@ Sites: every second layer in the first two thirds of the network and every layer
 
 **Baseline implementations (frozen):**
 - **CCGP per input** (`whitebox_ee.baselines.ccgp_per_input`, called per variable in `bench/k12.py`). The variables are the known-algorithm variables (s_i, c_i, r_i; p_i and k_i for multiplication; subj_num, attr_num and match for agreement). Conditions are the task-variable combinations of each variable's own column: (a_i, b_i, c_{i−1}) for arithmetic and (subj_num, attr_num) for agreement. States are reduced to the top 64 principal components fitted on training rows. Sites are every 4th exposed layer at all roles; the best site is chosen on training rows only, with 3 random splits. The per-input score is the mean over variables of the signed decoder margin for the input's true value, from decoders that never saw the input's condition.
-- **Sharpness:** Hutchinson, last 2 blocks, 32 probes, first 300 held-out inputs, model dtype.
+- **Sharpness:** Hutchinson, last 2 blocks, 32 probes, first 300 held-out inputs, model dtype. If it cannot be computed for a cell (e.g. 8-bit weights), that cell is excluded from the sharpness contrast only, and this is reported.
 - **Max-softmax, entropy and margin:** restricted to the task's class tokens, minimum over behaviours.
 
 **Discovery settings (frozen):** `Thresholds()` defaults as validated in Phase 1, except `n_random_realisers` = 10 (cost; the 95th-percentile η is estimated from 10 norm-matched random realisers). n_pairs = 512, activity rows = 500, partners = 8.
@@ -88,4 +88,4 @@ Qwen2.5-7B add3 seed 0 is run in bf16 and in 8-bit. The check passes if the two 
 
 ## 6. Compute estimate
 
-Per cell (7B, one task): discovery 1.5–3 A100-h, K2 activity 0.5 A100-h, sharpness 1–2 A100-h. 14B ≈ 2×, 32B (8-bit) ≈ 5×. Cells: 10 models × 3 tasks + 4 extra seeds + 6 untrained nulls + 1 quantization cell ≈ 41 cells ≈ 220 A100-h ± 50%, plus 2,000 CPU core-h (CCGP SVMs). Within the Phase 0 planning figure (2,800 A100-h for Phase 2).
+Development timing: Qwen2.5-1.5B (2-digit, 734 candidates) took 0.75 A100-h for discovery. Per cell: about 3–4 A100-h for a 7B model, 7 for 14B, 15–20 for 32B in 8-bit, including K2 activity and sharpness. Cells (`runs/cells/phase2.txt`): 9 models × 3 tasks, plus 3 cells for 32B, 1 quantization cell, 4 extra seeds and 4 untrained nulls, 39 cells in all. That is ≈ 250 A100-h ± 50%, plus ≈ 500 CPU core-h. This is within the Phase 0 planning figure (2,800 A100-h for Phase 2). Runs use at most 96 gpu-QOS cores at once (4 single-A100 jobs).
