@@ -80,6 +80,9 @@ class QuotientResult:
     H: float
     kappa: float
     reasons: List[str] = field(default_factory=list)
+    A_b: Optional[np.ndarray] = None        # per-behaviour unconditioned swap effect
+    eta_b: Optional[np.ndarray] = None      # per-behaviour 95th percentile of the random-realiser null
+    null_effects: Optional[np.ndarray] = None   # (n_random_realisers, n_behaviours)
 
 
 def quotient_test(probe: Probe, node: Node, H_X: float, th: Thresholds, eta_cache: Dict, rng,
@@ -111,7 +114,7 @@ def quotient_test(probe: Probe, node: Node, H_X: float, th: Thresholds, eta_cach
     # is recorded but not used (it fails on hard-threshold planted nets, phase1.md §2).
     if not use.any():
         return QuotientResult(False, A, float(E_eq.mean(0) @ w), np.nan, (np.nan, np.nan), eta, 1.0, H, kappa,
-                              ["realiser does not matter (A < eta)"])
+                              ["realiser does not matter (A < eta)"], A_b, eta_b, re)
     num = E_eq[:, use] @ w[use]
     den = E_all[:, use] @ w[use]
     dq, lo, hi = bootstrap_ratio_ci(num, den, n_boot=500, seed=int(rng.integers(1 << 30)))
@@ -132,7 +135,7 @@ def quotient_test(probe: Probe, node: Node, H_X: float, th: Thresholds, eta_cach
         ok = False; reasons.append(f"kappa {kappa:.3f} > kappa_max")
     if H < th.h_min:
         ok = False; reasons.append(f"H {H:.3f} < h_min")
-    return QuotientResult(ok, A, float(E_eq.mean(0) @ w), dq, (lo, hi), eta, p, H, kappa, reasons)
+    return QuotientResult(ok, A, float(E_eq.mean(0) @ w), dq, (lo, hi), eta, p, H, kappa, reasons, A_b, eta_b, re)
 
 
 def decodability(states: np.ndarray, labels: np.ndarray, seed: int = 0) -> float:

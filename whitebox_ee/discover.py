@@ -217,7 +217,10 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
         record["candidates"][c.name] = {"verdict": "quotient pass" if q.passed else "quotient fail",
                                        "delta_Q": q.delta_Q, "delta_ci": q.delta_ci, "A": q.A, "eta": q.eta,
                                        "H": q.H, "kappa": q.kappa, "p_perm": q.p_perm, "reasons": q.reasons,
-                                       "site": c.primary.site, "k": c.primary.U.shape[1], "source": c.meta["source"]}
+                                       "site": c.primary.site, "k": c.primary.U.shape[1], "source": c.meta["source"],
+                                       "A_b": None if q.A_b is None else np.round(q.A_b, 5).tolist(),
+                                       "eta_b": None if q.eta_b is None else np.round(q.eta_b, 5).tolist(),
+                                       "null_effects": None if q.null_effects is None else np.round(q.null_effects, 5).tolist()}
         c.primary.quality = q.delta_Q
         if q.passed:
             passed.append(c)
