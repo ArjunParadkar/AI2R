@@ -66,8 +66,10 @@ def k1_cell(cell: Path, task: str):
     wrong_labels = {m.group(1) for k in k1["verdicts"] for m in [re.search(r":probe:([wq]\d+)$", k)] if m}
     acc_wrong = {l for l in found if l in wrong_labels}
     out["K1d_wrong_accepted"] = len(acc_wrong) / len(wrong_labels) if wrong_labels else 0.0
-    out["K1_pass"] = (out["K1a_node_recall"] >= 0.6 and out["K1b_edge_recovery"] >= 0.7
-                      and out["K1c_generality_gap"] > 0 and out["K1d_wrong_accepted"] <= 0.2)
+    out["K1_stats_pass"] = bool(out["K1a_node_recall"] >= 0.6 and out["K1b_edge_recovery"] >= 0.7
+                                and out["K1c_generality_gap"] > 0 and out["K1d_wrong_accepted"] <= 0.2)
+    out["n_candidates"] = k1.get("n_candidates", 0)
+    out["n_accepted"] = len(k1["nodes"])
     return out
 
 
@@ -137,6 +139,74 @@ def k2_decision(cells, n_boot=4000, seed=0):
     return out
 
 
+DEV_MODELS = ("pythia-70m", "pythia-160m", "Qwen2.5-0.5B", "Qwen2.5-1.5B")   # prereg §1: never confirmatory
+FAMILY = (("Qwen", "Qwen2.5"), ("OLMo", "OLMo-2"), ("pythia", "Pythia"), ("Mistral", "Mistral"))
+# K1 untrained-copy null per model (prereg §3; amendment: a model > 7B uses its family's <= 7B null)
+NULL_OF = {"Qwen__Qwen2.5-14B": "Qwen__Qwen2.5-7B", "Qwen__Qwen2.5-32B": "Qwen__Qwen2.5-7B",
+           "allenai__OLMo-2-1124-13B": "allenai__OLMo-2-1124-7B", "EleutherAI__pythia-12b": "EleutherAI__pythia-6.9b"}
+
+
+def parse_cell(name):
+    """model, task, seed, untrained, 8bit from a k12 cell directory name."""
+    import re
+    m = re.match(r"(.+?)_(add3|add2|mul21|agree)_s(\d+)(_untrained)?(_8bit)?$", name)
+    if not m:
+        return None
+    return dict(model=m.group(1), task=m.group(2), seed=int(m.group(3)), untrained=bool(m.group(4)),
+                q8=bool(m.group(5)))
+
+
+def family(model):
+    return next((f for k, f in FAMILY if k in model), model)
+
+
+QUANT_CHECK_CELL = "Qwen__Qwen2.5-7B_add3_s0_8bit"     # prereg §4.4; a check, not a unit
+EIGHT_BIT_MODELS = ("Qwen__Qwen2.5-32B",)                # run only in 8-bit (prereg §1), units only if §4.4 passes
+
+
+def is_unit(name, quant_ok=True):
+    """A confirmatory model x task cell: seed 0, the pre-registered precision, trained, not a development model."""
+    c = parse_cell(name)
+    if not c or c["seed"] != 0 or c["untrained"] or any(d in c["model"] for d in DEV_MODELS) or name == QUANT_CHECK_CELL:
+        return False
+    if c["model"] in EIGHT_BIT_MODELS:
+        return c["q8"] and quant_ok
+    return not c["q8"]
+
+
+def k1_decision(k1s, quant_ok=True):
+    by = {c["cell"]: c for c in k1s}
+    rows = []
+    for c in k1s:
+        if not is_unit(c["cell"], quant_ok) or parse_cell(c["cell"])["task"] != "add3":
+            continue
+        model = parse_cell(c["cell"])["model"]
+        nm = NULL_OF.get(model, model) + "_add3_s0_untrained"
+        nl = by.get(nm)
+        null_fp = (nl["n_accepted"] / max(nl["n_candidates"], 1)) if nl else float("nan")
+        ok = bool(c.get("gate") and c.get("K1_stats_pass") and nl is not None and null_fp <= 0.02)
+        rows.append(dict(cell=c["cell"], family=family(model), gate=c.get("gate"), stats_pass=c.get("K1_stats_pass"),
+                         null_cell=nm if nl else None, null_fp=null_fp, K1_pass=ok))
+    fams = sorted({r["family"] for r in rows})
+    anchor = {f: any(r["K1_pass"] for r in rows if r["family"] == f) for f in fams}
+    return dict(cells=rows, family_pass=anchor, verdict="PASS" if any(anchor.values()) else "FAIL")
+
+
+def quant_check(root):
+    """prereg §4.4: Qwen2.5-7B add3 s0 bf16 vs 8-bit; node-label Jaccard >= 0.8 and Spearman(lambda) >= 0.8."""
+    from scipy.stats import spearmanr
+    a, b = root / "Qwen__Qwen2.5-7B_add3_s0", root / "Qwen__Qwen2.5-7B_add3_s0_8bit"
+    if not ((a / "k2.pkl").exists() and (b / "k2.pkl").exists()):
+        return dict(verdict="NOT AVAILABLE")
+    la = {v["label"] for v in json.loads((a / "k1.json").read_text())["nodes"].values() if v["label"]}
+    lb = {v["label"] for v in json.loads((b / "k1.json").read_text())["nodes"].values() if v["label"]}
+    jac = len(la & lb) / max(len(la | lb), 1)
+    xa = pickle.load(open(a / "k2.pkl", "rb"))["table"]["depth_lambda"]
+    xb = pickle.load(open(b / "k2.pkl", "rb"))["table"]["depth_lambda"]
+    rho = float(spearmanr(xa, xb).correlation)
+    return dict(jaccard=jac, spearman=rho, verdict="PASS" if jac >= 0.8 and rho >= 0.8 else "FAIL")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("results")
@@ -153,8 +223,13 @@ def main():
             k1s.append(k1_cell(cell, task))
         if (cell / "k2.pkl").exists():
             k2s.append(k2_cell(cell))
-    dec = k2_decision([c for c in k2s if "_untrained" not in c["cell"]])
-    report = dict(K1=k1s, K2=k2s, K2_decision=dec)
+    qc = quant_check(root)
+    qok = qc["verdict"] == "PASS"
+    dec = k2_decision([c for c in k2s if is_unit(c["cell"], qok)])
+    dec["units"] = [c["cell"] for c in k2s if is_unit(c["cell"], qok) and c["gate"]]
+    dec["families"] = {c: family(parse_cell(c)["model"]) for c in dec["units"]}
+    report = dict(K1=k1s, K1_decision=k1_decision(k1s, qok), K2=k2s, K2_decision=dec, quantization_check=qc,
+                  not_units=[c["cell"] for c in k2s if not is_unit(c["cell"], qok)])
     txt = json.dumps(report, indent=1, default=str)
     print(txt)
     if a.out:
