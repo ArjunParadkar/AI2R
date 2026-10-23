@@ -1,0 +1,30 @@
+{
+ "cell": "FORMATION",
+ "seed": 104,
+ "events": {
+  "out": {
+   "grounding_event": 4,
+   "jump": 0.25
+  }
+ },
+ "Lambda": [
+  0.835,
+  0.835,
+  0.835,
+  0.6433333333333333,
+  0.8933333333333333,
+  0.8933333333333333,
+  0.8933333333333333
+ ],
+ "sum_principle_from": 4,
+ "sum_first_seen": 4,
+ "status": "ok",
+ "commit": "bc6036a303a6cf2065d935f5a0c79c54be1385d6",
+ "spec": [
+  "FORMATION",
+  "104"
+ ],
+ "wall_s": 1477.7015309333801,
+ "node": "omarchyroot",
+ "start": "2026-10-23T04:03:31"
+}
