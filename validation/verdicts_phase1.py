@@ -58,12 +58,17 @@ for k in ("untrained", "shuffled"):
                 accs.append(x["n_accepted"])
 add("P1f NULL", "FP <= 0.02 every seed; mean accepted <= 1", f"max FP {max(fps):.3f}, mean accepted {np.mean(accs):.2f} ({len(fps)} cells)",
     len(fps) == 20 and max(fps) <= 0.02 and np.mean(accs) <= 1)
-# P2
-v = [get(f"V2_{s}") for s in SEEDS]
-pts = [x["auroc_neg_mu"][0] for x in v if x]
-los = [x["auroc_neg_mu"][1] for x in v if x]
-add("P2 V2", "AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5", f"pt {min(pts):.3f}-{max(pts):.3f}, lo {min(los):.3f}-{max(los):.3f}",
-    len(pts) == 5 and min(pts) >= 0.9 and sum(l > 0.8 for l in los) >= 4)
+# P2 (amendment 2: on V2D; V2 reported as the structurally undecidable control)
+AMEND2 = any(k.startswith("V2D_") for k in R)
+for fam, gate in ((("V2D", True), ("V2", False)) if AMEND2 else (("V2", True),)):
+    v = [get(f"{fam}_{s}") for s in SEEDS]
+    pts = [x["auroc_neg_mu"][0] for x in v if x]
+    los = [x["auroc_neg_mu"][1] for x in v if x]
+    if not pts:
+        continue
+    ok = len(pts) == 5 and min(pts) >= 0.9 and sum(l > 0.8 for l in los) >= 4
+    add(f"P2 {fam}" + ("" if gate else " (control, not gating)"), "AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5",
+        f"pt {min(pts):.3f}-{max(pts):.3f}, lo {min(los):.3f}-{max(los):.3f}", ok)
 # P3
 for comp in (True, False):
     v = [get(f"V3_{s}_{comp}") for s in SEEDS]
@@ -93,15 +98,19 @@ for var, want in (("decoy", None), ("leaf", "new leaf (used, not derived)"), ("r
             continue
         good += 1
     add(f"P5b V5-{var}", "zero valid nodes" + (f" and N '{want}'" if want else "") + ", 4/5", f"{good}/5", good >= 4)
-# P6
-v = [get(f"FORMATION_{s}") for s in SEEDS]
-target = 1 - np.array([1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 0.1])
-a = sum(1 for x in v if x and abs(x["events"]["out"]["grounding_event"] - 4) <= 1
-        and x["sum_principle_from"] is not None and abs(x["sum_principle_from"] - 3) <= 1)
-b = sum(1 for x in v if x and np.max(np.abs(np.array(x["Lambda"]) - target)) <= 0.2)
-devs = [float(np.max(np.abs(np.array(x["Lambda"]) - target))) for x in v if x]
-add("P6a FORM", "grounding event 4+-1 and sum principle 3+-1, 4/5", f"{a}/5", a >= 4)
-add("P6b FORM", "|Lambda_t - (1 - memo_t)| <= 0.2 every checkpoint, 4/5", f"{b}/5 (max deviations {', '.join(f'{x:.2f}' for x in devs)})", b >= 4)
+# P6 (amendment 2: on FORMD; FORM reported as control)
+for fam, gate in ((("FORMD", True), ("FORMATION", False)) if AMEND2 else (("FORMATION", True),)):
+    v = [get(f"{fam}_{s}") for s in SEEDS]
+    if not any(v):
+        continue
+    target = 1 - np.array([1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 0.1])
+    a = sum(1 for x in v if x and abs(x["events"]["out"]["grounding_event"] - 4) <= 1
+            and x["sum_principle_from"] is not None and abs(x["sum_principle_from"] - 3) <= 1)
+    b = sum(1 for x in v if x and np.max(np.abs(np.array(x["Lambda"]) - target)) <= 0.2)
+    devs = [float(np.max(np.abs(np.array(x["Lambda"]) - target))) for x in v if x]
+    tag = "" if gate else " (control, not gating)"
+    add(f"P6a {fam}{tag}", "grounding event 4+-1 and sum principle 3+-1, 4/5", f"{a}/5", a >= 4)
+    add(f"P6b {fam}{tag}", "|Lambda_t - (1 - memo_t)| <= 0.2 every checkpoint, 4/5", f"{b}/5 (max deviations {', '.join(f'{x:.2f}' for x in devs)})", b >= 4)
 
 print("| Cell | Criterion | Result | Verdict |")
 print("|---|---|---|---|")
