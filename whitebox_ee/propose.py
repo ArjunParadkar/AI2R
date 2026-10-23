@@ -27,13 +27,20 @@ def member_from_means(H: np.ndarray, labels: np.ndarray, site: str, var_keep: fl
 
 
 def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[Sequence[str]] = None,
-                   mode: str = "delta", estimators=("ridge",), decode_min: Optional[float] = None,
+                   mode=("delta", "plain"), estimators=("ridge",), decode_min: Optional[float] = None,
                    min_decode: Optional[float] = 0.9, verbose: bool = False,
                    **kw) -> List[Member]:
     """Probe directions for known (or hypothesised) variables.
     mode='plain': decode from the state at the site.
     mode='delta': decode from what the block wrote (h_l - h_{l-1}); the canonical
                   realiser in residual architectures (phase1.md §2). Site 0 uses plain."""
+    if isinstance(mode, (tuple, list)):
+        # several realiser modes proposed side by side; the filters choose (amendment 2)
+        out = []
+        for md in mode:
+            out += propose_probes(probe, labels, sites=sites, mode=md, estimators=estimators,
+                                  decode_min=decode_min, min_decode=min_decode, verbose=verbose, **kw)
+        return out
     sites = list(sites or probe.sites)
     out = []
     import time as _t

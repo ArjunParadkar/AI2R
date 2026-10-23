@@ -692,7 +692,7 @@ same regression on false-creation counts does not.}
 
 
 %============================================================================
-\section{Phase 1 amendments M1--M8 (estimator design decisions, 2026-10-23)}
+\section{Phase 1 amendments M1--M9 (estimator design decisions, 2026-10-23)}
 \label{sec:amend}
 %============================================================================
 
@@ -778,6 +778,16 @@ observational tuples together with the tuples produced by the direct-effect
 interventions of M1 (the patched parent at its source value, the others
 clean or held). IIA is evaluated on fresh pairs; agreement at a tuple reached
 both ways is the modularity condition of Proposition~\ref{prop:unseen}(b).
+\item \textbf{Step-level leaf rule (amendment 2).} On $x$, a node contributes
+$g(C)$ to $\lambda(x)$ and $\mu(x)$ only if $C(x)\in\mathrm{Rg}(C)$ and its parent
+tuple $\pa(C)(x)\in\mathrm{Rg}(\pa(C))$ (Definition~\ref{def:range}); a value reached
+through a parent tuple supported by fewer than $n_{\min}$ training inputs is a
+lookup step. With the value-level rule alone, accurate realisers make an
+exception node's stored labels ground memorized inputs whenever labels are
+shared (the ``answer funnel'', P6b and amendment-1 P2). \emph{Consequence:} if
+every node is computed from the full input identity, $\lambda=\mu=0$ everywhere
+and structural memorization is undefined; reuse-based memorization presupposes
+shared sub-structure in the inputs.
 \end{enumerate}
 
 \begin{remark}[What the amendments change in the statuses]

@@ -38,7 +38,8 @@ def separable(a: Node, b: Node, states: np.ndarray, rng, n: int = 400, min_frac:
     return True
 
 
-def find_composites(cands, inner=None, contain_min: float = 0.9, states=None, seed: int = 0):
+def find_composites(cands, inner=None, contain_min: float = 0.9, states=None, seed: int = 0,
+                    n_eff: int = 0, eps_merge: float = 0.05):
     """A candidate is a composite if >= 2 smaller candidates lie inside its realiser,
     are pairwise separable (modular), and together span it."""
     out = {}
@@ -75,8 +76,11 @@ def drop_coarsenings(cands, inputs, record, th, contain_min: float = 0.9):
     keep = []
     others = [(c.name, c.primary, c.values) for c in cands]
     for inp in inputs:
-        for m in inp.members:
-            others.append((inp.name, m, inp.values))
+        # an input realiser is a coarsening container only at the input's primary site; at later
+        # sites every derived variable is linearly readable from the persisting input blocks
+        if inp.members:
+            m0 = inp.members[0]
+            others.append((inp.name, m0, inp.values))
     for c in cands:
         m = c.primary
         hit = None
@@ -182,7 +186,7 @@ def base_nodes(probe: Probe):
 
 def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = None, seed: int = 0,
              max_iter: int = 6, stability: bool = True, verbose: bool = False, probe: Optional[Probe] = None,
-             minimal_sets: bool = True):
+             minimal_sets: bool = True, coarsening_rule: bool = False):
     th = th or Thresholds()
     rng = np.random.default_rng(seed)
     t0 = time.time()
@@ -224,7 +228,8 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
                 record["candidates"][c.name]["decode_acc"] = acc
                 if acc >= 0.9:
                     record["candidates"][c.name]["verdict"] = "represented, not used"
-    comp = find_composites(passed + [c for c, _ in ie], inner=passed, states=probe.states, seed=seed)
+    comp = find_composites(passed + [c for c, _ in ie], inner=passed, states=probe.states, seed=seed,
+                           n_eff=n_eff, eps_merge=th.eps_merge)
     for c in passed + [c for c, _ in ie]:
         if c.name in comp:
             record["candidates"].setdefault(c.name, {"site": c.primary.site, "source": c.meta["source"]})
@@ -238,7 +243,8 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
                                        "source": c.meta["source"]}
     for inp in inputs:
         inp.members.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site)))
-    passed = drop_coarsenings(passed, inputs, record, th)
+    if coarsening_rule:
+        passed = drop_coarsenings(passed, inputs, record, th)
     # M7: a candidate equivalent to a behaviour's output partition is a realiser of that
     # output, not a derivation step (otherwise the answer representation lies on every
     # derivation with generality equal to its behaviour's mass)
