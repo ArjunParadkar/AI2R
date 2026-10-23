@@ -10,3 +10,6 @@
 [phase1] V5_1_generic.json 20s 
 [phase1] V5_2_valid.json 20s 
 [phase1] V5_2_decoy.json 19s 
+[phase1] V5_2_leaf.json 16s 
+[phase1] V5_2_relabel.json 12s 
+[phase1] V5_2_generic.json 18s 

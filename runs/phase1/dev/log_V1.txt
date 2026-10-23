@@ -3,3 +3,10 @@
 [phase1] V1_0_noise10.json 44s 
 [phase1] V1_0_fourier.json 31s 
 [phase1] V1_1_onehot.json 44s 
+[phase1] V1_1_noise05.json 46s 
+[phase1] V1_1_noise10.json 38s 
+[phase1] V1_1_fourier.json 19s 
+[phase1] V1_2_onehot.json 24s 
+[phase1] V1_2_noise05.json 26s 
+[phase1] V1_2_noise10.json 28s 
+[phase1] V1_2_fourier.json 14s 

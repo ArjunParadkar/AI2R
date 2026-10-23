@@ -278,7 +278,9 @@ def cell_formation(seed, N=1500):
         rng = np.random.default_rng(seed)
         X = P.sample(N, rng)
         vals = P.values(X)
-        G, probe, rec, lab, _ = run_discovery(P, X, vals, {**vals}, seed)
+        # labels exclude the per-pair detectors m_j (single-input fibres; they cannot pass h_min)
+        lbl = {k: v for k, v in vals.items() if not (k.startswith("m") and k[1:].isdigit())}
+        G, probe, rec, lab, _ = run_discovery(P, X, vals, lbl, seed)
         A = compute_activity(probe, G, TH, rng, rows=np.arange(min(600, len(X))))
         g = generality(G, A)
         sc = depth_scores(probe, G, A, g, TH)

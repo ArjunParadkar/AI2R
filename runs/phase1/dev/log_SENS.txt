@@ -5,3 +5,5 @@
 [phase1] SENS_1_500.json 30s 
 [phase1] SENS_1_1000.json 39s 
 [phase1] SENS_2_250.json 28s 
+[phase1] SENS_2_500.json 30s 
+[phase1] SENS_2_1000.json 38s 
