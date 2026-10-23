@@ -4,7 +4,7 @@
 #SBATCH -t 72:00:00
 #SBATCH -o /scrfs/storage/paradkar/wb/logs/%x-%j.out
 set -uo pipefail
-cd $HOME/wb-ee
+cd ${WBDIR:-$HOME/wb-ee}   # WBDIR pins a code tree (e.g. ~/wb-ee-a2 for amendment-2 cells)
 source /scrfs/storage/paradkar/lab/miniforge3/etc/profile.d/conda.sh
 conda activate /scrfs/storage/paradkar/envs/wb-ee
 export HF_HOME=/scrfs/storage/paradkar/wb/hf
