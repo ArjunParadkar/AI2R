@@ -18,6 +18,19 @@ Last update: 2026-10-23 ~05:00 CDT, by the lead research agent.
 - **Run models that fit locally** (laptop GPU, 8 GB): pythia-1.4b and -2.8b in bf16. Everything ≥ 7B goes to Pinnacle.
 - **Thread oversubscription:** always set `OMP_NUM_THREADS`/`MKL_NUM_THREADS` (4 for a single LLM process, 2 when running many planted processes).
 
+## State at 2026-10-23 ~09:40 (Pinnacle down again since 08:44; wait for "PINNACLE BACK")
+
+- **Laptop rule (Arjun):** nothing heavier than a sub-minute single-process test runs on the laptop. Everything else goes to Pinnacle through `runs/slurm/cmd_array.sbatch`, which runs line i of a command file.
+- **Env:** `/scrfs/storage/paradkar/envs/wb-ee` is built (job 1364678: torch 2.5.1, transformers 4.49, bnb 0.42).
+- **Amendment 1:** P2 FAILED on seed 105 (recorded).
+- **Amendment 2 (M9 step-level leaf rule; dual-mode realisers; coarsening rule removed; V2D/FORMD):** drafted in `prereg/PHASE_1_amend_2.md`, not tagged.
+- **Queued when Pinnacle is back:**
+  1. Fetch `/scrfs/storage/paradkar/wb/results/phase1/dev_a2` (job 1364717, old code; informational only) and the LLM diagnostics (job 1364727 logs).
+  2. Sync the code: `git archive HEAD | ssh pinnacle "tar xf - -C ~/wb-ee"` and write COMMIT.
+  3. Submit `runs/cells/dev_a3.txt` (24 lines) on cloud72 (`-c 4 --array=1-24%10`) and `runs/cells/llmdev_a2.txt` on agpu06 (`-c 24 --gres=gpu:1 -t 06:00:00`).
+  4. If dev_a3 is clean, tag `prereg-phase-1-amend-2`, record the hash, then submit `runs/cells/val_a2.txt` (50 lines) and compute verdicts with `validation/verdicts_phase1.py DIR 110,111,112,113,114` (extend the script for V2D/FORMD first).
+  5. Then finalise and tag `prereg/PHASE_2.md`, and submit the K1/K2 cells (`runs/slurm/k12.sbatch`).
+
 ## Cluster (Pinnacle)
 
 - The ControlMaster died at about 01:20 on 2026-10-23. The coordinator ordered **no ssh until it sends "PINNACLE BACK"**.

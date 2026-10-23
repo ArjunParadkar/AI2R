@@ -1,0 +1,1 @@
+python -u bench/dev/llm_dev.py --n 800 --out /scrfs/storage/paradkar/wb/results/dev/llm_dev_a2.json
