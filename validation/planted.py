@@ -226,10 +226,16 @@ def v1_addition(n_digits: int = 3, seed: int = 0, enc_sum: str = "onehot", noise
 #   node chain; detectors are planted non-concepts.
 # ---------------------------------------------------------------------------
 
-def v2_memo(p: int = 11, frac_memo: float = 0.2, seed: int = 0, n_detect_groups: int = 0) -> Planted:
+def v2_memo(p: int = 11, frac_memo: float = 0.2, seed: int = 0, n_detect_groups: int = 0, z_card: int = 0,
+            n_memo: Optional[int] = None, group: int = 4) -> Planted:
+    """z_card > 0 adds an irrelevant distractor input z; memorization is then keyed on the
+    full input (a, b, z) while the rule uses (a, b) only (V2d, amendment 2)."""
     rng = np.random.default_rng(1000 + seed)
-    pairs = [(a, b) for a in range(p) for b in range(p)]
-    nm = int(round(frac_memo * len(pairs)))
+    if z_card:
+        pairs = [(a, b, z) for a in range(p) for b in range(p) for z in range(z_card)]
+    else:
+        pairs = [(a, b) for a in range(p) for b in range(p)]
+    nm = int(n_memo) if n_memo is not None else int(round(frac_memo * len(pairs)))
     idx = rng.choice(len(pairs), nm, replace=False)
     memo = {pairs[i]: int(rng.integers(0, p)) for i in idx}
     # make sure memorized labels differ from the rule
@@ -237,11 +243,12 @@ def v2_memo(p: int = 11, frac_memo: float = 0.2, seed: int = 0, n_detect_groups:
         if memo[k] == (k[0] + k[1]) % p:
             memo[k] = (memo[k] + 1 + int(rng.integers(0, p - 1))) % p
     memo_list = sorted(memo)
-    vs = [PVar("a", p, 0), PVar("b", p, 0),
+    vs = [PVar("a", p, 0), PVar("b", p, 0)] + ([PVar("z", z_card, 0)] if z_card else []) + [
           PVar("sum", p, 1, ("a", "b"), lambda a, b: (a + b) % p)]
-    # one binary detector per memorized pair: m_j = [ (a,b) == pair_j ]  (leaf, H << h_min)
+    keys = ("a", "b", "z") if z_card else ("a", "b")
+    # one binary detector per memorized input: m_j = [ input == item_j ]  (leaf, H << h_min)
     for j, pr in enumerate(memo_list):
-        vs.append(PVar(f"m{j}", 2, 1, ("a", "b"), (lambda pr: (lambda a, b: int((a, b) == pr)))(pr), concept=False))
+        vs.append(PVar(f"m{j}", 2, 1, keys, (lambda pr: (lambda *t: int(tuple(t) == pr)))(pr), concept=False))
     # override value: label of the memorized pair, or p (= none). Built as a
     # chain so that each block has a small fan-in.
     def ov_fn(*ms, labels=[memo[k] for k in memo_list]):
@@ -250,7 +257,7 @@ def v2_memo(p: int = 11, frac_memo: float = 0.2, seed: int = 0, n_detect_groups:
                 return l
         return p
     # chain in groups of 4 detectors to keep tables small
-    groups = [list(range(i, min(i + 4, nm))) for i in range(0, nm, 4)]
+    groups = [list(range(i, min(i + group, nm))) for i in range(0, nm, group)]
     prev = None
     for gi, g in enumerate(groups):
         names = [f"m{j}" for j in g]
@@ -268,15 +275,17 @@ def v2_memo(p: int = 11, frac_memo: float = 0.2, seed: int = 0, n_detect_groups:
     beh = {"out": "y"}
 
     def sample(n, rng):
+        if z_card:
+            return np.stack([rng.integers(0, p, n), rng.integers(0, p, n), rng.integers(0, z_card, n)], 1)
         return rng.integers(0, p, size=(n, 2))
 
-    P = build(vs, beh, sample, seed=seed, name=f"V2_memo_p{p}")
+    P = build(vs, beh, sample, seed=seed, name=f"V2{'d' if z_card else ''}_memo_p{p}")
     P.meta["memo"] = memo
     P.meta["p"] = p
 
     def is_memo(X):
         X = np.asarray(X)
-        return np.array([(int(a), int(b)) in memo for a, b in X])
+        return np.array([tuple(int(v) for v in row) in memo for row in X])
     P.meta["is_memo"] = is_memo
     return P
 
@@ -431,8 +440,8 @@ def v4_scaffold(periods=(3, 4, 5), n_items: int = 6, item_card: int = 4, seed: i
     return P
 
 
-def formation_sequence(p: int = 7, schedule=(1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 0.1), seed: int = 0):
+def formation_sequence(p: int = 7, schedule=(1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 0.1), seed: int = 0, z_card: int = 0):
     """Planted 'checkpoints': V2 networks whose memorized fraction follows `schedule`.
     The rule node is used from the first checkpoint with frac < 1 (principle birth);
     the grounding event is the largest drop of the memorized fraction."""
-    return [v2_memo(p=p, frac_memo=f, seed=seed) for f in schedule]
+    return [v2_memo(p=p, frac_memo=f, seed=seed, z_card=z_card, group=8 if z_card else 4) for f in schedule]

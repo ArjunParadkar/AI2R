@@ -186,8 +186,8 @@ def cell_null(seed, kind, family="V1", N=2000):
                 fp_rate=n_acc / max(n_cand, 1), accepted_labels=[lab.get(c) for c in G.concepts()])
 
 
-def cell_v2(seed, N=2000):
-    P = PL.v2_memo(seed=seed)
+def cell_v2(seed, N=2000, distractor=False):
+    P = PL.v2_memo(seed=seed, z_card=8, n_memo=40, group=8) if distractor else PL.v2_memo(seed=seed)
     rng = np.random.default_rng(seed)
     X = P.sample(N, rng)
     vals = P.values(X)
@@ -201,8 +201,8 @@ def cell_v2(seed, N=2000):
     lam, mu = sc["out"]["lambda"], sc["out"]["mu"]
     from whitebox_ee.stats import auroc_ci
     # unit of analysis for the CI: distinct input pairs
-    grp = np.array([a * 100 + b for a, b in X[rows]])
-    return dict(cell="V2", seed=seed, frac_memo=float(memo.mean()),
+    grp = np.unique(X[rows], axis=0, return_inverse=True)[1].reshape(-1)
+    return dict(cell="V2D" if distractor else "V2", seed=seed, frac_memo=float(memo.mean()),
                 auroc_neg_mu=auroc_ci(-mu, memo, groups=grp), auroc_neg_lambda=auroc_ci(-lam, memo, groups=grp),
                 memorized_at_tau=float((mu[memo] < 0.25).mean()), grounded_rule=float((lam[~memo] >= 0.25).mean()),
                 generality={lab.get(c) or c: g[c] for c in g})
@@ -286,8 +286,8 @@ def cell_v5(seed, variant, N=1500):
                 n_represented_not_used=len(res["represented_not_used_candidates"]))
 
 
-def cell_formation(seed, N=1500):
-    seq = PL.formation_sequence(seed=seed)
+def cell_formation(seed, N=1500, distractor=False):
+    seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
     per = []
     for i, P in enumerate(seq):
         rng = np.random.default_rng(seed)
@@ -303,7 +303,7 @@ def cell_formation(seed, N=1500):
     n_eff = len(np.unique(X, axis=0))
     f = formation(per, 0.25, TH.eps_merge, n_eff)
     births = [b for b in f["births"] if b["label"] == "sum"]
-    return dict(cell="FORMATION", seed=seed, events=f["events"],
+    return dict(cell="FORMD" if distractor else "FORMATION", seed=seed, events=f["events"],
                 Lambda=[r["Lambda"]["out"] for r in f["per_checkpoint"]],
                 sum_principle_from=births[0]["principle_from"] if births else None,
                 sum_first_seen=births[0]["first_seen"] if births else None)
@@ -319,6 +319,8 @@ CELLS = {
     "V1": lambda s: [("V1", s, v) for v in ("onehot", "noise05", "noise10", "fourier")],
     "NULL": lambda s: [("NULL", s, k, f) for k in ("untrained", "shuffled") for f in ("V1", "V4")],
     "V2": lambda s: [("V2", s)],
+    "V2D": lambda s: [("V2D", s)],
+    "FORMD": lambda s: [("FORMD", s)],
     "V3": lambda s: [("V3", s, c) for c in (True, False)],
     "V4": lambda s: [("V4", s)],
     "V5": lambda s: [("V5", s, v) for v in ("valid", "decoy", "leaf", "relabel", "generic")],
@@ -335,6 +337,10 @@ def run_cell(spec):
         return cell_null(spec[1], spec[2], spec[3])
     if kind == "V2":
         return cell_v2(spec[1])
+    if kind == "V2D":
+        return cell_v2(spec[1], distractor=True)
+    if kind == "FORMD":
+        return cell_formation(spec[1], distractor=True)
     if kind == "V3":
         return cell_v3(spec[1], spec[2])
     if kind == "V4":

@@ -18,8 +18,8 @@ from .probe import Probe
 from .systems import softmax
 
 
-def value_support(G: ConceptGraph, probe: Probe, train_rows: np.ndarray) -> Dict[str, Dict[int, int]]:
-    """Number of distinct training inputs per value of each concept."""
+def value_support(G: ConceptGraph, probe: Probe, train_rows: np.ndarray):
+    """Distinct training inputs per value of each concept, and (M9) per parent tuple."""
     X = probe.X
     if isinstance(X, np.ndarray):
         _, inv = np.unique(X[train_rows], axis=0, return_inverse=True)
@@ -32,16 +32,32 @@ def value_support(G: ConceptGraph, probe: Probe, train_rows: np.ndarray) -> Dict
         d = {}
         for val in np.unique(v):
             d[int(val)] = len(np.unique(uid[v == val]))
-        sup[c] = d
+        ps = G.parents.get(c, [])
+        tup = {}
+        if ps:
+            T = list(zip(*[G.nodes[p].values[train_rows].tolist() for p in ps]))
+            acc = {}
+            for t, u in zip(T, uid):
+                acc.setdefault(t, set()).add(int(u))
+            tup = {t: len(s_) for t, s_ in acc.items()}
+        sup[c] = {"values": d, "tuples": tup, "parents": list(ps)}
     return sup
 
 
 def node_weights(G, A: Activity, g: Dict[str, float], support, n_min: int):
-    """g_x(C) per row (len rows): g(C) if C(x) in range else 0."""
+    """g_x(C) per row: g(C) if C(x) is in its training range AND (M9) the parent tuple of C
+    at x is in its combination range (theory Def. 4.1); otherwise C is a leaf on x (0).
+    A value reached through a parent tuple shared by fewer than n_min training inputs is a
+    lookup step: the input is effectively its own leaf there."""
     w = {}
     for c in G.concepts():
         vals = G.nodes[c].values[A.rows]
-        inr = np.array([support[c].get(int(v), 0) >= n_min for v in vals])
+        sc = support[c]
+        inr = np.array([sc["values"].get(int(v), 0) >= n_min for v in vals])
+        ps = sc["parents"]
+        if ps:
+            T = list(zip(*[G.nodes[p].values[A.rows].tolist() for p in ps]))
+            inr &= np.array([sc["tuples"].get(t, 0) >= n_min for t in T])
         w[c] = np.where(inr, g[c], 0.0)
     return w
 

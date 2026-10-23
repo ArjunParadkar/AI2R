@@ -15,7 +15,7 @@ for f in sorted(d.glob("*.json")):
             r["oracle_edge_f1_vs_spec"], r["runtime_s"]))
     elif c == "NULL":
         print(f.name, "accepted %d / %d  fp %.3f %s" % (r["n_accepted"], r["n_candidates"], r["fp_rate"], r["accepted_labels"]))
-    elif c == "V2":
+    elif c in ("V2", "V2D"):
         print(f.name, "AUROC(-mu) %s AUROC(-lam) %s memo@tau %.2f grounded_rule %.2f" % (
             [round(x, 3) for x in r["auroc_neg_mu"]], [round(x, 3) for x in r["auroc_neg_lambda"]], r["memorized_at_tau"], r["grounded_rule"]))
     elif c == "V3":
@@ -26,5 +26,5 @@ for f in sorted(d.glob("*.json")):
             r["auroc_scaffold_vs_content"], r["scaffold_recall"], r["content_recall"], r["principles_025"]))
     elif c == "V5":
         print(f.name, "valid", r["valid"], "status", {k: v for k, v in r["status"].items() if v != "relabelling"})
-    elif c == "FORMATION":
+    elif c in ("FORMATION", "FORMD"):
         print(f.name, "events", r["events"], "Lambda", [round(x, 2) for x in r["Lambda"]], "sum principle from", r["sum_principle_from"])
