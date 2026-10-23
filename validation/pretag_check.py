@@ -29,13 +29,25 @@ def main():
     ap.add_argument("results")
     ap.add_argument("seeds")
     ap.add_argument("--cells", nargs="+", default=["V1", "V2D", "V3", "V4", "V5", "NULL", "FORMD"])
-    ap.add_argument("--commit", default=None)
+    ap.add_argument("--commit", default=None,
+                    help="commit prefix the files must come from; several, comma-separated, are allowed only if "
+                         "git shows no difference between them in whitebox_ee/ or validation/planted.py")
     a = ap.parse_args()
     d = Path(a.results)
     seeds = [int(s) for s in a.seeds.split(",")]
     sys.path.insert(0, str(HERE.parent))
     from validation.run_phase1 import CELLS
     problems = []
+    commits = a.commit.split(",") if a.commit else []
+    if len(commits) > 1:
+        for c in commits[1:]:
+            sci = subprocess.run(["git", "-C", str(HERE.parent), "diff", "--stat", commits[0], c, "--",
+                                  "whitebox_ee", "validation/planted.py"], capture_output=True, text=True).stdout.strip()
+            if sci:
+                problems.append(f"scientific code differs between {commits[0]} and {c}: {sci}")
+            full = subprocess.run(["git", "-C", str(HERE.parent), "diff", commits[0], c, "--", "validation/run_phase1.py"],
+                                  capture_output=True, text=True).stdout
+            print(f"--- run_phase1.py diff {commits[0]}..{c} (orchestration only expected) ---\n{full}--- end diff ---")
     # 1. every expected file exists, is clean, and comes from the right commit
     for s in seeds:
         for c in a.cells:
@@ -51,8 +63,8 @@ def main():
                     continue
                 if "error" in r:
                     problems.append(f"error in {f.name}: {r['error']}")
-                if a.commit and not str(r.get("commit", "")).startswith(a.commit):
-                    problems.append(f"{f.name} from commit {r.get('commit')} != {a.commit}")
+                if commits and not any(str(r.get("commit", "")).startswith(c) for c in commits):
+                    problems.append(f"{f.name} from commit {r.get('commit')} not in {commits}")
                 if c == "NULL":
                     fp, n = r.get("fp_rate", 1.0), r.get("n_accepted", 99)
                     print(f"null {f.name}: FP {fp:.4f}, accepted {n} {r.get('accepted_labels')}")
