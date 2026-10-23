@@ -24,6 +24,20 @@ def containment(U_small: np.ndarray, U_big: np.ndarray) -> float:
     return float((np.linalg.norm(U_big.T @ U_small) ** 2) / U_small.shape[1])
 
 
+def find_composites(cands, inner=None, contain_min: float = 0.9):
+    out = {}
+    inner = cands if inner is None else inner
+    for c in cands:
+        inside = [o for o in inner if o is not c and o.primary.site == c.primary.site
+                  and o.primary.U.shape[1] < c.primary.U.shape[1]
+                  and containment(o.primary.U, c.primary.U) >= contain_min]
+        if len(inside) >= 2:
+            B = np.linalg.qr(np.concatenate([o.primary.U for o in inside], 1))[0]
+            if containment(c.primary.U, B) >= contain_min:
+                out[c.name] = [o.name for o in inside]
+    return out
+
+
 def drop_coarsenings(cands, inputs, record, th, contain_min: float = 0.9):
     """Phase 1 canonicalisation at each site (reports/phase1.md §2):
     (1) composite: a candidate whose realiser is covered (>= contain_min) by the
@@ -161,8 +175,9 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
     H_X = sum(entropy(i.values) for i in inputs)
     cands = [make_candidate(probe, m, f"cand{i}@{m.site}:{m.source}") for i, m in enumerate(members)]
     record = {"candidates": {}, "dropped": {}, "iterations": []}
-    # input-equivalent candidates become realisers of the input nodes (inputs are exempt from Cond. 1-2)
-    rest = []
+    # input-equivalent candidates (IE) become realisers of the input nodes (inputs are exempt
+    # from Cond. 1-2) unless they are composites of quotient-passing candidates (checked below)
+    rest, ie = [], []
     for c in cands:
         hit = None
         for inp in inputs:
@@ -170,8 +185,7 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
                 hit = inp
                 break
         if hit is not None:
-            hit.members.extend(c.members)
-            record["candidates"][c.name] = {"verdict": f"realiser of input {hit.name}"}
+            ie.append((c, hit))
         else:
             rest.append(c)
     # Condition 1
@@ -193,6 +207,20 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
                 record["candidates"][c.name]["decode_acc"] = acc
                 if acc >= 0.9:
                     record["candidates"][c.name]["verdict"] = "represented, not used"
+    comp = find_composites(passed + [c for c, _ in ie], inner=passed)
+    for c in passed + [c for c, _ in ie]:
+        if c.name in comp:
+            record["candidates"].setdefault(c.name, {"site": c.primary.site, "source": c.meta["source"]})
+            record["candidates"][c.name]["verdict"] = "composite of " + ",".join(comp[c.name])
+    passed = [c for c in passed if c.name not in comp]
+    for c, inp in ie:
+        if c.name in comp:
+            continue
+        inp.members.extend(c.members)
+        record["candidates"][c.name] = {"verdict": f"realiser of input {inp.name}", "site": c.primary.site,
+                                       "source": c.meta["source"]}
+    for inp in inputs:
+        inp.members.sort(key=lambda m: probe.site_idx(m.site))
     passed = drop_coarsenings(passed, inputs, record, th)
     nodes = merge_equivalent(passed, inputs, th, n_eff)
     for nd in nodes + inputs:
@@ -234,6 +262,10 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
         strict = False
     for n in suspended:
         record["dropped"].setdefault(f"{n.name}[{n.primary.site}]", "derivation fails (suspended at convergence)")
+    if G is not None:
+        # final names reflect the node's (possibly peeled) site
+        G.rename({c: f"C{i}@{G.nodes[c].primary.site}" for i, c in enumerate(sorted(G.concepts(), key=lambda c: (G.nodes[c].site_index, c)))})
+        nodes = [G.nodes[c] for c in G.concepts()]
     if stability and G is not None:
         st = parent_stability(probe, inputs + nodes, outs, th, rng)
         for k, (j, ss) in st.items():

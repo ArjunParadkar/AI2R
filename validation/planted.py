@@ -136,11 +136,14 @@ def build(vars_: Sequence[PVar], behaviours: Dict[str, str], sample: Callable, s
                 Ep = E[p]
                 sims = Ep @ Ep.T
                 m = np.max(sims - 2 * np.eye(len(sims))) if len(sims) > 1 else 0.0
-                theta = (1 + m) / 2
-                beta = 1 / (1 - theta)
+                # saturating indicator with margin: 0 below lo, 1 above hi (error-correcting,
+                # so that small off-template perturbations do not attenuate through depth)
+                lo = m + 0.25 * (1 - m)
+                hi = m + 0.6 * (1 - m)
+                beta = 1 / (hi - lo)
                 for t in range(V[p].card):
                     W1.append(beta * T[p][t])
-                    b1.append(-beta * theta)
+                    b1.append(-beta * lo)
                     ind_index[(p, t)] = n_ind
                     n_ind += 1
             k = len(v.parents)
@@ -285,7 +288,7 @@ def v3_sideways(q: int = 5, seed: int = 0, compositional: bool = True, n_withhel
         if (not compositional) and (a, b) in W:
             return wrong[(a, b)]
         return (a + b) % q
-    vs = [PVar("a1", q, 0), PVar("a2", 2, 0), PVar("b1", q, 0), PVar("b2", 2, 0),
+    vs = [PVar("a1", q, 0), PVar("a2", 4, 0), PVar("b1", q, 0), PVar("b2", 4, 0),
           PVar("A", q, 1, ("a1", "a2"), lambda x, s: (x + s) % q),
           PVar("B", q, 1, ("b1", "b2"), lambda x, s: (x + 2 * s) % q),
           PVar("C", q, 2, ("A", "B"), cfn),
@@ -301,8 +304,8 @@ def v3_sideways(q: int = 5, seed: int = 0, compositional: bool = True, n_withhel
     def sample(n, rng, withheld_only=False, train=True):
         out = []
         while sum(len(o) for o in out) < n:
-            X = np.stack([rng.integers(0, q, 4 * n), rng.integers(0, 2, 4 * n),
-                          rng.integers(0, q, 4 * n), rng.integers(0, 2, 4 * n)], 1)
+            X = np.stack([rng.integers(0, q, 4 * n), rng.integers(0, 4, 4 * n),
+                          rng.integers(0, q, 4 * n), rng.integers(0, 4, 4 * n)], 1)
             ab = list(zip(a_of(X), b_of(X)))
             inW = np.array([t in W for t in ab])
             keep = inW if withheld_only else (~inW if train else np.ones(len(X), bool))
@@ -357,3 +360,47 @@ def v5_creation(q: int = 5, seed: int = 0, variant: str = "valid") -> Tuple[Plan
         raise ValueError(variant)
     after = build(base + extra, {**beh0, "outN": "yN"}, sample, seed=seed, name=f"V5_after_{variant}")
     return before, after
+
+
+# ---------------------------------------------------------------------------
+# V4: Vector-HaSH-style scaffold + content. Position -> grid-module phases
+# (scaffold), path integration within each module, a conjunctive place layer
+# (the AND units over the three module phases are the place cells) that stores
+# content items by heteroassociation. Behaviours: content recall (one behaviour
+# per item), module-phase reports, and one conjunctive readout.
+# Planted answer: module phases are the high-generality layer; content items are
+# leaves (each used by one behaviour); the conjunctive code ranks low.
+# ---------------------------------------------------------------------------
+
+def v4_scaffold(periods=(3, 4, 5), n_items: int = 6, item_card: int = 4, seed: int = 0) -> Planted:
+    rng = np.random.default_rng(3000 + seed)
+    L = int(np.prod(periods))
+    vs = [PVar("pos", L, 0), PVar("move", 3, 0)]
+    for k, lam in enumerate(periods):
+        vs.append(PVar(f"g{k}", lam, 1, ("pos",), (lambda lam: (lambda p: p % lam))(lam)))
+    for k, lam in enumerate(periods):
+        vs.append(PVar(f"gn{k}", lam, 2, (f"g{k}", "move"), (lambda lam: (lambda g, m: (g + m - 1) % lam))(lam)))
+    names = tuple(f"gn{k}" for k in range(len(periods)))
+    for j in range(n_items):
+        tab = rng.integers(0, item_card, size=tuple(periods))
+        vs.append(PVar(f"item{j}", item_card, 3, names, (lambda tab: (lambda *g: int(tab[g])))(tab)))
+    vs.append(PVar("conj", periods[0] * periods[1], 3, names[:2], lambda a, b: a * periods[1] + b))
+    beh = {f"recall{j}": f"item{j}" for j in range(n_items)}
+    for k in range(len(periods)):
+        beh[f"phase{k}"] = f"gn{k}"
+    beh["conj"] = "conj"
+
+    def sample(n, rng):
+        return np.stack([rng.integers(0, L, n), rng.integers(0, 3, n)], 1)
+
+    P = build(vs, beh, sample, seed=seed, name="V4_scaffold")
+    P.meta.update(scaffold=[f"g{k}" for k in range(len(periods))] + list(names),
+                  content=[f"item{j}" for j in range(n_items)], conjunctive=["conj"])
+    return P
+
+
+def formation_sequence(p: int = 7, schedule=(1.0, 1.0, 1.0, 0.5, 0.0, 0.0, 0.0), seed: int = 0):
+    """Planted 'checkpoints': V2 networks whose memorized fraction follows `schedule`.
+    The rule node is used from the first checkpoint with frac < 1 (principle birth);
+    the grounding event is the largest drop of the memorized fraction."""
+    return [v2_memo(p=p, frac_memo=f, seed=seed) for f in schedule]

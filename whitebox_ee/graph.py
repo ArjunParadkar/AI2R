@@ -60,6 +60,16 @@ class ConceptGraph:
                     stack.append(p)
         return out
 
+    def rename(self, mapping: Dict[str, str]):
+        f = lambda n: mapping.get(n, n)
+        self.nodes = {f(n): v for n, v in self.nodes.items()}
+        for n, v in self.nodes.items():
+            v.name = n
+        self.parents = {f(n): [f(p) for p in ps] for n, ps in self.parents.items()}
+        self.psi = {f(n): t for n, t in self.psi.items()}
+        self.certificates = {f(n): c for n, c in self.certificates.items()}
+        self.alternatives = {f(n): a for n, a in self.alternatives.items()}
+
     def concepts(self):
         return [n for n, v in self.nodes.items() if v.kind == "concept"]
 
@@ -161,4 +171,23 @@ def merge_equivalent(nodes: List[Node], inputs: List[Node], th: Thresholds, n_ef
                 break
         if not merged:
             out.append(c)
+    return out
+
+
+def label_nodes(G: ConceptGraph, labels: Dict[str, np.ndarray], n_eff: int, max_vi: float = 0.1,
+                rows: Optional[np.ndarray] = None) -> Dict[str, Optional[str]]:
+    """Match each concept to the known variable with the smallest normalised VI
+    (<= max_vi), for evaluation against planted / known algorithms only."""
+    out = {}
+    for c in G.concepts():
+        v = G.nodes[c].values if rows is None else G.nodes[c].values[rows]
+        best, bv = None, np.inf
+        for name, lab in labels.items():
+            lab = lab if rows is None else lab[rows]
+            d = normalised_vi(v, lab, n_eff)
+            if d < bv:
+                best, bv = name, d
+        out[c] = best if bv <= max_vi else None
+        G.nodes[c].meta["label"] = out[c]
+        G.nodes[c].meta["label_vi"] = float(bv)
     return out

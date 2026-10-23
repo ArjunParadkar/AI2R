@@ -15,7 +15,7 @@ from .systems import softmax
 @dataclass
 class Thresholds:
     eps_Q: float = 0.10
-    kappa_max: float = 0.25
+    kappa_max: float = 0.6           # Phase 1 calibration (proposed 0.25 rejects every node of a 2-input system)
     h_min: float = 0.5
     eps_D: float = 0.05
     k_max: int = 8

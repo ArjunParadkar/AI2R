@@ -20,7 +20,7 @@ if [ ! -x $ENV/bin/python ]; then
 fi
 conda activate $ENV
 pip install --no-input torch==2.5.1 --index-url https://download.pytorch.org/whl/cu124
-pip install --no-input "transformers>=4.46,<4.50" "datasets>=2.20,<4" "accelerate>=1.0,<1.3" "bitsandbytes==0.45.0" safetensors sentencepiece tiktoken "huggingface_hub<0.30" pytest hypothesis einops
-python -c "import torch,transformers,datasets,pyarrow,sklearn;print(torch.__version__,torch.version.cuda,transformers.__version__,datasets.__version__,pyarrow.__version__)"
+pip install --no-input "transformers>=4.46,<4.50" "datasets>=2.20,<4" "accelerate>=1.0,<1.3" "bitsandbytes==0.42.0" scipy safetensors sentencepiece tiktoken "huggingface_hub<0.30" pytest hypothesis einops
+python -c "import torch,transformers,datasets,pyarrow,sklearn,bitsandbytes;print(bitsandbytes.__version__,torch.__version__,torch.version.cuda,transformers.__version__,datasets.__version__,pyarrow.__version__)"
 touch $ENV/.wb_ok
 echo "[wb-env] end $(date -Is)"
