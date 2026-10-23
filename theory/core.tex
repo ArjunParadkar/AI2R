@@ -1,0 +1,764 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,tabularx,longtable}
+\usepackage{enumitem}
+\usepackage[expansion=false]{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+% ---------------------------------------------------------------------------
+% Status conventions (CLAUDE.md rule 0.1.6).
+%   Proposition (proved): a complete proof is in proofs/ and is cited here.
+%       It is NOT called a theorem until the proof has been checked line by
+%       line by someone other than its author and the check is recorded.
+%   Conjecture: no complete proof exists. Each conjecture names the
+%       experiment that tests it.
+%   Definition: not a claim; carries a quantitative test and a proposed
+%       threshold. Every threshold below is PROPOSED. Thresholds are fixed
+%       only in prereg/PHASE_X.md before the tag prereg-phase-X and are
+%       calibrated on planted-answer systems (Phase 1), never on real data.
+% ---------------------------------------------------------------------------
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{assumption}[definition]{Assumption}
+\theoremstyle{plain}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{conjecture}[definition]{Conjecture}
+\newtheorem{lemma}[definition]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{Remark}
+
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\Sites}{\mathcal{S}}
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\Pr}{\mathbb{P}}
+\newcommand{\pa}{\mathrm{Pa}}
+\newcommand{\Hent}{H}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Part}{\pi}
+\newcommand{\VI}{\mathrm{VI}}
+\newcommand{\IIA}{\mathrm{IIA}}
+\newcommand{\status}[1]{\par\noindent\textbf{Status.} #1}
+\newcommand{\predict}[1]{\par\noindent\textbf{Measurable prediction.} #1}
+\newcommand{\experiment}[1]{\par\noindent\textbf{Experiment.} #1\par\medskip}
+
+\title{The Structure of Understanding: theory core\\[2pt]
+\large Skeleton for Sections 2.1--2.4 (Phase 0)}
+\author{WhiteBox E\&E (authors and affiliation to be set by Arjun Paradkar)}
+\date{Draft of 2026-10-22. No result in this document has been tested.}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+This document fixes the objects that the rest of the programme measures. It
+defines a concept inside a system as a variable of internal state that passes
+three tests (quotient, derivation, causal use), defines the concept graph and
+the equivalence it is defined up to, defines generality, principles, depth of
+understanding and structural memorization, and defines the three moves a new
+input can require (lower, sideways, diagonal) together with creation and false
+creation. Each definition carries a quantitative test and a proposed threshold.
+Each claim carries its status. Eight propositions have complete proofs in
+\texttt{proofs/} that have not yet been independently checked; every other
+claim is a conjecture with a named experiment. Nothing here is evidence; the
+evidence is the pre-registered programme in Sections 5--6 of the master
+prompt.
+\end{abstract}
+
+\tableofcontents
+
+%============================================================================
+\section{Setting (master prompt \S2.1)}
+%============================================================================
+
+\begin{definition}[System, sites and states]\label{def:system}
+A \emph{system} is a measurable map $f\colon\X\to\Y$ computed through a finite
+set of \emph{sites} $\Sites$ partially ordered by a computation order
+$\prec$ (for a network: (layer, position, component) triples ordered by the
+forward pass; for a brain: (region, time window) pairs ordered by time).
+Each site $s$ carries a state $h_s(x)\in\mathbb{R}^{d_s}$. We fix once and for
+all a linear extension of $\prec$, written $s_1<s_2<\dots<s_{|\Sites|}$, and
+write $s<t$ for it. The input $x$ is treated as the state of a source site
+$s_0$, and the output as the state of a sink site $s_\star$.
+\end{definition}
+
+\begin{definition}[Task distribution and behaviours]\label{def:behaviour}
+A task distribution $P$ on $\X$ is given. A \emph{behaviour} is a pair
+$b=(P_b,r_b)$ of an input distribution $P_b\ll P$ and a readout
+$r_b\colon\Y\to\mathcal{R}_b$ into a finite set or a metric space (for a
+language model: the answer token of a task family; for an animal: the choice
+on a trial type). A \emph{behaviour suite} is a finite family
+$\B=\{b_1,\dots,b_m\}$ with weights $w_b\ge0$, $\sum_b w_b=1$. For each $b$ we
+fix a divergence $d_b$ on the outputs relevant to $r_b$ (total variation
+between output distributions, or $0/1$ disagreement of $r_b$).
+\end{definition}
+
+\begin{definition}[Interventions and access levels]\label{def:intervention}
+For a site $s$, a \emph{realiser} is a map $R\colon\mathbb{R}^{d_s}\to
+\mathbb{R}^{k}$ together with a right inverse that writes $R$-coordinates back
+into the state while leaving the complementary part fixed (a linear subspace
+with its orthogonal projection, as in distributed alignment search; or a set
+of sparse-dictionary features whose activations are swapped while the
+reconstruction error is kept). For inputs $x,x'$ the \emph{realiser patch}
+$f_{R\leftarrow x'}(x)$ is the output of the run on $x$ in which the
+$R$-coordinates of $h_s(x)$ are replaced by those of $h_s(x')$ and all later
+computation is recomputed. Patches at several realisers are applied jointly.
+A result obtained with patches is at access level (C). At level (B) a patch is
+replaced by its first-order Jacobian estimate; at level (D) by the strongest
+perturbation the data allow (stimulation, optogenetics, or, failing that,
+decoding plus a natural-experiment contrast); at level (A) by counterfactual
+input edits. Every statement below is written for level (C); its weaker
+versions inherit the level of the instrument and must say so.
+\end{definition}
+
+\begin{remark}[Nulls attached to the setting]
+Every quantity defined below is computed on three systems in addition to $f$:
+an untrained copy $f^{0}$ with the same architecture (master prompt \S1.4),
+a feature-shuffle null that keeps marginals, and random realisers of matched
+dimension and norm. A quantity earns a claim only through its contrast with
+these nulls.
+\end{remark}
+
+%============================================================================
+\section{Concept (master prompt \S2.2)}
+%============================================================================
+
+A candidate concept is a triple $(s,R,\varphi)$ of a site, a realiser at that
+site, and a \emph{value map} $\varphi\colon\mathbb{R}^k\to V$ into a finite set
+or a metric space. Its value on an input is
+\[
+C(x)=\varphi\bigl(R(h_s(x))\bigr).
+\]
+Candidates are proposed by sparse dictionaries, by the null space of the
+pullback metric $g_s=J_s^\top J_s$ of the downstream map (master prompt
+\S1.9), and by probes for known variables. Proposal confers nothing; only the
+three conditions below do.
+
+\begin{definition}[Partition of a concept]
+The \emph{partition} of $C$ is $\Part_C=\{C^{-1}(v):v\in V\}$, taken modulo
+$P$-null sets. For continuous $V$ with metric $\rho$, fibres are replaced by
+$\delta$-fibres $\{(x,x'):\rho(C(x),C(x'))\le\delta\}$ at a resolution
+$\delta$ fixed in pre-registration.
+\end{definition}
+
+\subsection{Condition 1: quotient}
+
+\begin{definition}[Quotient defect and compression]\label{def:quotient}
+For a behaviour $b$, the \emph{within-fibre swap effect} and the
+\emph{unconditioned swap effect} are
+\[
+A_b^{=}(C)=\E_{x,x'\sim P_b\,:\,C(x)=C(x')}\,
+  d_b\bigl(f(x),f_{R\leftarrow x'}(x)\bigr),\qquad
+A_b(C)=\E_{x,x'\sim P_b}\,
+  d_b\bigl(f(x),f_{R\leftarrow x'}(x)\bigr),
+\]
+and the \emph{quotient defect} is
+$\delta_Q(C)=\sum_b w_b\,A_b^{=}(C)\big/\sum_b w_b\,A_b(C)$ over the behaviours
+with $A_b(C)>\eta$. The \emph{compression ratio} is
+$\kappa(C)=\Hent(C)/\Hent(X)$, with $\Hent(X)=\log N_{\mathrm{eff}}$ for an
+empirical input set of effective size $N_{\mathrm{eff}}$.
+\end{definition}
+
+\noindent\textbf{Quantitative test.} $C$ passes the quotient condition when
+(i) the realiser matters, $\sum_b w_bA_b(C)\ge\eta$ with $\eta$ the
+95th percentile of the same quantity for random realisers of matched
+dimension and norm;
+(ii) $\delta_Q(C)\le\varepsilon_Q$ with the upper end of its 95\% bootstrap CI
+at most $2\varepsilon_Q$;
+(iii) $\delta_Q(C)$ is below the 5th percentile of $\delta_Q$ for random
+partitions of $X$ with the same block-size profile as $\Part_C$
+(permutation test, Holm-corrected across candidates);
+(iv) $\kappa(C)\le\kappa_{\max}$ and $\Hent(C)\ge h_{\min}$.
+\textbf{Proposed thresholds:} $\varepsilon_Q=0.10$, $\kappa_{\max}=0.25$,
+$h_{\min}=0.5$ bit.
+
+\begin{remark}
+Condition 1 says that, inside its realiser, nothing but the value of $C$ is
+visible to what follows. It does not say that the downstream computation
+depends on $h_s$ only through $C$: other variables at the same site may be
+used too, and they are other candidates. Swaps that change the value of $C$
+are the subject of Condition 3. Chalupka, Perona and Eberhardt's causal
+coarsening of an input space is the closest prior construct; the difference is
+that the partition here is of internal states and is tested through realiser
+swaps.
+\end{remark}
+
+\subsection{Condition 2: derivation}
+
+Let $\mathcal{K}_{<s}$ be the set of concepts already accepted at sites
+strictly before $s$, together with the input variables (tokens, pixels,
+stimulus labels), which are the \emph{input nodes}.
+
+\begin{definition}[Sufficient and minimal parent sets]\label{def:parents}
+A set $S\subseteq\mathcal{K}_{<s}$ is \emph{$\varepsilon$-sufficient} for $C$
+if $\Hent(C\mid S)\le\varepsilon\,\Hent(C)$, estimated as the held-out
+conditional cross-entropy of a sparse predictor $\hat\psi$ of $C$ from $S$.
+It is \emph{minimal} if no proper subset is $2\varepsilon$-sufficient. The
+\emph{parent set} $\pa(C)$ is the minimal $\varepsilon_D$-sufficient set
+returned by sparse conditional prediction, and the \emph{derivation map} is
+$\psi_C=\hat\psi$, so that $C\approx\psi_C(\pa(C))$.
+\end{definition}
+
+\noindent\textbf{Quantitative test.} $C$ passes the derivation condition when
+(i) a minimal $\varepsilon_D$-sufficient set exists with $|\pa(C)|\le k_{\max}$;
+(ii) the parent set is stable: mean pairwise Jaccard index at least $J_{\min}$
+across at least five data resamples and, where they exist, five seeds;
+(iii) each edge is interventionally confirmed: patching the realiser of a
+parent $C_i$ from $x'$ into $x$ moves $C$ to $\psi_C$ evaluated at the patched
+parent values on at least a fraction $\tau_E$ of pairs, and at least $0.2$
+above random realisers.
+\textbf{Proposed thresholds:} $\varepsilon_D=0.05$, $k_{\max}=8$,
+$J_{\min}=0.8$, $\tau_E=0.9$.
+
+\begin{proposition}[Derivation is refinement in the partition lattice;
+proved, \texttt{proofs/P1\_partition\_lattice.tex}]\label{prop:lattice}
+Order partitions of $X$ by refinement, $\Part\le\Part'$ if every block of
+$\Part$ lies inside a block of $\Part'$, and write $\bigwedge$ for the common
+refinement (meet). In the exact case $\varepsilon_D=0$ and for finite $X$,
+$C=\psi(C_1,\dots,C_k)$ for some map $\psi$ if and only if
+$\bigwedge_{i}\Part_{C_i}\le\Part_C$. Consequently $S$ is an exact parent set
+of $C$ if and only if $S$ is an inclusion-minimal subset of
+$\mathcal{K}_{<s}$ whose meet refines $\Part_C$.
+\end{proposition}
+\predict{None by itself; it fixes what the estimator must recover and is the
+basis of the planted-answer check.}
+\experiment{Phase 1, planted system V1 (hand-built digit, column-sum, carry,
+result network): the estimated parent sets must equal the planted ones on
+every node at the pre-registered recovery threshold.}
+
+\begin{proposition}[Uniqueness of the minimal parent set under positivity;
+proved, \texttt{proofs/P2\_parent\_uniqueness.tex}]\label{prop:unique}
+Let $U=\mathcal{K}_{<s}$ be finite-valued and suppose the joint law of $U$
+under $P$ gives positive probability to every combination of values in the
+product of the observed value sets of its members (positivity of the
+candidates; $C$ itself may be a deterministic function of $U$). Then the
+inclusion-minimal set $S\subseteq U$ with $C\perp U\setminus S\mid S$ is
+unique.
+\end{proposition}
+\predict{Where positivity holds, parent sets estimated on disjoint data halves
+coincide up to sampling error; where it fails, they may differ, and the
+difference is located on value combinations that never co-occur.}
+\experiment{Phase 1, planted systems V1 and V3; on V3 (components seen
+separately, never together) parent-set stability must drop exactly at the
+withheld combinations.}
+
+\begin{remark}[Positivity is a real restriction]
+Positivity fails whenever the candidate set contains a node together with a
+function of it, for example a node and its own parents, so it cannot be
+assumed for all of $\mathcal{K}_{<s}$. With $C=C_3=C_1\oplus C_2$ both
+$\{C_3\}$ and $\{C_1,C_2\}$ are minimal sufficient sets. Until a canonical
+candidate set is fixed (one option: the latest-site antichain that is
+sufficient), the programme reports all minimal parent sets and every
+downstream quantity as a range over the resulting graphs. Fixing the rule is
+a Phase 1 design decision, tested on V1 before any real model.
+\end{remark}
+
+\begin{proposition}[Derivation maps are unidentified on unseen combinations
+and identified by interchange; proved,
+\texttt{proofs/P3\_unseen\_combinations.tex}]\label{prop:unseen}
+(a) If a combination $t$ of parent values has probability zero under $P$,
+then for any $\psi$ that agrees with $C$ $P$-almost surely there is a $\psi'$
+that also agrees with $C$ $P$-almost surely and differs from $\psi$ at $t$.
+(b) Suppose the parent realisers are \emph{modular}: there exist inputs
+$x,x^{(1)},\dots,x^{(k)}$ such that the joint patch of the realiser of $C_i$
+from $x^{(i)}$ into the run on $x$ produces parent values $t$ and leaves the
+computation from the parents to $C$ unchanged in form. Then the value the
+system assigns to $C$ at $t$ is observed directly, so the system's derivation
+map is identified at $t$ by the interchange intervention.
+\end{proposition}
+\predict{Observational fits cannot predict sideways behaviour; interchange
+tests on the new combination can. This is the formal content of the sideways
+prediction in \S\ref{sec:moves}.}
+\experiment{Phase 2--3, K3: on sideways inputs, the agreement between the
+interchange-identified $\psi$ and the correct answer predicts correctness
+better than any observational fit of $\psi$.}
+
+\subsection{Condition 3: causal use}
+
+\begin{definition}[Interchange intervention accuracy]\label{def:iia}
+Let $D_C$ be the \emph{downstream derivation} of $C$: the sub-graph of the
+current concept graph from $C$ to the output, with its derivation maps, which
+defines a high-level model $F_{\G}$ in the sense of causal abstraction
+(Geiger, Lu, Icard and Potts). For a pair $(x,x')$ with $C(x)\neq C(x')$ the
+predicted counterfactual output is $\hat y(x;C\leftarrow C(x'))=F_{\G}(x;
+\mathrm{do}(C=C(x')))$. The interchange intervention accuracy is
+\[
+\IIA(C)=\sum_b w_b\,\Pr_{x,x'\sim P_b\,:\,C(x)\ne C(x')}
+\Bigl[r_b\bigl(f_{R\leftarrow x'}(x)\bigr)=r_b\bigl(\hat y(x;C\leftarrow C(x'))\bigr)\Bigr].
+\]
+A graph-free variant replaces $\hat y$ by the system's output on a matched
+counterfactual input $x^\ast$ that agrees with $x$ on every other parent of the
+children of $C$ and has $C(x^\ast)=C(x')$, where such an input exists in the
+sample. This variant breaks the circularity between Condition 3 and the graph
+on the first pass of discovery.
+\end{definition}
+
+\noindent\textbf{Quantitative test.} $C$ passes the causal-use condition when
+$\IIA(C)\ge\tau_{\IIA}$, the lower end of its 95\% CI is above
+$\IIA$ of random realisers of matched dimension by at least $\Delta_{\IIA}$,
+and the same realiser in the untrained copy $f^0$ does not pass. A candidate
+whose probe decoding accuracy is at least $0.9$ but that fails this test is
+recorded as \emph{represented, not used}.
+\textbf{Proposed thresholds:} $\tau_{\IIA}=0.90$, $\Delta_{\IIA}=0.20$.
+
+\begin{definition}[Concept]\label{def:concept}
+A \emph{concept} of $f$ (at access level (C)) is a candidate that passes
+Conditions 1, 2 and 3. Input nodes are concepts by convention and are exempt
+from Conditions 1 and 2.
+\end{definition}
+
+\subsection{The concept graph and its equivalence}
+
+\begin{definition}[Concept graph]\label{def:graph}
+Run discovery site by site in the order $<$. The concept graph $\G(f)$ has as
+nodes the concepts, taken modulo the equivalence below, and an edge
+$C_i\to C$ for each $C_i\in\pa(C)$. A node's site is the earliest site at
+which a member of its class is accepted.
+\end{definition}
+
+\begin{definition}[Equivalence]\label{def:equiv}
+Two concepts $C,C'$ are \emph{equivalent} if $\Part_C=\Part_{C'}$ modulo
+$P$-null sets; approximately, if the normalised variation of information
+$\VI(\Part_C,\Part_{C'})/\log N_{\mathrm{eff}}\le\varepsilon_{\mathrm{merge}}$.
+Two graphs are equivalent if there is a bijection of nodes that maps each node
+to an equivalent node and preserves edges. Equivalence absorbs (i) any
+invertible reparametrisation $u\colon V\to V'$ of a value map, since
+$\Part_{u\circ C}=\Part_C$, and (ii) the merging of redundant nodes that carry
+the same partition at different sites or in different realisers.
+\textbf{Proposed threshold:} $\varepsilon_{\mathrm{merge}}=0.05$.
+\end{definition}
+
+\begin{proposition}[Invariance under reparametrisation; proved,
+\texttt{proofs/P4\_reparametrisation.tex}]\label{prop:reparam}
+Every test statistic in Conditions 1--3 ($\delta_Q$, $\kappa$, $\Hent(C)$,
+$\Hent(C\mid S)$, $\IIA$) and every quantity in \S\ref{sec:gen}
+(generality, grounding, memorization) is unchanged when a value map $\varphi$
+is replaced by $u\circ\varphi$ for an invertible $u$, provided the derivation
+maps of $C$ and of its children are replaced by $u\circ\psi_C$ and
+$\psi_{C''}\circ(\dots,u^{-1},\dots)$ respectively.
+\end{proposition}
+
+\begin{proposition}[Well-definedness in the exact case; proved,
+\texttt{proofs/P2\_parent\_uniqueness.tex}, Corollary]\label{prop:welldef}
+Assume (a) the exact case $\varepsilon_Q=\varepsilon_D=0$ and
+$\varepsilon_{\mathrm{merge}}=0$, finite $X$ and finite value sets;
+(b) positivity of the candidate parents at every site
+(Proposition~\ref{prop:unique}); (c) the set of accepted candidates is fixed. Then
+$\G(f)$ is a directed acyclic graph that is unique up to the equivalence of
+Definition~\ref{def:equiv}, and it does not depend on the choice of value maps within
+each equivalence class.
+\end{proposition}
+
+\begin{conjecture}[Stability of the approximate graph]\label{conj:stable}
+Suppose the exact-case assumptions hold for some limiting system and that
+every accepted concept clears each threshold with margin $\mu>0$ and every
+rejected candidate fails some threshold by margin $\mu$. Then for
+$\varepsilon_Q,\varepsilon_D,\varepsilon_{\mathrm{merge}}$ small relative to
+$\mu$ and for sample size $n\to\infty$, the estimated graph equals the
+exact-case graph up to equivalence with probability tending to one.
+\end{conjecture}
+\status{Conjecture. Obstruction to a proof: the sparse-prediction estimator
+of $\pa(C)$ needs a margin condition analogous to the beta-min condition of
+sparse regression, and its form for conditional entropy is not yet stated.}
+\predict{Graphs estimated on disjoint data halves, and on seeds of the same
+training recipe, agree up to equivalence at a rate that rises with $n$.}
+\experiment{Phase 1 (V1--V4), recovery vs sample size; Phase 2 (K1),
+split-half graph agreement on Llama, Qwen, Gemma and OLMo.}
+
+\begin{remark}[Dependence on the linear extension]
+Acyclicity holds by construction because edges respect the fixed linear
+extension $<$. Whether the graph depends on the choice of extension when sites
+are incomparable under $\prec$ (parallel attention heads, parallel brain
+regions) is open; it is recorded as Conjecture~\ref{conj:stable}'s companion
+and tested by recomputing the graph under two extensions.
+\end{remark}
+
+\subsection{Relation to Formal Concept Analysis}
+
+A formal context is a triple $(G,M,I)$ of objects, attributes and an
+incidence relation; with $A'=\{m:\forall g\in A,\ gIm\}$ and
+$B'=\{g:\forall m\in B,\ gIm\}$, a formal concept is a pair $(A,B)$ with
+$A'=B$ and $B'=A$ (Wille 1982; Ganter and Wille 1999). We attach to a site the
+\emph{downstream context} $\mathbb{K}_s=(X,M_s,I)$, whose attributes $M_s$ are
+binary downstream readouts $m\colon X\to\{0,1\}$ (thresholded behaviour
+readouts and thresholded later-site features), with $xIm$ iff $m(x)=1$. Say
+that $C$ is an \emph{exact quotient for $M_s$} if every $m\in M_s$ is constant
+on every block of $\Part_C$.
+
+\begin{proposition}[Quotient condition and formal concepts; proved,
+\texttt{proofs/P5\_fca.tex}]\label{prop:fca}
+Let $C$ be an exact quotient for $M_s$.
+(a) Every extent of $\mathbb{K}_s$ is a union of blocks of $\Part_C$.
+(b) For every $x$, the block $[x]_C$ is contained in the object-concept extent
+$\{x\}''$.
+(c) If $M_s$ is closed under complement ($m\in M_s\Rightarrow 1-m\in M_s$,
+the nominal scaling of FCA), then the object-concept extents
+$\{\{x\}'':x\in X\}$ are exactly the blocks of the kernel partition
+$\Part_{M_s}$ of $x\mapsto(m(x))_{m\in M_s}$; $\Part_C\le\Part_{M_s}$; and $C$
+is the coarsest exact quotient for $M_s$ if and only if its blocks are the
+object-concept extents.
+\end{proposition}
+
+\begin{conjecture}[Approximate version]\label{conj:fca}
+If $C$ has quotient defect $\delta_Q(C)\le\varepsilon$ with respect to a
+behaviour suite whose thresholded readouts form $M_s$, then every extent of
+$\mathbb{K}_s$ differs from a union of $\Part_C$-blocks on a set of
+$P$-probability at most $c\,\varepsilon$, with $c$ depending only on the
+thresholding margin of the readouts.
+\end{conjecture}
+\status{Conjecture. Obstruction: $\delta_Q$ is a ratio of averaged
+divergences, so it bounds the mass of disagreeing pairs only after the
+readouts are thresholded with a margin.}
+\predict{On a model with a known graph, FCA extents of the downstream context
+are, to within $c\,\varepsilon$, unions of the fibres of the accepted
+concepts; on the untrained copy they are not.}
+\experiment{Phase 1, V1 and V2; reported as a check on Condition 1, never as
+evidence for a claim.}
+
+\begin{remark}[What the FCA relation does and does not say]
+Proposition~\ref{prop:fca} shows that the quotient condition is a one-site, interventional
+form of FCA's closure: concepts that pass Condition 1 induce saturated extents,
+and under nominal scaling the coarsest such concept is FCA's object-concept
+partition. FCA by itself has neither a derivation relation (its lattice order
+is subsumption of extents, not computation of one variable from others) nor a
+causal-use test, so Conditions 2 and 3 are not consequences of it.
+\end{remark}
+
+%============================================================================
+\section{Generality, principles and depth (master prompt \S2.3)}
+\label{sec:gen}
+%============================================================================
+
+\begin{definition}[Active derivation of an input]\label{def:active}
+For an input $x$ in the support of $P_b$, node $C$ is \emph{active on $x$}
+if its realiser swap moves the readout on a majority of partners:
+\[
+a_C(x)=\mathbf{1}\Bigl[\Pr_{x'\sim P_b:\,C(x')\neq C(x)}
+\bigl(r_b(f_{R\leftarrow x'}(x))\neq r_b(f(x))\bigr)\ge\alpha\Bigr].
+\]
+The active derivation $D(x)$ is the sub-graph of $\G(f)$ induced by the
+active nodes that are ancestors of the output node, together with the input
+nodes. \textbf{Proposed threshold:} $\alpha=0.5$.
+\end{definition}
+
+\begin{definition}[Generality]\label{def:generality}
+The \emph{weighted generality} of a node is the behaviour-weighted mass of
+inputs on whose derivation it is active,
+\[
+g(C)=\sum_{b\in\B}w_b\,\E_{x\sim P_b}\,a_C(x)\in[0,1],
+\]
+and the \emph{count generality} is
+$g_\#(C)=\#\{b:\E_{P_b}a_C\ge\alpha\}$. The \emph{null-corrected}
+generality is $g(C)-q_{95}$, where $q_{95}$ is the 95th percentile of $g$ over
+the nodes of the untrained-copy graph (or, if that graph is empty, over random
+realisers of matched dimension).
+\end{definition}
+
+\begin{definition}[Principle]\label{def:principle}
+A \emph{principle at level $\tau$} is a node that is not an input node and has
+$g(C)\ge\tau$ and $g(C)>q_{95}$. Write $\Pi_\tau$ for the set of principles.
+\textbf{Proposed thresholds:} $\tau\in\{0.25,0.5\}$ pre-registered as two
+levels; all results are also reported as curves in $\tau$.
+\end{definition}
+
+\begin{definition}[Depth of understanding]\label{def:depth}
+Let $\mathcal{P}(x)$ be the set of directed paths in $D(x)$ from an input
+node to the output.
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Thresholded depth.} The behaviour is \emph{grounded at $\tau$ on
+$x$} if $\Pi_\tau\cap D(x)$ is a vertex cut separating the input nodes from
+the output in $D(x)$.
+\item \emph{Structural grounding level.}
+$\lambda(x)=\min_{p\in\mathcal{P}(x)}\max_{C\in p}g(C)$, the bottleneck value
+of the most weakly grounded path. Then $x$ is grounded at $\tau$ if and only
+if $\lambda(x)\ge\tau$ (Proposition~\ref{prop:bottleneck}).
+\item \emph{Interventional grounding share.} With $\Pi_\tau$ patched from $x$
+into the run on $x'$,
+\[
+\gamma_\tau(x)=1-\frac{\E_{x'\sim P_b}\,d_b\bigl(f(x),
+f_{\Pi_\tau\leftarrow x}(x')\bigr)}{\E_{x'\sim P_b}\,d_b\bigl(f(x),f(x')\bigr)},
+\]
+the share of the input's effect on the output that passes through principles
+($\gamma=1$: the output on $x$ is fixed once the principles are fixed;
+$\gamma=0$: principles carry nothing).
+\item \emph{Depth of a behaviour.}
+$\Lambda_\tau(b)=\Pr_{x\sim P_b}(\lambda(x)\ge\tau)$ (thresholded),
+$\bar\lambda(b)=\E_{P_b}\lambda(x)$ and
+$\bar\gamma_\tau(b)=\E_{P_b}\gamma_\tau(x)$ (continuous), and the
+$\tau$-integrated score $\int_0^1\bar\gamma_\tau(b)\,d\tau$.
+\end{enumerate}
+\end{definition}
+
+\begin{proposition}[Bottleneck characterisation; proved,
+\texttt{proofs/P6\_bottleneck.tex}]\label{prop:bottleneck}
+In any finite DAG with node weights $g$, the nodes with $g\ge\tau$ form a
+vertex cut between the input nodes and the output if and only if
+$\min_{p}\max_{C\in p}g(C)\ge\tau$. Hence (i) and (ii) of
+Definition~\ref{def:depth} agree, and $\lambda(x)$ is computable by a bottleneck path
+search in time linear in the number of edges after sorting.
+\end{proposition}
+
+\begin{conjecture}[Structural grounding implies interventional grounding]
+\label{conj:gamma}
+Assume $\G(f)$ is \emph{complete} on $x$ (every computational path from the
+input to the output passes through a node of $D(x)$), the quotient and
+interchange conditions hold exactly, and realisers are modular. If
+$\lambda(x)\ge\tau$ then $\gamma_\tau(x)=1$. With approximations,
+$1-\gamma_\tau(x)$ is bounded by a constant times
+$\varepsilon_Q+(1-\tau_{\IIA})$ plus the completeness defect.
+\end{conjecture}
+\status{Conjecture. The exact case has a proof sketch (patching the cut fixes
+every downstream value by the quotient and interchange conditions); the
+sketch is not complete because completeness of $\G(f)$ is not itself
+measurable without a residual term, which has not been defined.}
+\predict{$\bar\lambda(b)$ and $\bar\gamma_\tau(b)$ are strongly rank-correlated
+across behaviours, and their disagreement is largest where the graph's
+mediation share is lowest.}
+\experiment{Phase 1 planted systems; Phase 2 K1 (arithmetic, where the
+completeness defect can be measured against the known algorithm).}
+
+\begin{definition}[Structural memorization]\label{def:memo}
+On input $x$, the behaviour is \emph{memorized at $\tau$} if no principle is
+active on its derivation, $\mu(x)=\max_{C\in D(x)\setminus\text{inputs}}g(C)<\tau$
+(with $\mu(x)=0$ if $D(x)$ has no non-input node). The behaviour $b$ is
+memorized if $\Pr_{P_b}(\mu(x)<\tau)\ge1-\varepsilon_M$, and \emph{grounded} if
+$\Lambda_\tau(b)\ge1-\varepsilon_M$; otherwise it is \emph{partly grounded}.
+The verdict uses only training-distribution inputs and interventions; it uses
+no held-out data. \textbf{Proposed threshold:} $\varepsilon_M=0.10$.
+\end{definition}
+
+\begin{proposition}[Order of the scores; proved,
+\texttt{proofs/P6\_bottleneck.tex}]\label{prop:order}
+$\lambda(x)\le\mu(x)$ for every $x$. Hence an input that is grounded at
+$\tau>0$ is not memorized at $\tau$, and, provided $\varepsilon_M<1/2$, the
+three verdicts (grounded, partly grounded, memorized) are mutually exclusive
+for a behaviour.
+\end{proposition}
+
+\begin{conjecture}[Depth predicts generalization; the K2 kill test]
+\label{conj:k2}
+Across held-out inputs of a behaviour, per-input error is a decreasing
+function of $\lambda(x)$ and of $\gamma_\tau(x)$, and these scores predict
+per-input error with higher AUROC than Bernardi et al.'s cross-condition
+generalization score, max-softmax, entropy, margin and sharpness, at the
+pre-registered margin.
+\end{conjecture}
+\status{Conjecture. This is the programme's kill test; if it fails the
+programme stops (master prompt \S6.2, K2).}
+\predict{AUROC of $\lambda$ for per-input error exceeds every baseline in
+\S6.4 with non-overlapping 95\% CIs, on held-out arithmetic, syntactic
+agreement and a diagnosis model.}
+\experiment{Phase 2, K2.}
+
+\begin{conjecture}[Memorization verdict predicts held-out failure]
+\label{conj:memo}
+A behaviour judged memorized by Definition~\ref{def:memo} has held-out accuracy no
+better than the best input-free baseline, and a behaviour judged grounded has
+held-out accuracy within the training-accuracy CI, provided the specimen gate
+(training accuracy at ceiling) is met.
+\end{conjecture}
+\predict{The structural verdict, computed without held-out data, separates
+leakage-trained from clean models and planted-memorized from planted-rule
+subsets.}
+\experiment{Phase 1 V2 (estimator test only); Phase 4 K4 and K9 (claims).}
+
+\begin{remark}[Relation to Bernardi et al.]
+Proposition 2.7.1 of the master prompt (cross-condition generalization as the
+depth-one case of depth) is attempted in Phase 1, not here. The expected
+form is a statement about a single-node graph with a linear value map and
+observational data, with the causal-use term only able to lower the score.
+\end{remark}
+
+%============================================================================
+\section{The three moves and creation (master prompt \S2.4)}
+\label{sec:moves}
+%============================================================================
+
+\begin{definition}[Training range]\label{def:range}
+For a node $C$ with finite $V$, its \emph{value range} $\mathrm{Rg}(C)$ is the
+set of values taken on at least $n_{\min}$ training inputs. For continuous
+$V$, $\mathrm{Rg}(C)$ is the set of values whose $k$-nearest-neighbour
+distance to training values is below the 99th percentile of the same distance
+among training values. The \emph{combination range} of $C$ is
+$\mathrm{Rg}(\pa(C))$, the set of parent-value tuples seen on at least
+$n_{\min}$ training inputs. A realiser state \emph{has a value} if it lies
+within the 99th-percentile distance of the realiser states of some fibre.
+\textbf{Proposed thresholds:} $n_{\min}=5$, $k=10$.
+\end{definition}
+
+\begin{definition}[Lower, sideways and diagonal]\label{def:moves}
+Let $x^\ast$ be an input not seen in training, with active derivation
+$D(x^\ast)$.
+\begin{enumerate}[label=(\roman*)]
+\item $x^\ast$ is \emph{lower} if, for every node $C\in D(x^\ast)$, the
+realiser state has a value, $C(x^\ast)\in\mathrm{Rg}(C)$, and the parent tuple
+$\pa(C)(x^\ast)\in\mathrm{Rg}(\pa(C))$.
+\item $x^\ast$ is \emph{sideways} if every node value is in range but at
+least one parent tuple is not.
+\item $x^\ast$ is \emph{diagonal} if the derivation needs a concept that is
+not in $\G(f)$. Operationally: some realiser state on $D(x^\ast)$ has no value,
+or the graph's mediation share
+$\gamma_{\G}(x^\ast)$ (Definition~\ref{def:depth}(iii) with all non-input nodes patched)
+is below $1-\varepsilon_{\mathrm{cov}}$, so part of the input's effect on the
+output passes through no node. In benchmarks, diagonal inputs are also
+labelled by construction (the task requires a variable that is not a function
+of any node).
+\end{enumerate}
+\textbf{Proposed threshold:} $\varepsilon_{\mathrm{cov}}=0.2$. The
+operational classifier is $r.\mathrm{move}(x)$; its agreement with
+construction labels is tested at a pre-registered AUROC.
+\end{definition}
+
+\begin{conjecture}[Lower inputs are answered correctly]\label{conj:lower}
+If $x^\ast$ is lower and the behaviour is grounded, the system's error on
+$x^\ast$ is at most its training error plus a term that vanishes as
+$\varepsilon_Q,\varepsilon_D,1-\tau_{\IIA}\to0$.
+\end{conjecture}
+\status{Conjecture. In the exact case it reduces to the statement that every
+node's value on $x^\ast$ is computed by maps that were exercised on the same
+arguments in training; the obstruction is that ``exercised in training'' does
+not imply ``correct'' unless training error is zero on those arguments.}
+
+\begin{conjecture}[Sideways inputs: correct iff interchange passes]
+\label{conj:sideways}
+If $x^\ast$ is sideways, the system answers correctly if and only if, for
+each unseen parent tuple $t$ on $D(x^\ast)$, the interchange intervention that
+assembles $t$ from training inputs (Proposition~\ref{prop:unseen}(b)) yields the value
+of $C$ prescribed by the task's ground-truth derivation.
+\end{conjecture}
+
+\begin{conjecture}[Diagonal inputs fail without creation]\label{conj:diag}
+If $x^\ast$ is diagonal, the system fails on it unless a creation event
+(Definition~\ref{def:creation}) occurs under exposure to $x^\ast$'s problem.
+\end{conjecture}
+\predict{For Conjectures \ref{conj:lower}--\ref{conj:diag} jointly: accuracy
+orders lower $>$ sideways $>$ diagonal; within sideways, the interchange
+verdict predicts correctness at a pre-registered AUROC; within diagonal,
+success occurs only with a valid new node.}
+\experiment{Phase 3, K3 (moves); Phase 7, K13 (diagonal with creation).
+Estimator check on planted system V3 in Phase 1.}
+
+\begin{definition}[Creation]\label{def:creation}
+Let $e_1,e_2,\dots$ be an exposure sequence to a new problem (in-context
+examples for a language model, training steps for a network, sessions for an
+animal), measured in units $u$ (tokens, gradient steps, sessions), and let
+$\G_t$ be the concept graph after exposure $t$, recomputed with the same
+estimator and thresholds. A \emph{valid new node} at $t$ is a node $C^\ast$ of
+$\G_t$ such that
+\begin{enumerate}[label=(\roman*)]
+\item $C^\ast$ passes Conditions 1--3 in the exposed system;
+\item $C^\ast$ is not equivalent to any node of $\G_0$
+($\VI$ above $\varepsilon_{\mathrm{merge}}$ to every node);
+\item its parents are nodes of $\G_0$, or new nodes that are themselves valid,
+so that it is derived from existing nodes;
+\item it does not appear, at the same exposure count, under exposure to a
+matched control problem that does not require it.
+\end{enumerate}
+The \emph{creation rate} is the number of valid new nodes per unit $u$; the
+\emph{creation reach} of $C^\ast$ is its generality $g_t(C^\ast)$ over the
+original suite $\B$ together with the new behaviour.
+\end{definition}
+
+\begin{definition}[False creation]\label{def:falsecreation}
+A node that appears under exposure is a \emph{false creation} if
+(a) it is decodable but not used (passes probe decoding, fails Condition 3);
+(b) it is used but not derived (passes Condition 3, fails Condition 2 with
+respect to $\G_0$), which makes it a new leaf, i.e.\ memorization of the new
+problem;
+(c) it is a relabelling (equivalent to a node of $\G_0$, including an
+invertible reparametrisation of one); or
+(d) it is exposure-generic (it appears equally under the control problem).
+Every reported creation count lists the candidates rejected under (a)--(d).
+\end{definition}
+
+\begin{conjecture}[Creation predicts success on a diagonal problem]
+\label{conj:creation}
+Across systems and problems, success on a diagonal problem after exposure is
+predicted by the appearance of at least one valid new node whose parents lie
+on the derivation of the problem, and the creation rate is positively
+associated with the speed of success; false creations do not predict success.
+\end{conjecture}
+\status{Conjecture; the creation tests run last because they are the most
+likely to fail.}
+\predict{Logistic regression of success on (valid-node indicator) has a
+positive coefficient with CI excluding zero across the K13 problem set; the
+same regression on false-creation counts does not.}
+\experiment{Phase 7, K13; estimator check on planted system V5 in Phase 1.}
+
+%============================================================================
+\section{Summary of statuses}
+%============================================================================
+
+\begin{longtable}{p{0.33\textwidth}p{0.17\textwidth}p{0.42\textwidth}}
+\toprule
+Item & Status & Test \\
+\midrule
+\endhead
+Prop.~\ref{prop:lattice} derivation as refinement & proved, unchecked & V1 \\
+Prop.~\ref{prop:unique} parent uniqueness & proved, unchecked & V1, V3 \\
+Prop.~\ref{prop:unseen} unseen combinations & proved, unchecked & K3 \\
+Prop.~\ref{prop:reparam} reparametrisation & proved, unchecked & unit/property tests \\
+Prop.~\ref{prop:welldef} well-definedness (exact) & proved, unchecked & V1--V4 \\
+Prop.~\ref{prop:fca} FCA relation & proved, unchecked & V1, V2 \\
+Prop.~\ref{prop:bottleneck} bottleneck & proved, unchecked & unit tests \\
+Prop.~\ref{prop:order} order of scores & proved, unchecked & unit tests \\
+Conj.~\ref{conj:stable} stability & conjecture & V1--V4, K1 \\
+Conj.~\ref{conj:fca} approximate FCA & conjecture & V1, V2 \\
+Conj.~\ref{conj:gamma} structural vs interventional & conjecture & V1, K1 \\
+Conj.~\ref{conj:k2} depth predicts error (kill) & conjecture & K2 \\
+Conj.~\ref{conj:memo} memorization verdict & conjecture & V2, K4, K9 \\
+Conj.~\ref{conj:lower}--\ref{conj:diag} three moves & conjecture & V3, K3, K13 \\
+Conj.~\ref{conj:creation} creation & conjecture & V5, K13 \\
+\bottomrule
+\end{longtable}
+
+\section*{Proposed thresholds (to be fixed in pre-registration)}
+
+\begin{tabular}{lll}
+\toprule
+Symbol & Proposed value & Role \\
+\midrule
+$\varepsilon_Q$ & 0.10 & quotient defect \\
+$\kappa_{\max}$, $h_{\min}$ & 0.25, 0.5 bit & compression, non-triviality \\
+$\varepsilon_D$, $k_{\max}$ & 0.05, 8 & parent sufficiency, parent count \\
+$J_{\min}$, $\tau_E$ & 0.8, 0.9 & parent stability, edge interchange \\
+$\tau_{\IIA}$, $\Delta_{\IIA}$ & 0.90, 0.20 & causal use, margin over null \\
+$\varepsilon_{\mathrm{merge}}$ & 0.05 & equivalence \\
+$\alpha$ & 0.5 & per-input activity \\
+$\tau$ & 0.25 and 0.5 & principle levels \\
+$\varepsilon_M$ & 0.10 & memorization verdict \\
+$n_{\min}$, $k$ & 5, 10 & training range \\
+$\varepsilon_{\mathrm{cov}}$ & 0.2 & diagonal coverage \\
+\bottomrule
+\end{tabular}
+
+\appendix
+\section{Proofs}
+The proofs below are complete as written but have not been checked line by
+line by a second reader; until that check is recorded they support
+propositions, not theorems.
+
+\input{../proofs/P1_partition_lattice}
+\input{../proofs/P2_parent_uniqueness}
+\input{../proofs/P3_unseen_combinations}
+\input{../proofs/P4_reparametrisation}
+\input{../proofs/P5_fca}
+\input{../proofs/P6_bottleneck}
+
+\section*{References}
+Full, verified citations are in \texttt{docs/novelty.md}. Those used here:
+R.~Wille (1982), Restructuring lattice theory; B.~Ganter and R.~Wille (1999),
+Formal Concept Analysis; A.~Geiger, H.~Lu, T.~Icard and C.~Potts (2021),
+Causal abstractions of neural networks; A.~Geiger et al.\ (2025), Causal
+abstraction: a theoretical foundation for mechanistic interpretability;
+K.~Chalupka, P.~Perona and F.~Eberhardt (2015), Visual causal feature
+learning; S.~Bernardi et al.\ (2020), The geometry of abstraction in the
+hippocampus and prefrontal cortex; J.~Pearl (1988), Probabilistic Reasoning
+in Intelligent Systems (Markov boundaries and the intersection property).
+
+\end{document}

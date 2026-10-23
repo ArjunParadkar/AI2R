@@ -1,0 +1,30 @@
+\subsection{Proof of Proposition~\ref{prop:lattice} (derivation as refinement)}
+\label{proof:P1}
+\textbf{Setting.} $X$ is finite and every $x\in X$ has $P(x)>0$ (restrict $X$
+to the support of $P$; this is what ``modulo $P$-null sets'' means for
+finite $X$). Concepts $C_1,\dots,C_k,C$ are maps from $X$ into finite sets.
+
+\textbf{Claim.} There is a map $\psi$ with $C(x)=\psi(C_1(x),\dots,C_k(x))$
+for all $x$ if and only if $\bigwedge_i\Part_{C_i}\le\Part_C$.
+
+\textbf{Proof.} The blocks of the meet $\bigwedge_i\Part_{C_i}$ are the
+non-empty sets $\{x:C_i(x)=t_i\ \forall i\}$, one for each tuple
+$t=(t_1,\dots,t_k)$ in the image $T$ of $x\mapsto(C_1(x),\dots,C_k(x))$.
+
+($\Rightarrow$) Let $x,x'$ lie in one block of the meet. Then
+$C_i(x)=C_i(x')$ for every $i$, hence
+$C(x)=\psi(C_1(x),\dots)=\psi(C_1(x'),\dots)=C(x')$, so $x,x'$ lie in one block
+of $\Part_C$. Every block of the meet therefore lies inside a block of
+$\Part_C$.
+
+($\Leftarrow$) For $t\in T$ choose any $x_t$ with tuple $t$ and set
+$\psi(t)=C(x_t)$; for $t\notin T$ set $\psi(t)$ arbitrarily. The choice does
+not matter: all inputs with tuple $t$ form one block of the meet, which lies
+in one block of $\Part_C$, so they share one value of $C$. Then for every $x$
+with tuple $t$, $\psi(t)=C(x_t)=C(x)$. \hfill$\square$
+
+\textbf{Corollary.} An exact parent set (an inclusion-minimal $S$ with
+$\Hent(C\mid S)=0$) is exactly an inclusion-minimal $S\subseteq\mathcal{K}_{<s}$
+with $\bigwedge_{C'\in S}\Part_{C'}\le\Part_C$, because for finite $X$ with
+full support $\Hent(C\mid S)=0$ holds if and only if $C$ is a function of $S$
+on $X$.

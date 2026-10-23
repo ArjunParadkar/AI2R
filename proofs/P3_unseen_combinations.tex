@@ -1,0 +1,26 @@
+\subsection{Proof of Proposition~\ref{prop:unseen} (unseen combinations)}
+\label{proof:P3}
+\textbf{(a)} Let $T=(C_1,\dots,C_k)$ be the parent tuple and $t$ a value with
+$P(T=t)=0$, and let $\psi$ satisfy $C=\psi(T)$ $P$-a.s. Assume $|V|\ge2$
+(otherwise $C$ is constant and fails $h_{\min}$). Choose $v\ne\psi(t)$ in $V$
+and define $\psi'(t)=v$ and $\psi'=\psi$ elsewhere. Then
+$P(\psi'(T)\ne\psi(T))\le P(T=t)=0$, so $C=\psi'(T)$ $P$-a.s., while
+$\psi'(t)\ne\psi(t)$. No observational quantity distinguishes $\psi$ from
+$\psi'$. \hfill$\square$
+
+\textbf{(b)} This part is definitional and is stated so that its assumption
+is explicit. \emph{Modularity} means: there is a map
+$\Psi_{\mathrm{sys}}$, defined on the parent-value tuples reachable by joint
+realiser patches, such that in every run (natural or patched) the value of
+$C$ computed by the system equals $\Psi_{\mathrm{sys}}$ of the parent values
+present in that run. Under modularity, a joint patch that produces parent
+values $t$ yields a run in which $C$ takes the value $\Psi_{\mathrm{sys}}(t)$,
+which is read off by $\varphi\circ R$ at the site of $C$. Hence
+$\Psi_{\mathrm{sys}}(t)$ is observed, and it agrees with $\psi$ wherever
+$P(T=\cdot)>0$. \hfill$\square$
+
+\textbf{Remark.} Modularity is an assumption about the system, not a
+consequence of Conditions 1--3; it is the assumption under which the
+interchange test is evidence about the unseen combination, and it is itself
+checked by testing that the patch does not alter $C$'s other parents
+(Definition~\ref{def:parents}, test (iii)).
