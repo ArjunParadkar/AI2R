@@ -399,7 +399,7 @@ def v4_scaffold(periods=(3, 4, 5), n_items: int = 6, item_card: int = 4, seed: i
     return P
 
 
-def formation_sequence(p: int = 7, schedule=(1.0, 1.0, 1.0, 0.5, 0.0, 0.0, 0.0), seed: int = 0):
+def formation_sequence(p: int = 7, schedule=(1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 0.1), seed: int = 0):
     """Planted 'checkpoints': V2 networks whose memorized fraction follows `schedule`.
     The rule node is used from the first checkpoint with frac < 1 (principle birth);
     the grounding event is the largest drop of the memorized fraction."""

@@ -34,6 +34,13 @@ from .systems import Patch
 _DTYPES = {"bfloat16": torch.bfloat16, "float16": torch.float16, "float32": torch.float32}
 
 
+def _dtype_kw() -> str:
+    """'dtype' on transformers >= 4.56, 'torch_dtype' before (cluster: 4.46-4.49)."""
+    import transformers
+    v = tuple(int(x) for x in transformers.__version__.split(".")[:2])
+    return "dtype" if v >= (4, 56) else "torch_dtype"
+
+
 def parse_site(site: str):
     l, role = site[1:].split("@", 1)
     return int(l), role
@@ -77,7 +84,7 @@ class HFSystem:
                                                                bnb_4bit_compute_dtype=_DTYPES[dtype])
                 kw["device_map"] = {"": device}
                 quant = "8bit" if load_in_8bit else "4bit"
-            kw["torch_dtype"] = _DTYPES[dtype]
+            kw[_dtype_kw()] = _DTYPES[dtype]
             self.model = AutoModelForCausalLM.from_pretrained(model_name, **kw)
             if quant is None:
                 self.model.to(device)
@@ -136,7 +143,7 @@ class HFSystem:
         from transformers import AutoModelForCausalLM
 
         torch.manual_seed(seed)
-        m = AutoModelForCausalLM.from_config(self.model.config, torch_dtype=_DTYPES[self.dtype_name])
+        m = AutoModelForCausalLM.from_config(self.model.config, **{_dtype_kw(): _DTYPES[self.dtype_name]})
         m.to(self.device)
         s = HFSystem(self.model_name, self.revision, self.dtype_name, self.device, layers=self.layers,
                      roles=self.roles, task=self.task, batch_size=self.batch_size, _model=m, _tokenizer=self.tok)
