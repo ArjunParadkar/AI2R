@@ -113,7 +113,7 @@ def main():
     ap.add_argument("--sharpness_hutch", type=int, default=32)
     ap.add_argument("--activity_rows", type=int, default=500)
     ap.add_argument("--device", default="cuda")
-    ap.add_argument("--n_random_realisers", type=int, default=10)
+    ap.add_argument("--n_random_realisers", type=int, default=20)   # Phase 2 amendment 1: the validated value
     ap.add_argument("--gate_exit", action="store_true",
                     help="stop after stage 1 if the training-accuracy part of the specimen gate fails "
                          "(prereg §1: such a cell contributes no K1/K2 statistic; saves compute)")

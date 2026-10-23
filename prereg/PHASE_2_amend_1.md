@@ -6,7 +6,7 @@ Everything in `prereg/PHASE_2.md` stands except the four changes below.
 
 ## Change 1 — the estimator
 
-Phase 2 uses the estimator validated under `prereg-phase-1-amend-3` (AMEND-3 SUMMARY TO BE FILLED AT ITS TAG), not the amendment-2 estimator. Amendment 2 failed P1f (`reports/phase1.md` §8). Phase 2 runs only if the amendment-3 re-validation (seeds 115–119) shows P1a–P1f, P2 (on V2D) and P3 passed. Discovery settings: TO BE FILLED (any setting the amendment-3 criterion depends on, such as the number of random realisers, must equal the validated value).
+Phase 2 uses the estimator validated under `prereg-phase-1-amend-3`, not the amendment-2 estimator. That is the amendment-2 estimator with M10, a family-wise max-T criterion (i) in the quotient test. Amendment 2 failed P1f (`reports/phase1.md` §8). Phase 2 runs only if the amendment-3 re-validation (seeds 115–119) shows P1a–P1f, P2 (on V2D) and P3 passed. **Discovery settings:** `Thresholds()` defaults exactly as validated, **including `n_random_realisers` = 20**. This replaces the frozen value of 10: the max-T null is coarser with 10 realisers, and more null nodes survived it in development. n_pairs, activity rows and partners are unchanged. The per-cell cost rises by about 1.5×, to an estimated ≈ 375 A100-h ± 50 % in all. That is still within the Phase 0 planning figure.
 
 ## Change 2 — analysis units (bringing `bench/analyse_k12.py` in line with §0 and §4 of the frozen text)
 

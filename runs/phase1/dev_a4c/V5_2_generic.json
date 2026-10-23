@@ -1,0 +1,21 @@
+{
+ "cell": "V5",
+ "seed": 2,
+ "variant": "generic",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling",
+  "N": "exposure-generic"
+ },
+ "n_represented_not_used": 3,
+ "commit": "9cbfc57e84243db7863466f9d28ab65e15f1332c",
+ "spec": [
+  "V5",
+  "2",
+  "generic"
+ ],
+ "wall_s": 22.096691131591797,
+ "node": "c1402",
+ "start": "2026-10-23T11:16:25"
+}

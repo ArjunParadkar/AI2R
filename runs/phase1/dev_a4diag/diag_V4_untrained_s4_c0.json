@@ -1,0 +1,124 @@
+{
+ "seed": 4,
+ "kind": "untrained",
+ "family": "V4",
+ "coarsen": 0,
+ "n_candidates": 160,
+ "n_accepted": 2,
+ "fp_rate": 0.0125,
+ "accepted": [
+  {
+   "node": "C0@h0",
+   "label": "g1",
+   "candidate": "cand3@h0:probe:g1",
+   "merged": [
+    "cand83@h0:probe:g1",
+    "cand103@h1:probe:g1"
+   ],
+   "site": "h0",
+   "k": 3,
+   "source": "probe:g1",
+   "delta_Q": 0.0023893764967171803,
+   "A": 0.03315138551321651,
+   "eta": 0.0423793234708202,
+   "kappa": 0.2675246741113476,
+   "H": 1.9996493316966635,
+   "parents": [
+    "pos",
+    "move"
+   ],
+   "cert": {
+    "parents": [
+     "pos",
+     "move"
+    ],
+    "suff": 0.03348757791470674,
+    "edge_effects": {
+     "pos": 0.767578125,
+     "move": 0.3359375
+    },
+    "edge_null": {
+     "pos": 0.0,
+     "move": 0.0
+    },
+    "iia": {
+     "passed": true,
+     "pass_eff": true,
+     "iia": [
+      0.9808450704225352,
+      0.9777464788732394,
+      0.9840845070422535
+     ],
+     "iia_eff": [
+      0.9215017064846417,
+      0.89419795221843,
+      0.9488054607508533
+     ],
+     "n_eff": 293,
+     "random_eff": 0.3310580204778157,
+     "frac_undefined": 0.306640625
+    },
+    "stability_jaccard": 1.0
+   }
+  },
+  {
+   "node": "C1@h0",
+   "label": "g0",
+   "candidate": "cand82@h0:probe:g0",
+   "merged": [],
+   "site": "h0",
+   "k": 2,
+   "source": "probe:g0",
+   "delta_Q": 0.0019288210544286992,
+   "A": 0.032277574676127005,
+   "eta": 0.0356888196834538,
+   "kappa": 0.21183873649450588,
+   "H": 1.5834172652141782,
+   "parents": [
+    "pos",
+    "move"
+   ],
+   "cert": {
+    "parents": [
+     "pos",
+     "move"
+    ],
+    "suff": 0.03747167888663311,
+    "edge_effects": {
+     "pos": 0.66796875,
+     "move": 0.2421875
+    },
+    "edge_null": {
+     "pos": 0.0,
+     "move": 0.0
+    },
+    "iia": {
+     "passed": true,
+     "pass_eff": true,
+     "iia": [
+      0.978428927680798,
+      0.9754956359102244,
+      0.9816708229426434
+     ],
+     "iia_eff": [
+      0.969187675070028,
+      0.9495798319327731,
+      0.9859943977591037
+     ],
+     "n_eff": 357,
+     "random_eff": 0.23249299719887956,
+     "frac_undefined": 0.216796875
+    },
+    "stability_jaccard": 1.0
+   }
+  }
+ ],
+ "verdict_counts": {
+  "represented, not used": 23,
+  "quotient pass": 6,
+  "quotient fail": 118,
+  "realiser": 13
+ },
+ "coarsened": {},
+ "wall_s": 43.39220857620239
+}
