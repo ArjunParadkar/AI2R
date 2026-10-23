@@ -1,0 +1,39 @@
+--model Qwen/Qwen2.5-7B --task add3 --seed 0
+--model Qwen/Qwen2.5-7B --task mul21 --seed 0
+--model Qwen/Qwen2.5-7B --task agree --seed 0
+--model Qwen/Qwen2.5-14B --task add3 --seed 0
+--model Qwen/Qwen2.5-14B --task mul21 --seed 0
+--model Qwen/Qwen2.5-14B --task agree --seed 0
+--model allenai/OLMo-2-1124-7B --task add3 --seed 0
+--model allenai/OLMo-2-1124-7B --task mul21 --seed 0
+--model allenai/OLMo-2-1124-7B --task agree --seed 0
+--model allenai/OLMo-2-1124-13B --task add3 --seed 0
+--model allenai/OLMo-2-1124-13B --task mul21 --seed 0
+--model allenai/OLMo-2-1124-13B --task agree --seed 0
+--model mistralai/Mistral-7B-v0.1 --task add3 --seed 0
+--model mistralai/Mistral-7B-v0.1 --task mul21 --seed 0
+--model mistralai/Mistral-7B-v0.1 --task agree --seed 0
+--model EleutherAI/pythia-1.4b --task add3 --seed 0
+--model EleutherAI/pythia-1.4b --task mul21 --seed 0
+--model EleutherAI/pythia-1.4b --task agree --seed 0
+--model EleutherAI/pythia-2.8b --task add3 --seed 0
+--model EleutherAI/pythia-2.8b --task mul21 --seed 0
+--model EleutherAI/pythia-2.8b --task agree --seed 0
+--model EleutherAI/pythia-6.9b --task add3 --seed 0
+--model EleutherAI/pythia-6.9b --task mul21 --seed 0
+--model EleutherAI/pythia-6.9b --task agree --seed 0
+--model EleutherAI/pythia-12b --task add3 --seed 0
+--model EleutherAI/pythia-12b --task mul21 --seed 0
+--model EleutherAI/pythia-12b --task agree --seed 0
+--model Qwen/Qwen2.5-32B --task add3 --seed 0 --load_in_8bit
+--model Qwen/Qwen2.5-32B --task mul21 --seed 0 --load_in_8bit
+--model Qwen/Qwen2.5-32B --task agree --seed 0 --load_in_8bit
+--model Qwen/Qwen2.5-7B --task add3 --seed 0 --load_in_8bit
+--model Qwen/Qwen2.5-7B --task add3 --seed 1
+--model Qwen/Qwen2.5-7B --task add3 --seed 2
+--model allenai/OLMo-2-1124-7B --task add3 --seed 1
+--model allenai/OLMo-2-1124-7B --task add3 --seed 2
+--model Qwen/Qwen2.5-7B --task add3 --seed 0 --untrained
+--model allenai/OLMo-2-1124-7B --task add3 --seed 0 --untrained
+--model mistralai/Mistral-7B-v0.1 --task add3 --seed 0 --untrained
+--model EleutherAI/pythia-6.9b --task add3 --seed 0 --untrained

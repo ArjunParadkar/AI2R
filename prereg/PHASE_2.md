@@ -2,7 +2,7 @@
 
 WhiteBox E&E. DRAFT — not frozen until the annotated tag `prereg-phase-2` exists; the commit hash and SHA-256 of this file at the tag are recorded in `docs/record.md`. Nothing confirmatory runs before the tag. Thresholds never change after it.
 
-Status of dependencies: Phase 1 gate (`reports/phase1.md`) must show P1a–P1f, P2 and P3 passed for the estimators used here; if not, this pre-registration does not run.
+Status of dependencies: the estimator used here is the one validated under `prereg-phase-1-amend-2` (principal-subspace realisers in both delta and plain mode; M1–M9; coarsening rule removed). Its re-validation (seeds 110–114) must show P1a–P1f, P2 (on V2D) and P3 passed; if not, this pre-registration does not run. Cell list: `runs/cells/phase2.txt` (39 cells); runner `bench/k12.py` via `runs/slurm/k12.sbatch`.
 
 ## 0. Access level, unit of analysis, what is and is not claimed
 
@@ -19,7 +19,7 @@ Status of dependencies: Phase 1 gate (`reports/phase1.md`) must show P1a–P1f, 
 | Pythia | EleutherAI/pythia-1.4b, -2.8b, -6.9b, -12b | bf16 |
 | Mistral | mistralai/Mistral-7B-v0.1 | bf16 |
 
-Development model (excluded from every confirmatory list): Qwen/Qwen2.5-1.5B, Qwen2.5-0.5B, pythia-70m/160m.
+Development models (excluded from every confirmatory list): Qwen/Qwen2.5-1.5B, Qwen2.5-0.5B, pythia-70m/160m. On Qwen2.5-1.5B (2-digit addition, development only), plain principal-subspace realisers of s0 and r0 at the answer position in layers 24–27 passed the quotient test (A ≈ 0.36 vs η ≈ 0.02); delta realisers mostly did not.
 
 **Specimen gate** (master prompt lesson 1.5), applied per model × task before any K1/K2 statistic is computed: per-behaviour training-distribution accuracy ≥ 0.6 on every kept behaviour, and on the held-out set at least 30 errors and 30 correct inputs (K2 only). A cell failing the gate is recorded as "specimen gate failed" with its accuracies and contributes no K1/K2 statistic.
 
