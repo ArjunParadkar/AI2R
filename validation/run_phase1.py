@@ -30,6 +30,8 @@ from whitebox_ee.propose import propose_probes
 from whitebox_ee.stats import auroc, bootstrap_ci
 
 TH = Thresholds()
+# development switches (amendment 3); empty = the amendment-2 estimator
+DISCOVER_KW = {"coarsening_rule": True} if os.environ.get("WB_COARSEN") == "1" else {}
 
 
 def git_commit():
@@ -75,7 +77,8 @@ def run_discovery(P, X, vals, labels, seed, system=None, min_decode=0.9):
     sys_ = system or P.system
     probe = Probe(sys_, X, seed=seed)
     mem = propose_probes(probe, labels, min_decode=min_decode)
-    G, probe, rec = discover(sys_, X, mem, th=TH, probe=probe, seed=seed, stability=True, minimal_sets=False)
+    G, probe, rec = discover(sys_, X, mem, th=TH, probe=probe, seed=seed, stability=True, minimal_sets=False,
+                             **DISCOVER_KW)
     n_eff = len(np.unique(np.asarray(X), axis=0))
     lab = label_nodes(G, vals, n_eff)
     return G, probe, rec, lab, len(mem)
