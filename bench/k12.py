@@ -114,6 +114,9 @@ def main():
     ap.add_argument("--activity_rows", type=int, default=500)
     ap.add_argument("--device", default="cuda")
     ap.add_argument("--n_random_realisers", type=int, default=10)
+    ap.add_argument("--gate_exit", action="store_true",
+                    help="stop after stage 1 if the training-accuracy part of the specimen gate fails "
+                         "(prereg §1: such a cell contributes no K1/K2 statistic; saves compute)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
 
@@ -122,6 +125,7 @@ def main():
 
     cfg = vars(a).copy()
     cfg.pop("out")
+    cfg.pop("gate_exit")            # runner option, not part of the scientific configuration
     ch = config_hash(cfg)
     cell = Path(a.out) / f"{a.model.replace('/', '__')}{'@' + a.revision if a.revision else ''}_{a.task}_s{a.seed}" \
                          f"{'_untrained' if a.untrained else ''}{'_8bit' if a.load_in_8bit else ''}"
@@ -163,6 +167,14 @@ def main():
     meta["train_accuracy"] = acc
     meta["train_full_accuracy"] = full
     say("train accuracy", acc, "full", full)
+    if a.gate_exit and not a.untrained and min(acc.values()) < 0.6 and not (cell / "graph.pkl").exists():
+        meta["specimen_gate_failed"] = True
+        write(cell / "k1.json", dict(meta=meta, gate_failed=True, nodes={}, outputs={}, input_generality={},
+                                     dropped=[], verdicts={}, n_candidates=0, runtime_s=0.0,
+                                     forward_rows=probe.n_runs))
+        say("specimen gate failed (training accuracy < 0.6 on some behaviour): stopping, no K1/K2 statistic")
+        (cell / "GATE_FAILED").write_text(json.dumps(acc))
+        return
 
     # ------------------------------------------------------------------ stage 2: discovery (K1)
     gpath = cell / "graph.pkl"

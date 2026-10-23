@@ -36,7 +36,7 @@ def git_commit():
     try:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     except Exception:
-        return "unknown"
+        return os.environ.get("WB_COMMIT", "unknown")
 
 
 def wrong_hypotheses(vals, rng, n=5):
@@ -289,9 +289,18 @@ def cell_v5(seed, variant, N=1500):
 def cell_formation(seed, N=1500, distractor=False):
     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
     per = []
+    # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
+    # cached checkpoint is bit-identical to a recomputed one); set by main() via WB_CKPT_CACHE
+    cdir = os.environ.get("WB_CKPT_CACHE")
+    tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
     for i, P in enumerate(seq):
         rng = np.random.default_rng(seed)
         X = P.sample(N, rng)
+        cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
+        if cf is not None and cf.exists():
+            import pickle
+            per.append(pickle.load(open(cf, "rb")))
+            continue
         vals = P.values(X)
         # labels exclude the per-pair detectors m_j (single-input fibres; they cannot pass h_min)
         lbl = {k: v for k, v in vals.items() if not (k.startswith("m") and k[1:].isdigit())}
@@ -300,6 +309,12 @@ def cell_formation(seed, N=1500, distractor=False):
         g = generality(G, A)
         sc = depth_scores(probe, G, A, g, TH)
         per.append(dict(ckpt=i, G=G, g=g, scores=sc))
+        if cf is not None:
+            import pickle
+            tmp = cf.with_suffix(".tmp")
+            with open(tmp, "wb") as fh:
+                pickle.dump(per[-1], fh)
+            os.replace(tmp, cf)
     n_eff = len(np.unique(X, axis=0))
     f = formation(per, 0.25, TH.eps_merge, n_eff)
     births = [b for b in f["births"] if b["label"] == "sum"]
@@ -377,6 +392,8 @@ def main():
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     commit = git_commit()
+    os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
+    Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
     for s in a.seeds:
         for c in a.cells:
             for spec in CELLS[c](s):
