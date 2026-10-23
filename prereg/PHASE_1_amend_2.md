@@ -53,4 +53,4 @@ The other criteria (P1a–P1f, P3, P4, P5) are re-run unchanged.
 
 ## Development check (before the tag)
 
-Seeds 0–2 on Pinnacle (job 1364717). Results are reported in `reports/phase1.md` §8.
+Seeds 0–2 on Pinnacle (job 1364799), at the tag: V1 one-hot and noise exact (seeds 0–2); V3, V4, V5 exact; NULL 0 accepted; V2D AUROC(−μ) 0.994 and 0.999 (seeds 0, 1; seed 2 still running); V2 (control) all-memorized as predicted; FORMD dev still running (formation gates only K14). LLM development run (Qwen2.5-1.5B, job 1364800): node s0 at L25@pre_ans_d0 with parents {a0, b0}, IIA 0.97, out0 ← s0; out1 ← raw inputs.
