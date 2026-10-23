@@ -1,0 +1,2 @@
+python -u bench/dev/realiser_diag.py
+python -u bench/dev/llm_dev.py --n 800 --out /scrfs/storage/paradkar/wb/results/dev/llm_dev_a1_plainless.json
