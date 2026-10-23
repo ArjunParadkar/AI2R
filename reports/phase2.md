@@ -1,6 +1,6 @@
 # Phase 2 report: K1 and K2 — NOT RUN (Phase 1 dependency unmet)
 
-Status on 2026-10-23, about 11:20 CDT.
+Status on 2026-10-23, about 11:05 CDT.
 
 `prereg/PHASE_2.md` (tag `prereg-phase-2`, commit 25b772e) runs only if the amendment-2 re-validation shows P1a–P1f, P2 (on V2D) and P3 passed. **P1f failed**: on seed 114, the untrained-copy V4 null accepted 4 of 160 candidates (FP 0.025, threshold 0.02). Details are in `reports/phase1.md` §8 and `docs/record.md`.
 

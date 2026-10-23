@@ -1,8 +1,8 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-23 ~11:25 CDT, by the lead research agent (resumed session).
+Last update: 2026-10-23 ~11:05 CDT, by the lead research agent (resumed session).
 
-## STATE AT 11:25 (READ THIS FIRST; supersedes the sections below where they disagree)
+## STATE AT 11:05 (READ THIS FIRST; supersedes the sections below where they disagree)
 
 - **Amendment-2 validation: P1f FAILED** (seed 114, untrained V4 null: 4/160 = 0.025 > 0.02). P1a–P1e, P3, P4, P5 PASS. P2 (V2D) and P6 (FORMD) are still pending. See `reports/phase1.md` §8 and `docs/record.md`.
   - By prereg/PHASE_1.md §4 the amended estimator may not touch a real model, and **Phase 2 does not run** (`reports/phase2.md`). K2 has no verdict; the kill rule was not triggered.
