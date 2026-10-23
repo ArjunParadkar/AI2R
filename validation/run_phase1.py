@@ -265,6 +265,20 @@ def cell_v4(seed, N=2000):
                 principles_025=sorted(k for k, v in gl.items() if v >= 0.25))
 
 
+def subthreshold_partitions(rec, labels):
+    """Partitions of probe candidates that cleared the uncorrected per-behaviour screen
+    (A_b > eta_b for some behaviour) in a discovery record (for creation hysteresis)."""
+    out = {}
+    for k, v in rec["candidates"].items():
+        A, eta, src = v.get("A_b"), v.get("eta_b"), str(v.get("source", ""))
+        if A is None or eta is None or not src.startswith("probe:"):
+            continue
+        lab = src[len("probe:"):]
+        if lab in labels and np.any(np.asarray(A) > np.asarray(eta)):
+            out[f"sub:{lab}"] = labels[lab]
+    return out
+
+
 def cell_v5(seed, variant, N=1500):
     rng = np.random.default_rng(seed)
     if variant == "generic":
@@ -282,7 +296,8 @@ def cell_v5(seed, variant, N=1500):
     n_eff = len(np.unique(X, axis=0))
     res = creation(G0, G1, r1, TH, n_eff, G_ctrl=Gc,
                    probe_values_G0={n: G0.nodes[n].values for n in G0.concepts()},
-                   probe_values_ctrl={n: Gc.nodes[n].values for n in Gc.concepts()})
+                   probe_values_ctrl={n: Gc.nodes[n].values for n in Gc.concepts()},
+                   subthreshold_old=subthreshold_partitions(r0, labels))
     valid = [(l1.get(c), sorted(l1.get(p, p) for p in G1.parents[c])) for c in res["valid"]]
     status = {l1.get(c) or c: s[0] for c, s in res["status"].items()}
     return dict(cell="V5", seed=seed, variant=variant, valid=valid, status=status,

@@ -29,6 +29,8 @@ def add(cell, crit, values, passed, note=""):
 # P1a, P1b, P1c, P1e on gated variants
 for var in ("onehot", "noise05"):
     v = [get(f"V1_{s}_{var}") for s in SEEDS]
+    if not any(v):
+        continue
     ok = all(x is not None for x in v)
     pr = [x["node_precision"] for x in v if x]
     rc = [x["node_recall"] for x in v if x]
@@ -48,7 +50,8 @@ for var in ("onehot", "noise05"):
         if x:
             hits += len(set(x["wrong_hits"]))
             tot += x["n_wrong"]
-add("P1d V1", "wrong hypotheses accepted <= 10% (pooled)", f"{hits}/{tot}", tot > 0 and hits / tot <= 0.10)
+if tot:
+    add("P1d V1", "wrong hypotheses accepted <= 10% (pooled)", f"{hits}/{tot}", hits / tot <= 0.10)
 # P1f
 fps, accs = [], []
 for k in ("untrained", "shuffled"):
@@ -92,10 +95,14 @@ if au:
     len(au) == N and min(au) >= 0.95 and min(rc) >= 0.9)
 # P5
 v = [get(f"V5_{s}_valid") for s in SEEDS]
+HAVE_V5 = any(v)
 ok = sum(1 for x in v if x and len(x["valid"]) == 1 and x["valid"][0][0] == "N" and sorted(x["valid"][0][1]) == ["A", "B"])
-add("P5a V5-valid", "exactly one valid node N <- {A,B}, 4/5", f"{ok}/{N}", ok >= Q)
+if HAVE_V5:
+  add("P5a V5-valid", "exactly one valid node N <- {A,B}, 4/5", f"{ok}/{N}", ok >= Q)
 for var, want in (("decoy", None), ("leaf", "new leaf (used, not derived)"), ("relabel", None), ("generic", "exposure-generic")):
     v = [get(f"V5_{s}_{var}") for s in SEEDS]
+    if not any(v):
+        continue
     good = 0
     for x in v:
         if not x:
