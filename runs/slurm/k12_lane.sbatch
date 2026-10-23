@@ -83,7 +83,7 @@ done
 # resubmit this lane if any cell is still eligible for it
 left=0; for i in $(cat "$ORDER"); do eligible $i && { left=1; break; }; done
 if (( left )); then
-  sbatch --export=NONE,CELLS=$CELLS,ORDER=$ORDER,SKIP="$SKIP",MAXTRY=$MAXTRY,TLIM=$TLIM -J $SLURM_JOB_NAME \
+  sbatch --export=NONE,CELLS=$CELLS,ORDER=$ORDER,SKIP="$SKIP",MAXTRY=$MAXTRY,TLIM=$TLIM,RESULTS=$R,STATE=$ST -J $SLURM_JOB_NAME \
     -p $SLURM_JOB_PARTITION -q gpu -c $SLURM_CPUS_PER_TASK --gres=gpu:1 -t $TLIM --dependency=singleton \
     runs/slurm/k12_lane.sbatch && echo "[wb] lane resubmitted"
 fi
