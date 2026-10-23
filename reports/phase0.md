@@ -2,7 +2,7 @@
 
 WhiteBox E&E. Written 2026-10-22. Phase 0 started 2026-10-22 on Arjun's go and is complete as of this report.
 
-**Gate status: awaiting Arjun's approval.** Phase 1 has not been started. No estimator code has been written, no GPU was used, and nothing was sent to anyone.
+**Gate status: APPROVED by Arjun on 2026-10-22** (see §10). Before approval no estimator code had been written, no GPU was used, and nothing was sent to anyone.
 
 ## 1. Deliverables
 
@@ -227,3 +227,18 @@ Phase 0 is complete. Its gate (master prompt §7) is `docs/novelty.md` plus this
 - the Phase 1 compute envelope (200 A100-h, 2,000 CPU core-h).
 
 Phase 1 (estimators, planted-answer validation, Propositions 2.7.1–2.7.3) has not been started.
+
+## 10. Approval (recorded 2026-10-22)
+
+Arjun's approval, verbatim:
+
+> "okay cool cool, all things approved, get the BPU stuff done, verified for everything, get as much of omen and inv proj1 work done on HPCC and Full speed whitebox ( like everything we needed) get that all going you dont need any permissions from me."
+
+What this approves:
+- the Phase 0 gate (novelty verdict, theory skeleton and proposed thresholds as the starting point for `prereg/PHASE_1.md`);
+- the Phase 1 compute envelope (200 A100-h, 2,000 CPU core-h);
+- running the programme at full speed through its phases. Later phase gates become self-gates: each phase report is written and its gate criteria are checked by the letter; the programme continues only if they are met, and where a gate fails it follows the consequence stated in CLAUDE.md (K2 failure stops the programme and the report is written).
+
+What it does not change: every scientific rule in CLAUDE.md §0.1 (pre-registration before every confirmatory run, thresholds frozen at the tag, planted-answer validation before real models, every failure recorded, the novelty-language rule). Signed tags need Arjun's GPG key, so `prereg-phase-X` tags are annotated and unsigned, with commit hash and SHA-256 of the pre-registration recorded in `docs/record.md`; Arjun uploads the OSF text in `prereg/osf/`. Gated models (Llama, Gemma, Gemma Scope) and credentialed data (MIMIC) are pending licence/token/access, not FAIL. Partner letters remain drafts; nothing is sent.
+
+Answers to §8 settled since the report: A100s are **40 GB** (probe job 1364325, NVIDIA A100-PCIE-40GB), so 70B models run on qgpu in 8-bit/4-bit with the quantization check, or K1 is scoped to ≤ 32B. Compute share for this programme: ≤ 96 gpu-QOS cores and ≤ 8 submitted GPU jobs at once; ≤ 64 comp cores.
