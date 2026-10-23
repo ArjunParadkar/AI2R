@@ -1,0 +1,5 @@
+[phase1] V1_0_onehot.json 61s 
+[phase1] V1_0_noise05.json 52s 
+[phase1] V1_0_noise10.json 44s 
+[phase1] V1_0_fourier.json 31s 
+[phase1] V1_1_onehot.json 44s 

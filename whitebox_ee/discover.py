@@ -16,7 +16,7 @@ from .probe import Member, Node, Probe
 
 def make_candidate(probe: Probe, m: Member, name: str) -> Node:
     vals = m.values(probe.states[m.site])
-    return Node(name, "concept", [m], vals, probe.site_idx(m.site), meta={"source": m.source})
+    return Node(name, "concept", [m], vals, probe.site_layer(m.site), meta={"source": m.source})
 
 
 def containment(U_small: np.ndarray, U_big: np.ndarray) -> float:
@@ -24,13 +24,39 @@ def containment(U_small: np.ndarray, U_big: np.ndarray) -> float:
     return float((np.linalg.norm(U_big.T @ U_small) ** 2) / U_small.shape[1])
 
 
-def find_composites(cands, inner=None, contain_min: float = 0.9):
+def separable(a: Node, b: Node, states: np.ndarray, rng, n: int = 400, min_frac: float = 0.95) -> bool:
+    """State-level modularity: swapping a's realiser (from random partners) leaves b's
+    decoded value unchanged on >= min_frac of rows, and vice versa."""
+    N = len(states)
+    r = rng.integers(0, N, n)
+    s = rng.integers(0, N, n)
+    for x, y in ((a, b), (b, a)):
+        U = x.primary.U
+        h = states[r] + ((states[s] - states[r]) @ U) @ U.T
+        if (y.primary.values(h) == y.primary.values(states[r])).mean() < min_frac:
+            return False
+    return True
+
+
+def find_composites(cands, inner=None, contain_min: float = 0.9, states=None, seed: int = 0):
+    """A candidate is a composite if >= 2 smaller candidates lie inside its realiser,
+    are pairwise separable (modular), and together span it."""
     out = {}
     inner = cands if inner is None else inner
+    rng = np.random.default_rng(seed)
     for c in cands:
         inside = [o for o in inner if o is not c and o.primary.site == c.primary.site
                   and o.primary.U.shape[1] < c.primary.U.shape[1]
                   and containment(o.primary.U, c.primary.U) >= contain_min]
+        if states is not None and len(inside) >= 2:
+            st = states[c.primary.site]
+            # keep a maximal pairwise-separable subset (greedy, largest realisers first)
+            inside.sort(key=lambda o: -o.primary.U.shape[1])
+            sel = []
+            for o in inside:
+                if all(separable(o, q, st, rng) for q in sel):
+                    sel.append(o)
+            inside = sel
         if len(inside) >= 2:
             B = np.linalg.qr(np.concatenate([o.primary.U for o in inside], 1))[0]
             if containment(c.primary.U, B) >= contain_min:
@@ -46,18 +72,6 @@ def drop_coarsenings(cands, inputs, record, th, contain_min: float = 0.9):
         candidate (or input realiser) at the same site that refines its partition
         is a coarsening -> dropped."""
     from .info import cond_entropy_plugin
-    def span_contain(U, Us):
-        B = np.linalg.qr(np.concatenate(Us, 1))[0]
-        return containment(U, B)
-    comp = set()
-    for c in cands:
-        inside = [o for o in cands if o is not c and o.primary.site == c.primary.site
-                  and o.primary.U.shape[1] < c.primary.U.shape[1]
-                  and containment(o.primary.U, c.primary.U) >= contain_min]
-        if len(inside) >= 2 and span_contain(c.primary.U, [o.primary.U for o in inside]) >= contain_min:
-            comp.add(c.name)
-            record["candidates"][c.name]["verdict"] = "composite of " + ",".join(o.name for o in inside)
-    cands = [c for c in cands if c.name not in comp]
     keep = []
     others = [(c.name, c.primary, c.values) for c in cands]
     for inp in inputs:
@@ -143,12 +157,14 @@ def _peel(probe, nodes, drop, record):
             kept.append(n)
             continue
         # peel the members at the failing site; re-test the node at its next site
-        later = [m for m in n.members if probe.site_idx(m.site) > n.site_index]
+        cur = (probe.site_layer(n.primary.site), probe.site_idx(n.primary.site))
+        later = [m for m in n.members if (probe.site_layer(m.site), probe.site_idx(m.site)) > cur
+                 and m.site != n.primary.site]
         record["dropped"][f"{n.name}[{n.primary.site}]"] = drop[n.name]
         if later:
-            later.sort(key=lambda m: (probe.site_idx(m.site), getattr(m, "quality", 1.0), m.U.shape[1]))
+            later.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site), getattr(m, "quality", 1.0), m.U.shape[1]))
             n.members = later
-            n.site_index = probe.site_idx(later[0].site)
+            n.site_index = probe.site_layer(later[0].site)
             n.values = later[0].values(probe.states[later[0].site])
             kept.append(n)
         else:
@@ -158,7 +174,8 @@ def _peel(probe, nodes, drop, record):
 
 def base_nodes(probe: Probe):
     inputs = [Node(n, "input", [], probe.inputs[n], -1) for n in probe.sys.input_names]
-    outs = [Node(f"out:{b}", "output", [], probe.read[b], len(probe.sites), meta={"behaviour": b})
+    top = max(probe.site_layer(s) for s in probe.sites) + 1
+    outs = [Node(f"out:{b}", "output", [], probe.read[b], top, meta={"behaviour": b})
             for b in probe.sys.behaviours]
     return inputs, outs
 
@@ -207,7 +224,7 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
                 record["candidates"][c.name]["decode_acc"] = acc
                 if acc >= 0.9:
                     record["candidates"][c.name]["verdict"] = "represented, not used"
-    comp = find_composites(passed + [c for c, _ in ie], inner=passed)
+    comp = find_composites(passed + [c for c, _ in ie], inner=passed, states=probe.states, seed=seed)
     for c in passed + [c for c, _ in ie]:
         if c.name in comp:
             record["candidates"].setdefault(c.name, {"site": c.primary.site, "source": c.meta["source"]})
@@ -220,11 +237,24 @@ def discover(system, X, members: Sequence[Member], th: Optional[Thresholds] = No
         record["candidates"][c.name] = {"verdict": f"realiser of input {inp.name}", "site": c.primary.site,
                                        "source": c.meta["source"]}
     for inp in inputs:
-        inp.members.sort(key=lambda m: probe.site_idx(m.site))
+        inp.members.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site)))
     passed = drop_coarsenings(passed, inputs, record, th)
     nodes = merge_equivalent(passed, inputs, th, n_eff)
     for nd in nodes + inputs:
-        nd.members.sort(key=lambda m: (probe.site_idx(m.site), getattr(m, "quality", 1.0), m.U.shape[1]))
+        nd.members.sort(key=lambda m: (probe.site_layer(m.site), probe.site_idx(m.site), getattr(m, "quality", 1.0), m.U.shape[1]))
+    # every member's value map is refitted to the node's own partition (values of the
+    # primary member; for inputs, the input values), so that all realisers of a node
+    # read the same variable with the same coding
+    for nd in nodes + inputs:
+        if not nd.members:
+            continue
+        base = nd.values if nd.kind == "input" else nd.primary.values(probe.states[nd.primary.site])
+        nd.values = base
+        ids = np.unique(base)
+        for m in nd.members:
+            z = probe.states[m.site] @ m.U
+            m.centroids = np.stack([z[base == v].mean(0) for v in ids])
+            m.value_ids = ids
     record["merges"] = {}
     for i, nd in enumerate(nodes):
         record["merges"][f"C{i}@{nd.primary.site}"] = [nd.name] + nd.meta.get("merged", [])

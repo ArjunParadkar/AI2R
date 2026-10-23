@@ -1,0 +1,53 @@
+\subsection{Proposition 2.7.3 of the master prompt: memorization and sideways generalization}
+\label{proof:P9}
+The statement ``a memorized behaviour has no sideways generalization'' is
+false for memorization as defined (Definition~\ref{def:memo}); it is true for a
+stronger, leaf-level form.
+
+\textbf{Proposition P9.} (a) \emph{Counterexample.} For every $\tau>0$ there
+is a system and a behaviour $b$ that is memorized at $\tau$, has a non-empty
+set of sideways inputs, and answers every sideways input correctly.
+(b) \emph{Leaf-level memorization.} Say $b$ is \emph{leaf-memorized} if every
+non-input node $C$ of $\G$ that is active on some training input of $b$ has an
+empty training range, $\mathrm{Rg}(C)=\emptyset$ (no value of $C$ is taken on
+$n_{\min}$ or more distinct training inputs). Then no new input is lower or
+sideways for $b$: every new input whose derivation contains a non-input node
+is diagonal, and so is every new input whose output is not mediated by the
+graph.
+
+\textbf{Proof.} (a) Let $m>1/\tau$ behaviours $b_1,\dots,b_m$ with equal weight
+$1/m<\tau$. Behaviour $b_1$ computes $C=(A+B)\bmod q$ through a private node $C$
+used by no other behaviour, from nodes $A,B$ computed from disjoint inputs,
+and reads $y=C$; behaviours $b_2,\dots,b_m$ read other inputs through other
+private nodes. Training withholds a set $W$ of $(A,B)$ combinations while
+every value of $A$ and of $B$ is seen ($q\ge3$, $|W|$ small). The block that
+computes $C$ is the full addition table (the compositional variant of planted
+system V3). Every node on the derivation of $b_1$ ($A$, $B$, $C$) is used only
+by $b_1$, so $g\le 1/m<\tau$, $\mu(x)<\tau$ on every input, and $b_1$ is
+memorized at $\tau$. An input with $(A,B)\in W$ has all node values in range
+and the parent tuple of $C$ unseen, so it is sideways; the system writes
+$(A+B)\bmod q$ there, which is correct.
+(b) Let $x^\ast$ be new. If $D_b(x^\ast)$ has a non-input node $C$, then
+$C(x^\ast)$ is a value of $C$ and $\mathrm{Rg}(C)=\emptyset$, so
+$C(x^\ast)\notin\mathrm{Rg}(C)$; by Definition~\ref{def:moves} $x^\ast$ is
+neither lower nor sideways, hence diagonal (operationally, the out-of-range
+value is reported). If $D_b(x^\ast)$ has no non-input node, the output is not
+mediated by the graph, which is diagonal by the operational rule of
+Definition~\ref{def:moves}(iii) (graph mediation share $0<1-\varepsilon_{\mathrm{cov}}$).
+\hfill$\square$
+
+\textbf{Consequences.} The structural memorization verdict is a statement
+about reuse across the behaviour suite, not about compositionality inside one
+behaviour: (a) shows it can label a compositional but unshared computation as
+memorized. That is a design property of the definition, and it fixes what the
+K4/K9 memorization claims may say: a model judged memorized is predicted to
+have no \emph{shared} principles, not to fail on every sideways input. The
+leaf-level form (b) is the one that predicts failure, through
+Conjecture~\ref{conj:diag}.
+
+\textbf{Measurable prediction.} (i) On systems trained with a planted
+memorized subset (V2 and its trained variant), inputs whose derivation is
+leaf-memorized are classified diagonal by $r.\mathrm{move}$ when perturbed to
+unseen neighbours, and fail. (ii) The counterexample family exists in real
+suites: behaviours judged memorized at $\tau$ whose private nodes pass the
+interchange test on unseen tuples generalize sideways; K3 reports how often.

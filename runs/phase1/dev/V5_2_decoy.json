@@ -1,0 +1,20 @@
+{
+ "cell": "V5",
+ "seed": 2,
+ "variant": "decoy",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling"
+ },
+ "n_represented_not_used": 10,
+ "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "spec": [
+  "V5",
+  "2",
+  "decoy"
+ ],
+ "wall_s": 18.75679302215576,
+ "node": "omarchyroot",
+ "start": "2026-10-23T01:41:27"
+}

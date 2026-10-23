@@ -1,0 +1,12 @@
+[phase1] V5_0_valid.json 28s 
+[phase1] V5_0_decoy.json 23s 
+[phase1] V5_0_leaf.json 27s 
+[phase1] V5_0_relabel.json 27s 
+[phase1] V5_0_generic.json 27s 
+[phase1] V5_1_valid.json 21s 
+[phase1] V5_1_decoy.json 15s 
+[phase1] V5_1_leaf.json 19s 
+[phase1] V5_1_relabel.json 17s 
+[phase1] V5_1_generic.json 20s 
+[phase1] V5_2_valid.json 20s 
+[phase1] V5_2_decoy.json 19s 

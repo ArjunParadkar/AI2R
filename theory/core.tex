@@ -47,9 +47,9 @@
 \newcommand{\experiment}[1]{\par\noindent\textbf{Experiment.} #1\par\medskip}
 
 \title{The Structure of Understanding: theory core\\[2pt]
-\large Skeleton for Sections 2.1--2.4 (Phase 0)}
+\large Sections 2.1--2.4 (Phase 0) with Phase 1 amendments}
 \author{WhiteBox E\&E (authors and affiliation to be set by Arjun Paradkar)}
-\date{Draft of 2026-10-22. No result in this document has been tested.}
+\date{Draft of 2026-10-23. No result in this document is evidence; planted-answer checks are estimator tests only.}
 
 \begin{document}
 \sloppy
@@ -690,6 +690,108 @@ positive coefficient with CI excluding zero across the K13 problem set; the
 same regression on false-creation counts does not.}
 \experiment{Phase 7, K13; estimator check on planted system V5 in Phase 1.}
 
+
+%============================================================================
+\section{Phase 1 amendments (estimator design decisions, 2026-10-23)}
+\label{sec:amend}
+%============================================================================
+
+Planted-answer development (V1--V5, development seeds only) exposed places
+where the Phase 0 definitions either fail on a planted answer or leave an
+estimator choice open. Each amendment below was fixed before the frozen
+validation seeds were run (\texttt{prereg/PHASE\_1.md}) and is part of the
+estimator definition from then on. None was chosen on real data.
+
+\begin{enumerate}[label=(M\arabic*)]
+\item \textbf{Interventional direct-effect parents.} With parents chosen by
+observational minimal sufficiency (Definition~\ref{def:parents}), a planted
+rule-plus-exceptions network (V2) gets the output's parent set $\{a,b\}$ (an
+input lookup), so its rule node never lies on any derivation and every input
+is scored memorized. The parent set is therefore the set of pool nodes $P$
+at earlier sites whose \emph{direct} effect on $C$ (swap $P$ from partners
+with a different $P$ value, every pool node at a site strictly between held
+at its clean value) exceeds the effect of a within-fibre swap of $P$ by at
+least $\theta_{\mathrm{dir}}=0.05$. Sufficiency
+($\Hent(C\mid\pa(C))\le\varepsilon_D\Hent(C)$), $|\pa(C)|\le k_{\max}$ and
+resample stability remain required. Observational minimal sufficient sets
+are still enumerated and reported as alternatives (Remark 2.7).
+\item \textbf{Edge activity in the active derivation.} $D_b(x)$ keeps the
+active nodes of Definition~\ref{def:active} and adds \emph{active edges}: $P\to C$ is
+active on $x$ if the direct-effect swap of $P$ changes $C$ (or $r_b$) on at
+least $\alpha$ times the fraction of the same partners whose own $C$ value
+differs from $C(x)$. A node lies on the derivation if it is on an
+active-edge path from an input to the output. Generality (Definition~\ref{def:generality})
+counts inputs on whose derivation the node lies in this sense.
+\item \textbf{Leaf rule.} In $\lambda$ and $\mu$ a node contributes $g(C)$ on
+$x$ only if $C(x)\in\mathrm{Rg}(C)$ (Definition~\ref{def:range}); otherwise it is a
+leaf on $x$ and contributes $0$. This is what makes ``each input is
+effectively its own leaf'' (master prompt \S2.3.4) measurable: an exception
+node whose value on $x$ is shared by fewer than $n_{\min}$ training inputs
+does not ground $x$.
+\item \textbf{Canonical realisers.} (i) In residual architectures the probe
+realiser of a variable at site $s_\ell$ is decoded from what the block wrote,
+$h_\ell-h_{\ell-1}$ (ridge decoder column space); at $s_0$ from the state.
+(ii) A candidate whose realiser lies inside a larger candidate (or input
+realiser) at the same site whose partition refines it is a
+\emph{coarsening} and is not a separate node. (iii) A candidate covered by the
+span of two or more smaller, pairwise \emph{separable} (state-level modular)
+quotient-passing candidates is a \emph{composite} and is not a node.
+(iv) Equivalent candidates are merged; interventions use the realiser at the
+node's earliest surviving site with the lowest quotient defect; members at
+other sites are bookkeeping.
+\item \textbf{The discovery fixed point.} Derivation failures are resolved
+first, earliest site first; a node that fails derivation is suspended (it is
+re-tested on every pass and reactivated if it passes once the pool changes).
+Causal-use failures are resolved latest site first. Until the graph is
+stable, causal use is judged on effective pairs (those for which $F_{\G}$
+predicts a change) and a node with too few effective pairs is pending; the
+final pass applies the full test (all-pairs IIA $\ge\tau_{\IIA}$, effective
+IIA $\ge\tau_{\IIA}$, margin $\Delta_{\IIA}$ over norm-matched random realisers).
+\item \textbf{Nulls and calibrations.} Random realisers are norm-matched
+(each patch delta rescaled to the norm of the candidate's own delta).
+Condition 1(i) is per behaviour: the realiser must matter more than the 95th
+percentile of norm-matched random realisers for at least one behaviour.
+$\kappa_{\max}$ is calibrated from the proposed $0.25$ to $0.6$ (the proposed
+value rejects every non-trivial node of a two-input system); $\Hent(X)$ is
+the sum of the input nodes' entropies.
+\end{enumerate}
+
+\begin{remark}[What the amendments change in the statuses]
+Propositions~\ref{prop:lattice}--\ref{prop:fca} concern the exact
+observational objects and are unchanged. Proposition~\ref{prop:bottleneck} applies to
+the active-edge DAG of (M2) with the node weights of (M3) verbatim.
+\end{remark}
+
+%============================================================================
+\section{Propositions 2.7.1--2.7.3 of the master prompt}
+%============================================================================
+
+\begin{proposition}[CCGP and depth one; proved, \texttt{proofs/P7\_ccgp.tex}]
+\label{prop:ccgp}
+Bernardi et al.'s CCGP is not the depth-one case of depth: there are systems
+with perfect depth-one grounding and CCGP $\le1/2$, and systems with CCGP $=1$
+for a causally inert variable. With the decoder fixed to the system's own
+readout and causal use added, readout-aligned CCGP $=1$ iff the depth-one
+candidate passes the exact quotient and causal-use tests.
+\end{proposition}
+
+\begin{proposition}[Grounded behaviours generalize to lower inputs; proved
+under (A1)--(A3), \texttt{proofs/P8\_grounded\_lower.tex}]\label{prop:lower}
+If a set of principles is a vertex cut of the derivation on a new input,
+the nodes below the cut are value-local, and the cut's joint value was taken
+by a training input with the same derivation below the cut, the system's
+output on the new input equals its output on that training input; it is
+correct if the target factors through the principle values.
+\end{proposition}
+
+\begin{proposition}[Memorization and sideways generalization; proved,
+\texttt{proofs/P9\_memorized\_sideways.tex}]\label{prop:memoside}
+(a) A behaviour memorized at $\tau$ can generalize sideways (a private
+compositional node used by one behaviour of a large suite). (b) If the
+behaviour is leaf-memorized (every node active on a training input has an
+empty training range), every new input is diagonal.
+\end{proposition}
+
 %============================================================================
 \section{Summary of statuses}
 %============================================================================
@@ -714,6 +816,9 @@ Conj.~\ref{conj:k2} depth predicts error (kill) & conjecture & K2 \\
 Conj.~\ref{conj:memo} memorization verdict & conjecture & V2, K4, K9 \\
 Conj.~\ref{conj:lower}--\ref{conj:diag} three moves & conjecture & V3, K3, K13 \\
 Conj.~\ref{conj:creation} creation & conjecture & V5, K13 \\
+Prop.~\ref{prop:ccgp} CCGP vs depth one & proved, unchecked & K2 (disagreement analysis) \\
+Prop.~\ref{prop:lower} grounded $\Rightarrow$ lower correct & proved under (A1)--(A3), unchecked & K3, K6 \\
+Prop.~\ref{prop:memoside} memorized vs sideways & proved (counterexample + leaf form), unchecked & V2, K3 \\
 \bottomrule
 \end{longtable}
 
@@ -724,7 +829,8 @@ Conj.~\ref{conj:creation} creation & conjecture & V5, K13 \\
 Symbol & Proposed value & Role \\
 \midrule
 $\varepsilon_Q$ & 0.10 & quotient defect \\
-$\kappa_{\max}$, $h_{\min}$ & 0.25, 0.5 bit & compression, non-triviality \\
+$\kappa_{\max}$, $h_{\min}$ & 0.25 (calibrated to 0.6, M6), 0.5 bit & compression, non-triviality \\
+$\theta_{\mathrm{dir}}$ & 0.05 & direct-effect parent (M1) \\
 $\varepsilon_D$, $k_{\max}$ & 0.05, 8 & parent sufficiency, parent count \\
 $J_{\min}$, $\tau_E$ & 0.8, 0.9 & parent stability, edge interchange \\
 $\tau_{\IIA}$, $\Delta_{\IIA}$ & 0.90, 0.20 & causal use, margin over null \\
@@ -749,6 +855,9 @@ propositions, not theorems.
 \input{../proofs/P4_reparametrisation}
 \input{../proofs/P5_fca}
 \input{../proofs/P6_bottleneck}
+\input{../proofs/P7_ccgp}
+\input{../proofs/P8_grounded_lower}
+\input{../proofs/P9_memorized_sideways}
 
 \section*{References}
 Full, verified citations are in \texttt{docs/novelty.md}. Those used here:

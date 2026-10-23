@@ -36,7 +36,7 @@ class Node:
     kind: str                                   # 'input' | 'concept' | 'output'
     members: List[Member] = field(default_factory=list)
     values: Optional[np.ndarray] = None         # on the probe set
-    site_index: int = 0                         # earliest site (index in system.sites); inputs -1; outputs len(sites)
+    site_index: int = 0                         # causal layer of the node's site (probe.site_layer); inputs -1; outputs max+1
     meta: dict = field(default_factory=dict)
 
     @property
@@ -93,11 +93,26 @@ class Probe:
         self.read = readout(logits)
         self.inputs = system.input_values(X)
         self.sites = list(system.sites)
+        self._idx = {s: i for i, s in enumerate(self.sites)}
         self.rng = np.random.default_rng(seed)
         self.n_runs = 0
 
     def site_idx(self, site):
-        return self.sites.index(site)
+        return self._idx[site]
+
+    def site_layer(self, site) -> int:
+        """Causal order of a site: sites in the same layer (different positions) are
+        computed in parallel, so only an earlier layer can be a parent."""
+        f = getattr(self.sys, "site_layer", None)
+        return int(f(site)) if f else self._idx[site]
+
+    def prev_site(self, site):
+        """The state the block writing `site` read from (same position, previous layer)."""
+        f = getattr(self.sys, "prev_site", None)
+        if f:
+            return f(site)
+        i = self._idx[site]
+        return self.sites[i - 1] if i > 0 else None
 
     # ------------------------------------------------------------------
     def run_patched(self, rows: np.ndarray, srcs: Sequence[Tuple[Node, np.ndarray]] = (),

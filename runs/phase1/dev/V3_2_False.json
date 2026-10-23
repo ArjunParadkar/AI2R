@@ -1,0 +1,38 @@
+{
+ "cell": "V3",
+ "seed": 2,
+ "compositional": false,
+ "node_labels": [
+  "A",
+  "B",
+  "C"
+ ],
+ "withheld": {
+  "move_acc": 1.0,
+  "pred_correct_acc": 1.0,
+  "actual_correct": 0.0
+ },
+ "seen": {
+  "move_acc": 1.0,
+  "pred_correct_acc": 1.0,
+  "actual_correct": 1.0
+ },
+ "moves": {
+  "withheld": {
+   "sideways": 80
+  },
+  "seen": {
+   "lower": 80
+  }
+ },
+ "status": "ok",
+ "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "spec": [
+  "V3",
+  "2",
+  "False"
+ ],
+ "wall_s": 5.031381130218506,
+ "node": "omarchyroot",
+ "start": "2026-10-23T01:37:49"
+}

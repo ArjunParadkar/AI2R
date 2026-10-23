@@ -55,6 +55,13 @@ def _decoder_layers(model):
 
 
 class HFSystem:
+    # site_layer(s): causal order (layer); prev_site(s): same role at the previous exposed layer
+    def site_layer(self, site):
+        return self._layer_of[site]
+
+    def prev_site(self, site):
+        return self._prev[site]
+
     def __init__(self, model_name: str, revision: Optional[str] = None, dtype: str = "bfloat16",
                  device: str = "cuda", load_in_8bit: bool = False, load_in_4bit: bool = False,
                  layers: Optional[Sequence[int]] = None, roles: Optional[Sequence[str]] = None,
@@ -100,6 +107,11 @@ class HFSystem:
         self.sites = [f"L{l}@{r}" for l in self.layers for r in self.roles]
         self.d_model = int(self.model.config.hidden_size)
         self.site_dim = {s: self.d_model for s in self.sites}
+        self._layer_of = {f"L{l}@{r}": l for l in self.layers for r in self.roles}
+        self._prev = {}
+        for i, l in enumerate(self.layers):
+            for r in self.roles:
+                self._prev[f"L{l}@{r}"] = f"L{self.layers[i - 1]}@{r}" if i > 0 else None
         self.behaviours = list(task.behaviours)
         self.input_names = list(task.input_names)
         self.batch_size = int(batch_size)

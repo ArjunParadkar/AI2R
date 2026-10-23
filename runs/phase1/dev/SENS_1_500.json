@@ -1,0 +1,95 @@
+{
+ "cell": "SENS",
+ "variant": "onehot",
+ "seed": 1,
+ "N": 500,
+ "node_precision": 0.0,
+ "node_recall": 0.0,
+ "edge_precision": 0.0,
+ "edge_recall": 0.0,
+ "edge_f1": 0.0,
+ "decoy_verdicts": [
+  "represented, not used"
+ ],
+ "wrong_hits": [],
+ "n_wrong": 5,
+ "unlabelled_nodes": [],
+ "generality": {},
+ "generality_oracle": {},
+ "spearman_vs_oracle": NaN,
+ "oracle_nodes": [],
+ "oracle_edge_f1_vs_spec": 0.0,
+ "n_candidates": 105,
+ "runtime_s": 21.770464181900024,
+ "n_forward_rows": 893888,
+ "stability": {},
+ "edges": [
+  [
+   "a0",
+   "out:out0"
+  ],
+  [
+   "a0",
+   "out:out1"
+  ],
+  [
+   "a0",
+   "out:out2"
+  ],
+  [
+   "a1",
+   "out:out1"
+  ],
+  [
+   "a1",
+   "out:out2"
+  ],
+  [
+   "a2",
+   "out:out2"
+  ],
+  [
+   "a2",
+   "out:out3"
+  ],
+  [
+   "b0",
+   "out:out0"
+  ],
+  [
+   "b0",
+   "out:out1"
+  ],
+  [
+   "b0",
+   "out:out2"
+  ],
+  [
+   "b1",
+   "out:out1"
+  ],
+  [
+   "b1",
+   "out:out2"
+  ],
+  [
+   "b2",
+   "out:out2"
+  ],
+  [
+   "b2",
+   "out:out3"
+  ]
+ ],
+ "not_converged": false,
+ "status": "ok",
+ "commit": "14cd0f143000578970a8524cb8361ea88d9a86b7",
+ "spec": [
+  "SENS",
+  "1",
+  "500"
+ ],
+ "wall_s": 29.860886096954346,
+ "node": "omarchyroot",
+ "start": "2026-10-23T01:40:03"
+}

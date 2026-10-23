@@ -1,0 +1,61 @@
+\subsection{Proposition 2.7.2 of the master prompt: grounded behaviours and lower inputs}
+\label{proof:P8}
+\textbf{Setting and assumptions.} Fix a behaviour $b$, its concept graph
+$\G$ and a set of principles $\Pi\subseteq\Pi_\tau$. Let $T$ be the training
+inputs and $x^\ast$ a new input. Write $\mathrm{Desc}(\Pi)$ for the nodes of
+$D_b(x^\ast)$ that are strictly downstream of $\Pi$ on a path to the output
+node $o$ (including $o$).
+\begin{enumerate}[label=(A\arabic*)]
+\item \emph{Grounding on $x^\ast$.} $\Pi$ is a vertex cut of $D_b(x^\ast)$
+between the input nodes and $o$.
+\item \emph{Value locality downstream of the cut.} For every
+$C\in\mathrm{Desc}(\Pi)$ and every $x\in T\cup\{x^\ast\}$,
+$C(x)=\psi_C(\pa_{x}(C)(x))$, where $\pa_x(C)$ are the parents of $C$ that are
+active on $x$, and $\psi_C$ is a fixed function (the system's derivation map,
+which the exact derivation and interchange conditions identify on the
+parent tuples seen in training).
+\item \emph{$x^\ast$ is lower for $\Pi$.} There is a training input
+$x_t\in T$ with $D_b(x_t)=D_b(x^\ast)$ on $\mathrm{Desc}(\Pi)\cup\Pi$ and
+$\Pi(x_t)=\Pi(x^\ast)$ (the joint tuple of principle values is in range).
+\end{enumerate}
+
+\textbf{Proposition P8.} Under (A1)--(A3), $f_b(x^\ast)=f_b(x_t)$. Consequently, if
+training error is zero on $x_t$ and the task's target factors through the
+principle values ($\mathrm{target}(x)=\rho(\Pi(x))$ for some $\rho$ on
+$T\cup\{x^\ast\}$), the system answers $x^\ast$ correctly.
+
+\textbf{Proof.} Order $\mathrm{Desc}(\Pi)$ topologically. Claim: every
+$C\in\mathrm{Desc}(\Pi)$ has $C(x^\ast)=C(x_t)$. Take $C$ and suppose the
+claim holds for all earlier members. Each active parent $P$ of $C$ on $x^\ast$
+lies on an active path to $o$ through $C$. If $P$ were neither in $\Pi$ nor in
+$\mathrm{Desc}(\Pi)$, the active path from an input to $P$ (which exists
+because $P\in D_b(x^\ast)$ lies on an input-to-output path) followed by
+$P\to C\to\dots\to o$ would avoid $\Pi$: it cannot meet $\Pi$ after $C$
+because $C$ is already downstream of $\Pi$ and the graph is acyclic, and it
+does not meet $\Pi$ before $P$ by the choice of $P$. That contradicts (A1).
+So every active parent of $C$ is in $\Pi$ or is an earlier member of
+$\mathrm{Desc}(\Pi)$; by (A3) and the induction hypothesis its value on
+$x^\ast$ equals its value on $x_t$, and by (A3) the active parent sets
+agree. By (A2), $C(x^\ast)=\psi_C(\cdot)=C(x_t)$. Applying the claim to
+$C=o$ gives $f_b(x^\ast)=f_b(x_t)$. If $f_b(x_t)$ is correct and the target
+factors through $\Pi$, then $\mathrm{target}(x^\ast)=\rho(\Pi(x^\ast))=
+\rho(\Pi(x_t))=\mathrm{target}(x_t)=f_b(x_t)=f_b(x^\ast)$. \hfill$\square$
+
+\textbf{What the assumptions cost.} (A2) is the substantive one: it says the
+nodes below the principles are computed from their parents' values only,
+also on $x^\ast$. It is measurable on $x^\ast$ by within-fibre swaps and by
+edge interventions from training partners (the interchange identification of
+Proposition~\ref{prop:unseen}(b)). (A3) is the definition of a lower input,
+restricted to the cut and below it; nodes upstream of the cut may be out of
+range. The factorisation of the target is a property of the task and the
+principles, not of the system. It fails exactly when a principle is a
+shortcut (a high-generality node that predicts the target on the training
+distribution only), and the proposition then predicts confident errors on
+lower inputs, the K6 shortcut signature.
+
+\textbf{Measurable prediction.} Among held-out inputs that are lower for the
+principle cut, errors occur only where (A2) fails on the input (detected by
+interventions on that input) or where the target does not factor through the
+principles; errors on lower inputs with (A2) verified are therefore
+concentrated in behaviours whose principles are known shortcuts. Tested in
+K3 (moves) and K6 (shortcuts).

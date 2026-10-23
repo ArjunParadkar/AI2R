@@ -37,8 +37,9 @@ def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[
     out = []
     for s in sites:
         i = probe.site_idx(s)
-        if mode == "delta" and i > 0:
-            H = probe.states[s] - probe.states[probe.sites[i - 1]]
+        ps = probe.prev_site(s)
+        if mode == "delta" and ps is not None:
+            H = probe.states[s] - probe.states[ps]
         else:
             H = probe.states[s]
         for name, lab in labels.items():
@@ -62,7 +63,7 @@ def propose_probes(probe: Probe, labels: Dict[str, np.ndarray], sites: Optional[
             z = probe.states[s] @ m.U
             m.centroids = np.stack([z[lab == v].mean(0) for v in vals])
             m.value_ids = vals
-            if mode == "delta" and i > 0 and np.abs(H @ m.U).max() < 1e-6:
+            if mode == "delta" and ps is not None and np.abs(H @ m.U).max() < 1e-6:
                 continue
             out.append(m)
     return out
@@ -152,7 +153,8 @@ def propose_dictionary(probe: Probe, sites: Optional[Sequence[str]] = None, mode
     out = []
     for s in sites:
         i = probe.site_idx(s)
-        H = probe.states[s] - probe.states[probe.sites[i - 1]] if (mode == "delta" and i > 0) else probe.states[s]
+        ps = probe.prev_site(s)
+        H = probe.states[s] - probe.states[ps] if (mode == "delta" and ps is not None) else probe.states[s]
         if np.abs(H).max() < 1e-8:
             continue
         d = H.shape[1]
@@ -271,7 +273,8 @@ def propose_isa(probe: Probe, sites: Optional[Sequence[str]] = None, mode: str =
     rng = np.random.default_rng(seed)
     for s in sites:
         i = probe.site_idx(s)
-        H = probe.states[s] - probe.states[probe.sites[i - 1]] if (mode == "delta" and i > 0) else probe.states[s]
+        ps = probe.prev_site(s)
+        H = probe.states[s] - probe.states[ps] if (mode == "delta" and ps is not None) else probe.states[s]
         Hc = H - H.mean(0)
         if np.abs(Hc).max() < 1e-8:
             continue

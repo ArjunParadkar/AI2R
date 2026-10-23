@@ -191,3 +191,23 @@ def label_nodes(G: ConceptGraph, labels: Dict[str, np.ndarray], n_eff: int, max_
         G.nodes[c].meta["label"] = out[c]
         G.nodes[c].meta["label_vi"] = float(bv)
     return out
+
+
+def align_values(G: ConceptGraph, labels: Dict[str, np.ndarray]):
+    """Evaluation only: recode each labelled concept's values (and its members' value
+    ids) to the matched known variable's coding by majority map. Codings are
+    arbitrary up to invertible relabelling (Prop. 2.13), so this changes no verdict."""
+    for c in G.concepts():
+        lab = G.nodes[c].meta.get("label")
+        if not lab:
+            continue
+        v, t = G.nodes[c].values, labels[lab]
+        mp = {}
+        for val in np.unique(v):
+            u, cnt = np.unique(t[v == val], return_counts=True)
+            mp[int(val)] = int(u[cnt.argmax()])
+        if len(set(mp.values())) < len(mp):
+            continue                      # not injective: leave as is
+        G.nodes[c].values = np.array([mp[int(x)] for x in v])
+        for m in G.nodes[c].members:
+            m.value_ids = np.array([mp.get(int(x), int(x)) for x in m.value_ids])
