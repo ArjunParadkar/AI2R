@@ -1,6 +1,6 @@
 # Pre-registration, Phase 1, amendment 3: a family-wise criterion (i) for the quotient test (M10)
 
-WhiteBox E&E. Written 2026-10-23 after amendment 2 failed P1f. DRAFT until the annotated tag `prereg-phase-1-amend-3`; the tag's hash and SHA-256 are recorded in `docs/record.md`. Nothing here runs on the validation seeds before the tag. The tag is made only if `validation/pretag_check.py` exits 0 on the final development run (see the last section).
+WhiteBox E&E. Written 2026-10-23 after amendment 2 failed P1f. Frozen by the annotated tag `prereg-phase-1-amend-3` (unsigned); the hash and SHA-256 are recorded in `docs/record.md`. Nothing here runs on the validation seeds before the tag. The tag is made only if `validation/pretag_check.py` exits 0 on the final development run (see the last section).
 
 ## Why
 
@@ -47,4 +47,14 @@ Development null cells for seeds 3 and 4 are checked as well. The check's full o
 
 ## Development check (filled in before the tag)
 
-TO BE FILLED from `runs/phase1/dev_a5/PRETAG.txt`.
+`runs/phase1/dev_a6/PRETAG.txt`: **PRE-TAG CHECK PASSED** (exit 0) on dev seeds 0, 1, 2 (V1, V2D, V3, V4, V5, NULL) and on null seeds 3, 4.
+- **Code.** The files come from commits dc0d124, e15be22 and 5deefec. git shows no difference between them in `whitebox_ee/` or `validation/planted.py`; the printed `run_phase1.py` diff is orchestration only (`--only_ckpt`).
+- **Nulls.** All 20 null cells (untrained and shuffled, V1 and V4, seeds 0–4) accept 0 nodes.
+- **Criteria, seeds 0–2.**
+  - P1a–P1e: P = R = 1.00, edge F1 1.00, decoys 3/3, generality MAE ≤ 0.012, wrong hypotheses 0/30.
+  - P2 (V2D): AUROC(−μ) 0.994–0.999, lower CI ≥ 0.989.
+  - P3: 1.00.
+  - P4: AUROC 1.000, recall 1.00.
+  - P5a and P5b: 3/3 each.
+- **Creation hysteresis (part of this amendment).** The first M10 development run (dev_a5) failed P5a on dev seed 1 through a threshold-asymmetry false creation. A G1 node equivalent to a before-exposure candidate that cleared the uncorrected per-behaviour screen is now reported as "relabelling (sub-threshold before)", never as created (`whitebox_ee/create.py`, `subthreshold_old`). The true N is not proposed before exposure (not decodable there), so it is unaffected.
+- **LLM development check** (Qwen2.5-1.5B add2, a development model, job 1365524, R = 20). This is the same recovery as under amendment 2: node s0 at L25@pre_ans_d0 ← {a0, b0}, out0 ← s0, and no intermediate for out1. Runtime 1.5 h on one A100.
