@@ -9,7 +9,7 @@ No claims exist yet. As of Phase 0 nothing has been tested. The theory's proposi
 
 | Function | Access level | Null | Baseline | Status | Failure boundary |
 |---|---|---|---|---|---|
-| Discovery with the probe proposer (`discover`, `propose_probes`) | C | untrained copy; shuffled labels; norm-matched random realisers; within-fibre swaps | oracle realisers (planted) | Original estimator validated (P1a–P1f, seeds 100–104); amendment-2 estimator (dual-mode realisers, no coarsening rule) FAILED P1f (untrained V4 null, FP 0.025), not usable on real models | Needs N ≳ 1000 probe inputs; circularly encoded variables are missed by linear-decoder realisers |
+| Discovery with the probe proposer (`discover`, `propose_probes`) | C | untrained copy; shuffled labels; norm-matched random realisers; within-fibre swaps | oracle realisers (planted) | Amendment-3 estimator (M10 family-wise criterion (i)) validated (P1a–P1f, P2, P3, P4, P5; seeds 115–119); amendment-2 estimator FAILED P1f (record) | Needs N ≳ 1000 probe inputs; circularly encoded variables are missed by linear-decoder realisers |
 | `generality` | C | random realisers; untrained copy | oracle generality | Validated (P1e, P4) | — |
 | `depth` (λ, μ, γ) and the memorization verdict | C | — | planted memorized subset | Validated (P2) | Answer funnel: memorization is not flagged when memorized answers pass through a shared, answer-valued, non-output-equivalent node (P6b) |
 | `move` | C | — | construction labels | Validated (P3) | Needs a reference derivation for predicted correctness |

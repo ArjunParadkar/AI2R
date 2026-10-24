@@ -135,3 +135,31 @@ The §5 gate above stands for the original estimator. When the realisers were ma
 **Gate (by the letter of prereg/PHASE_1.md §4).** The amended discovery estimator fails P1f. It may not be used on a real model. **The Phase 2 dependency (P1a–P1f, P2, P3) is not met**, so Phase 2 does not run under `prereg-phase-2`. The Phase 2 outputs produced before this verdict are discarded unanalysed (`docs/record.md`). The original, validated estimator (§5) is the one with too-weak realisers for LLMs (development finding, amendment 2 "Change 3"), so it is not a working fallback for K1/K2. The next step is a new development cycle (amendment 3, new seeds, tagged before its run).
 
 **Post-hoc diagnosis (a hypothesis for that cycle, not tested).** On every validation seed, the untrained copy of V4 yields accepted nodes g0, g1, g2 (pos mod 3, 4, 5). These are coarsenings of a single input. In an untrained copy any partition of pos can be read linearly from a random embedding of pos. Amendment 2 removed the coarsening rule (M4 ii), which rejected such readouts before; the original and amendment-1 validations accepted 0 nodes on this null. On seeds 110–113 the three nodes give FP 0.019, just under the threshold; on seed 114 one more, unlabelled node tips it to 0.025. The FP rate is per candidate, so this margin depends on the candidate count; the next cycle should fix the cause, not the margin. The amendment-2 development run (dev_a3, job 1364799, final code) already showed 3 and 4 accepted nodes on this null for development seeds 0 and 1. Those files were not inspected before the tag, and this is recorded as a process failure: from now on, every development null is checked before a tag.
+
+## 9. Amendment 3: Phase 1 closed (2026-10-24)
+
+Amendment 3 (tag `prereg-phase-1-amend-3`, commit 7f351cc) has two changes.
+- **M10** makes criterion (i) of the quotient test family-wise: a max-T statistic over behaviours against the random-realiser null. The amendment-2 rule ("any one behaviour above its own 95th percentile") had no multiplicity control, and this is what let the untrained-V4 null through. The coarsening hypothesis was tested on development data and rejected as the fix: re-enabling the rule fails P4.
+- **Creation hysteresis**: a node that cleared the uncorrected screen before exposure is not counted as a creation.
+
+The development run passed the new automated pre-tag check (`validation/pretag_check.py`; output `runs/phase1/dev_a6/PRETAG.txt`). The check exists so that the amendment-2 process failure cannot recur.
+
+**Validation (seeds 115–119, `runs/phase1/val_a3/VERDICTS.md`):** every evaluated criterion passes.
+
+| Criterion | Result |
+|---|---|
+| P1a–P1e | P = R = 1.00, edge F1 1.00, decoys 5/5, generality MAE ≤ 0.007 |
+| P1d | 0/50 wrong hypotheses accepted |
+| P1f | max FP 0.013, mean accepted 0.15 (20 cells) |
+| P2 (V2D) | AUROC(−μ) 0.992–0.999, lower CI ≥ 0.984 |
+| P3a, P3b | 1.00 |
+| P4 | AUROC 1.000, recall 1.00 |
+| P5a, P5b | 5/5 each |
+| P6 (FORMD) | not evaluated (declared before any result; no FORMD cell has ever finished within 6 h) |
+
+**Gate.**
+- The amendment-3 estimator may be used on real models for discovery, generality, depth, moves and creation.
+- The Phase 2 dependency (P1a–P1f, P2, P3) is met.
+- Formation stays unvalidated, so K14 stays blocked.
+- The unsupervised proposers are still not gated.
+- The amendment-2 failure (P1f) and its process failure stay on the record (§8).
