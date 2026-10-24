@@ -1,6 +1,6 @@
 # Pre-registration, Phase 2, amendment 1: estimator, analysis units, runner
 
-WhiteBox E&E. DRAFT until the annotated tag `prereg-phase-2-amend-1`. Its hash and SHA-256 will be recorded in `docs/record.md`. No Phase 2 output has been analysed: the only outputs that exist are the pythia-160m smoke cell (a development model) and stage 1 of Qwen2.5-7B add3 seed 0 (training accuracy only, from the cancelled job 1364995). Both are discarded (`docs/record.md`), and every Phase 2 cell is recomputed from scratch after this tag.
+WhiteBox E&E. Frozen by the annotated tag `prereg-phase-2-amend-1` (unsigned); the hash and SHA-256 are recorded in `docs/record.md`. No Phase 2 output has been analysed: the only outputs that exist are the pythia-160m smoke cell (a development model) and stage 1 of Qwen2.5-7B add3 seed 0 (training accuracy only, from the cancelled job 1364995). Both are discarded (`docs/record.md`), and every Phase 2 cell is recomputed from scratch after this tag.
 
 Everything in `prereg/PHASE_2.md` stands except the four changes below.
 
@@ -29,3 +29,17 @@ The frozen text requires an untrained copy for every model ≤ 7B (§3). The fro
 
 - **Gate early exit.** `bench/k12.py --gate_exit` stops a cell after stage 1 when the training-accuracy part of the specimen gate fails. §1 says such a cell contributes no K1/K2 statistic, so nothing is lost.
 - **Lanes.** Cells run on singleton lanes (`runs/slurm/k12_lane.sbatch`). The lanes resume by stage and resubmit themselves on the 6 h partitions, plus one 72 h lane for models whose discovery does not fit in 6 h.
+
+## Development evidence behind these changes (development model only)
+
+Qwen2.5-1.5B add2 seed 0 ran with the amendment-3 estimator and R = 20 (job 1365524, `results/k12_dev_a3`; development model, excluded from every confirmatory list):
+- training accuracy 0.99;
+- node s0 at L25@pre_ans_d0 ← {a0, b0}, with out0 ← s0 (as under amendment 2);
+- 944 candidates;
+- 1.5 A100-h in all.
+
+7B cells are expected to need 4–7 A100-h. A cell that does not finish in a 6 h lane resumes at its last completed stage. A cell whose discovery stage alone exceeds 6 h moves to the 72 h lane after two attempts.
+
+## Unchanged
+
+Hypotheses, statistics, thresholds, decision rules, baselines, nulls, models, tasks, seeds, the specimen gate, and the answer-funnel and disagreement analyses are all as in `prereg/PHASE_2.md`.

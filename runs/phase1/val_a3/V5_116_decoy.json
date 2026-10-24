@@ -1,0 +1,20 @@
+{
+ "cell": "V5",
+ "seed": 116,
+ "variant": "decoy",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling"
+ },
+ "n_represented_not_used": 12,
+ "commit": "45cbd1dddb29e590f1f3ee3502198e269937a625",
+ "spec": [
+  "V5",
+  "116",
+  "decoy"
+ ],
+ "wall_s": 43.60998320579529,
+ "node": "c1504",
+ "start": "2026-10-23T23:12:14"
+}
