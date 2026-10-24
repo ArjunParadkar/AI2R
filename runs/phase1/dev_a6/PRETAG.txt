@@ -1,0 +1,345 @@
+--- run_phase1.py diff dc0d124..e15be22 (orchestration only expected) ---
+diff --git a/validation/run_phase1.py b/validation/run_phase1.py
+index a6d3759..65f92bf 100644
+--- a/validation/run_phase1.py
++++ b/validation/run_phase1.py
+@@ -304,7 +304,7 @@ def cell_v5(seed, variant, N=1500):
+                 n_represented_not_used=len(res["represented_not_used_candidates"]))
+ 
+ 
+-def cell_formation(seed, N=1500, distractor=False):
++def cell_formation(seed, N=1500, distractor=False, only_ckpt=None):
+     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
+     per = []
+     # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
+@@ -312,6 +312,8 @@ def cell_formation(seed, N=1500, distractor=False):
+     cdir = os.environ.get("WB_CKPT_CACHE")
+     tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
+     for i, P in enumerate(seq):
++        if only_ckpt is not None and i != only_ckpt:
++            continue
+         rng = np.random.default_rng(seed)
+         X = P.sample(N, rng)
+         cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
+@@ -333,6 +335,8 @@ def cell_formation(seed, N=1500, distractor=False):
+             with open(tmp, "wb") as fh:
+                 pickle.dump(per[-1], fh)
+             os.replace(tmp, cf)
++    if only_ckpt is not None:          # parallel mode: this process only fills one cache entry
++        return None
+     n_eff = len(np.unique(X, axis=0))
+     f = formation(per, 0.25, TH.eps_merge, n_eff)
+     births = [b for b in f["births"] if b["label"] == "sum"]
+@@ -406,12 +410,24 @@ def main():
+     ap.add_argument("--seeds", type=int, nargs="+", required=True)
+     ap.add_argument("--cells", nargs="+", default=list(CELLS))
+     ap.add_argument("--out", required=True)
++    ap.add_argument("--only_ckpt", type=int, default=None,
++                    help="FORMD/FORMATION only: compute and cache this checkpoint, write no result file")
+     a = ap.parse_args()
+     out = Path(a.out)
+     out.mkdir(parents=True, exist_ok=True)
+     commit = git_commit()
+     os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
+     Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
++    if a.only_ckpt is not None:
++        for s in a.seeds:
++            for c in a.cells:
++                assert c in ("FORMD", "FORMATION"), "--only_ckpt is for formation cells"
++                if (out / f"{c}_{s}.json").exists():
++                    continue
++                t0 = time.time()
++                cell_formation(s, distractor=(c == "FORMD"), only_ckpt=a.only_ckpt)
++                print(f"[phase1] {c}_{s} ckpt {a.only_ckpt} cached {time.time() - t0:.0f}s", flush=True)
++        return
+     for s in a.seeds:
+         for c in a.cells:
+             for spec in CELLS[c](s):
+--- end diff ---
+--- run_phase1.py diff dc0d124..5deefec (orchestration only expected) ---
+diff --git a/validation/run_phase1.py b/validation/run_phase1.py
+index a6d3759..65f92bf 100644
+--- a/validation/run_phase1.py
++++ b/validation/run_phase1.py
+@@ -304,7 +304,7 @@ def cell_v5(seed, variant, N=1500):
+                 n_represented_not_used=len(res["represented_not_used_candidates"]))
+ 
+ 
+-def cell_formation(seed, N=1500, distractor=False):
++def cell_formation(seed, N=1500, distractor=False, only_ckpt=None):
+     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
+     per = []
+     # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
+@@ -312,6 +312,8 @@ def cell_formation(seed, N=1500, distractor=False):
+     cdir = os.environ.get("WB_CKPT_CACHE")
+     tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
+     for i, P in enumerate(seq):
++        if only_ckpt is not None and i != only_ckpt:
++            continue
+         rng = np.random.default_rng(seed)
+         X = P.sample(N, rng)
+         cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
+@@ -333,6 +335,8 @@ def cell_formation(seed, N=1500, distractor=False):
+             with open(tmp, "wb") as fh:
+                 pickle.dump(per[-1], fh)
+             os.replace(tmp, cf)
++    if only_ckpt is not None:          # parallel mode: this process only fills one cache entry
++        return None
+     n_eff = len(np.unique(X, axis=0))
+     f = formation(per, 0.25, TH.eps_merge, n_eff)
+     births = [b for b in f["births"] if b["label"] == "sum"]
+@@ -406,12 +410,24 @@ def main():
+     ap.add_argument("--seeds", type=int, nargs="+", required=True)
+     ap.add_argument("--cells", nargs="+", default=list(CELLS))
+     ap.add_argument("--out", required=True)
++    ap.add_argument("--only_ckpt", type=int, default=None,
++                    help="FORMD/FORMATION only: compute and cache this checkpoint, write no result file")
+     a = ap.parse_args()
+     out = Path(a.out)
+     out.mkdir(parents=True, exist_ok=True)
+     commit = git_commit()
+     os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
+     Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
++    if a.only_ckpt is not None:
++        for s in a.seeds:
++            for c in a.cells:
++                assert c in ("FORMD", "FORMATION"), "--only_ckpt is for formation cells"
++                if (out / f"{c}_{s}.json").exists():
++                    continue
++                t0 = time.time()
++                cell_formation(s, distractor=(c == "FORMD"), only_ckpt=a.only_ckpt)
++                print(f"[phase1] {c}_{s} ckpt {a.only_ckpt} cached {time.time() - t0:.0f}s", flush=True)
++        return
+     for s in a.seeds:
+         for c in a.cells:
+             for spec in CELLS[c](s):
+--- end diff ---
+null NULL_0_untrained_V1.json: FP 0.0000, accepted 0 []
+null NULL_0_untrained_V4.json: FP 0.0000, accepted 0 []
+null NULL_0_shuffled_V1.json: FP 0.0000, accepted 0 []
+null NULL_0_shuffled_V4.json: FP 0.0000, accepted 0 []
+null NULL_1_untrained_V1.json: FP 0.0000, accepted 0 []
+null NULL_1_untrained_V4.json: FP 0.0000, accepted 0 []
+null NULL_1_shuffled_V1.json: FP 0.0000, accepted 0 []
+null NULL_1_shuffled_V4.json: FP 0.0000, accepted 0 []
+null NULL_2_untrained_V1.json: FP 0.0000, accepted 0 []
+null NULL_2_untrained_V4.json: FP 0.0000, accepted 0 []
+null NULL_2_shuffled_V1.json: FP 0.0000, accepted 0 []
+null NULL_2_shuffled_V4.json: FP 0.0000, accepted 0 []
+seeds [0]: | P1a V1-onehot | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [0]: | P1b V1-onehot | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [0]: | P1c V1-onehot | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [0]: | P1e V1-onehot | generality MAE vs oracle <= 0.05 on 5/5 | 0.003 (max) | PASS |
+seeds [0]: | P1a V1-noise05 | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [0]: | P1b V1-noise05 | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [0]: | P1c V1-noise05 | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [0]: | P1e V1-noise05 | generality MAE vs oracle <= 0.05 on 5/5 | 0.003 (max) | PASS |
+seeds [0]: | P1d V1 | wrong hypotheses accepted <= 10% (pooled) | 0/10 | PASS |
+seeds [0]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (4 cells) | PASS |
+seeds [0]: | P2 V2D | AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5 | pt 0.994-0.994, lo 0.990-0.990 | PASS |
+seeds [0]: | P3a V3-comp | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [0]: | P3b V3-comp | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [0]: | P3a V3-lookup | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [0]: | P3b V3-lookup | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [0]: | P4 V4 | AUROC >= 0.95 and scaffold recall >= 0.9, 5/5 | AUROC 1.000, recall 1.00 | PASS |
+seeds [0]: | P5a V5-valid | exactly one valid node N <- {A,B}, 4/5 | 1/1 | PASS |
+seeds [0]: | P5b V5-decoy | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [0]: | P5b V5-leaf | zero valid nodes and N 'new leaf (used, not derived)', 4/5 | 1/1 | PASS |
+seeds [0]: | P5b V5-relabel | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [0]: | P5b V5-generic | zero valid nodes and N 'exposure-generic', 4/5 | 1/1 | PASS |
+seeds [1]: | P1a V1-onehot | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [1]: | P1b V1-onehot | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [1]: | P1c V1-onehot | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [1]: | P1e V1-onehot | generality MAE vs oracle <= 0.05 on 5/5 | 0.012 (max) | PASS |
+seeds [1]: | P1a V1-noise05 | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [1]: | P1b V1-noise05 | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [1]: | P1c V1-noise05 | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [1]: | P1e V1-noise05 | generality MAE vs oracle <= 0.05 on 5/5 | 0.012 (max) | PASS |
+seeds [1]: | P1d V1 | wrong hypotheses accepted <= 10% (pooled) | 0/10 | PASS |
+seeds [1]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (4 cells) | PASS |
+seeds [1]: | P2 V2D | AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5 | pt 0.999-0.999, lo 0.997-0.997 | PASS |
+seeds [1]: | P3a V3-comp | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [1]: | P3b V3-comp | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [1]: | P3a V3-lookup | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [1]: | P3b V3-lookup | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [1]: | P4 V4 | AUROC >= 0.95 and scaffold recall >= 0.9, 5/5 | AUROC 1.000, recall 1.00 | PASS |
+seeds [1]: | P5a V5-valid | exactly one valid node N <- {A,B}, 4/5 | 1/1 | PASS |
+seeds [1]: | P5b V5-decoy | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [1]: | P5b V5-leaf | zero valid nodes and N 'new leaf (used, not derived)', 4/5 | 1/1 | PASS |
+seeds [1]: | P5b V5-relabel | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [1]: | P5b V5-generic | zero valid nodes and N 'exposure-generic', 4/5 | 1/1 | PASS |
+seeds [2]: | P1a V1-onehot | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [2]: | P1b V1-onehot | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [2]: | P1c V1-onehot | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [2]: | P1e V1-onehot | generality MAE vs oracle <= 0.05 on 5/5 | 0.004 (max) | PASS |
+seeds [2]: | P1a V1-noise05 | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [2]: | P1b V1-noise05 | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [2]: | P1c V1-noise05 | decoy represented-not-used 5/5 | 1/1 | PASS |
+seeds [2]: | P1e V1-noise05 | generality MAE vs oracle <= 0.05 on 5/5 | 0.004 (max) | PASS |
+seeds [2]: | P1d V1 | wrong hypotheses accepted <= 10% (pooled) | 0/10 | PASS |
+seeds [2]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (4 cells) | PASS |
+seeds [2]: | P2 V2D | AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5 | pt 0.995-0.995, lo 0.989-0.989 | PASS |
+seeds [2]: | P3a V3-comp | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [2]: | P3b V3-comp | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [2]: | P3a V3-lookup | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [2]: | P3b V3-lookup | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [2]: | P4 V4 | AUROC >= 0.95 and scaffold recall >= 0.9, 5/5 | AUROC 1.000, recall 1.00 | PASS |
+seeds [2]: | P5a V5-valid | exactly one valid node N <- {A,B}, 4/5 | 1/1 | PASS |
+seeds [2]: | P5b V5-decoy | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [2]: | P5b V5-leaf | zero valid nodes and N 'new leaf (used, not derived)', 4/5 | 1/1 | PASS |
+seeds [2]: | P5b V5-relabel | zero valid nodes, 4/5 | 1/1 | PASS |
+seeds [2]: | P5b V5-generic | zero valid nodes and N 'exposure-generic', 4/5 | 1/1 | PASS |
+seeds [0, 1, 2]: | P1a V1-onehot | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [0, 1, 2]: | P1b V1-onehot | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [0, 1, 2]: | P1c V1-onehot | decoy represented-not-used 5/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P1e V1-onehot | generality MAE vs oracle <= 0.05 on 5/5 | 0.012 (max) | PASS |
+seeds [0, 1, 2]: | P1a V1-noise05 | node precision & recall >= 0.9 on 5/5 | P 1.00-1.00, R 1.00-1.00 | PASS |
+seeds [0, 1, 2]: | P1b V1-noise05 | edge F1 >= 0.9 on 5/5 | 1.00-1.00 | PASS |
+seeds [0, 1, 2]: | P1c V1-noise05 | decoy represented-not-used 5/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P1e V1-noise05 | generality MAE vs oracle <= 0.05 on 5/5 | 0.012 (max) | PASS |
+seeds [0, 1, 2]: | P1d V1 | wrong hypotheses accepted <= 10% (pooled) | 0/30 | PASS |
+seeds [0, 1, 2]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (12 cells) | PASS |
+seeds [0, 1, 2]: | P2 V2D | AUROC(-mu) >= 0.9 on 5/5 and lower CI > 0.8 on 4/5 | pt 0.994-0.999, lo 0.989-0.997 | PASS |
+seeds [0, 1, 2]: | P3a V3-comp | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [0, 1, 2]: | P3b V3-comp | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [0, 1, 2]: | P3a V3-lookup | move accuracy >= 0.9 (withheld and seen) 5/5 | 1.00 | PASS |
+seeds [0, 1, 2]: | P3b V3-lookup | predicted-correctness accuracy >= 0.9 5/5 | 1.00 | PASS |
+seeds [0, 1, 2]: | P4 V4 | AUROC >= 0.95 and scaffold recall >= 0.9, 5/5 | AUROC 1.000, recall 1.00 | PASS |
+seeds [0, 1, 2]: | P5a V5-valid | exactly one valid node N <- {A,B}, 4/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P5b V5-decoy | zero valid nodes, 4/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P5b V5-leaf | zero valid nodes and N 'new leaf (used, not derived)', 4/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P5b V5-relabel | zero valid nodes, 4/5 | 3/3 | PASS |
+seeds [0, 1, 2]: | P5b V5-generic | zero valid nodes and N 'exposure-generic', 4/5 | 3/3 | PASS |
+
+PRE-TAG CHECK PASSED
+exit=0
+--- run_phase1.py diff dc0d124..e15be22 (orchestration only expected) ---
+diff --git a/validation/run_phase1.py b/validation/run_phase1.py
+index a6d3759..65f92bf 100644
+--- a/validation/run_phase1.py
++++ b/validation/run_phase1.py
+@@ -304,7 +304,7 @@ def cell_v5(seed, variant, N=1500):
+                 n_represented_not_used=len(res["represented_not_used_candidates"]))
+ 
+ 
+-def cell_formation(seed, N=1500, distractor=False):
++def cell_formation(seed, N=1500, distractor=False, only_ckpt=None):
+     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
+     per = []
+     # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
+@@ -312,6 +312,8 @@ def cell_formation(seed, N=1500, distractor=False):
+     cdir = os.environ.get("WB_CKPT_CACHE")
+     tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
+     for i, P in enumerate(seq):
++        if only_ckpt is not None and i != only_ckpt:
++            continue
+         rng = np.random.default_rng(seed)
+         X = P.sample(N, rng)
+         cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
+@@ -333,6 +335,8 @@ def cell_formation(seed, N=1500, distractor=False):
+             with open(tmp, "wb") as fh:
+                 pickle.dump(per[-1], fh)
+             os.replace(tmp, cf)
++    if only_ckpt is not None:          # parallel mode: this process only fills one cache entry
++        return None
+     n_eff = len(np.unique(X, axis=0))
+     f = formation(per, 0.25, TH.eps_merge, n_eff)
+     births = [b for b in f["births"] if b["label"] == "sum"]
+@@ -406,12 +410,24 @@ def main():
+     ap.add_argument("--seeds", type=int, nargs="+", required=True)
+     ap.add_argument("--cells", nargs="+", default=list(CELLS))
+     ap.add_argument("--out", required=True)
++    ap.add_argument("--only_ckpt", type=int, default=None,
++                    help="FORMD/FORMATION only: compute and cache this checkpoint, write no result file")
+     a = ap.parse_args()
+     out = Path(a.out)
+     out.mkdir(parents=True, exist_ok=True)
+     commit = git_commit()
+     os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
+     Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
++    if a.only_ckpt is not None:
++        for s in a.seeds:
++            for c in a.cells:
++                assert c in ("FORMD", "FORMATION"), "--only_ckpt is for formation cells"
++                if (out / f"{c}_{s}.json").exists():
++                    continue
++                t0 = time.time()
++                cell_formation(s, distractor=(c == "FORMD"), only_ckpt=a.only_ckpt)
++                print(f"[phase1] {c}_{s} ckpt {a.only_ckpt} cached {time.time() - t0:.0f}s", flush=True)
++        return
+     for s in a.seeds:
+         for c in a.cells:
+             for spec in CELLS[c](s):
+--- end diff ---
+--- run_phase1.py diff dc0d124..5deefec (orchestration only expected) ---
+diff --git a/validation/run_phase1.py b/validation/run_phase1.py
+index a6d3759..65f92bf 100644
+--- a/validation/run_phase1.py
++++ b/validation/run_phase1.py
+@@ -304,7 +304,7 @@ def cell_v5(seed, variant, N=1500):
+                 n_represented_not_used=len(res["represented_not_used_candidates"]))
+ 
+ 
+-def cell_formation(seed, N=1500, distractor=False):
++def cell_formation(seed, N=1500, distractor=False, only_ckpt=None):
+     seq = PL.formation_sequence(p=5, seed=seed, z_card=5) if distractor else PL.formation_sequence(seed=seed)
+     per = []
+     # per-checkpoint cache (resumability only: each checkpoint re-seeds its own rng, so a
+@@ -312,6 +312,8 @@ def cell_formation(seed, N=1500, distractor=False):
+     cdir = os.environ.get("WB_CKPT_CACHE")
+     tag = f"{'FORMD' if distractor else 'FORMATION'}_{seed}"
+     for i, P in enumerate(seq):
++        if only_ckpt is not None and i != only_ckpt:
++            continue
+         rng = np.random.default_rng(seed)
+         X = P.sample(N, rng)
+         cf = Path(cdir) / f"{tag}_ck{i}.pkl" if cdir else None
+@@ -333,6 +335,8 @@ def cell_formation(seed, N=1500, distractor=False):
+             with open(tmp, "wb") as fh:
+                 pickle.dump(per[-1], fh)
+             os.replace(tmp, cf)
++    if only_ckpt is not None:          # parallel mode: this process only fills one cache entry
++        return None
+     n_eff = len(np.unique(X, axis=0))
+     f = formation(per, 0.25, TH.eps_merge, n_eff)
+     births = [b for b in f["births"] if b["label"] == "sum"]
+@@ -406,12 +410,24 @@ def main():
+     ap.add_argument("--seeds", type=int, nargs="+", required=True)
+     ap.add_argument("--cells", nargs="+", default=list(CELLS))
+     ap.add_argument("--out", required=True)
++    ap.add_argument("--only_ckpt", type=int, default=None,
++                    help="FORMD/FORMATION only: compute and cache this checkpoint, write no result file")
+     a = ap.parse_args()
+     out = Path(a.out)
+     out.mkdir(parents=True, exist_ok=True)
+     commit = git_commit()
+     os.environ.setdefault("WB_CKPT_CACHE", str(out / "_ckpt"))
+     Path(os.environ["WB_CKPT_CACHE"]).mkdir(parents=True, exist_ok=True)
++    if a.only_ckpt is not None:
++        for s in a.seeds:
++            for c in a.cells:
++                assert c in ("FORMD", "FORMATION"), "--only_ckpt is for formation cells"
++                if (out / f"{c}_{s}.json").exists():
++                    continue
++                t0 = time.time()
++                cell_formation(s, distractor=(c == "FORMD"), only_ckpt=a.only_ckpt)
++                print(f"[phase1] {c}_{s} ckpt {a.only_ckpt} cached {time.time() - t0:.0f}s", flush=True)
++        return
+     for s in a.seeds:
+         for c in a.cells:
+             for spec in CELLS[c](s):
+--- end diff ---
+null NULL_3_untrained_V1.json: FP 0.0000, accepted 0 []
+null NULL_3_untrained_V4.json: FP 0.0000, accepted 0 []
+null NULL_3_shuffled_V1.json: FP 0.0000, accepted 0 []
+null NULL_3_shuffled_V4.json: FP 0.0000, accepted 0 []
+null NULL_4_untrained_V1.json: FP 0.0000, accepted 0 []
+null NULL_4_untrained_V4.json: FP 0.0000, accepted 0 []
+null NULL_4_shuffled_V1.json: FP 0.0000, accepted 0 []
+null NULL_4_shuffled_V4.json: FP 0.0000, accepted 0 []
+seeds [3]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (4 cells) | PASS |
+seeds [4]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (4 cells) | PASS |
+seeds [3, 4]: | P1f NULL | FP <= 0.02 every seed; mean accepted <= 1 | max FP 0.000, mean accepted 0.00 (8 cells) | PASS |
+
+PRE-TAG CHECK PASSED
+exit=0

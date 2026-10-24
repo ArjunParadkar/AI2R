@@ -1,0 +1,89 @@
+{
+ "cell": "SENS",
+ "variant": "onehot",
+ "seed": 110,
+ "N": 250,
+ "node_precision": 0.0,
+ "node_recall": 0.0,
+ "edge_precision": 0.0,
+ "edge_recall": 0.0,
+ "edge_f1": 0.0,
+ "decoy_verdicts": [
+  "represented, not used",
+  "represented, not used"
+ ],
+ "wrong_hits": [],
+ "n_wrong": 5,
+ "unlabelled_nodes": [],
+ "generality": {},
+ "generality_oracle": {},
+ "spearman_vs_oracle": NaN,
+ "generality_mae_vs_oracle": NaN,
+ "oracle_nodes": [],
+ "oracle_edge_f1_vs_spec": 0.0,
+ "n_candidates": 98,
+ "runtime_s": 53.70006537437439,
+ "n_forward_rows": 515808,
+ "stability": {},
+ "edges": [
+  [
+   "a0",
+   "out:out0"
+  ],
+  [
+   "a0",
+   "out:out1"
+  ],
+  [
+   "a1",
+   "out:out1"
+  ],
+  [
+   "a1",
+   "out:out2"
+  ],
+  [
+   "a2",
+   "out:out2"
+  ],
+  [
+   "a2",
+   "out:out3"
+  ],
+  [
+   "b0",
+   "out:out0"
+  ],
+  [
+   "b0",
+   "out:out1"
+  ],
+  [
+   "b1",
+   "out:out1"
+  ],
+  [
+   "b1",
+   "out:out2"
+  ],
+  [
+   "b2",
+   "out:out2"
+  ],
+  [
+   "b2",
+   "out:out3"
+  ]
+ ],
+ "not_converged": false,
+ "status": "ok",
+ "commit": "1c34c59f0c97ce2597112896fb04da37d781324a",
+ "spec": [
+  "SENS",
+  "110",
+  "250"
+ ],
+ "wall_s": 64.18959975242615,
+ "node": "c1608",
+ "start": "2026-10-23T11:29:57"
+}
