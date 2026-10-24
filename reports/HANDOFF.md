@@ -1,6 +1,16 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-23 ~11:05 CDT, by the lead research agent (resumed session).
+Last update: 2026-10-24 ~00:45 CDT, by the lead research agent (resumed session).
+
+## STATE AT 2026-10-24 ~00:45 (read first)
+
+- **Phase 1 CLOSED** under `prereg-phase-1-amend-3` (commit 7f351cc). Validation seeds 115–119 passed P1a–P1f, P2 (V2D), P3, P4 and P5. P6 was not evaluated, so K14 stays blocked. See `runs/phase1/val_a3/VERDICTS.md` and `reports/phase1.md` §9. Amendment 2 is closed in the record: P2 PASS, P6 not completed, gate FAILED on P1f.
+- **Phase 2 RUNNING** under `prereg-phase-2-amend-1` (commit da2cb07): 41 cells, lanes wb-k12-S1..S3 (agpu06, 6 h, self-resubmitting) and wb-k12-L1 (agpu72, 72 h, big models). Results go to `/scrfs/storage/paradkar/wb/results/k12_a1`; state (locks, tries, failed) to `/scrfs/storage/paradkar/wb/state/k12_a1`.
+  - Poll at most every 10 min. If a cell lands in `state/k12_a1/failed/`, read its log before re-queueing it (delete the failed marker).
+  - When every cell is done (k2.pkl, GATE_FAILED, or k1.json for nulls), fetch the k1.json, k2.pkl and log.txt files to `runs/k12_a1` (not graph.pkl) and run `.venv/bin/python -m bench.analyse_k12 runs/k12_a1 --out reports/phase2_tables.json`.
+  - Apply the K2 rule by the letter. If K2 FAILS, the programme stops and `reports/phase2.md` says so.
+- **Never sync code into `~/wb-ee` while a job that imports from it is still starting processes.** A pack job reads code per process: the validation of one amendment once picked up another amendment's code this way (it was caught and audited). For older code, pin a tree: `WBDIR=~/wb-ee-a2` (pack.sbatch).
+- **Every Phase 1 tag needs `validation/pretag_check.py` to exit 0 first.**
 
 ## STATE AT ~12:15 (amendment 3 in development; read first)
 

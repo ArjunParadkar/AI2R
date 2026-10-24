@@ -1,4 +1,12 @@
-# Phase 2 report: K1 and K2 — NOT RUN (Phase 1 dependency unmet)
+# Phase 2 report: K1 and K2 — RUNNING under `prereg-phase-2-amend-1`
+
+**Update 2026-10-24 ~00:45 CDT.**
+- Phase 1 closed under amendment 3: the validation passed P1a–P1f, P2 and P3 (`reports/phase1.md` §9).
+- `prereg/PHASE_2_amend_1.md` is tagged (commit da2cb07). It covers the amendment-3 estimator, R = 20, model × task units, the K1 null condition and anchor, and 41 cells.
+- The cells run on lanes 1367020–1367023 and write to `/scrfs/storage/paradkar/wb/results/k12_a1`.
+- Analysis: `python -m bench.analyse_k12 runs/k12_a1 --out reports/phase2_tables.json`, run once every cell is finished. The K2 decision rule is then applied by the letter.
+
+The history below is kept as written.
 
 Status on 2026-10-23, about 11:05 CDT.
 
