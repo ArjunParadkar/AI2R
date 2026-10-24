@@ -9,7 +9,7 @@ Last update: 2026-10-24 ~00:45 CDT, by the lead research agent (resumed session)
   - Poll at most every 10 min. If a cell lands in `state/k12_a1/failed/`, read its log before re-queueing it (delete the failed marker).
   - When every cell is done (k2.pkl, GATE_FAILED, or k1.json for nulls), fetch the k1.json, k2.pkl and log.txt files to `runs/k12_a1` (not graph.pkl) and run `.venv/bin/python -m bench.analyse_k12 runs/k12_a1 --out reports/phase2_tables.json`.
   - Apply the K2 rule by the letter. If K2 FAILS, the programme stops and `reports/phase2.md` says so.
-- **Do NOT sync anything into `~/wb-ee` until every Phase 2 cell is finished.** The lanes start a new python process per cell from `~/wb-ee` (frozen at commit 65b1b70's parent, with COMMIT da2cb07+; no scientific change after the tag). For other work, use a separate tree (e.g. `~/wb-ee-dev`) with `WBDIR`.
+- **Do NOT sync anything into `~/wb-ee` until every Phase 2 cell is finished.** The lanes start a new python process per cell from `~/wb-ee` (frozen at b6f8de1 = tag da2cb07 plus a record-table fix; no scientific change after the tag). For other work, use a separate tree (e.g. `~/wb-ee-dev`) with `WBDIR`.
 - **Never sync code into `~/wb-ee` while a job that imports from it is still starting processes.** A pack job reads code per process: the validation of one amendment once picked up another amendment's code this way (it was caught and audited). For older code, pin a tree: `WBDIR=~/wb-ee-a2` (pack.sbatch).
 - **Every Phase 1 tag needs `validation/pretag_check.py` to exit 0 first.**
 
