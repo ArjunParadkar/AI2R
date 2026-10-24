@@ -1,0 +1,3 @@
+python -m validation.run_phase1 --seeds 115 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 116 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
+python -m validation.run_phase1 --seeds 117 --cells V2D --out /scrfs/storage/paradkar/wb/results/phase1/val_a3
