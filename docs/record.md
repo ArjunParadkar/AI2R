@@ -114,6 +114,8 @@ Amendment-3 rows (validation seeds 115–119, 2026-10-24, comp01 jobs 1366765–
 
 Phase 1 rows are estimator tests on planted systems (master prompt §5). They are never evidence for a claim. Source: `runs/phase1/val/` (computed by `validation/verdicts_phase1.py`).
 
+Phase 2 ops note (2026-10-25, no science change): the 8-bit cells (28–31) could not load with the pre-registered bitsandbytes 0.42 on the cluster stack (torch 2.5.1+cu124, transformers 4.49, accelerate 1.2.1). Two loader bugs were found: a missing cuda124 binary (fixed by BNB_CUDA_VERSION=123 in the lane wrapper, verified in job 1368533), and transformers refusing the dispatch `.to()` before it marks the model 8-bit (trace in job 1368606). The second is fixed by a launcher shim, `runs/slurm/ops/bnb8_k12.py`, that does what transformers does for bnb >= 0.43.2. Verification job: 1368749. The condition (8-bit, bnb 0.42, §1/§4.4) is unchanged, and no cell output was produced or discarded by this. The lane wrapper also gained a retire flag; S3 was swapped for a second 72 h lane, L2.
+
 ## Approvals and tags
 
 | Date | Item | Text / hash |

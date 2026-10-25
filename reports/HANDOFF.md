@@ -1,6 +1,35 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-24 ~00:45 CDT, by the lead research agent (resumed session).
+Last update: 2026-10-25 ~12:45 CDT, by the lead research agent (Phase 2 ops session).
+
+## OPS 2026-10-25 ~12:45 CDT (lead session; no science change) — READ FIRST
+
+**Pinnacle ControlMaster died at ~12:15 (Permission denied, keyboard-interactive). Arjun must do one interactive `ssh pinnacle` (2FA; `uark-vpn up` first if off campus).** The lanes and watchdog keep running on their own.
+
+**Cell 31 (Qwen2.5-7B add3 8-bit) failure, job 1368092: two stacked loader bugs, both independent of the science.**
+1. bitsandbytes 0.42 (the pre-registered version) ships no `libbitsandbytes_cuda124.so` and cannot find `libcudart.so.12` (torch cu124 pip wheels), so it falls back to CPU and raises. Fix: `BNB_CUDA_VERSION=123` plus torch's own `site-packages/nvidia/{cuda_runtime,cublas,cusparse,nvjitlink}/lib` on `LD_LIBRARY_PATH`. Verified on A100 in job 1368533: "Loading CUDA version: BNB_CUDA_VERSION=123", no CPU fallback. It does NOT work on V100 (gpu06): bnb 0.42 builds a broken `_nocublaslt` file name there (job 1368320). Lanes run only on A100.
+2. transformers 4.49 + accelerate 1.2.1: `from_pretrained` calls `dispatch_model`, which calls `model.to(cuda)` (this also moves non-persistent buffers such as rotary `inv_freq`) *before* the 8-bit quantizer sets `is_loaded_in_8bit`. `PreTrainedModel.to` then raises for bnb < 0.43.2. Full trace: job 1368606, `/scrfs/storage/paradkar/wb/logs/wb-bnbtest-1368606.out`.
+   - Candidate fix: launcher shim `runs/slurm/ops/bnb8_k12.py` (on Pinnacle at `~/wb-ee-dev/bnbtest/bnb8_k12.py`). For a bnb model with no dtype argument, during loading only, it passes that one call through to `torch.nn.Module.to`. That is exactly what transformers does for bnb >= 0.43.2. It then runs `bench.k12` via runpy with the same arguments. bnb stays 0.42 and 8-bit stays the condition (prereg §1).
+   - A first shim version that skipped the call as a "no-op" was WRONG: buffers stayed on the CPU and the forward failed (job 1368606).
+   - **The revised shim is UNVERIFIED.** Test job `wb-bnbtest` 1368749 (agpu06, est. start 13:37) loads pythia-1.4b and Qwen2.5-7B in 8-bit through the frozen `HFSystem`, checks that params and buffers are on cuda, runs a forward pass, compares the argmax and logit correlation with bf16, and runs bench.k12 stage 1 via the shim into `~/wb-ee-dev/bnbtest/out`. Read `/scrfs/storage/paradkar/wb/logs/wb-bnbtest-1368749.out`.
+- **If 1368749 is clean**, wire the shim into the lane wrapper:
+  - Copy it to `/scrfs/storage/paradkar/wb/shim/bnb8_k12.py`.
+  - In `~/wb-ee/runs/slurm/k12_lane.sbatch`, use `python <shim> $line` instead of `python -m bench.k12 $line` when `$line` contains `--load_in_8bit`.
+  - Then write `hold-bnb` as the first word of `state/k12_a1/failed/{28,29,30,31}`. Patched lanes run hold-bnb cells; pre-patch lanes (L1 1367480, old S1/S3) skip any failed/ file.
+  - Run cell 31 (quantization check, §4.4) before 28–30 if possible. If §4.4 fails, the 32B cells do not count (analyse_k12 handles that).
+
+**State markers now:** failed/28–30 = `hold-all` (no lane takes them). failed/31 = the original `rc=1` (no lane takes it). Do not delete them before the shim is wired.
+
+**Lane wrapper edits (job wrapper only; backups in `/scrfs/storage/paradkar/wb/state/k12_lane.sbatch.bak2-pre-bnb`, `.bak3-pre-retire`; patch scripts in `runs/slurm/ops/`):**
+- the bnb env vars (above);
+- the `hold-bnb` exception in `eligible()`;
+- `state/k12_a1/RETIRE_<lane>`: a lane with this flag starts no new cell and does not resubmit (the watchdog sees it as retired).
+
+**Lane swap:** `RETIRE_S3` is set and `wb-k12-L2` 1368696 (agpu72, 72 h, long order) is submitted with `Dependency=afterany:1368231` (the last S3 job). So at most 4 wb-k12 lanes RUN at once (coordinator rule: 4 lanes + 1 short test). Reason: 9 big bf16 cells plus 3 32B cells are long-lane only, and serial on L1 they would take ~9 days. The watchdog does not know L2. Resubmit it by hand if it dies (same line as L1, `-J wb-k12-L2`).
+
+**git "Unknown option: -C"** (old git on compute nodes) is harmless: `bench.k12.git_commit()` falls back to `WB_COMMIT`, and the k1.json files carry `commit b6f8de1`. No fix needed.
+
+Progress at 12:00: done 1,2,3,9,15,18,21,24,36 (+ GATE_FAILED 7,8,16,17,19,20,22,23); running 4 (L1), 37,38,39 (S lanes); 25 open cells in all.
 
 ## OPS 2026-10-24 ~20:00 CDT (lead session, cluster-side only; no science change)
 
