@@ -1,6 +1,13 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-25 ~13:15 CDT, by the lead research agent (Phase 2 ops session).
+Last update: 2026-10-25 ~14:30 CDT, by the lead research agent (Phase 2 ops session).
+
+## OPS 2026-10-25 14:30 CDT — waiting for the cluster (read first)
+
+- At 13:40 the deployment was checked as live: wrapper lines 23–27 (bnb env), 54–56 (hold-shim), 84–86 (shim for 8-bit cells only); shim sha256 88d732f8…; failed/28–31 = `hold-shim` (released form: only shim-aware lane jobs accept them; deleting them would let L1 [no fix] / S2 [env, no shim] take the cells and crash — do NOT delete); tries_S/31 = 2; watchdog 1368804 knows L2. S3 retired cleanly (1368815). Cell 37 timed out once on S3 (rc=124, normal, re-picked).
+- **Not yet seen:** L2 1368803 start (est. 14:12) and cell 31's model load in its log. First check after reconnect: `grep "^\[wb\]\|bnb8 shim\|train accuracy\|Error" /scrfs/storage/paradkar/wb/logs/wb-k12-L2-1368803.out`; expect "[wb] 8-bit cell: via …bnb8_k12.py", the shim line, then "train accuracy". If cell 31 crashes, failed/31 becomes `rc=…`: read the log, and a second crash for the same reason → stop and record.
+- ControlMaster dropped again ~14:15 (second time today); needs Arjun's interactive `ssh pinnacle`.
+- Rough ETA for all 41 cells (two 72 h lanes + two short lanes; 7B add3 discovery ≈ 11 h, 14B/13B ≈ 20 h, 32B 8-bit ≈ 30 h+): about 4–5 days, i.e. ~29–30 Oct, assuming agpu72 lanes resubmit promptly. Highly uncertain.
 
 ## OPS 2026-10-25 13:15 CDT — 8-bit fix VERIFIED and WIRED (supersedes the 12:45 section where they disagree)
 
