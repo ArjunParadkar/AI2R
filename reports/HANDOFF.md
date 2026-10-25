@@ -1,6 +1,18 @@
 # HANDOFF (living document; update at every milestone)
 
-Last update: 2026-10-25 ~12:45 CDT, by the lead research agent (Phase 2 ops session).
+Last update: 2026-10-25 ~13:15 CDT, by the lead research agent (Phase 2 ops session).
+
+## OPS 2026-10-25 13:15 CDT — 8-bit fix VERIFIED and WIRED (supersedes the 12:45 section where they disagree)
+
+- **Verification, job 1368749 (A100):** Qwen2.5-7B 8-bit via the frozen `HFSystem` + shim gives 196 Linear8bitLt, 8.71 GB, all params and buffers on cuda:0, greedy "579" for 123+456, argmax = bf16 argmax, logit corr 0.9981 (pythia-1.4b: 0.9975). The launcher path (shim → `bench.k12` stage 1, pythia-1.4b 8-bit) ran end to end: specimen gate failed normally, rc=0.
+- **Shim installed** at `/scrfs/storage/paradkar/wb/shim/bnb8_k12.py` (sha256 88d732f8…3b97e, = `runs/slurm/ops/bnb8_k12.py`). The lane wrapper runs `python <shim> $line` only when the line has `--load_in_8bit`; every other cell still runs `python -m bench.k12`. Backup: `state/k12_lane.sbatch.bak4-pre-shim`.
+- **Markers:** failed/28–31 now start with `hold-shim`. Only wrapper versions with the shim accept `hold-shim`. Older lane jobs (L1 1367480, S1 1368241, S2 1368583, S3 1368231; batch scripts are copied at submission) skip it.
+  - If an 8-bit cell crashes, the wrapper overwrites the marker with `rc=…`, and then no lane takes it. A second crash for the same reason → stop and record.
+- **Routing:** `tries_S/31` = 2, so short lanes skip cell 31 (its discovery needs > 6 h, as Qwen2.5-7B add3 bf16 needed ~11 h).
+  - L2 uses `state/phase2_order_long_L2.txt` (31 first, then the long order). That runs the §4.4 quantization check before the 32B cells. Order only; no science change.
+- **L2 = 1368803** (agpu72, `afterany:1368231`, shim-aware). It replaces S3 (`RETIRE_S3`), so ≤ 4 lanes run.
+- **Watchdog restarted as 1368804** from the updated `state/lanewatch.sbatch`, which now also resubmits L2 (with the L2 order). Backup: `lanewatch.sbatch.bak-preL2`.
+- Short lanes that resubmit from now on get the shim-aware wrapper too.
 
 ## OPS 2026-10-25 ~12:45 CDT (lead session; no science change) — READ FIRST
 
