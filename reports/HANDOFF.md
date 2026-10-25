@@ -2,6 +2,13 @@
 
 Last update: 2026-10-24 ~00:45 CDT, by the lead research agent (resumed session).
 
+## OPS 2026-10-24 ~20:00 CDT (lead session, cluster-side only; no science change)
+
+- Lane script `~/wb-ee/runs/slurm/k12_lane.sbatch` (job wrapper only): `HOME` defaulted (self-resubmits from inside a job arrived without it: 1367020, 1367097 died in 2 min) and `--exclude=c1905` (NODE_FAIL at lane start: 1368003, 1368054). Backup of the tag version: `/scrfs/storage/paradkar/wb/state/k12_lane.sbatch.bak`.
+- 12 big-model cells (4-6, 10-12, 25-30: Qwen2.5-14B, OLMo-2-13B, pythia-12b, Qwen2.5-32B 8-bit) failed in L1 1367480 on c2005: no DNS, models were never cached. Prefetch job `wb-prefetch` 1368066 (cloud72) fills `/scrfs/storage/paradkar/wb/hf`; `wb-clearfail` 1368067 (afterok) then deletes only those 12 failed markers. Not a retry of a crashed cell: they never started.
+- Watchdog `wb-lanewatch` (1368071, cloud72, `/scrfs/storage/paradkar/wb/state/lanewatch.sbatch`): every 20 min resubmits a lane that has no job and did not retire on purpose; stops when all cells are done or on `state/STOP_LANES`.
+- Done so far: Qwen2.5-7B mul21 (k2.pkl); GATE_FAILED: OLMo-2-7B add3 + mul21, pythia-6.9b add3.
+
 ## STATE AT 2026-10-24 ~00:45 (read first)
 
 - **Phase 1 CLOSED** under `prereg-phase-1-amend-3` (commit 7f351cc). Validation seeds 115–119 passed P1a–P1f, P2 (V2D), P3, P4 and P5. P6 was not evaluated, so K14 stays blocked. See `runs/phase1/val_a3/VERDICTS.md` and `reports/phase1.md` §9. Amendment 2 is closed in the record: P2 PASS, P6 not completed, gate FAILED on P1f.
