@@ -1,0 +1,62 @@
+{
+ "features": [
+  "tc_ratio"
+ ],
+ "mean": [
+  -0.08880015620726672
+ ],
+ "std": [
+  0.3657058103764217
+ ],
+ "coef": [
+  1.5025492010244923
+ ],
+ "intercept": 0.35969949807108936,
+ "log_features": [
+  "tc_ratio"
+ ],
+ "meta": {
+  "family": "cnn_classifier",
+  "arch": "resnet18",
+  "layer": "pool",
+  "features": "tc_ratio",
+  "auc_loso": 1.0,
+  "auc_insample": 1.0,
+  "auc_on_other_family": 0.6666666666666667,
+  "n_models": 15,
+  "probe_n": 500,
+  "pca": 30,
+  "thresh_percentile": 95,
+  "threshold": 0.6250756040163226,
+  "battery_scores": {
+   "generalizing": [
+    0.047,
+    0.099,
+    0.105,
+    0.578,
+    0.587,
+    0.601
+   ],
+   "memorizing": [
+    0.65,
+    0.663,
+    0.735,
+    0.76,
+    0.784,
+    0.816,
+    0.835,
+    0.862,
+    0.877
+   ],
+   "graded_noise": [
+    0.533,
+    0.646,
+    0.676,
+    0.717,
+    0.781,
+    0.853
+   ]
+  },
+  "note": "memorizing := label noise >= 50%; generalizing := 0%. Cross-family transfer FAILS (sign flip); never apply to another family."
+ }
+}

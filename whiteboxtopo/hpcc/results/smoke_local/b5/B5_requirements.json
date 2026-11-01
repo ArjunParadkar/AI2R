@@ -1,0 +1,8 @@
+[
+ {
+  "model": "gpt2",
+  "n_required_power80_stretch05": null,
+  "fpr_max": 0.0,
+  "note": "shift cells are Rips-invariant by construction (B AMENDMENTS #1): their reject rate is the FPR, not power"
+ }
+]

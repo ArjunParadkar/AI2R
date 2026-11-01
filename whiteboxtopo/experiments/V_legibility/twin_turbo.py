@@ -1,0 +1,123 @@
+"""V2 (structure) + V3 (discovery cost) on the V1 final checkpoints; V5 uses the same on every
+checkpoint (--all-ckpts, structure only + discovery at 5 checkpoints). Writes results/V2_structure.csv,
+V3_discovery.csv, V5_drift.csv. Resumable."""
+import os, sys, csv, glob, json, time, argparse, re
+import numpy as np, torch, pandas as pd
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mejiro_dober import plan, build, ARCHS, CK, R, STEPS, N_CK
+from whiteboxtopo.legibility.tasks import Task, accuracy
+from whiteboxtopo import graphs, discovery
+from whiteboxtopo.legibility.models import node_importance
+DENS = (0.01, 0.05, 0.1)
+
+
+
+def append_row(p, r):
+    """Append one dict row to a CSV; when the row carries keys the file's header lacks, rewrite the file with the union header
+    (V AMENDMENTS #11: DictWriter with fieldnames=list(r) silently wrote a 26th field under a 25-field header)."""
+    if not os.path.exists(p):
+        with open(p, "w", newline="") as f: w = csv.DictWriter(f, fieldnames=list(r)); w.writeheader(); w.writerow(r); return
+    with open(p, newline="") as f: rd = csv.reader(f); hdr = next(rd); old = list(rd)
+    if set(r) - set(hdr):
+        hdr2 = hdr + [k for k in r if k not in hdr]
+        with open(p, "w", newline="") as f:
+            w = csv.writer(f); w.writerow(hdr2); w.writerows(row + [""] * (len(hdr2) - len(row)) for row in old); hdr = hdr2
+    with open(p, "a", newline="") as f: csv.DictWriter(f, fieldnames=hdr, extrasaction="ignore", restval="").writerow(r)
+
+def load(row, step, device):
+    task = Task(row["task"], random_labels=bool(row["random_labels"])); spec = dict(ARCHS)[row["arch"]]
+    m = build(spec, task, 0.0, row["seed"]).to(device)
+    m.load_state_dict(torch.load(os.path.join(CK, row["name"], f"step_{step:06d}.pt"), map_location=device)); m.eval()
+    return m, task
+
+
+def structure(m, task, seed=0, device="cuda", null=True, dens=DENS, n_null=20):
+    x, y = task.batch(512, seed, "eval"); x, y = x.to(device), y.to(device)
+    E = graphs.attribution_graph(m, (x, y), raw=True); A = graphs.symmetrise(E); N = m.n_nodes
+    out = dict(N=N, sparsity_nodes=graphs.sparsity(node_importance(m, x)), edge_sparsity=graphs.sparsity(A))
+    with torch.no_grad(): out["accuracy"] = accuracy(m(x), y)
+    for dn in dens:
+        B = graphs.threshold_density(A, dn); Q, memb = graphs.modularity(B); out[f"Q_{dn}"] = Q; out[f"tw_{dn}"] = graphs.treewidth_ub(B)
+        out[f"n_comm_{dn}"] = int(len(set(memb)))
+        if null:
+            q0, sd = graphs.rewired_null(B, n=n_null, seed=seed); out[f"Qnull_{dn}"] = q0; out[f"Qnull_sd_{dn}"] = sd; out[f"Qexcess_{dn}"] = Q - q0
+    return out
+
+
+def disc(m, task, device="cuda"):
+    runs = []
+    for s in range(3):
+        x, y = task.batch(256, 100 + s, "eval"); r = discovery.find_circuit(m, (x.to(device), y.to(device)), faithfulness=0.9, seed=s); runs.append(r)
+    js = [discovery.jaccard(runs[i]["circuit"], runs[j]["circuit"]) for i in range(3) for j in range(i + 1, 3)]
+    return dict(size=np.mean([r["size"] for r in runs]), frac=np.mean([r["frac"] for r in runs]), F=np.nanmean([r["faithfulness"] for r in runs]),
+                cost=np.mean([r["cost"] for r in runs]), wall=np.mean([r["wall"] for r in runs]), success=int(all(r["success"] for r in runs)),
+                success_any=int(any(r["success"] for r in runs)), jaccard=float(np.mean(js)))
+
+
+def main():
+    ap = argparse.ArgumentParser(); ap.add_argument("--all-ckpts", action="store_true")
+    ap.add_argument("--limit", type=int, default=48, help="V5 (V AMENDMENTS #13): models in the balanced priority subset (0 = all)"); a = ap.parse_args()
+    rows = [r for r in csv.DictReader(open(os.path.join(R, "V1_models.csv")))]
+    dev = "cuda"
+    if not a.all_ckpts:
+        p2, p3 = os.path.join(R, "V2_structure.csv"), os.path.join(R, "V3_discovery.csv")
+        done = {r["name"] for r in csv.DictReader(open(p3))} if os.path.exists(p3) else set()
+        for row in rows:
+            if row["name"] in done: continue
+            for k in ("random_labels", "untrained", "seed"): row[k] = int(row[k])
+            t0 = time.time()
+            for d_ in (dev, "cpu"):                       # V AMENDMENTS #8: a model whose edge scores do not fit the 8 GB card is scored on the CPU
+                oom = False
+                try:
+                    m, task = load(row, STEPS, d_)
+                    s2 = structure(m, task, device=d_); s3 = disc(m, task, device=d_); break
+                except torch.OutOfMemoryError:
+                    oom = True
+                # outside the except block: the exception's traceback holds the frames (and tensors) alive until it is cleared
+                if oom:
+                    print(row["name"], "CUDA OOM -> retrying on cpu", flush=True)
+                    m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
+            s2.update(name=row["name"], task=row["task"], arch=row["arch"], device=d_)
+            s3.update(name=row["name"], task=row["task"], arch=row["arch"], wall_total=time.time() - t0, device=d_)
+            for p, r in ((p2, s2), (p3, s3)): append_row(p, r)
+            print(row["name"], {k: round(v, 3) if isinstance(v, float) else v for k, v in s2.items() if k.startswith("Q")}, s3["size"], s3["F"], flush=True)
+    else:
+        p5 = os.path.join(R, "V5_drift.csv"); done = {(r["name"], int(r["step"])) for r in csv.DictReader(open(p5))} if os.path.exists(p5) else set()
+        every = STEPS // N_CK; dsteps = {every * k for k in (1, 5, 10, 15, 20)}
+        for row in rows:
+            for k in ("random_labels", "untrained", "seed"): row[k] = int(row[k])
+        # V AMENDMENTS #13: balanced priority order — the 6 random-label models (the null) first, then the other models round-robin
+        # over (task, architecture family) so any prefix is balanced; --limit stops after that many models (default 48 = 6 + 7 per cell)
+        fam = lambda r: re.sub(r"\d+", "", r["arch"])
+        cells = {}
+        for r in sorted((r for r in rows if not r["untrained"] and not r["random_labels"]), key=lambda r: r["name"]): cells.setdefault((r["task"], fam(r)), []).append(r)
+        ordered = [r for r in rows if r["random_labels"] and not r["untrained"]]
+        while any(cells.values()):
+            for key in sorted(cells):
+                if cells[key]: ordered.append(cells[key].pop(0))
+        if a.limit: ordered = ordered[:a.limit]
+        print("V5 order:", len(ordered), "models;", sum(r["random_labels"] for r in ordered), "random-label", flush=True)
+        for row in ordered:
+            hist = {h["step"]: h for h in json.load(open(os.path.join(CK, row["name"], "history.json")))}
+            for step in sorted(hist):
+                if (row["name"], step) in done: continue
+                for d_ in (dev, "cpu"):
+                    oom = False
+                    try:
+                        m, task = load(row, step, d_); r = structure(m, task, device=d_, null=True, dens=(0.1,), n_null=5); r["n_null"] = 5   # SPEC §V5: density 0.1; V AMENDMENTS #14: 5 rewirings
+                        if step in dsteps: r.update({f"disc_{k}": v for k, v in disc(m, task, device=d_).items()})
+                        break
+                    except torch.OutOfMemoryError:
+                        oom = True
+                    if oom:
+                        print(row["name"], step, "CUDA OOM -> retrying on cpu", flush=True)
+                        m = task = None; import gc; gc.collect(); torch.cuda.empty_cache()
+                r.update(name=row["name"], task=row["task"], arch=row["arch"], step=step, frac=step / STEPS,
+                                                          loss=hist[step]["loss"], eval_acc=hist[step]["eval_acc"], random_labels=row["random_labels"])
+                append_row(p5, r)
+                print(row["name"], step, round(r["Qexcess_0.1"], 3), flush=True)
+    print("done")
+
+
+if __name__ == "__main__":
+    main()

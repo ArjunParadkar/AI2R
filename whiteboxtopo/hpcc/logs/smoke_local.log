@@ -1,0 +1,14 @@
+== m4: /home/god/Whitebox/whitebox-v2/.venv/bin/python hpcc/admire_vega.py --out hpcc/results/smoke_local/m4
+PASS m4
+== b5: /home/god/Whitebox/whitebox-v2/.venv/bin/python hpcc/mejiro_ryan.py --models gpt2 --ns 50 --deltas 0 0.5 --trials 2 --out hpcc/results/smoke_local/b5
+FAIL b5
+== v7: /home/god/Whitebox/whitebox-v2/.venv/bin/python hpcc/mejiro_ardan.py --model EleutherAI/pythia-410m --revisions step0 step143000 --n-seq 4 --out hpcc/results/smoke_local/v7
+FAIL b5 (rerun)
+FAIL v7
+== f2: bash -c cd experiments/F_gauge && /home/god/Whitebox/whitebox-v2/.venv/bin/python rice_shower.py --gpu --min-hidden 30 --max-hidden 30 --procs 2 --shard 0 449 --out ../../hpcc/results/smoke_local/f2
+PASS f2
+DONE
+FAIL v7 (rerun 2)
+PASS b5 (rerun 2)
+DONE2
+PASS v7 (cpu rerun 3)

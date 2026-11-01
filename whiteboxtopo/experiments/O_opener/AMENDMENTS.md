@@ -1,0 +1,638 @@
+# Block O amendments
+
+_Consolidated 2026-09-14 21:40. Three agents appended to this file concurrently during the sprint and the numeric sequence collided
+(two #4, two #5, three #6, two #7). Nothing was rewritten: every entry is verbatim and keeps its own timestamp; entries are grouped by
+the runner that owns them. O1.1/O1.2 entries (orchestrator) keep their original numbers #0–#7 (+ addenda), which `meisho_doto.py`,
+`sweep_tosho.py` and their JSONs cite. O1.3 entries were written as #5–#10 and are retagged **#O1.3-5 … #O1.3-10** here;
+`nishino_flower.py`, its CSVs and JSONs cite them by the original numbers (#5 = logit-level ground truth, #6 = zigzag budget,
+#7 = transient-bias windows, #8 = κ_f blind spot, #9 = probe v2, #10 = probe v3). O1.4 entries were tagged #O1.4 by their author._
+
+## O1.1 Sweep Tosho / O1.2 Meisho Doto (orchestrator) — #0–#7 and addenda, chronological
+
+**#0 (2026-09-14, before any O compute — found by the trainer smoke test).** SPEC_O.md's Fourier-structure diagnostic used τ = 0.01 for the
+frequency set K = {k : share_k > τ}. With p = 113 there are 56 folded frequencies, so a *flat* spectrum gives every frequency share ≈ 0.018 > τ
+and κ = 1 at initialisation — the diagnostic could not fail. τ is raised to 0.05 (2.8× the uniform share; a grokked model puts ≥ 10 % on each of
+its 3–6 frequencies, Nanda et al.). No thresholds on results were touched; no O run had executed.
+
+**#1 (2026-09-14 15:20, ring budget).** ring_s0 reached angular error 0.155 at the 4 000-step budget with the curve still falling
+(0.187 at step 2 400) — an under-trained budget, not a property of the specimen. Ring training budget raised to 8 000 steps (checkpoints
+every 2 % = 160 steps); the inclusion threshold (0.15 rad on held-out length-200 sequences) is unchanged. Seed 0 re-trained from scratch;
+its 4 000-step curve is kept as `results/curves/ring_s0_4000steps_excluded.csv`.
+
+**#2 (2026-09-14 16:40, Fourier-structure diagnostic — written before κ_f was computed on any specimen).**
+Pre-registered (SPEC_O O1.1, P1, P6; FINAL_SPEC §2.6, §6.7): κ on the *token embedding* (`extractors.fourier_irreps`, τ = 0.05)
+> 0.9 for inclusion and P1, and κ > 0.9 (generaliser) / < 0.3 (memoriser) for P6. Outcome on the first finished specimens, recorded
+here as the pre-registered result: grok_clean_s0 test acc 1.000, κ_emb 0.337; grok_planted_s0 test 1.000, κ_emb 0.604;
+grok_memorize_s0 test 0.009, κ_emb 0.000 (grok_clean_s1 at epoch 24 000: test 1.000, κ_emb 0.000). The grokked embeddings are
+not sparse in the Nanda sense: the effective number of frequencies exp H(share) is 26.9 (clean) / 26.2 (planted) of 56
+(memoriser 55.8; a Gaussian embedding 55.8); 21 frequencies carry 90 % of the power; the largest single share is 0.06–0.07, so
+almost nothing clears τ = 0.05. Likely reason: the pre-registered criterion was calibrated on Nanda et al.'s LayerNorm-free model,
+whereas SPEC_O fixes a pre-LN ToyTransformer (LayerNorm rescalings are part of the transformer gauge group, FINAL_SPEC §2.3);
+under pre-LN the token-axis DFT of the raw embedding is not the quantity the network computes with, and its power spreads over
+~20 frequencies. Under the pre-registered rule every grokked specimen is excluded and P1/P6 fail on all of them. That outcome is
+kept: `specimens.csv` carries `kappa_emb`, and the P1/P6 cells report the pre-registered estimator as FAILED alongside the amended one.
+
+Amended diagnostic — **function-level Fourier concentration κ_f**. Let L[a, b, c] be the logit tensor over all p² pairs (planted
+specimens: evaluated with the leaked shortcut token, i.e. the trained input distribution), centred over c (softmax invariance).
+κ_f = fraction of the 3-D DFT power of L on the diagonal bins (k, k, −k), k = 1 … p−1. Any function of (a + b − c) mod p alone has
+DFT support exactly on those bins, so κ_f is the fraction of logit variance explained by a translation-equivariant function of the
+residue — precisely the statement "the network implements the character/Fourier algorithm of §2.6" — while a memoriser gives
+≈ 2(p−1)/(p²(p−1)) ≈ 1e-4. κ_f is a function of the realisation map, hence invariant under all of G by construction (the 300
+gauge samples are still run, K-O-2). Per-frequency shares s_k (k and p−k folded) give the frequency set K_f = {k : s_k > τ = 0.05},
+the irrep amplitudes/phases used by R1, and the frequency count n_eff = exp H(s). Thresholds are unchanged: grokked iff test acc
+> 0.99 and κ_f > 0.9; P6: κ_f > 0.9 / < 0.3; the memorising control must still have test acc < 0.05. κ_emb continues to be computed
+and reported. Implementation: `sweep_tosho.fourier_kappa_f` (per checkpoint, stored in every `.pt`), `o11_diagnose.py` rebuilds
+`specimens.csv` / `O1_1_excluded.csv` from the saved `final.pt` files under this rule (no specimen is retrained; s0 specimens were
+trained before this amendment and are diagnosed post hoc from their checkpoints).
+
+**#3 (2026-09-14 16:55, planted specimens under κ_f — written before computing it).** For a planted specimen the trained function
+contains, by design, a term driven by the shortcut token s = (a+b) mod 8: any dependence on (s, c) that is not a function of
+(a+b−c) has DFT support off the diagonal bins, so κ_f evaluated with the leaked s is < 1 exactly when the shortcut is used. That
+is the P3 signature, not a failure of Fourier structure. Therefore: (i) the inclusion diagnostic "Fourier structure present" for
+planted specimens is κ_f evaluated with the shortcut token *randomised* (the group-algorithm component of the function; threshold
+0.9 unchanged), with the leaked-s test accuracy > 0.99 as before; (ii) κ_f with the leaked s is reported as well, and
+1 − κ_f(leak) is recorded as the certified shortcut share of the logit variance; (iii) the accuracy drop under s-randomisation
+(the SPEC_O ground-truth crystallisation quantity) is recorded per specimen. First outcome under #2 alone, recorded before this
+amendment: grok_planted_s0 κ_f(leak) = 0.766 (test 1.000), grok_clean_s0 κ_f = 0.918, grok_memorize_s0 κ_f = 0.0001.
+
+_#3 clarification (16:58, after one computation)._ "Randomised" is the wrong estimator: a single random draw of s does not remove
+the shortcut term, it scrambles it (grok_planted_s0: κ_f 0.615 with one random draw, accuracy 0.996 — the shortcut is not needed
+for the answer). The group-algorithm component is the logit tensor **marginalised over the 8 shortcut values** (the expectation
+under the pre-onset, uninformative distribution of s); κ_f of that tensor is the planted inclusion/P1/P6 quantity. κ_f(leak),
+the shortcut share 1 − κ_f(leak), and the accuracy drop under marginalisation are reported alongside.
+
+**#4 (2026-09-14 17:25, planted onset + final-checkpoint stability — written before any recipe-2 specimen was trained).**
+Evidence (grok_planted_s0, recipe 1, every 5th checkpoint): the leaked-s and shortcut-marginalised logits agree at *every* checkpoint
+(accuracy identical, e.g. 0.9983/0.9983 at epoch 9 000 and 1.000/1.000 thereafter; κ_f(leak) − κ_f(marginal) ≤ 0.01 throughout).
+The shortcut token was never adopted: it became informative at epoch 9 000 (30 % of the budget), i.e. exactly when the model
+finished grokking (test 0.71 at 7 500 → 0.998 at 9 000), so there was no gradient pressure to use a redundant signal. As a P3
+specimen it contains no bias; the SPEC_O ground truth (ablation Δacc > 5 points) can never trigger. Second observation on the same
+trajectory: under constant-LR full-batch AdamW the function oscillates after grokking — κ_f 0.91–0.96 from epoch 12 000 on with
+dips to 0.80 (21 000) and 0.77 at the final checkpoint 30 000 (clean_s0's final 0.918 is likewise one draw of this cycle) — so the
+final checkpoint's diagnosis is a lottery, not a property of the specimen.
+Amendments to the T1 grokking recipe (all three conditions, all seeds; "recipe 2"): (a) planted data onset 30 % → **10 %** of the
+budget (epoch 3 000, when test accuracy is ≈ 4 %, well before the 7 500–9 000 grokking window measured above); the ground-truth
+definitions of SPEC_O are unchanged. (b) learning rate constant 1e-3 for the first 90 % of the budget, then cosine decay to 0 over
+the last 10 % (a standard convergence schedule; removes the terminal oscillation so the final checkpoint is the converged model).
+Nothing else changes (budget, optimiser, weight decay, data split, checkpoint cadence, thresholds). Recipe-1 specimens are kept as
+reference specimens, renamed `grok_clean_s0_v1`, `grok_memorize_s0_v1`, `grok_planted30_s0_v1` (listed in specimens.csv with
+included = 0, reason "reference specimen (recipe 1, AMENDMENTS #4)"); `grok_planted30_s0_v1` is additionally the *inert-shortcut*
+negative control for O1.3 (a planted token that was never adopted must produce no detection). Cost: clean_s0 and memorize_s0
+retrained (≈ 45 min each on the shared GPU); s1 partial runs discarded.
+
+**#5 (2026-09-14 17:35, O1.2 instrument corrections from the reference-specimen smoke run — written before any recipe-2 specimen exists).**
+Smoke run of meisho_doto.py on grok_clean_s0_v1 (recipe 1, reference only) exposed instrument defects, corrected here; thresholds untouched.
+(a) **K-O-1 and R7 were tautological as pre-registered.** A rebuild Σ_k w_k cos(ω_k(a+b−c)) from *any* non-empty frequency set with
+non-negative weights classifies Z_p addition perfectly (each term peaks uniquely at c ≡ a+b for prime p): the random-K rebuild scored
+accuracy 1.000, as did the artifact-only rebuild, so an accuracy-based kill can never fire. K-O-1 and R7 are therefore measured on the
+*function*: logit correlation with the model — random-K rebuild r < 0.3 (kill passes), artifact-only rebuild r < 0.3, and the certified-subset
+degradation curve as Spearman(fraction kept, logit r) > 0. The accuracy values are still recorded as the tautology they are. (b) **R4** residual
+on per-unit standardised activations (the recorded gauge fixing; the raw residual had σ² = 0 from sparse/dead ReLU units and the Gaussian null
+itself read 0.68 — MP invalid), over the full p² domain (the earlier 3 000-pair subsample broke the (a, b) DFT used by R8), with the certified
+feature basis = the degree-2 trigonometric basis of each certified irrep (adds cos/sin ω_k(a−b); the tensor square of irrep k contains both
+a+b and a−b). (c) **P2** anchor evaluated as pre-registered "on regions of constant activation pattern": IG along the short path (1−δ)e → e,
+δ = 0.05 (r_local); the zero-baseline global IG (r 0.045 on the reference specimen — the toy transformer with LayerNorm and softmax is not
+piecewise linear, so a global path crosses many regions) is reported alongside. (d) **P0** verdict by the treewidth bound (the parameter of the
+FPT conjecture, §2.14: tractable iff tw ≤ 8, marginal ≤ 32, else intractable); modularity Q is reported against its rewiring null (the reference
+specimen's attribution graph is a sparse star: Q 0.06 < null 0.35, tw 3 — the old "Q > 0.3" clause mislabelled sparse graphs). (e) **P7**
+irrep appearance = first checkpoint from which the frequency stays in K_f (at initialisation random frequencies exceed τ on a flat spectrum).
+(f) **glue**: H1 > 0 on a clean specimen is reported as "instrument fails the sanity gate" (FINAL_SPEC §2.12), not as a property of the model.
+Reference-specimen numbers kept for the record: P0 Q 0.06/tw 3; P1 κ_f 0.918, K_f 10 frequencies, phases |φ| < 0.005; P7 t_acc 0.21, t_κ 0.25,
+spectral gap flat (0.24–0.31, n_small = 1 throughout → the gap-opening clause fails on this instrument); glue H0 3 / H1 27 (trivial null 1/0);
+R1 logit r 0.842 (K_f), 0.956 (all 56 frequencies), 0.576 (embedding-amplitude path); R6 r 0.78–0.84 on all 10 objects (LayerNorm rescales the
+remaining components per token when one Fourier component of the embedding is removed).
+(iv) *Ring OOD points are transported, not redrawn, along the gauge orbit.* Drawing the off-attractor kick afresh inside
+each gauge sample makes the K-O-2 CV measure the sampling noise of the random kick (a fixed unit-indexed Gaussian z is
+isotropic *in law* but not permutation-equivariant *per sample*): measured CV 0.024 at n = 4, which would have downgraded
+the cell to "failed (artifact)" for the wrong reason. The kick is therefore built once in the trained gauge and carried
+to each gauge sample as h ↦ hS (`ring_on_orbit` passes S to the scoring function). With that, CV = 1.5e-4. The grok P4/P5
+query sets need no equivalent because they live in embedding space, which no gauge element touches (CV = 0 measured).
+
+**#6 (2026-09-14 18:35, ring attractor sampling — written after the ring_s0 smoke run, before any other ring specimen was opened).**
+Pre-registered ring P1 (SPEC_O/FINAL_SPEC §2.7: "sample activity {x(t)}, compute H1 of the Vietoris–Rips complex") on the driven
+trajectories of ring_s0 (64 held-out sequences × 180 steps, per-unit standardised) gives H1 lifetime ratio 1.30 with 946 bars and circular-
+coordinate agreement r 0.51 — no ring. Diagnosis: the driven cloud's leading principal component (41 % of variance) is the velocity input
+(r 0.74 with ω; cos θ / sin θ load on PCs 2, 3, 5), so the Rips metric is dominated by the input, not by the attractor, in every gauge fixing
+tried (raw, standardised, PCA-3/5/10/20, loud units only: ratios 1.0–1.8). §2.7 defines M as the attractor manifold of the *autonomous*
+dynamics. Amended sampling: M is sampled as the states reached under zero velocity from 1 000 held-out random cues at t = 10 steps (settled
+after the cue; the zero-input drift is 0.21 rad per 100 steps), per-unit standardised (recorded gauge fixing). On ring_s0 this cloud has
+exactly one H1 bar (lifetime ratio ∞; feature-shuffle null 1.01, Gaussian null 1.09; a permutation+scaling gauge sample gives the identical
+diagram, top bar 12.177 in both) — the driven-cloud outcome is recorded as the pre-registered result. Circular-coordinate agreement r is
+defined as the mean resultant length of the phase difference after the coordinate's own gauge (orientation ± and offset) is fixed (1 − r ≈
+σ²/2 for angular error σ); the Jammalamadaka–Sarma circular correlation is reported alongside; threshold 0.99 unchanged (ring_s0 at 400
+cues, t = 5–20: 0.92–0.97 — may fail; that is the result). R2 extends the certified coordinate to driven trajectories through a linear
+(cos, sin) decoder fitted on the attractor sample (recorded), then fits the tangent dynamics on those trajectories.
+
+**#7 (O1.2, 2026-09-14 18:40, certified frequency inventory — written before any further O1.2 run).** The pre-registered inventory
+K = {k : share_k > τ = 0.05} discards real components of the function: on the recipe-2 specimens the τ-inventory holds 9–11 of the ~17–20
+effective frequencies and its R1 rebuild reaches logit r only 0.77–0.85, whereas the complete diagonal inventory (all 56 frequencies with
+their amplitudes) reaches 0.971 (clean_s0), 0.978 (clean_s1), 0.986 (planted_s0) — i.e. τ, not the model, was failing R1. A share threshold
+is arbitrary; presence is certified instead against the function's own noise floor: frequency k is *certified present* iff its diagonal
+amplitude |L̂(k, k, −k)| exceeds the largest off-diagonal bin amplitude of the same c-centred logit tensor (the most conservative floor: no
+diagonal component is admitted that a non-diagonal term could match). This admits 19 / 22 / 16 frequencies on clean_s0 / clean_s1 /
+planted_s0 (rebuild r 0.971 / 0.978 / 0.986 — identical to the complete inventory to 3 decimals) and **zero** on the memorising control
+(largest diagonal amplitude 0.018 < floor 0.059), which is exactly the K-O-3 behaviour a certification rule must have. The τ-inventory is
+still reported in every P1 cell as the pre-registered estimator. R1's band (logit r > 0.98) is unchanged: it is bounded above by √κ_f, so the
+clean specimens (κ_f 0.947 / 0.959) can fail it while planted_s0 (0.974) passes — that is the finding, not a threshold to move.
+
+_#6 addendum (O1.2, 19:20, after the first ring_s0 run under #6, before any other ring specimen)._ At t = 10 the leaky dynamics
+(α = 0.1) still carry 0.9¹⁰ ≈ 35 % of the cue vector linearly, so the sampled loop can be the *image of the cue circle* rather than an
+attractor — exposed by ring P7 reporting the H1 bar at training fraction 0.00 (the untrained network). The attractor sample is moved to
+t = 60 (0.9⁶⁰ ≈ 0.2 % of the cue left; whatever loop remains is maintained by the recurrence). Cloud sizes reduced for cost (P1 600 cues,
+nulls and 5 gauge samples at 600; P7 every 4th checkpoint at 400 cues) — ring_s0 under #6 at 1 000 cues took 42 min for P1 alone.
+R2 is gated on the *certified object* (one dominant H1 bar with ratio > 5, nulls clear, gauge CV < 1e-3), not on P1's agreement threshold
+r > 0.99, which is P1's answer-quality criterion and is reported in R2's provenance; ring_s0 under #6 at t = 10: ratio ∞, r 0.986 (fails
+0.99 by 0.004), circular correlation 0.976 — recorded.
+
+_#5a addendum (O1.2, 19:30, K-O-1 scale)._ With the noise-floor inventory (#7) the certified set holds ~19 of 56 frequencies, so a random
+set of the same size overlaps it by ~6 frequencies on average and its rebuild correlates 0.37 with the model (clean_s0) — the fixed 0.3 bar
+scales with |K|/56 and is not a tautology test. K-O-1 is restated scale-free: the certified rebuild's logit r must exceed the 99th
+percentile of r over 100 random same-size frequency sets (the null distribution is reported); a rebuild insensitive to which frequencies are
+used would sit inside that distribution. Thresholds of R1 itself unchanged.
+
+_#6 addendum 2 (O1.2, 20:35, after ring_s0–s2 under the first addendum, before the remaining rings)._ (a) Coordinate resolution: on
+ring_s0 the circular-coordinate agreement with the cue angle is 0.891 at 600 cues, 0.952 at 1 500 cues (t = 60), 0.980 at 1 500 cues
+(t = 30), while the network's own read-out agrees with the cue at 0.992–0.998 — the estimator (least-squares cocycle lift on a finite
+sample), not the representation, limits r. P1's coordinate is computed on 1 500 cues (t = 60 kept); the nulls and the 5-sample gauge
+orbit stay at 600 (invariance does not depend on n). Threshold 0.99 unchanged; the 600-cue numbers of ring_s0–s2 stand as recorded. (b)
+R2 extension: extending the coordinate from the attractor sample to *driven* trajectories fails in every form tried (linear (cos, sin)
+decoder, ridge 0–100: r 0.13–0.24 vs the true angle; nearest-landmark: 0.17) because driven states are displaced off the ring along the
+velocity direction (the leading PC of the driven cloud). R2 is therefore rebuilt strictly from the certified object: the tangent dynamics
+dθ = g(θ, ω) are fitted from *one-step responses on the ring* — each attractor state (coordinate θ̂ by nearest landmark among the 1 500)
+is advanced one step under each ω in {−0.6, −0.3, −0.1, 0, 0.1, 0.3, 0.6} and the new state's coordinate read by nearest landmark (still on
+the ring after one step) — and the rebuilt integrator θ_{t+1} = θ_t + g(θ_t, ω_t) is run over the true 100-step OU velocity sequences from
+the cue's coordinate; error vs the true angle compared with the model's read-out error (criterion unchanged: within 10 %; drift statistics
+reported). The reduced model assumes the RNN's integration is Markov in θ (no hidden velocity state); where that fails the rebuild fails.
+The decoder-based R2 results of ring_s0–s2 (error ≈ 1.55 rad, r² ≈ 0) are recorded as the outcome of the first construction.
+
+## O1.3 Nishino Flower (P3 agent) — #O1.3-5 … #O1.3-10, chronological
+
+**#O1.3-5 (2026-09-14 17:05, revised 17:40 after AMENDMENTS #4 renumbered it; O1.3 Nishino Flower — logit-level ground truth for P3
+crystallisation. Written BEFORE any O1.3 detector was run; no detector onset estimate was known when the rule below was fixed.)**
+SPEC_O O1.1/§6.4 define the planted specimens' ground-truth crystallisation as *the first checkpoint at which ablating s
+(replacing it by a random residue token) changes test accuracy by > 5 points*. On the recipe-1 planted specimen this quantity
+never fires: `grok_planted30_s0_v1` reaches test accuracy 1.000 with the leaked s and 0.996 with s randomised (AMENDMENTS #3
+clarification) — Δ = 0.4 points at the end of training — and AMENDMENTS #4 then established that this specimen never adopted the
+shortcut at all, which is why it is kept as the *inert-shortcut* negative control. Recipe 2 moves the data onset to 10 % of the
+budget so that the shortcut is available before grokking, but the accuracy-level ground truth can still be silent by construction:
+the shortcut leaks only (a + b) mod 8, which the group algorithm already computes, so the network can put the shortcut into its
+logits without ever *needing* it for the argmax. An accuracy-level definition of "the bias entered" is blind to exactly the kind of
+bias P3 is about — a term in the function, not a crutch for the decision.
+
+A second, logit-level ground truth is added. Per checkpoint, let κ_f(leak) be the function-level Fourier concentration of the logit
+tensor evaluated with the leaked shortcut token (AMENDMENTS #2/#3) and let the **shortcut share** be σ(t) = 1 − κ_f(leak)(t): the
+fraction of centred logit variance that is *not* a translation-equivariant function of (a + b − c) mod p, i.e. the part of the
+function the planted token can carry. σ is a function of the realisation map and so is gauge-invariant by construction (K-O-2 still
+measured). Clean specimens have no shortcut token; their σ is the off-diagonal *residue* of a pure group algorithm (finite width,
+LayerNorm, the non-Fourier remainder), which is the correct null level for σ.
+
+**Definition (logit-level crystallisation).** Let R(f) be the clean reference at training fraction f: the median over all *included
+clean* specimens of σ at matched fraction f (their checkpoint grids linearly interpolated onto f). The logit-level crystallisation
+of a planted specimen is the **first checkpoint with f ≥ f_onset (that specimen's own data onset, `cfg["onset"]` / budget: 0.10
+under recipe 2, 0.30 under recipe 1) at which σ(f) > R(f) + δ and the inequality also holds at every later checkpoint** (a sustained
+crossing), with the margin fixed at **δ = 0.05** of the centred logit variance.
+
+Reasons. (i) *Matched-fraction reference rather than an absolute level*: σ is large and noisy early in training in every condition
+(an untrained model's logits are not a group function at all), so a fixed absolute level would fire at initialisation; subtracting
+the clean trajectory at the same training fraction removes the part of σ that is "not grokked yet" and leaves the part that is "uses
+the token". (ii) *δ = 0.05*: the same 0.05 used throughout Block O as the threshold for "a Fourier component carries real power"
+(AMENDMENTS #0/#2, τ = 0.05); it is 5 % of the whole logit variance, well above the checkpoint-to-checkpoint dispersion of σ on a
+grokked clean specimen and well below the 0.234 shortcut share the recipe-1 planted specimen ends at (AMENDMENTS #3), so the rule
+can both fire and fail to fire. We state plainly that those *final* values were already published in AMENDMENTS #3 when δ was
+chosen; what was not known, and what this rule estimates, is the *time* at which σ separates. (iii) *Sustained crossing*: σ is
+computed from one checkpoint's logits with no smoothing, and AMENDMENTS #4 measured a post-grokking oscillation in κ_f of up to
+0.15 under recipe 1; a first-crossing rule without the "and stays" clause would be set by whichever checkpoint noise crossed first.
+(iv) *f ≥ f_onset*: before the data onset s is uniformly random, so a crossing there would be a detector artefact, not a planted
+bias; the rule is only allowed to look where the bias exists.
+Sensitivity to δ ∈ {0.02, 0.05, 0.10} is reported as evidence in `results/open/nishino_flower_<specimen>.json`; the pre-stated rule
+remains δ = 0.05. Both ground truths (accuracy-level, possibly undefined; logit-level, possibly undefined if σ never separates) are
+carried in `results/nishino_flower_detections.csv`, and every detector is scored against each of them separately.
+
+_#O1.3-5 addendum (17:50, still before any O1.3 detector ran)._ The clean reference R(f) above is **not architecture-matched**:
+a planted specimen has seq_len 4 and 8 extra vocabulary entries, and AMENDMENTS #3 already recorded that the recipe-1
+planted specimen has σ = 0.234 against the clean specimen's 0.082 *while*, per AMENDMENTS #4, never having adopted the
+shortcut at all. Under the clean-referenced rule that inert specimen would be handed a logit-level crystallisation it does
+not have. A second, architecture-matched, within-specimen logit-level ground truth is therefore added and reported
+alongside (not instead of) the first: with κ_f(marg) the function-level concentration of the shortcut-**marginalised**
+logit tensor of the same checkpoint (AMENDMENTS #3), define
+    σ_within(t) = κ_f(marg)(t) − κ_f(leak)(t) ,
+the logit variance that the shortcut token moves off the group-diagonal *in this very model*, and take the logit-level
+crystallisation to be the first checkpoint with f ≥ f_onset at which σ_within > δ = 0.05 and the inequality holds at every
+later checkpoint. AMENDMENTS #4 measured σ_within ≤ 0.01 at every checkpoint of `grok_planted30_s0_v1`, so this estimator
+is correctly silent on the inert-shortcut control — that is the reason it is added, and it was fixed from #4's published
+numbers, not from any O1.3 output. Both logit-level ground truths appear in
+`results/nishino_flower_detections.csv` as `gt_logit_frac` (clean-referenced, the #5 rule) and `gt_logit_within_frac`
+(architecture-matched), and every detector is scored against both plus the accuracy-level ground truth.
+
+**#O1.3-6 (2026-09-14 17:20, O1.3 zigzag budget — operational, measured on this box; no threshold on any result is touched).**
+Z AMENDMENTS #2/#3 fixed the zigzag construction (per-checkpoint normalisation, β1-maximising Rips scale, the *same* probe
+points at every checkpoint, N_SUB lowered until the union complex fits a 0.8 M simplex budget). On the O1.3 specimens that
+budget is not binding and is not the cost: at the β1-maximising scale the T1 MLP clouds carry 45–78 H1 classes, and
+Dionysus' zigzag cost grows with classes × positions rather than with points. Measured on `grok_planted30_s0_v1`:
+84 983 simplices over 21 positions (11 clouds, 150 points) took > 4 min, and 91 370 simplices over 41 positions (21 clouds,
+100 points) had not finished after 12 min while the box was also running four training units. For Block O the zigzag
+simplex budget is therefore **30 000** with the subsample ladder 100 → 75 → 50 → 40, and the number of clouds handed to the
+zigzag is capped at `ZZ_MAX_CK` (40, i.e. an onset resolution of 1/39 ≈ 2.6 % of training, inside the 5 % pass tolerance of
+SPEC_O O1.3). `n_sub`, `budget_reduced`, `n_simplices`, `scale`, `scale_quantile` and `beta1_final_max` are recorded per
+specimen in `results/open/nishino_flower_<specimen>.json`, so the coarsening is visible in every row it affects. This is a
+compute limit, not a change to any detection rule or threshold; the zigzag detector's resolution limit is reported with its
+onset estimate.
+
+**#O1.3-7 (2026-09-14 17:35, O1.3 — the planted bias is TRANSIENT, so every ground truth becomes a window. Written before the
+detectors were run on any recipe-2 specimen.)** Measured on `grok_planted_s0` (recipe 2, data onset epoch 3 000): at epoch
+6 000 the shortcut is plainly in use (test accuracy 0.82 with the leaked token against 0.43 for the clean model at the same
+epoch), but by the final checkpoint it is gone — κ_f(leak) 0.973 ≈ κ_f(marginal) 0.974, shortcut share 0.027, accuracy
+without the shortcut 1.000. Weight decay prunes the shortcut once the full group algorithm makes it redundant. Two
+consequences.
+(i) *Ground truths are windows.* The accuracy-level ground truth (SPEC_O: ablation Δacc > 5 points) and both logit-level
+ground truths (#5 and its addendum) each report an **entry** and an **exit** checkpoint. Detectors are scored against the
+**entry** — that is the "when did the bias enter" question SPEC_O O1.3 and FINAL_SPEC §6.4 ask — and the exit is reported
+alongside, because a P3 procedure that cannot see a bias that has since been pruned is a different (and also interesting)
+failure from one that never saw it.
+(ii) *The "sustained to the end of training" clause of #5 is withdrawn* — it was written when the only planted specimen
+available had an inert shortcut, and on a transient bias it would report no crystallisation at all. It is replaced by a
+**persistence window of 3 % of training**: a crossing counts as the entry once it holds for ⌈0.03·n_ckpt⌉ consecutive
+checkpoints (minimum 2), and the exit is the first checkpoint after the entry at which the condition fails for the same
+number of consecutive checkpoints. This keeps the reason the clause existed (AMENDMENTS #4 measured single-checkpoint κ_f
+dips of up to 0.15, and one noisy checkpoint must not set the onset) while allowing the bias to end. A consequence stated
+in advance: a crossing that begins in the last 3 % of training cannot be certified as sustained and is reported as no
+crystallisation, with the raw trace in the JSON. The margin δ = 0.05, the matched-fraction clean reference, the
+within-specimen estimator and the f ≥ f_onset restriction are all unchanged.
+
+**#O1.3-8 (2026-09-14 18:10, O1.3 outcome — the shortcut share σ = 1 − κ_f(leak) does NOT see this planted shortcut. Recorded as
+a measured result; no threshold is changed and no rule is retro-fitted.)** On `grok_planted_s0` (recipe 2) the shortcut is
+unambiguously in use over a window: test accuracy with the leaked token minus accuracy with s randomised rises from 0.2
+points at epoch 3 300 to a peak of **39.05 points at epoch 6 000** and falls back below 5 points by epoch 7 500, giving the
+SPEC_O accuracy-level ground truth **entry f = 0.14 (epoch 4 200), exit f = 0.25 (epoch 7 500)**. Over that same window the
+within-specimen logit statistic of #5's addendum, σ_within = κ_f(marg) − κ_f(leak), is **≈ 0 and slightly negative**
+(−0.014 at epoch 4 800, −0.004 at 5 100, −0.010 at 6 000; maximum over all 101 checkpoints +0.012). The clean-referenced
+σ = 1 − κ_f(leak) is likewise *below* the matched-fraction clean reference over most of the window (0.588 against 0.723 at
+epoch 5 700), because the shortcut makes the planted model grok earlier, not less group-like. Reason, stated plainly: the
+planted token carries s = (a + b) mod 8, a coarsening of a + b, so the logit term it drives is very nearly a function of
+(a + b − c) and lands on the same diagonal DFT bins as the group algorithm. AMENDMENTS #3(ii)'s premise — "any dependence
+on (s, c) that is not a function of (a+b−c) has DFT support off the diagonal" — is true as stated but nearly empty for
+*this* shortcut. Consequences carried into the results: both logit-level ground truths are **undefined** for
+`grok_planted_s0` at δ = 0.05 (the clean-referenced one fires only at δ = 0.02, and then at f = 0.10, the data onset
+itself), the certified "shortcut share" of AMENDMENTS #3(ii) is not a measure of this planted bias, and the accuracy-level
+ground truth of SPEC_O is the only one that works here. A P3 design whose ground truth depends on κ_f needs a shortcut
+token that is *not* a function of a + b; that is a specimen-design question for the orchestrator, not a threshold to move.
+
+**#O1.3-9 (2026-09-14 18:25, O1.3 — probe detector v2, the leak−marginal probe differential. Written BEFORE any v2 number was
+computed; v1 keeps its pre-registered FAILED status and its rows are not touched.)**
+*Why.* Detector (c) v1 scores the linear probe for the planted residue class r8 = (a+b) mod 8 against the **c-given Bayes
+baseline** — the accuracy of the optimal predictor of r8 from the true answer c, 0.746 on the fixed probe set — and
+requires the post-change probe accuracy to clear that baseline by ≥ 0.10. Measured on `grok_planted_s0`, the probe reaches
+only 0.20–0.25 on the 20-dim gauge-fixed cloud, so the guard can never be cleared and v1 cannot fire for any specimen.
+The guard is mis-specified, not merely strict: it is computed from a label (c) that the probe never sees and from the full
+p² grid rather than from the 20 principal directions the probe reads, so it is not an achievable level for this probe. v1
+is left in place, reported FAILED, because it is what was pre-registered; v2 is added as a separate, separately-labelled
+detector and both ship in `results/nishino_flower_detections.csv`.
+
+*Definition (probe detector v2).* Per checkpoint, the statistic is the **differential**
+    d(t) = probe_acc_leak(t) − probe_acc_marginal(t),
+the accuracy gain a linear probe for r8 gets from the leaked shortcut token over the shortcut-marginalised cloud of the
+same model at the same checkpoint. This is the direct shortcut-aligned feature: a bias that entered through the token
+must raise the first and not the second, and for a specimen with no shortcut token the two clouds are identical, so
+d ≡ 0 by construction (recorded as a vacuous null, exactly as for the other `diff` variants). The onset rule is the
+**same as v1**: the max-t two-sample change point on d(t), with the onset estimated as the first checkpoint at which d
+crosses the midpoint between the pre-change and post-change means (the half-rise convention of
+`spectral.flow.crystallization_index`, FINAL_SPEC §6.8).
+
+*Significance.* The change-point statistic of d(t) is scored against a **2000-draw label-permutation null**: the fold
+assignment, the clouds and the checkpoint order are all held fixed, and only the r8 labels are permuted; for each draw the
+whole differential trace is recomputed and its max-t statistic taken. p = (1 + #{null ≥ observed}) / 2001, detection iff
+p < 0.05. No baseline guard, no threshold on the level of d. The null answers exactly "could this much leak-vs-marginal
+probe structure arise if the probe target carried no information about the cloud".
+
+*Probe estimator for v2.* v1's probe is `sklearn.LogisticRegression`; 2000 permuted traces of it would be ≈ 1.6 M
+iterative fits and is not computable on this box. v2 therefore uses a **closed-form ridge probe** on the same objects —
+same gauge-fixed 20-dim clouds, same fixed probe set, same fixed 4-fold split, ridge λ = 1.0 on one-hot targets with an
+intercept, predict by argmax — for **both** the observed trace and every null draw, so the observed statistic and its null
+come from one estimator. The per-fold hat matrices do not depend on the labels, so a permutation costs one matrix product.
+The Pearson correlation between the ridge and logistic probe-accuracy traces is recorded per specimen and per channel in
+`results/open/nishino_flower_<specimen>.json` (`probe_v2.ridge_vs_logistic_r`) so that the substitution is auditable; it is
+a change of estimator for tractability, not a change of what is measured.
+
+*Nulls for false detections.* The same v2 statistic and the same rule are run on the clean specimens (where it is
+identically zero, hence vacuous and counted as such) and on the inert-shortcut control `grok_planted30_s0_v1`, which is
+the non-vacuous null: a planted token that was never adopted (AMENDMENTS #4) must produce no v2 detection. Scoring against
+the ground truths is unchanged: the entry of each window (AMENDMENTS #7), pass iff |onset − entry| ≤ 0.05 of training.
+
+**#O1.3-10 (2026-09-14 19:20, O1.3 — probe detector v3, the v2 rule restricted to f > 0. Written BEFORE any v3 number was
+computed; v1 and v2 keep their rows and their status exactly as recorded.)**
+*Why.* The v2 differential d(t) = probe_acc_leak(t) − probe_acc_marginal(t) is dominated on every planted specimen by a
+single value at the **untrained checkpoint f = 0**: +0.695 on `grok_planted_s0`, +0.578 on `grok_planted_s1`, +0.691 on the
+inert control, against ≈ 0.00 for the whole first tenth of training and a plateau of +0.09…+0.11 afterwards. The cause is
+mechanical and has nothing to do with bias: at initialisation the leaked shortcut token sits verbatim in the residual
+stream while the marginalised cloud averages it away, so a linear probe reads it before a single gradient step. That one
+point sets the max-t split and drags the half-rise onset estimate to f = 0.00–0.01 on both planted specimens, which is why
+v2 fires (p = 0.0005 and p = 0.044) and still misses both ground truths. "When did the bias enter *during training*" is a
+question about f > 0 by definition; f = 0 is the network before training exists.
+
+*Definition (probe detector v3).* Exactly the v2 rule — same ridge probe (λ = 1.0, same gauge-fixed 20-dim clouds, same
+fixed 4-fold split), same differential statistic, same max-t two-sample change point, same half-rise onset estimate, same
+α = 0.05 — applied to the sub-trace of checkpoints with **f > 0**. The 2000-draw label-permutation null is recomputed on
+the f > 0 trace (the same permutations, the same slicing applied to each null trace, so the null matches the statistic it
+scores). No other change: no baseline guard, no threshold on the level of d, no smoothing, no other checkpoint dropped.
+
+*Nulls for false detections.* Unchanged and identical in kind to v2: the three clean specimens, where the marginal and
+leak clouds are the same object so d ≡ 0 and the null is vacuous (counted and labelled as such), and the inert-shortcut
+control `grok_planted30_s0_v1`, which is the non-vacuous null — a planted token that was never adopted (AMENDMENTS #4)
+must still produce no v3 detection. Scoring is unchanged: against the **entry** of each ground-truth window (AMENDMENTS
+#7), pass iff |onset − entry| ≤ 0.05 of training, reported separately for the accuracy-level ground truth (SPEC_O) and
+each logit-level one, wherever each is defined.
+
+## O1.4 Fine Motion (P4/P5 agent) — #O1.4 (a)–(h) and addenda (i)–(vi)
+
+**#O1.4 (2026-09-14 17:20; tagged #O1.4 rather than a number at 19:40 — several Block-O agents appended to this file concurrently and the numeric sequence collided (three #6, two #5, two #7); this entry and its addenda are referenced by the tag #O1.4 throughout `fine_motion.py`. O1.4 Fine Motion — P4/P5 realisation on T1; written BEFORE any P4/P5 number was computed).**
+SPEC_O §O1.4 and FINAL_SPEC §6.5/§6.6 fix the criteria (AUC > 0.9 beating softmax confidence, random-projection null;
+Spearman(ρ, failure radius) < −0.5 at p < 0.01 beating the softmax-margin baseline, shuffled-ρ null). None of those
+thresholds is touched. What follows is the realisation of the *inputs and the estimators* on the T1 specimens, where the
+spec's wording assumes an architecture or an input domain the T1 specimens do not have.
+
+(a) **"moduli and ranges unseen" is not realisable on T1.** A `grok_*` specimen has a fixed modulus p = 113 and its input
+domain is the whole of Z₁₁₃ × Z₁₁₃; training uses 30 % of the p² pairs and the held-out 70 % exhausts the rest. There is no
+unseen modulus and no unseen range for a model whose vocabulary *is* Z₁₁₃ ∪ {'='}. The P4 OOD set is therefore the
+remaining SPEC_O categories, enumerated here and frozen: **corrupted tokens** — (i) `corrupt_eq`: a uniformly random
+number token in place of '='; (ii) `swap_eq`: the positions permuted to [b, =, a] (planted: [b, =, a, s]); (iii) `dup_eq`:
+the b token replaced by a second '=' ([a, =, =]); **out-of-vocabulary embeddings** — (iv) `oov_emb`: the embedded vector of
+the a position replaced by a random direction of matched norm (the mean ‖wte‖ over the vocabulary), i.e. a token that
+exists in embedding space but in no vocabulary; (v) `shortcut_tok`: a planted shortcut token (id ≥ p+1) placed in the a
+position; **adversarial** — (vi) `adversarial`: iterated gradient ascent on the embedded input against the model's own
+prediction, accepted at the smallest radius in the P5 grid at which the argmax flips (a genuinely minimal-radius flip is not
+claimed; the radius grid is the resolution).
+
+(b) **(v) `shortcut_tok` does not exist for clean and memorising specimens.** Their vocabulary is exactly p + 1 = 114 ids,
+so "shortcut tokens fed to the clean model" has no referent: there is no token id outside the vocabulary to feed. The
+condition is recorded as `not_reached` with that reason on clean/memorise specimens and run only on planted ones; the
+out-of-vocabulary role on clean/memorise is carried by (iv) `oov_emb`, which is the same idea done in embedding space.
+
+(c) **Lip(x) for the toy transformer is a Jacobian norm, not the exact path product.** `geometry.lipschitz_field` is exact
+only for ReLU MLPs (`invariants.model.as_relu_mlp` refuses anything with attention or LayerNorm), and the T1 grokked
+specimen is a pre-LN attention model. Lip(x) is therefore **the spectral norm of the autograd Jacobian of the last-position
+logits with respect to the embedded input** (token + positional embeddings, flattened over the T·d input coordinates),
+computed by 113 batched backward passes. *Failure boundary, recorded as part of the cell:* unlike the MLP path product,
+which is the exact Jacobian on a whole gate region, this is a pointwise derivative — softmax attention and LayerNorm make
+the logit map non-piecewise-linear, so ‖J(x)‖₂ bounds the local response only in a neighbourhood small compared with the
+map's own curvature, and at the largest radii of the P5 grid it is an extrapolation. It is gauge-invariant by construction
+(no element of G touches `wte`/`wpe`, and every element leaves the function unchanged, hence its Jacobian).
+
+(d) **The failure radius is reimplemented, not taken from the library.** `geometry.perturbation_failure_radius` also goes
+through `as_relu_mlp` and cannot accept the transformer, and its rule is "*any* of n_dirs directions flips" whereas SPEC_O
+O1.4 as run here uses the **majority rule: ≥ 5 of 8 Gaussian draws flip the argmax**. The nested design is kept (8
+directions drawn once per input, normalised to the unit sphere, reused at every radius); the radii r ∈ {0.01, 0.02, 0.05,
+0.1, 0.2, 0.5} are **relative to the global std of the embedded inputs** (ring: of the hidden states), since SPEC_O states
+them as bare numbers and absolute distances are not comparable across specimens. Inputs never flipped at r = 0.5 get
+radius ∞ (ranked highest), as in the library; the tied fraction is reported, and a cell whose radii are almost all ∞ is
+reported as failed/partial with that reason rather than rescued by widening the grid.
+
+(e) **Ring baselines.** The ring RNN has no softmax. The pre-registered stand-in named in SPEC_O for P4 is the readout-norm
+deviation |‖R(h)‖ − 1| ("the ring's confidence"); the same quantity is used as the P5 baseline in place of the
+softmax margin, and is reported as such. Ring failure for P5 is angular error > 0.3 rad after 50 further steps (SPEC_O),
+under the same majority-of-8 rule.
+
+(f) **Gauge orbit size.** K-O-2 specifies 300 gauge samples. Each P4 recomputation is a full diffusion embedding
+(Laplacian + eigendecomposition + Nyström) and each P5 recomputation is a 113-backward-pass Jacobian sweep plus 48 forward
+passes; 300 of each per specimen is hours on a GPU shared with four training units and an enumeration job. The default here
+is **20 gauge samples** (`--n-gauge`, recorded in every JSON and CSV row); the CV > 1e-3 downgrade rule is unchanged. A cell
+certified at n = 20 is certified against a 20-sample orbit and says so in its provenance.
+
+(g) **The ring RNN's gauge group is defined here** (`whiteboxtopo.symmetry` has no RNN backend). For S = P·D with P a
+permutation and D a positive diagonal, h ↦ hS is an exact symmetry of h' = (1−α)h + α·ReLU(hW + uU + b) with
+W ↦ S⁻¹WS, U ↦ US, b ↦ bS, R ↦ S⁻¹R, readout bias unchanged (ReLU commutes with S because D > 0, and h₀ = 0 is fixed).
+`fine_motion.ring_gauge_apply` implements it; the K-O-2 orbit for ring cells is drawn from it.
+
+(h) **Gauge fixing of the clouds (recorded).** Every activation cloud entering a diffusion embedding or a curvature
+estimate is standardised per unit by the *in-distribution* cloud's per-unit std (`topology.scaling.standardized_cloud`
+convention: divide, no centring; zero-scale units left as 0), and the query points are divided by the same reference
+scales. This is the gauge fixing K-O-2 requires: without it the k-NN graph is not invariant under per-unit ReLU scalings.
+The P4 in-distribution cloud is subsampled to at most 1200 points (deterministic, seeded) to keep the Laplacian in the
+dense-eigensolver regime; the curvature neighbourhood uses k = 30 rather than the library default 15, because the fitted
+intrinsic dimension may be up to `MAX_INTRINSIC_DIM` = 5 and the quadratic fit needs k > 1 + m + m(m+1)/2 = 21.
+
+**#O1.4 addenda (2026-09-14 18:30, written AFTER the first two O1.4 smoke cells — recorded here because they are post-hoc,
+and neither changes a pre-registered criterion.)**
+(i) *Extended radius grid, diagnostic only.* On `grok_clean_s0_v1` the pre-registered P5 grid r ∈ {0.01,…,0.5} has **no
+dynamic range**: 255 of 256 held-out inputs never flip at any radius in the grid (frac_inf = 0.996), so the measured
+failure radius is a constant with one exception and the Spearman against it is not a test of anything. The pre-registered
+cell is reported FAILED on that ground. Additionally, when frac_inf > 0.5 the runner re-measures the failure radius on
+`RADII_EXT = RADII + (1, 2, 5, 10)` and records it under `evidence.diagnostics` with an explicit note. That number is a
+**diagnostic**, never a criterion and never a certification: it says at what scale isotropic perturbations start flipping
+this model, which is the information needed to decide whether the pre-registration was mis-scaled or the predictor is
+wrong. The pre-registered verdict is unchanged by it.
+(ii) *P4 diagnostics.* When a P4 cell is not certified the runner records, under `evidence.diagnostics`, the ambient
+nearest-reference distance of every query group, the cloud's own nearest-neighbour distance, the AUC of that raw ambient
+distance, and (grok) the same AUC with the in-distribution cloud enlarged from the 1200-point subsample to every training
+pair. These separate "the diffusion embedding lost the signal" from "the activation cloud never placed these inputs
+further out than held-out inputs" and from "the 1200-point subsample was too sparse". Diagnostics only; no criterion.
+(iii) *Ring quantities are computed in the standardised coordinates.* Under the ring gauge group (#O1.4g) the hidden state
+transforms as h ↦ hS, so an isotropic Gaussian kick in raw coordinates and the raw one-step Jacobian norm
+‖(1−α)I + α(W⊙mask)‖₂ are **not** gauge-invariant (J ↦ S⁻¹JS). Both are therefore taken in the per-unit-standardised
+coordinates: the P4 off-attractor kick has per-unit scale s_j (the in-distribution per-unit std), the P5 perturbation
+directions are scaled per unit by the same s_j, and the P5 Jacobian norm is ‖diag(s) J diag(1/s)‖₂. In those coordinates
+the gauge acts by permutation conjugation only and all three are invariant. Recorded as part of the gauge fixing of #O1.4h.
+
+**#O1.4 addenda (v) (2026-09-14 20:05, O1.4 P5 v2 — a second, better-powered failure-radius measurement. PRE-REGISTERED:
+written before any bisection radius was computed; the v1 cells stay exactly as they are and keep their verdicts.)**
+*Why.* The pre-registered P5 radius grid r ∈ {0.01, 0.02, 0.05, 0.1, 0.2, 0.5} (relative to σ_emb, #O1.4d) has no dynamic
+range on a grokked T1 specimen: σ_emb = 0.0063 after training with weight decay 1.0, and at every grid radius the argmax
+of a converged model never flips under an isotropic embedding-space perturbation. Measured: `grok_clean_s0` and
+`grok_planted_s0` frac_inf = 1.000 (nothing flips at any grid radius, Spearman undefined); `grok_clean_s0_v1` frac_inf =
+0.996; `ring_s0` frac_inf = 0.824. The diagnostic extended grid (#O1.4i) showed the flips are concentrated at r = 1–2,
+i.e. the measurement is a near step function *above* the grid, so the v1 ranking test has essentially no power on
+grokked specimens. The failure is in the measurement's resolution, not in a threshold.
+
+*P5 v2 (this is the pre-registration).* The per-input failure radius is measured by **12-step bisection on [0, 4 σ_emb]**
+(ring: 4 × the in-distribution per-unit state std), under the **same majority-of-8 rule** as v1: the same eight Gaussian
+directions per input, drawn once and normalised (the nested design of #O1.4d), and the input counts as failed at radius r
+iff ≥ 5 of the 8 flip the argmax (ring: iff the angular error exceeds 0.3 rad vs the unperturbed model after 50 further
+steps). Procedure: evaluate the majority rule at r = 4; inputs that do not fail there get radius ∞; the rest are bisected
+12 times, the returned radius being the upper end of the final bracket (resolution 4/2¹² ≈ 1e-3 σ_emb).
+**Nothing else changes.** Spearman(ρ, radius) < −0.5 at p < 0.01, more negative than the softmax-margin baseline's (ring:
+the readout-norm baseline's, #O1.4e), shuffled-ρ permutation p < 0.01 over 1000 shuffles, and K-O-2 CV < 1e-3 on the
+same gauge orbit (ρ is identical for v1 and v2, so the orbit is shared and the two Spearman CVs are reported separately).
+ρ itself is unchanged: ‖Q_h‖ × Lip (#O1.4c).
+
+*Failure boundary, stated in advance.* Bisection assumes the majority-of-8 flip indicator is monotone in r. It is not
+guaranteed to be — a direction that flips the argmax at one radius can land back on the original class at a larger one —
+so the returned value is "a radius at which the majority rule fires, with no smaller firing radius found along the
+bisection path", not a certified minimum. It is a strictly finer instrument than the six-point grid and is reported as
+such; it is not a proof of the minimal adversarial radius (the P4 `adversarial` condition is the directed analogue).
+
+*Reporting.* v2 appears as additional rows in `results/fine_motion_P5.csv` with the predictor names suffixed `_v2`
+(`rho_v2`, `baseline_margin_or_readout_v2`, `rho_shuffled_null_v2`) beside the untouched v1 rows, and under
+`evidence.v2` in each JSON with its own verdict. The *cell* status remains the v1, pre-registered verdict; the v2 verdict
+is carried alongside and labelled, never substituted for it.
+
+*Gauge orbit size.* O1.4 ships at **n_gauge = 20** (#O1.4f), stated in every cell's provenance and in every CSV row.
+
+**#O1.4 addenda (vi) (2026-09-14 20:50, a measured property of the K-O-2 CV rule — RECORDED, NOT A RULE CHANGE.
+K-O-2's "CV > 1e-3 downgrades the cell to failed (artifact)" stands exactly as written; whether it should be amended is
+the coordinator's call, not this runner's.)** K-O-2's CV is a *relative* dispersion, std/|mean| over the gauge orbit, so
+it diverges when the certified quantity is itself near zero. Across the 27 O1.4 specimens exactly one cell was flagged
+"failed (artifact)": `grok_clean_s1` P5 v2, CV 1.456e-3. Its orbit Spearman has mean +0.0121 and an **absolute** spread
+of 1.8e-05 — i.e. the quantity is gauge-invariant to five decimal places and the flag fires only because the mean is
+0.012. The same arithmetic applies to `grok_memorize_s1` (CV 4.7e-4, absolute spread 1.7e-05) and `grok_planted_s1`
+(CV 3.2e-4, absolute spread 1.3e-05), which pass only because their means are ~3x larger. For comparison, a cell whose
+Spearman is far from zero shows CV ~1e-16. Every O1.4 cell fails its *scientific* criterion regardless, so nothing in
+this block's verdicts turns on it; the note exists so that the one "artifact" label is not read as evidence of a gauge
+problem in `grok_clean_s1`. A CV rule of this shape needs an absolute floor (or to be stated on a quantity bounded away
+from zero) before it is applied to a correlation coefficient.
+
+_#6 addendum 3 (O1.2, 21:00, R2 initial condition — after the first one-step-response run on all rings)._ Under addendum 2 the rebuilt
+integrator was started from the nearest-landmark coordinate of the network's state at step 0; that state is the raw image of the cue,
+nowhere near the t = 60 attractor sample in the standardised metric, so every trajectory started at a random phase and the error was
+≈ π/2 (1.51–1.57 rad) on all nine rings whatever the fitted dynamics (fit r² 0.4). The rebuild's inputs are the task's inputs — the cue
+angle θ₀ and the velocity sequence — so the initial coordinate is θ̂₀ = s·θ₀ + φ, the certified orientation/offset relation between the
+coordinate and the cue angle fitted on the attractor sample (already recorded in every P1 cell); the trajectory is mapped back with the
+same relation. Nothing else changes. The addendum-2 numbers stand as recorded.
+
+_#6 addendum 4 (O1.2, 21:20, R2 tangent dynamics with lag — after the addendum-3 run on all rings, before any further R2 run)._ With the
+initial condition fixed the rebuild still lands at ≈ π/2 error on all nine rings (1.52–1.55 rad; fit r² ≈ 0.4). Cause: the one-step map
+is Markov in θ, but the leaky RNN (α = 0.1) responds to a velocity input over ~10 steps, so a one-step displacement read on the ring
+underestimates the gain by roughly the leak factor and the integrator falls behind. The tangent dynamics of a driven attractor are
+therefore measured as the ring's *pulse response*: from each attractor state, apply a constant ω ∈ {±0.6, ±0.3, ±0.1, 0} for L ∈ {1, 2, 5,
+10, 20} steps, then zero input for 60 steps (relax back onto the ring), and read the phase advance Δθ̂(θ, ω, L) by nearest landmark
+(on-ring readings only — no coordinate is ever read off the ring). The certified dynamics are the two-parameter filtered integrator
+v_{t+1} = (1−a) v_t + a ω_t, θ_{t+1} = θ_t + γ(θ) v_t (a = the fitted response time constant, γ(θ) = gain in a 3-harmonic Fourier basis)
+fitted to the pulse responses by least squares over (a, γ); the rebuild integrates it over the true OU velocity sequences from the cue
+angle through the certified coordinate frame (addendum 3). Criterion unchanged (error within 10 % of the model's; drift statistics
+reported). The one-step-map numbers (addendum 2/3 runs) stand as recorded.
+_(addendum 4 clarification, 21:35: the filter constant a is the architectural leak α = 0.1 of the RNN — a hyperparameter of the model
+class, not a trained weight — because on-ring readings cannot observe the transient itself; only the gain γ(θ) is fitted.)_
+_(addendum 4 clarification 2, 21:45, after inspecting the pulse responses on ring_s0.)_ The on-ring pulse readings are correct (advance
+−0.253 for ω·L = −0.30, −1.49 for −1.50, and the wrap of ±6 rad at L = 20), but the gain fit regressed the *wrapped* advance on ω·L up
+to ±12 rad and fitted noise (r² 0.02). The gain is fitted on pulses with |ω·L| ≤ 2.5 rad only. The filter constant: a 10-step angular
+lag is physically excluded — the network's read-out tracks the true angle to 0.06 rad over 200 steps of OU velocity (sd 0.3, step
+correlation 0.9), which a lagged integrator cannot do — so the leak α governs radial relaxation, not the angle; the certified tangent
+dynamics are memoryless, θ_{t+1} = θ_t + γ(θ) ω_t (a = 1). Written before the corrected fit was run.
+
+**#O4.1 (2026-09-14 22:10, O4.1 Bamboo Memory — T4 frontier open(); written BEFORE any O4.1 compute, alongside the new
+pre-registration `SPEC_O4.md`. Nothing here changes a threshold of an existing block; it records the three choices O4.1
+had to freeze for itself and the one construction it adapted.)**
+(a) *The P0 EAP graph is V7's, with two gradient read points per layer instead of one.* `hpcc/mejiro_ardan.py` (V7) may
+use one gradient per layer because Pythia's parallel residual has every node of a layer read the same layer input.
+Llama-3 and Gemma-2 are sequential — the MLP of layer *l* reads the residual *after* that layer's attention — so
+`bamboo_memory.py` takes the gradient at the block input (for the attention nodes) and at the pre-MLP-norm input (for
+the MLP node). Consequence: within-layer head→MLP edges exist and are scored, and readers in one layer no longer share a
+gradient. The verdict rule itself is unchanged (#5d: by the treewidth bound at density 0.1; Q reported against the
+rewiring null, never part of the verdict). For Gemma-2 the per-node contributions are rescaled by
+(1 + w)/rms(sublayer_out) of the post-sublayer RMSNorms; the split is an *exact* decomposition of the realised
+contribution (node sum = h_{l+1} − h_l to 2.8e-7 relative on a random Gemma-2 config; Llama branch 3.9e-7) and
+first-order only as a counterfactual, since ablating one node would also move rms.
+(b) *The bf16 floor for the F12 identity check is the permutation deviation.* §2.4's CV < 1e-3 is an fp32 number and the
+frontier jobs run in bf16. A permutation re-orders summations and changes no value, so its measured deviation *is* the
+floating-point floor of that run; a renaming kind counts as exact at this precision iff its deviation ≤ 10 × that floor,
+and the gauge step fails outright above 0.5 (the threshold `kawakami_princess.py` already uses for `does_not_scale`).
+(c) *The headline γ_cov layer is fixed before compute* as the K8 layer closest to the middle of the model (layer 20 of
+Gemma-2-9B's 42); all K8 layers are reported, only that one enters 1 − γ_cov, and γ_cov is claimed only where
+gamma_excess > 0 against both MP nulls (K-O4-2). Llama-3-8B has no public SAE in this stack, so its γ_cov and its degree
+of opening are reported as **unknown**, never as zero.
+
+## O2.1 Satono Crown / O2.2 Narita Top Road (T2, GPT-2 small) — #O2-1 …, chronological
+
+_These entries belong to `SPEC_O2.md` (the T2 pre-registration, written 2026-09-14 before any O2 compute). They are
+numbered `#O2-n` so they cannot collide with the O1 sequences above. `satono_crown.py` and its JSONs cite them._
+
+**#O2-1 (2026-09-14 22:05, the P2 anchor — written after the `--smoke` run of `satono_crown.py` on IOI, before any
+full-size O2 run).** SPEC_O2 §5 pre-registers P2 as the attention-pattern-conditional path product (FINAL_SPEC §6.3)
+anchored on "integrated gradients along the constant-pattern path (1−δ)e → e, δ = 0.05, r > 0.95". It did not say which
+model the IG is taken *through*. Taken through the **full** model the anchor reads **r = −0.485** on 32 IOI prompts (and
+the frozen-pattern attribution correlates **−0.494** with the full-model gradient × input, which itself agrees with its
+own local IG at r = 0.999). So the pre-registered wording, read the loose way, would have failed P2 for a reason that
+has nothing to do with the instrument's invariance.
+Clarification, frozen here: "on regions of constant activation pattern" means the IG is computed through the **same
+pattern-frozen linearisation** as the attribution. That matched anchor is the pre-registered criterion and reads
+r = 0.99995 on the smoke split. The full-model IG correlation and the frozen-vs-full correlation are **reported in
+every P2 cell** as the measured size of the QK term — that is, on IOI the query-side path carries attribution of the
+same order as the OV path and of the *opposite sign*, which is the "QK caveat" of §6.3 turned into a number rather
+than a disclaimer. No threshold moved: P2's bars are still CV < 1e-4 over the gauge orbit and anchor r > 0.95.
+
+**#O2-2 (2026-09-14 22:05, T2 split sizes — memory, not a threshold).** SPEC_O2 §1.4 pre-registers 256 discovery +
+256 held-out prompts per task. A `record=True` forward keeps one tensor per node in the autograd graph, and the
+arithmetic on an 8 GB card is: 144 head nodes × B × T × 64 × 4 B plus 12 MLP nodes × B × T × 768 × 4 B plus GPT-2's own
+graph (the 3072-wide MLP hidden state dominates at 12 × B × T × 3072 × 4 B). At B = 256, T = 64 (induction) that is
+≈ 9 GB and does not fit; `discover_circuit` takes the batch it is given in one shot, so it cannot be chunked without
+changing the frozen pipeline. The split sizes are therefore **128 / 128 for IOI and greater-than and 64 / 64 for
+induction** (`satono_crown.NPROMPTS`), which is inside the range the T2 circuit literature uses. Nothing else changes:
+no threshold, no metric, no null. The cost is statistical power on the per-example correlations of R5/R6, and that cost
+is stated in the cells that use them.
+
+**#O2-3 (2026-09-14 22:05, the glue cover at small splits).** SPEC_O2 §6 freezes the cover at k = 10 regions with
+`n_min = 10`. Those are used at every full-run size. A `--smoke` split (8–16 prompts) cannot carry 10 regions of ≥ 10
+examples, so at those sizes `k` and `n_min` are reduced (`k = min(10, max(3, n/12))`, `n_min = min(10, max(3, n/8))`)
+and both the used and the pre-registered values are written into the cell. A smoke cover is expected to give
+`cyclomatic = 0` (H1 = 0 by construction, not by evidence) and the cell then reads `partial` — that is the instrument
+reporting that it has no evidence, which is the behaviour AMENDMENTS #5f installed at T1.
+
+**#O4.1 (d) (2026-09-14 23:45, instrument defect inherited from V7's EAP construction — repair added, verdict unchanged.)**
+O3.1's K-O-2 gauge orbit (SPEC_O3 #O3-1/#O3-2, using the new `whiteboxtopo.symmetry.neox` backend) found that
+`hpcc/mejiro_ardan.eap_graph` reads **one gradient per layer**, so every consumer node of a layer receives the same score
+from a given source; on `pythia-70m` at `step143000` the symmetrised matrix had **91 distinct edge magnitudes among 990
+node pairs**, and the density threshold's tie-breaking made Leiden Q move by **CV 0.572** under exact renamings (V
+AMENDMENTS #15). O4.1 inherited the construction: `bamboo_memory.eap_matrix` already splits the MLP off with its own read
+point (#O4.1 (a)), but all H attention nodes of a layer still share `attn_in`, so the same tie structure is present on the
+head side.
+
+**Repair, additive and default ON, with the verdict left where it was.** `_install_per_node` + `_PerHeadProj` give every
+target node its own cloned copy of the block input: a pre-hook keeps the block input `x` in the autograd graph, the QKV
+projection is temporarily wrapped so head h computes its own parameter block from `attn_prenorm(x + eps_h)` with `eps_h` a
+zero leaf, and the MLP keeps its own `x + eps_mlp` at its pre-norm. The per-head parameter blocks are disjoint and are
+written back into their own slots, so the projection output is numerically identical at the same matmul flops (the pre-norm
+is recomputed H times, which is negligible). Layouts handled: `cols3` — GPT-2's single Conv1D `(d, 3d)` with head h at
+columns `j*d + h*dh`; `rows` — Llama-family `q_proj`; `rows_kv` — Llama-family `k_proj`/`v_proj`, where **under GQA the K/V
+rows are shared by a query group and are therefore computed from the clone of the group's first query head** (the
+representative; this asymmetry is recorded here and in the cell provenance, and it is the one place the per-node graph is
+not a clean per-node decomposition).
+
+`run_p0` now computes **both** graphs — `p0_<slug>_E.npz` (pre-registered) and `p0_<slug>_E_pernode.npz` — plus, when
+`whiteboxtopo.symmetry` has a backend for the model (`symmetry.gpt2`, `symmetry.llama` for Llama/Gemma-2/Qwen2/Mistral,
+`symmetry.neox`), a small K-O-2 orbit on both (`--n-gauge`, default 3; `p0_gauge_orbit`). The **P0 verdict is unchanged**:
+it is still `treewidth_ub` at the pre-registered density on the **pre-registered** graph. The per-node results land in the
+`per_node` block of `p0_<slug>.json` and in the P0 cell's `per_node` field, explicitly labelled as not verdict-setting —
+swapping the instrument that decides a cell after seeing a gauge result would be a threshold change. `--no-per-node` skips
+the extra graph; a failure in it is caught, recorded and never fatal, so an architecture whose QKV layout `_PerHeadProj`
+cannot name still produces the pre-registered P0 cell.
+
+Honest limit, measured on Pythia before this was written: the repair removes the tie degeneracy (91 → 811 distinct edge
+magnitudes) but does **not** by itself make the thresholded Leiden Q gauge-stable at 1e-3. Treewidth — the quantity the P0
+verdict actually uses — was stable (CV 0) in every orbit run so far, which is why the verdict is reported as it stands; Q
+is reported, not part of the verdict (#O4.1 (a)), and that separation is what keeps this defect from touching the P0 answer.
+
+**#O4.1 (d) addendum (2026-09-15 00:20) — the GPT-2 smoke, and the one number that matters for the P0 answer.**
+`bamboo_memory.py --p0 --model gpt2 --n-tokens 2000 --dtype float32 --device cpu` (785 s total on a box at load 25 —
+114 s of it the pre-registered EAP, 248 s the per-node EAP, the rest the orbit and the graph measures; not a clean
+timing). 65 nodes, layers 4–8, 2 016 tokens.
+
+*Tie structure.* Pre-registered **321** distinct edge magnitudes of 2 080 node pairs (better than V7's 91/990, because
+#O4.1 (a) already gave the MLP its own read point); per-node **1 751**/2 080.
+
+*K-O-2 orbit* (3 samples, `symmetry.gpt2`, `kind="combined"`, `orthogonal=False`, 4-sequence truncated probe, measured
+fp32 floor **1.5e-06**): **both graphs certify cleanly** — pre-registered Q CV **1.7e-06**, treewidth CV 0, sparsity CV
+4.9e-07, community sizes identical; per-node Q CV **7.2e-07**, treewidth CV 0, sparsity CV 3.6e-07, community sizes
+identical. So the instability O3.1 hit on Pythia is **not** universal: on GPT-2 in float32, under the GPT-2 gauge group,
+the density-thresholded statistic is stable to six or seven digits on *both* matrices. The Pythia case differs in two
+ways that both point the same direction — a much heavier tie structure (91/990), and a numerically larger gauge group
+(the neox backend rescales **two** per-coordinate LayerNorm gains over a 0.1–10 range per layer *and* the final
+LayerNorm, which GPT-2 does not have because its embeddings are tied).
+
+*The finding that bears on the P0 answer.* The two instruments give **different verdicts on the same model**. At the
+pre-registered density 0.1: pre-registered Q 0.181 (rewired null 0.221 ± 0.010), treewidth bound **8** → **tractable**
+(exactly on the `TW_TRACTABLE = 8` boundary); per-node Q 0.308 (null 0.314 ± 0.011), treewidth bound **11** →
+**marginal**. The gap is in the expected direction: conflating all H attention targets of a layer into one score
+collapses distinct edges onto each other, which can only *lower* the thresholded graph's treewidth, so the
+pre-registered graph plausibly **understates** the FPT parameter that the P0 verdict is made of. The verdict is
+nevertheless left on the pre-registered graph, as this amendment says up front — changing the instrument that decides a
+cell after seeing its result is a threshold change. Both numbers are in `p0_<slug>.json` (`verdict` and
+`per_node.verdict`) and in the P0 cell's `per_node` field, and whoever reads the frontier P0 row should read both. If
+the frontier models land near the boundary the way GPT-2 does, the honest headline is "tractable on the pre-registered
+instrument, marginal on the repaired one", not one of the two.
+
+*Two bugs the smoke caught, both fixed.* (i) The per-node block's `try/except` originally wrapped the gauge orbit too,
+so an orbit failure discarded the per-node graph that had already succeeded — the orbit is now its own failure domain.
+(ii) `symmetry.{gpt2,llama,neox}.apply` inverts the per-head basis change with `torch.linalg.inv`, which refuses bf16,
+and O4.1's default dtype is bf16 (sized for the 9B models); `p0_gauge_orbit` now refuses low precision up front with a
+recorded reason rather than raising — a CV measured at the bf16 floor (~1e-2) could not resolve `ART_CV = 1e-3` anyway.
+**To get a K-O-2 orbit on the frontier models, pass `--dtype float32`**; at bf16 the two graphs and the P0 verdict are
+still produced, with `gauge_orbit.ran = false` and that reason. Cost bound for the orbit: `--gauge-seq` (default 4
+sequences of the probe), since the orbit measures gauge sensitivity, not the reported numbers.

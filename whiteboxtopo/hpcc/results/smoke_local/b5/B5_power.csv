@@ -1,0 +1,5 @@
+model,layer,cell,delta,n,trials,reject_rate,reading,wall_s
+gpt2,6,shift,0.0,50,2,0.0,false_positive_rate,1
+gpt2,6,shift,0.5,50,2,0.0,false_positive_rate,0
+gpt2,6,stretch,0.0,50,2,0.0,false_positive_rate,0
+gpt2,6,stretch,0.5,50,2,0.5,power,0

@@ -1,0 +1,49 @@
+{
+ "features": [
+  "pe1"
+ ],
+ "mean": [
+  5.3903541709727545
+ ],
+ "std": [
+  0.20604838092543423
+ ],
+ "coef": [
+  -1.0213988761571358
+ ],
+ "intercept": 1.3455072705534132,
+ "log_features": [],
+ "meta": {
+  "family": "lm_transformer",
+  "arch": "gpt2",
+  "layer": "L12",
+  "features": "pe1",
+  "auc_loso": 1.0,
+  "auc_insample": 1.0,
+  "auc_on_other_family": 0.0,
+  "n_models": 8,
+  "probe_n": 500,
+  "pca": 30,
+  "thresh_percentile": 95,
+  "threshold": 0.6204222871889145,
+  "battery_scores": {
+   "generalizing": [
+    0.553,
+    0.575
+   ],
+   "memorizing": [
+    0.666,
+    0.689,
+    0.797,
+    0.835,
+    0.92,
+    0.966
+   ],
+   "graded_noise": [
+    0.568,
+    0.618
+   ]
+  },
+  "note": "memorizing := label noise >= 50%; generalizing := 0%. Cross-family transfer FAILS (sign flip); never apply to another family."
+ }
+}

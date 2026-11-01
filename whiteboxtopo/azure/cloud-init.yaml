@@ -1,0 +1,32 @@
+#cloud-config
+# Rendered by launch.sh: __JOB__, __CMD__, __TARBALL_URL__, __CKPT_URL__, __BLOB_BASE__, __SAS__, __HF_TOKEN__, __WORKER_B64__
+package_update: true
+packages: [python3-venv, python3-dev, build-essential, curl, git]
+write_files:
+  - path: /opt/wb/job.env
+    permissions: '0600'
+    content: |
+      JOB=__JOB__
+      CMD='__CMD__'
+      TARBALL_URL='__TARBALL_URL__'
+      CKPT_URL='__CKPT_URL__'
+      BLOB_BASE='__BLOB_BASE__'
+      SAS='__SAS__'
+      HF_TOKEN='__HF_TOKEN__'
+  - path: /opt/wb/worker.sh
+    permissions: '0755'
+    encoding: b64
+    content: __WORKER_B64__
+  - path: /etc/systemd/system/wb-job.service
+    content: |
+      [Unit]
+      Description=whitebox sprint job __JOB__
+      After=network-online.target
+      [Service]
+      Type=simple
+      ExecStart=/opt/wb/worker.sh
+      [Install]
+      WantedBy=multi-user.target
+runcmd:
+  - systemctl daemon-reload
+  - systemctl enable --now wb-job
