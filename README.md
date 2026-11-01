@@ -1,5 +1,23 @@
 # WHITEBOX
 
+One question, pursued in four programmes from June to October 2026: **can mathematics open the box** — can topology and algebra say what a neural network actually learned, when, and whether a result is real or an instrument artefact? Each programme below is a complete git history merged in with its original commit dates. Read the newest first.
+
+| programme | dates | where | what it found |
+|---|---|---|---|
+| **Structure of Understanding (E&E)** | Oct 2026 → | [`structure-of-understanding/`](structure-of-understanding/) | current programme: Phase 0+1 done, Phase 2 (K1/K2) pre-registered — `CLAUDE.md` is the protocol, `docs/CLAIMS.md` the claim ledger |
+| **Blinding Light** | 19 Sep – 5 Oct 2026 | [`blinding-light/`](blinding-light/) | runs 1–7: knowledge is a group; group generator + frequencies recovered from outputs alone on unseen seeds; generator leads grokking; most pre-registered predictive cells FAIL by the letter — `CLAIMS.md`, `report/` |
+| **whiteboxtopo library + sprint** | Aug – Sep 2026 | [`whiteboxtopo/`](whiteboxtopo/) | the instrument library (invariants, legibility, darkmatter, gluing), HPCC/Colab job sheets, `CLAIMS.md`, `VALIDATION.md`; experiment caches stripped |
+| **v2 programme** | Aug 2026 | [`v2-programme/`](v2-programme/) | E1–E6 + stages 2–3: every predictive claim failed pre-registration; four instruments shipped |
+| **v1: developmental interpretability** | Jun – Aug 2026 | this directory (root) | the original AI2R work below: persistent homology across training events |
+
+Papers, boards and specs across all eras: [`papers/`](papers/) (competition papers, NeurIPS drafts, science-fair board + logbook, FINAL_SPEC, HANDBOOK, mathematical foundations).
+
+Nulls are results here. Nothing in this repository upgrades a verdict that the pre-registration did not grant.
+
+---
+
+## v1 (original README)
+
 A topological framework for developmental interpretability of neural network
 learning — tracking how representations reorganize *during* training using
 persistent homology, rather than probing a finished model.
@@ -10,7 +28,7 @@ tables it pulls from in `paper/WHITEBOX_regenerated_figures_tables/`. The
 `\graphicspath` in `main.tex` is relative, so the paper compiles with
 `pdflatex main.tex` from inside `paper/WhiteBox_src/`.
 
-Arjun Paradkar, University of Arkansas.
+Arjun Paradkar and Reva Paradkar (independent).
 
 ## What is measured
 
