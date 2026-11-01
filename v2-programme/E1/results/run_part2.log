@@ -1,0 +1,7 @@
+THR2_4 d=3 w=4: 32.3s
+THR2_4 d=3 w=6: 170.3s
+RAND4 d=2 w=4: 22.6s
+RAND4 d=2 w=6: 102.5s
+RAND4 d=3 w=4: 78.8s
+RAND4 d=3 w=6: 93.9s
+RAND4 d=2 w=8: 361.9s

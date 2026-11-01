@@ -1,0 +1,33 @@
+== E4 run 2026-08-30 10:52:18 device=cuda cells=4 done=0
+[1/4] trained|mlp|sort|none
+  step 200 loss 0.201 eval_acc 0.974
+  step 400 loss 0.029 eval_acc 0.997
+   acc 0.997 learned True Q10 0.342 (null 0.404) tw10 24 sp 0.36 S 0.276 F 0.900 cost 225 J 0.60 [12s]
+[2/4] trained|tf2|modadd|none
+  step 200 loss 0.595 eval_acc 0.031
+  step 400 loss 0.042 eval_acc 0.094
+  step 600 loss 0.016 eval_acc 0.107
+  step 800 loss 0.008 eval_acc 0.107
+  step 1000 loss 0.005 eval_acc 0.101
+  step 1200 loss 0.003 eval_acc 0.101
+  step 1400 loss 0.002 eval_acc 0.094
+  step 1600 loss 0.002 eval_acc 0.101
+  step 1800 loss 0.001 eval_acc 0.101
+  step 2000 loss 0.001 eval_acc 0.094
+  step 2200 loss 0.001 eval_acc 0.101
+  step 2400 loss 0.001 eval_acc 0.101
+  step 2600 loss 0.001 eval_acc 0.101
+  step 2800 loss 0.001 eval_acc 0.101
+  step 3000 loss 0.000 eval_acc 0.107
+  step 3200 loss 0.000 eval_acc 0.107
+  step 3400 loss 0.000 eval_acc 0.107
+  step 3600 loss 0.000 eval_acc 0.107
+  step 3800 loss 0.000 eval_acc 0.107
+  step 4000 loss 0.000 eval_acc 0.107
+   acc 0.107 learned True Q10 0.256 (null 0.429) tw10 14 sp 0.26 S 0.971 F 0.963 cost 148 J 0.04 [40s]
+[3/4] trained|tf4|copy|clus40
+  step 200 loss 1.946 eval_acc 1.000
+   acc 1.000 learned True Q10 0.177 (null 0.302) tw10 41 sp 0.38 S 0.869 F 0.900 cost 364 J 0.19 [19s]
+[4/4] untrained_block|tf2|modadd|none
+   acc 0.088 learned True Q10 0.351 (null 0.530) tw10 16 sp 0.55 S 0.953 F 0.902 cost 155 J 0.26 [3s]
+done

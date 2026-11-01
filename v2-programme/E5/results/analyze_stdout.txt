@@ -1,0 +1,35 @@
+test=H-E5a[d10] | d_fly_success=3.526 | loo95_success=2.589 | d_fly_failure=2.662 | pass_i=False | pass_ii=False | PASS=False | n_success=24 | n_failure=24 | S_cut_hi=0.4444 | S_cut_lo=0.2786 | nn5_meanS=0.2219 | learned_meanS=0.3905 | nn5=trained|mlp|copy|drop0.3;trained|mlp|modadd|drop0.3;trained|mlp|sort|drop0.3;trained|mlp|copy|clus5;trained|mlp|copy|drop0.1
+test=H-E5b[d10,weight] | d_centroid_fly=3.958 | threshold_within_arch_median=1.113 | PASS=False | fly_rank_among_88=47 | nn_pass=False | d_seed_fly_mean=3.959 | d_seed_fly_min=3.788 | d_seed_fly_max=4.143 | n_seeds=10 | n_learned=10 | d_centroid_success=3.615 | d_centroid_failure=3.3 | centroid_in_success_region=False
+test=H-E5b[d10,functional] | d_centroid_fly=3.02 | threshold_within_arch_median=1.113 | PASS=False | fly_rank_among_88=73 | nn_pass=False | d_seed_fly_mean=3.057 | d_seed_fly_min=2.902 | d_seed_fly_max=3.223 | n_seeds=10 | n_learned=10 | d_centroid_success=1.44 | d_centroid_failure=1.399 | centroid_in_success_region=False
+test=H-E5c[d10] | frac_agree_main=0 | d_wf_mean_main=2.976 | threshold=1.113 | frac_agree_all=0 | dQ10_func_minus_weight=-0.04685 | dtw_norm=-0.2669 | dsparsity=0.1017 | edge_rank_rho=0.512
+test=H-E5a[d5] | d_fly_success=3.745 | loo95_success=2.701 | d_fly_failure=2.744 | pass_i=False | pass_ii=False | PASS=False | n_success=24 | n_failure=24 | S_cut_hi=0.4444 | S_cut_lo=0.2786 | nn5_meanS=0.2 | learned_meanS=0.3905 | nn5=trained|mlp|copy|drop0.3;trained|mlp|copy|clus5;trained|mlp|modadd|drop0.3;trained|mlp|copy|drop0.1;trained|mlp|copy|wd0.1
+test=H-E5b[d5,weight] | d_centroid_fly=5.302 | threshold_within_arch_median=1.348 | PASS=False | fly_rank_among_88=62 | nn_pass=False | d_seed_fly_mean=5.304 | d_seed_fly_min=4.925 | d_seed_fly_max=5.813 | n_seeds=10 | n_learned=10 | d_centroid_success=4.244 | d_centroid_failure=4.217 | centroid_in_success_region=False
+test=H-E5b[d5,functional] | d_centroid_fly=3.344 | threshold_within_arch_median=1.348 | PASS=False | fly_rank_among_88=78 | nn_pass=False | d_seed_fly_mean=3.394 | d_seed_fly_min=3.244 | d_seed_fly_max=3.686 | n_seeds=10 | n_learned=10 | d_centroid_success=1.44 | d_centroid_failure=1.525 | centroid_in_success_region=True
+test=H-E5c[d5] | frac_agree_main=0 | d_wf_mean_main=3.663 | threshold=1.348 | frac_agree_all=0.16 | dQ10_func_minus_weight=-0.0939 | dtw_norm=-0.1743 | dsparsity=0.1017 | edge_rank_rho=0.512
+test=H-E5a[d20] | d_fly_success=3.234 | loo95_success=2.656 | d_fly_failure=2.564 | pass_i=False | pass_ii=False | PASS=False | n_success=24 | n_failure=24 | S_cut_hi=0.4444 | S_cut_lo=0.2786 | nn5_meanS=0.1953 | learned_meanS=0.3905 | nn5=trained|mlp|copy|drop0.3;trained|mlp|modadd|drop0.3;trained|mlp|copy|drop0.1;trained|mlp|sort|drop0.3;trained|mlp|copy|none
+test=H-E5b[d20,weight] | d_centroid_fly=2.967 | threshold_within_arch_median=1.032 | PASS=False | fly_rank_among_88=38 | nn_pass=False | d_seed_fly_mean=2.969 | d_seed_fly_min=2.865 | d_seed_fly_max=3.134 | n_seeds=10 | n_learned=10 | d_centroid_success=2.836 | d_centroid_failure=2.476 | centroid_in_success_region=False
+test=H-E5b[d20,functional] | d_centroid_fly=2.734 | threshold_within_arch_median=1.032 | PASS=False | fly_rank_among_88=67 | nn_pass=False | d_seed_fly_mean=2.765 | d_seed_fly_min=2.556 | d_seed_fly_max=3.022 | n_seeds=10 | n_learned=10 | d_centroid_success=1.517 | d_centroid_failure=1.45 | centroid_in_success_region=False
+test=H-E5c[d20] | frac_agree_main=0 | d_wf_mean_main=2.494 | threshold=1.032 | frac_agree_all=0 | dQ10_func_minus_weight=-0.0186 | dtw_norm=-0.2939 | dsparsity=0.1017 | edge_rank_rho=0.512
+test=kill_fly_rewire_directed | coord=Q10 | observed=0.5808 | null_mean=0.3166 | null_sd=0.006154 | z=42.93 | p_onesided=0.009901 | n=100
+test=kill_fly_rewire_directed | coord=tw10_norm | observed=0.2365 | null_mean=0.4311 | null_sd=0.01245 | z=-15.63 | p_onesided=0.009901 | n=100
+test=kill_fly_rewire_undirected_top10 | coord=Q10 | observed=0.5808 | null_mean=0.3493 | null_sd=0.006158 | z=37.59 | p_onesided=0.009901 | n=100
+test=kill_fly_rewire_undirected_top10 | coord=tw10_norm | observed=0.2365 | null_mean=0.3986 | null_sd=0.01045 | z=-15.51 | p_onesided=0.009901 | n=100
+test=kill_fly_ER_matched | coord=Q10 | observed=0.5808 | null_mean=0.3297 | null_sd=0.006917 | z=36.3 | p_onesided=0.009901 | n=100
+test=kill_fly_ER_matched | coord=tw10_norm | observed=0.2365 | null_mean=0.4219 | null_sd=0.01117 | z=-16.6 | p_onesided=0.009901 | n=100
+test=kill_rnn_rewire | zQ_mean=1.185 | zQ_min=-0.9229 | zQ_max=3.263 | ztw_mean=0.1455 | frac_seeds_zQ_gt2=0.3 | Q10_mean=0.2337 | Q10_rewire_mean=0.2283
+test=kill_fly_label_shuffle_NMI | nmi_type=0.04811 | nmi_type_null=0.05854 | p_type=0.7273 | nmi_wedge=0.556 | nmi_wedge_null=0.2476 | p_wedge=0.000999 | n_comm=8
+test=kill_size_arms | coord=Q10 | spearman_vs_N=-0.5535 | mean_N64=0.3633 | mean_N148=0.2337 | mean_N256=0.2208
+test=kill_size_arms | coord=tw10_norm | spearman_vs_N=0.8718 | mean_N64=0.3333 | mean_N148=0.5453 | mean_N256=0.6641
+test=kill_size_arms | coord=sparsity | spearman_vs_N=-0.2657 | mean_N64=0.007771 | mean_N148=0.006082 | mean_N256=0.006763
+test=kill_size_arms | coord=Q10_excess | spearman_vs_N=0.3542 | mean_N64=0.01082 | mean_N148=0.0003284 | mean_N256=0.04566
+test=kill_size_arms | coord=n_edges10 | spearman_vs_N=1 | mean_N64=202 | mean_N148=1088 | mean_N256=3264
+test=kill_size_arms_distance | N=64 | d_centroid_fly=1.734
+test=kill_size_arms_distance | N=148 | d_centroid_fly=3.958
+test=kill_size_arms_distance | N=256 | d_centroid_fly=5.151
+test=matched_edge_count | fly_n_edges10=607 | rnn_n_edges10=1088 | rnn_Q_matched=0.3288 | rnn_Q10=0.2337 | rnn_tw_matched_norm=0.3689 | rnn_tw10_norm=0.5453 | fly_Q10=0.5808 | fly_tw10_norm=0.2365
+test=sensitivity_full439 | Q10=0.578 | tw10_norm=0.2005 | sparsity=0.2938 | d_full_core=1.382 | d_full_success=2.839 | d_full_failure=1.955
+test=arm_placement | arm=untrained/rnn | n=3 | Q10=0.2351 | tw10_norm=0.6126 | sparsity=0.0002304 | d_centroid_fly=4.574 | d_success=4.289 | d_failure=3.991 | S_raw=0.9137
+test=arm_placement | arm=shuffled_target/rnn | n=3 | Q10=0.2233 | tw10_norm=0.5068 | sparsity=0.0113 | d_centroid_fly=3.682 | d_success=3.227 | d_failure=2.923 | S_raw=0.9587
+test=arm_placement | arm=trained/gru | n=3 | Q10=0.256 | tw10_norm=0.5248 | sparsity=0.01117 | d_centroid_fly=3.7 | d_success=3.469 | d_failure=3.109 | S_raw=0.06907
+test=arm_placement | arm=planted_ring/ring | n=1 | Q10=0.5502 | tw10_norm=0.1824 | sparsity=-4.441e-16 | d_centroid_fly=1.03 | d_success=3.776 | d_failure=3.036 | S_raw=nan
+test=rnn_discovery | n=10 | S_raw_mean=0.1025 | S_raw_sd=0.01445 | F_mean=0.904 | jaccard_mean=0.9323 | cost_over_N=1.934 | acc_tail_mean=0.7612 | e4_learned_S_mean=0.3905 | e4_S_cut_hi=0.4444

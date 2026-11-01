@@ -1,0 +1,11 @@
+quantity,n_fits,n_all_positive,frac_constant_along_sweep,exponent_median,frac_integer_fit,integer,cv_per_unit_scale,verdict
+b0_box,1586,1586,1.0,8.389560503994997e-17,0.9974779319041615,0.0,0.0478716428372344,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=0.05)
+b0_tt,1586,1586,1.0,2.0960599625170146e-17,1.0,0.0,0.108014062382423,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=0.11)
+b1_box,1586,1468,1.0,2.7481907917750765e-17,0.9993188010899182,0.0,0.4753344285879166,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=0.48)
+b1_tt,1586,595,1.0,0.0,1.0,0.0,1.122147592777447,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=1.12)
+pe0_box,1586,1586,1.0,-7.936830436617064e-13,0.0,,0.0150668318959348,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=0.02)
+pe1_box,1586,1509,0.998108448928121,4.794734101478129e-11,0.0,,0.105088497562965,invariant to uniform scaling (exponent 0); NOT invariant under per-unit scaling (CV=0.11)
+tc0_box,1586,1586,0.0,1.9999999999811415,1.0,2.0,1.4348781627344855,scaling-covariant (degree 2) under uniform scaling; NOT invariant under per-unit scaling (CV=1.43)
+tc0_tt,1586,1586,0.0,1.9999999999696532,1.0,2.0,1.952649230973527,scaling-covariant (degree 2) under uniform scaling; NOT invariant under per-unit scaling (CV=1.95)
+tc1_box,1586,1531,0.03467843631778058,1.9999999997044733,1.0,2.0,1.3897107315031478,scaling-covariant (degree 2) under uniform scaling; NOT invariant under per-unit scaling (CV=1.39)
+tc1_tt,1586,691,0.564312736443884,1.9999999978633305,1.0,2.0,2.990256711143949,scaling-covariant (degree 2) under uniform scaling; NOT invariant under per-unit scaling (CV=2.99)

@@ -1,0 +1,21 @@
+12:41:39 E5 run start smoke=True models=4 steps=300 lr=0.002 n_null=5
+12:41:39 connectome core top-10% edge count (matched threshold) = 607
+12:42:09 trained trained|rnn|N148|s1: steps=300 acc_tail=0.074 acc_tol1=0.200 learned=False 23s
+12:42:09 trained untrained|rnn|N148|s0: steps=0 acc_tail=0.075 acc_tol1=0.199 learned=False 0s
+12:42:11 trained trained|rnn|N148|s0: steps=300 acc_tail=0.064 acc_tol1=0.199 learned=False 26s
+12:42:20 trained shuffled_target|rnn|N148|s0: steps=300 acc_tail=0.062 acc_tol1=0.184 learned=False 10s
+12:42:20 training done; measuring
+12:43:44 measured trained|rnn|N148|s1: Qw=0.233 Qf=0.174 tw_w=93 tw_f=48 S_raw=0.40 F=0.90 J=0.68 zQ=-1.1 84s
+12:43:49 measured trained|rnn|N148|s0: Qw=0.236 Qf=0.188 tw_w=85 tw_f=48 S_raw=0.11 F=0.90 J=0.87 zQ=0.7 89s
+12:44:45 measured untrained|rnn|N148|s0: Qw=0.238 Qf=0.238 tw_w=89 tw_f=67 S_raw=0.97 F=1.16 J=0.17 zQ=0.8 61s
+12:44:54 measured shuffled_target|rnn|N148|s0: Qw=0.242 Qf=0.228 tw_w=93 tw_f=73 S_raw=0.97 F=1.04 J=0.00 zQ=1.6 65s
+12:45:35 core type-block signed totals:
+[[ 7.9800e+03  5.7650e+03  5.1280e+03  5.1570e+03  1.7286e+04]
+ [ 4.9900e+02  2.1100e+02  8.1000e+01  1.3090e+03  2.0000e+01]
+ [ 1.3486e+04  7.9000e+01  3.1770e+03  1.9890e+03  1.2000e+01]
+ [ 8.4170e+03  1.3400e+02  1.9510e+03  4.2700e+03  1.9000e+01]
+ [-6.6640e+03 -6.1230e+03 -2.7540e+03 -9.8000e+03 -2.4615e+04]]
+12:45:39   connectome nulls 0/3
+12:45:47 fly_core148: N=148 Q10=0.581 tw10=35 sparsity=0.073 nnz=0.433 nmi_type=0.048 nmi_wedge=0.556
+12:46:33 fly_full439: N=439 Q10=0.578 tw10=88 sparsity=0.294 nnz=0.276 nmi_type=0.740 nmi_wedge=0.335
+12:46:41 planted ring: Q10=0.550 tw10=27

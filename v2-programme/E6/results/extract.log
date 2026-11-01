@@ -1,0 +1,29 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 10308.67it/s]
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+/home/god/whitebox-v2/.venv-tl/lib/python3.12/site-packages/sae_lens/saes/sae.py:254: UserWarning: 
+This SAE has non-empty model_from_pretrained_kwargs. 
+For optimal performance, load the model like so:
+model = HookedSAETransformer.from_pretrained_no_processing(..., **cfg.model_from_pretrained_kwargs)
+  warnings.warn(
+Loaded pretrained model gpt2-small into HookedTransformer
+tokens (512, 128) {'source': 'stas/openwebtext-10k', 'n_docs_scanned': 73, 'n_seq': 512, 'seq_len': 128}
+L2: X (65024, 768) FVU=0.0549 (13s)
+L2 probe R2 (held-out): {'E': -0.01466833980569815, 'Eshuf': -0.014019201035518236, 'X': -0.0010955921082225206}
+L2 next-token: {'E': {'top1': 0.14802134729634478, 'top5': 0.3201087503776055}, 'Eshuf': {'top1': 0.04007652804350015, 'top5': 0.1733964354042896}, 'X': {'top1': 0.2316987211761152, 'top5': 0.44607793777061727}} majority 0.046923774040882084 coverage 0.797124228664571 0.7652180613345662
+L6: X (65024, 768) FVU=0.1223 (38s)
+L6 probe R2 (held-out): {'E': -0.0004880528466424394, 'Eshuf': -0.01679133443078218, 'X': 0.03699453759926696}
+L6 next-token: {'E': {'top1': 0.11821568824891752, 'top5': 0.2762058201590978}, 'Eshuf': {'top1': 0.04350015104219112, 'top5': 0.16503876749572047}, 'X': {'top1': 0.2692578793676367, 'top5': 0.48031416775752694}} majority 0.046923774040882084 coverage 0.797124228664571 0.7652180613345662
+L10: X (65024, 768) FVU=0.1856 (70s)
+L10 probe R2 (held-out): {'E': 0.11260217319290566, 'Eshuf': -0.01870113465597667, 'X': 0.04262822208767891}
+L10 next-token: {'E': {'top1': 0.14701439935555333, 'top5': 0.31487262108548986}, 'Eshuf': {'top1': 0.04068069680797503, 'top5': 0.17178531869902325}, 'X': {'top1': 0.32071291914208033, 'top5': 0.5496928808780586}} majority 0.046923774040882084 coverage 0.797124228664571 0.7652180613345662
+done 101.22642731666565

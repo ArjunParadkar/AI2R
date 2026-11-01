@@ -1,0 +1,32 @@
+L2: N=65024 d=768 FVU=0.0549
+  L2 E                    correlation n_out= 198 sf=0.569 ef=0.252 thr=1.232
+  L2 E                    covariance  n_out= 184 sf=0.578 ef=0.283 thr=0.114
+  L2 X                    correlation n_out= 194 sf=0.711 ef=0.400 thr=1.232
+  L2 X                    covariance  n_out= 139 sf=0.718 ef=0.496 thr=2.090
+  L2 gauss_diag(E)        correlation n_out=   0 sf=0.000 ef=0.000 thr=1.232
+  L2 gauss_diag(E)        covariance  n_out=  91 sf=0.220 ef=0.074 thr=0.114
+  L2 shuffle(E)           correlation n_out=   0 sf=0.000 ef=0.000 thr=1.232
+  L2 shuffle(E)           covariance  n_out=  93 sf=0.223 ef=0.074 thr=0.114
+  L2 E_minus_top10PC(X)   correlation n_out= 201 sf=0.572 ef=0.251 thr=1.232
+  L2 E_minus_top10PC(X)   covariance  n_out= 202 sf=0.585 ef=0.261 thr=0.105
+  L2 E_minus_top50PC(X)   correlation n_out= 212 sf=0.604 ef=0.264 thr=1.232
+  L2 E_minus_top50PC(X)   covariance  n_out= 210 sf=0.607 ef=0.271 thr=0.096
+  L2 E              tc_ratio=0.462 CI=(0.34768952614536647, 0.4276228325147837) b1=209
+  L2 X              tc_ratio=0.811 CI=(0.6465855861547093, 0.784176065400751) b1=235
+  L2 gauss_cov(E)   tc_ratio=0.874 CI=(0.9298664153909248, 1.1526125339493467) b1=882
+  elapsed 1945s
+L6: N=65024 d=768 FVU=0.1223
+  L6 E                    correlation n_out= 194 sf=0.425 ef=0.115 thr=1.232
+  L6 E                    covariance  n_out= 181 sf=0.425 ef=0.135 thr=0.654
+  L6 X                    correlation n_out= 180 sf=0.607 ef=0.319 thr=1.232
+  L6 X                    covariance  n_out= 152 sf=0.613 ef=0.370 thr=5.363
+  L6 gauss_diag(E)        correlation n_out=   0 sf=0.000 ef=0.000 thr=1.232
+  L6 gauss_diag(E)        covariance  n_out=  30 sf=0.085 ef=0.037 thr=0.654
+  L6 shuffle(E)           correlation n_out=   0 sf=0.000 ef=0.000 thr=1.232
+  L6 shuffle(E)           covariance  n_out=  29 sf=0.083 ef=0.037 thr=0.654
+  L6 E_minus_top10PC(X)   correlation n_out= 199 sf=0.434 ef=0.116 thr=1.232
+  L6 E_minus_top10PC(X)   covariance  n_out= 196 sf=0.438 ef=0.124 thr=0.627
+  L6 E_minus_top50PC(X)   correlation n_out= 220 sf=0.477 ef=0.125 thr=1.232
+  L6 E_minus_top50PC(X)   covariance  n_out= 221 sf=0.481 ef=0.127 thr=0.577
+  L6 E              tc_ratio=0.112 CI=(0.08960147066182791, 0.11666353324804583) b1=55
+  L6 X              tc_ratio=0.854 CI=(0.7678289816809555, 0.9452655664676382) b1=409
