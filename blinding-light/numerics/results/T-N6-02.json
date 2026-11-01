@@ -1,0 +1,56 @@
+{
+ "config": {
+  "a": 1,
+  "b": [
+   "1.5",
+   2
+  ],
+  "c": {
+   "x": 1,
+   "y": 2
+  }
+ },
+ "config_hash": "8a335e1aad44a0a3dab502877ec8af1d1caede2b971becc052b23b48930dbe5b",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": true,
+  "deterministic_algorithms": true,
+  "flash_sdp": false,
+  "math_sdp": true,
+  "mem_efficient_sdp": false
+ },
+ "name": "T-N6-02",
+ "result": {
+  "conditions": {
+   "fields present": true,
+   "hash changes with nested value": true,
+   "hash changes with value": true,
+   "hash key-order invariant": true
+  },
+  "measured": {
+   "keys": [
+    "config",
+    "config_hash",
+    "determinism",
+    "name",
+    "result",
+    "result_sha256",
+    "saved_at",
+    "seed",
+    "versions"
+   ]
+  },
+  "passed": true
+ },
+ "result_sha256": "186865879bf1741c04c31c0cd2c7486f9d0240e83f9f3c4a294be937678bf043",
+ "saved_at": "2026-10-04T18:22:45",
+ "seed": 3,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

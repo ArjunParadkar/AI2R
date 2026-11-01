@@ -1,0 +1,960 @@
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s1_alpha0.0", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s2_alpha0.0", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s3_alpha0.0", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s4_alpha0.0", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s5_alpha0.0", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s6_alpha0.0", "regime": "clean", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s7_alpha0.0", "regime": "clean", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s8_alpha0.0", "regime": "clean", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s9_alpha0.0", "regime": "clean", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "A_mod59_tf1_clean_s10_alpha0.0", "regime": "clean", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s1_alpha0.0", "regime": "clean", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s2_alpha0.0", "regime": "clean", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s3_alpha0.0", "regime": "clean", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s4_alpha0.0", "regime": "clean", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s5_alpha0.0", "regime": "clean", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s6_alpha0.0", "regime": "clean", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s7_alpha0.0", "regime": "clean", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s8_alpha0.0", "regime": "clean", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s9_alpha0.0", "regime": "clean", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod97_tf1_clean_s10_alpha0.0", "regime": "clean", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s1_alpha0.0", "regime": "clean", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s2_alpha0.0", "regime": "clean", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s3_alpha0.0", "regime": "clean", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s4_alpha0.0", "regime": "clean", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s5_alpha0.0", "regime": "clean", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s6_alpha0.0", "regime": "clean", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s7_alpha0.0", "regime": "clean", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s8_alpha0.0", "regime": "clean", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s9_alpha0.0", "regime": "clean", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "model": {"alpha": 0.0}, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "A_mod113_tf1_clean_s10_alpha0.0", "regime": "clean", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s6", "regime": "clean", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s7", "regime": "clean", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s8", "regime": "clean", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s9", "regime": "clean", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_clean_s10", "regime": "clean", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "B_mod59_tf1_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s1", "regime": "nograk", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s2", "regime": "nograk", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s3", "regime": "nograk", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s4", "regime": "nograk", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s5", "regime": "nograk", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s6", "regime": "nograk", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s7", "regime": "nograk", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s8", "regime": "nograk", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s9", "regime": "nograk", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_nograk_s10", "regime": "nograk", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s1", "regime": "contaminated", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s2", "regime": "contaminated", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s3", "regime": "contaminated", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s4", "regime": "contaminated", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s5", "regime": "contaminated", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s6", "regime": "contaminated", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s7", "regime": "contaminated", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s8", "regime": "contaminated", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s9", "regime": "contaminated", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "B_mod59_tf1_contaminated_s10", "regime": "contaminated", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s1", "regime": "hybrid", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s2", "regime": "hybrid", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s3", "regime": "hybrid", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s4", "regime": "hybrid", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s5", "regime": "hybrid", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s6", "regime": "hybrid", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s7", "regime": "hybrid", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s8", "regime": "hybrid", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s9", "regime": "hybrid", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod59_tf1_hybrid_s10", "regime": "hybrid", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s1", "regime": "clean", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s2", "regime": "clean", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s3", "regime": "clean", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s4", "regime": "clean", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s5", "regime": "clean", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s6", "regime": "clean", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s7", "regime": "clean", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s8", "regime": "clean", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s9", "regime": "clean", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_clean_s10", "regime": "clean", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod97_tf1_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s1", "regime": "nograk", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s2", "regime": "nograk", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s3", "regime": "nograk", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s4", "regime": "nograk", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s5", "regime": "nograk", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s6", "regime": "nograk", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s7", "regime": "nograk", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s8", "regime": "nograk", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s9", "regime": "nograk", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_nograk_s10", "regime": "nograk", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s1", "regime": "contaminated", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s2", "regime": "contaminated", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s3", "regime": "contaminated", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s4", "regime": "contaminated", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s5", "regime": "contaminated", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s6", "regime": "contaminated", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s7", "regime": "contaminated", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s8", "regime": "contaminated", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s9", "regime": "contaminated", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod97_tf1_contaminated_s10", "regime": "contaminated", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s1", "regime": "hybrid", "seed": 1, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s2", "regime": "hybrid", "seed": 2, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s3", "regime": "hybrid", "seed": 3, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s4", "regime": "hybrid", "seed": 4, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s5", "regime": "hybrid", "seed": 5, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s6", "regime": "hybrid", "seed": 6, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s7", "regime": "hybrid", "seed": 7, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s8", "regime": "hybrid", "seed": 8, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s9", "regime": "hybrid", "seed": 9, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod97_tf1_hybrid_s10", "regime": "hybrid", "seed": 10, "task": "mod97"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s1", "regime": "clean", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s2", "regime": "clean", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s3", "regime": "clean", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s4", "regime": "clean", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s5", "regime": "clean", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s6", "regime": "clean", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s7", "regime": "clean", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s8", "regime": "clean", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s9", "regime": "clean", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_clean_s10", "regime": "clean", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_mod113_tf1_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s1", "regime": "nograk", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s2", "regime": "nograk", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s3", "regime": "nograk", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s4", "regime": "nograk", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s5", "regime": "nograk", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s6", "regime": "nograk", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s7", "regime": "nograk", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s8", "regime": "nograk", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s9", "regime": "nograk", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_nograk_s10", "regime": "nograk", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s1", "regime": "contaminated", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s2", "regime": "contaminated", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s3", "regime": "contaminated", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s4", "regime": "contaminated", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s5", "regime": "contaminated", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s6", "regime": "contaminated", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s7", "regime": "contaminated", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s8", "regime": "contaminated", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s9", "regime": "contaminated", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_mod113_tf1_contaminated_s10", "regime": "contaminated", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s1", "regime": "hybrid", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s2", "regime": "hybrid", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s3", "regime": "hybrid", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s4", "regime": "hybrid", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s5", "regime": "hybrid", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s6", "regime": "hybrid", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s7", "regime": "hybrid", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s8", "regime": "hybrid", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s9", "regime": "hybrid", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "B_mod113_tf1_hybrid_s10", "regime": "hybrid", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s1", "regime": "clean", "seed": 1, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s2", "regime": "clean", "seed": 2, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s3", "regime": "clean", "seed": 3, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s4", "regime": "clean", "seed": 4, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s5", "regime": "clean", "seed": 5, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s6", "regime": "clean", "seed": 6, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s7", "regime": "clean", "seed": 7, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s8", "regime": "clean", "seed": 8, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s9", "regime": "clean", "seed": 9, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_clean_s10", "regime": "clean", "seed": 10, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 1.0}, "id": "B_comp60_tf1_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s1", "regime": "nograk", "seed": 1, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s2", "regime": "nograk", "seed": 2, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s3", "regime": "nograk", "seed": 3, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s4", "regime": "nograk", "seed": 4, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s5", "regime": "nograk", "seed": 5, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s6", "regime": "nograk", "seed": 6, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s7", "regime": "nograk", "seed": 7, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s8", "regime": "nograk", "seed": 8, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s9", "regime": "nograk", "seed": 9, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_nograk_s10", "regime": "nograk", "seed": 10, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s1", "regime": "contaminated", "seed": 1, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s2", "regime": "contaminated", "seed": 2, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s3", "regime": "contaminated", "seed": 3, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s4", "regime": "contaminated", "seed": 4, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s5", "regime": "contaminated", "seed": 5, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s6", "regime": "contaminated", "seed": 6, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s7", "regime": "contaminated", "seed": 7, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s8", "regime": "contaminated", "seed": 8, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s9", "regime": "contaminated", "seed": 9, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 25000, "wd": 0.0}, "id": "B_comp60_tf1_contaminated_s10", "regime": "contaminated", "seed": 10, "task": "comp60"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s1", "regime": "clean", "seed": 1, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s2", "regime": "clean", "seed": 2, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s3", "regime": "clean", "seed": 3, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s4", "regime": "clean", "seed": 4, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s5", "regime": "clean", "seed": 5, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s6", "regime": "clean", "seed": 6, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s7", "regime": "clean", "seed": 7, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s8", "regime": "clean", "seed": 8, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s9", "regime": "clean", "seed": 9, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_clean_s10", "regime": "clean", "seed": 10, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "id": "B_comp96_tf1_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s1", "regime": "nograk", "seed": 1, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s2", "regime": "nograk", "seed": 2, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s3", "regime": "nograk", "seed": 3, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s4", "regime": "nograk", "seed": 4, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s5", "regime": "nograk", "seed": 5, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s6", "regime": "nograk", "seed": 6, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s7", "regime": "nograk", "seed": 7, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s8", "regime": "nograk", "seed": 8, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s9", "regime": "nograk", "seed": 9, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_nograk_s10", "regime": "nograk", "seed": 10, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s1", "regime": "contaminated", "seed": 1, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s2", "regime": "contaminated", "seed": 2, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s3", "regime": "contaminated", "seed": 3, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s4", "regime": "contaminated", "seed": 4, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s5", "regime": "contaminated", "seed": 5, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s6", "regime": "contaminated", "seed": 6, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s7", "regime": "contaminated", "seed": 7, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s8", "regime": "contaminated", "seed": 8, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s9", "regime": "contaminated", "seed": 9, "task": "comp96"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "B_comp96_tf1_contaminated_s10", "regime": "contaminated", "seed": 10, "task": "comp96"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s1", "regime": "nograk", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s2", "regime": "nograk", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s3", "regime": "nograk", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s4", "regime": "nograk", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s5", "regime": "nograk", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s6", "regime": "nograk", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s7", "regime": "nograk", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s8", "regime": "nograk", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s9", "regime": "nograk", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_mlp2_nograk_s10", "regime": "nograk", "seed": 10, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "id": "C_S5_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s1", "regime": "nograk", "seed": 1, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s2", "regime": "nograk", "seed": 2, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s3", "regime": "nograk", "seed": 3, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s4", "regime": "nograk", "seed": 4, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s5", "regime": "nograk", "seed": 5, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s6", "regime": "nograk", "seed": 6, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s7", "regime": "nograk", "seed": 7, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s8", "regime": "nograk", "seed": 8, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s9", "regime": "nograk", "seed": 9, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "C_S5_tf2_nograk_s10", "regime": "nograk", "seed": 10, "task": "S5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s1", "regime": "nograk", "seed": 1, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s2", "regime": "nograk", "seed": 2, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s3", "regime": "nograk", "seed": 3, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s4", "regime": "nograk", "seed": 4, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s5", "regime": "nograk", "seed": 5, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s6", "regime": "nograk", "seed": 6, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s7", "regime": "nograk", "seed": 7, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s8", "regime": "nograk", "seed": 8, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s9", "regime": "nograk", "seed": 9, "task": "A5"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_tf2_nograk_s10", "regime": "nograk", "seed": 10, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_A5_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s1", "regime": "nograk", "seed": 1, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s2", "regime": "nograk", "seed": 2, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s3", "regime": "nograk", "seed": 3, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s4", "regime": "nograk", "seed": 4, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s5", "regime": "nograk", "seed": 5, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s6", "regime": "nograk", "seed": 6, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s7", "regime": "nograk", "seed": 7, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s8", "regime": "nograk", "seed": 8, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s9", "regime": "nograk", "seed": 9, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_A5_mlp2_nograk_s10", "regime": "nograk", "seed": 10, "task": "A5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "C_D12_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s1", "regime": "nograk", "seed": 1, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s2", "regime": "nograk", "seed": 2, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s3", "regime": "nograk", "seed": 3, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s4", "regime": "nograk", "seed": 4, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s5", "regime": "nograk", "seed": 5, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s6", "regime": "nograk", "seed": 6, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s7", "regime": "nograk", "seed": 7, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s8", "regime": "nograk", "seed": 8, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s9", "regime": "nograk", "seed": 9, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 0.0}, "id": "C_D12_mlp2_nograk_s10", "regime": "nograk", "seed": 10, "task": "D12"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "C_permcomp5_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s1", "regime": "nograk", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s2", "regime": "nograk", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s3", "regime": "nograk", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s4", "regime": "nograk", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s5", "regime": "nograk", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s6", "regime": "nograk", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s7", "regime": "nograk", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s8", "regime": "nograk", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s9", "regime": "nograk", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "C_permcomp5_mlp2_nograk_s10", "regime": "nograk", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "sorting"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "sorting"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_sorting_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "sorting"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "copying"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "copying"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_copying_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "copying"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_dyck2_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "dyck2"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.0003, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "dyck2"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 20000, "wd": 1.0}, "id": "D_dyck2_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "dyck2"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "parity"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "parity"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_parity_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "parity"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "symfree"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "symfree"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "id": "D_symfree_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "symfree"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s6", "regime": "clean", "seed": 6, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s7", "regime": "clean", "seed": 7, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s8", "regime": "clean", "seed": 8, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s9", "regime": "clean", "seed": 9, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_clean_s10", "regime": "clean", "seed": 10, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod59"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mlp2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s6", "regime": "clean", "seed": 6, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s7", "regime": "clean", "seed": 7, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s8", "regime": "clean", "seed": 8, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s9", "regime": "clean", "seed": 9, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_clean_s10", "regime": "clean", "seed": 10, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod59"}
+{"arch": "tf2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf2_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s6", "regime": "clean", "seed": 6, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s7", "regime": "clean", "seed": 7, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s8", "regime": "clean", "seed": 8, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s9", "regime": "clean", "seed": 9, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_clean_s10", "regime": "clean", "seed": 10, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s6", "regime": "scrambled", "seed": 6, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s7", "regime": "scrambled", "seed": 7, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s8", "regime": "scrambled", "seed": 8, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s9", "regime": "scrambled", "seed": 9, "task": "mod59"}
+{"arch": "tf4", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_tf4_scrambled_s10", "regime": "scrambled", "seed": 10, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "tf8", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf8_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "tf12", "hp": {"evals": 50, "lr": 0.0005, "patience": 5, "steps": 15000, "wd": 1.0}, "id": "E_mod59_tf12_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "lstm", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_lstm_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_clean_s1", "regime": "clean", "seed": 1, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_clean_s2", "regime": "clean", "seed": 2, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_clean_s3", "regime": "clean", "seed": 3, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_clean_s4", "regime": "clean", "seed": 4, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_clean_s5", "regime": "clean", "seed": 5, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_scrambled_s1", "regime": "scrambled", "seed": 1, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_scrambled_s2", "regime": "scrambled", "seed": 2, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_scrambled_s3", "regime": "scrambled", "seed": 3, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_scrambled_s4", "regime": "scrambled", "seed": 4, "task": "mod59"}
+{"arch": "mamba", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 10000, "wd": 1.0}, "id": "E_mod59_mamba_scrambled_s5", "regime": "scrambled", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s1_destroy10", "regime": "destroy", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s2_destroy10", "regime": "destroy", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s3_destroy10", "regime": "destroy", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s4_destroy10", "regime": "destroy", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s5_destroy10", "regime": "destroy", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s6_destroy10", "regime": "destroy", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s7_destroy10", "regime": "destroy", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s8_destroy10", "regime": "destroy", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s9_destroy10", "regime": "destroy", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s10_destroy10", "regime": "destroy", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s1_destroy30", "regime": "destroy", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s2_destroy30", "regime": "destroy", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s3_destroy30", "regime": "destroy", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s4_destroy30", "regime": "destroy", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s5_destroy30", "regime": "destroy", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s6_destroy30", "regime": "destroy", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s7_destroy30", "regime": "destroy", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s8_destroy30", "regime": "destroy", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s9_destroy30", "regime": "destroy", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 15000, "wd": 1.0}, "id": "F_mod59_tf1_destroy_s10_destroy30", "regime": "destroy", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s1_induce0.1", "regime": "induce", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s2_induce0.1", "regime": "induce", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s3_induce0.1", "regime": "induce", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s4_induce0.1", "regime": "induce", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s5_induce0.1", "regime": "induce", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s6_induce0.1", "regime": "induce", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s7_induce0.1", "regime": "induce", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s8_induce0.1", "regime": "induce", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s9_induce0.1", "regime": "induce", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_induce_s10_induce0.1", "regime": "induce", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s1", "regime": "transplant", "seed": 1, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s2", "regime": "transplant", "seed": 2, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s3", "regime": "transplant", "seed": 3, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s4", "regime": "transplant", "seed": 4, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s5", "regime": "transplant", "seed": 5, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s6", "regime": "transplant", "seed": 6, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s7", "regime": "transplant", "seed": 7, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s8", "regime": "transplant", "seed": 8, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s9", "regime": "transplant", "seed": 9, "task": "mod59"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 15000, "wd": 0.0}, "id": "F_mod59_tf1_transplant_s10", "regime": "transplant", "seed": 10, "task": "mod59"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s1_destroy10", "regime": "destroy", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s2_destroy10", "regime": "destroy", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s3_destroy10", "regime": "destroy", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s4_destroy10", "regime": "destroy", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s5_destroy10", "regime": "destroy", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s6_destroy10", "regime": "destroy", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s7_destroy10", "regime": "destroy", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s8_destroy10", "regime": "destroy", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s9_destroy10", "regime": "destroy", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s10_destroy10", "regime": "destroy", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s1_destroy30", "regime": "destroy", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s2_destroy30", "regime": "destroy", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s3_destroy30", "regime": "destroy", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s4_destroy30", "regime": "destroy", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s5_destroy30", "regime": "destroy", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s6_destroy30", "regime": "destroy", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s7_destroy30", "regime": "destroy", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s8_destroy30", "regime": "destroy", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s9_destroy30", "regime": "destroy", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 12000, "wd": 1.0}, "id": "F_mod113_tf1_destroy_s10_destroy30", "regime": "destroy", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s1_induce0.1", "regime": "induce", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s2_induce0.1", "regime": "induce", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s3_induce0.1", "regime": "induce", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s4_induce0.1", "regime": "induce", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s5_induce0.1", "regime": "induce", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s6_induce0.1", "regime": "induce", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s7_induce0.1", "regime": "induce", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s8_induce0.1", "regime": "induce", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s9_induce0.1", "regime": "induce", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_induce_s10_induce0.1", "regime": "induce", "seed": 10, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s1", "regime": "transplant", "seed": 1, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s2", "regime": "transplant", "seed": 2, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s3", "regime": "transplant", "seed": 3, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s4", "regime": "transplant", "seed": 4, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s5", "regime": "transplant", "seed": 5, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s6", "regime": "transplant", "seed": 6, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s7", "regime": "transplant", "seed": 7, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s8", "regime": "transplant", "seed": 8, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s9", "regime": "transplant", "seed": 9, "task": "mod113"}
+{"arch": "tf1", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 12000, "wd": 0.0}, "id": "F_mod113_tf1_transplant_s10", "regime": "transplant", "seed": 10, "task": "mod113"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s1_destroy10", "regime": "destroy", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s2_destroy10", "regime": "destroy", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s3_destroy10", "regime": "destroy", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s4_destroy10", "regime": "destroy", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s5_destroy10", "regime": "destroy", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s6_destroy10", "regime": "destroy", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s7_destroy10", "regime": "destroy", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s8_destroy10", "regime": "destroy", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s9_destroy10", "regime": "destroy", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s10_destroy10", "regime": "destroy", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s1_destroy30", "regime": "destroy", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s2_destroy30", "regime": "destroy", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s3_destroy30", "regime": "destroy", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s4_destroy30", "regime": "destroy", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s5_destroy30", "regime": "destroy", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s6_destroy30", "regime": "destroy", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s7_destroy30", "regime": "destroy", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s8_destroy30", "regime": "destroy", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s9_destroy30", "regime": "destroy", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 30000, "wd": 1.0}, "id": "F_S5_mlp2_destroy_s10_destroy30", "regime": "destroy", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s1_induce0.1", "regime": "induce", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s2_induce0.1", "regime": "induce", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s3_induce0.1", "regime": "induce", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s4_induce0.1", "regime": "induce", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s5_induce0.1", "regime": "induce", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s6_induce0.1", "regime": "induce", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s7_induce0.1", "regime": "induce", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s8_induce0.1", "regime": "induce", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s9_induce0.1", "regime": "induce", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.003, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_induce_s10_induce0.1", "regime": "induce", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s1", "regime": "transplant", "seed": 1, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s2", "regime": "transplant", "seed": 2, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s3", "regime": "transplant", "seed": 3, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s4", "regime": "transplant", "seed": 4, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s5", "regime": "transplant", "seed": 5, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s6", "regime": "transplant", "seed": 6, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s7", "regime": "transplant", "seed": 7, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s8", "regime": "transplant", "seed": 8, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s9", "regime": "transplant", "seed": 9, "task": "S5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 1.0}, "evals": 50, "lr": 0.003, "patience": 5, "steps": 30000, "wd": 0.0}, "id": "F_S5_mlp2_transplant_s10", "regime": "transplant", "seed": 10, "task": "S5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s1_destroy10", "regime": "destroy", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s2_destroy10", "regime": "destroy", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s3_destroy10", "regime": "destroy", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s4_destroy10", "regime": "destroy", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s5_destroy10", "regime": "destroy", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s6_destroy10", "regime": "destroy", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s7_destroy10", "regime": "destroy", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s8_destroy10", "regime": "destroy", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s9_destroy10", "regime": "destroy", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 10.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s10_destroy10", "regime": "destroy", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s1_destroy30", "regime": "destroy", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s2_destroy30", "regime": "destroy", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s3_destroy30", "regime": "destroy", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s4_destroy30", "regime": "destroy", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s5_destroy30", "regime": "destroy", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s6_destroy30", "regime": "destroy", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s7_destroy30", "regime": "destroy", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s8_destroy30", "regime": "destroy", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s9_destroy30", "regime": "destroy", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"c": 1.0, "kind": "destroy", "lam": 30.0, "ramp": 2000}, "steps": 8000, "wd": 1.0}, "id": "F_permcomp5_mlp2_destroy_s10_destroy30", "regime": "destroy", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s1_induce0.1", "regime": "induce", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s2_induce0.1", "regime": "induce", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s3_induce0.1", "regime": "induce", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s4_induce0.1", "regime": "induce", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s5_induce0.1", "regime": "induce", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s6_induce0.1", "regime": "induce", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s7_induce0.1", "regime": "induce", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s8_induce0.1", "regime": "induce", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s9_induce0.1", "regime": "induce", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "pen": {"kind": "induce", "lam": 0.1, "ramp": 2000}, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_induce_s10_induce0.1", "regime": "induce", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s1", "regime": "transplant", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s2", "regime": "transplant", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s3", "regime": "transplant", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s4", "regime": "transplant", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s5", "regime": "transplant", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s6", "regime": "transplant", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s7", "regime": "transplant", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s8", "regime": "transplant", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s9", "regime": "transplant", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"donor": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 1.0}, "evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_transplant_s10", "regime": "transplant", "seed": 10, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s1", "regime": "nograk", "seed": 1, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s2", "regime": "nograk", "seed": 2, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s3", "regime": "nograk", "seed": 3, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s4", "regime": "nograk", "seed": 4, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s5", "regime": "nograk", "seed": 5, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s6", "regime": "nograk", "seed": 6, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s7", "regime": "nograk", "seed": 7, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s8", "regime": "nograk", "seed": 8, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s9", "regime": "nograk", "seed": 9, "task": "permcomp5"}
+{"arch": "mlp2", "hp": {"evals": 50, "lr": 0.001, "patience": 5, "steps": 8000, "wd": 0.0}, "id": "F_permcomp5_mlp2_nograk_s10", "regime": "nograk", "seed": 10, "task": "permcomp5"}

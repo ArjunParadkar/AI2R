@@ -1,0 +1,42 @@
+{
+ "config": {
+  "candidates": "gl(3)",
+  "n": 2000
+ },
+ "config_hash": "3bff97f0f05caebe85695ee10ff4967c37dcf05e57bbb01064d4d9e94f83af53",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N3-01",
+ "result": {
+  "conditions": {
+   "dim=3": true,
+   "gap>=1e6": true,
+   "sine<=1e-8": true
+  },
+  "measured": {
+   "dim": 3,
+   "lam3": 1.9689563222910862e-16,
+   "lam4": 0.8536494551951349,
+   "ratio": 4335542873809535.0,
+   "sine": "0.0"
+  },
+  "passed": true
+ },
+ "result_sha256": "2b36c5d01f85dafd40a12b4b8788cbdef12d85513cd956b4be3e432268188ebb",
+ "saved_at": "2026-10-04T18:14:42",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

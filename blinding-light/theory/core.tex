@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\theoremstyle{remark}\newtheorem{rem}{Remark}
+\newcommand{\R}{\mathbb R}\newcommand{\Z}{\mathbb Z}
+\newcommand{\FR}{\mathrm{FR}}\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\status}[1]{\hfill\textsf{[#1]}}
+\title{WHITEBOX v2: formal core (Phase 1)}
+\author{Arjun Paradkar and Reva Paradkar}
+\date{4 October 2026 --- draft, not independently checked}
+\begin{document}\maketitle
+
+\paragraph{Reading rule.} No result below is called a theorem. Each is a \emph{proposition} (proof given here, \emph{not yet checked line by line by anyone but the author}), a \emph{cited} result (proof is in the cited reference and is not reproduced), or a \emph{conjecture} (stated with the experiment that would refute it). Every item names the measurable prediction it makes. Numerical sanity checks in \texttt{proofs/check\_m*.py} test statements on examples; they are not proofs. The status table is at the end.
+
+\section*{M0. Setting and the metric}
+Let $f_\theta:\mathcal M\to\Delta^{K-1}_\circ$ (open simplex) and write $p=f(x)$, $z$ for any logits with $p=\mathrm{softmax}(z)$, $J_z=\partial z/\partial x$. The Fisher--Rao metric on the open simplex pulled back to logit coordinates is $F(p)=\mathrm{diag}(p)-pp^\top$. Define
+\[ g_x \;=\; J_z(x)^\top F(p(x))\,J_z(x). \]
+\begin{prop}[M0.1]\status{proved, unchecked; numerically sanity-checked}
+(i) $g_x$ depends on $f$ only through the map $x\mapsto p(x)$; in particular it is unchanged by any rewriting of the parameters ($\theta\mapsto\theta'$ with $f_{\theta'}=f_\theta$), and by any logit shift $z\mapsto z+c(x)\mathbf 1$.
+(ii) $g_x\succeq0$, $\operatorname{rank}g_x\le K-1$, and $\ker g_x=\{v: J_zv\in\mathrm{span}\,\mathbf 1\}$.
+(iii) If $f\circ T=\rho(T)f$ for a permutation matrix $\rho(T)$ and $T$ a diffeomorphism of $\mathcal M$, then $T^*g=g$.
+\end{prop}
+\begin{proof}
+(i) $F(p)=\partial p/\partial z$ on the tangent space, so $g=(\partial p/\partial x)^\top G_{\FR}(\partial p/\partial x)$ in the intrinsic form; the middle expression involves only $p(x)$. For a shift, $J_z'=J_z+\mathbf 1\nabla c^\top$ and $F(p)\mathbf 1=p-p(p^\top\mathbf 1)=0$, so $J_z'^\top FJ_z'=J_z^\top FJ_z$. (ii) For $v\in\R^K$, $v^\top Fv=\sum p_iv_i^2-(\sum p_iv_i)^2\ge0$ (Jensen), with equality iff $v\in\mathrm{span}\,\mathbf 1$ since all $p_i>0$; so $\ker F=\mathrm{span}\,\mathbf 1$, $\operatorname{rank}F=K-1$, and $g_xv=0\iff J_zv\in\ker F$. (iii) $J_z(Tx)\,DT=\rho J_z(x)+\mathbf 1(\cdot)^\top$ and $F(\rho p)=\rho F(p)\rho^\top$; combine with (i). \qedhere
+\end{proof}
+\textbf{Prediction.} Recomputing every v1 table with $g$ instead of the Euclidean-logit pullback leaves signs unchanged and changes $\kappa$ and $q$ values; the Euclidean pullback is \emph{not} shift-invariant (N1 cell T-N1-13). \textbf{Test:} Phase 2 re-run of the v1 tables with both metrics (not yet done).
+
+\section*{M1. Learned foliation, symmetries, groupoids}
+\begin{prop}[M1.1 Frobenius]\status{cited: Frobenius theorem}
+If $\ker g$ has constant rank and is involutive ($[V,W]\in\ker g$ for $V,W\in\ker g$), it integrates to a foliation $\mathcal F$ and $g$ descends to a nondegenerate metric $\bar g$ on the local quotient $\mathcal M/\mathcal F$.
+\end{prop}
+Only the \emph{kernel} distribution is integrable in general. In a numerical example (K=3, n=5, $f=A_2\tanh A_1x$) the Lie-bracket residual of kernel fields is $6\times10^{-10}$ (involutive) while the horizontal distribution has normal bracket component up to $0.75$ (not involutive). \textbf{Prediction:} on rotated MNIST, leaves align with rotation orbits for generalizers and not for memorizers. \textbf{Test:} Phase 3. Constant rank is an assumption; points where rank jumps are excluded and counted.
+
+\begin{prop}[M1.2 Killing algebra]\status{cited: Myers--Steenrod; solver partly validated, see N4}
+The isometry group of $(\mathcal M/\mathcal F,\bar g)$ is a Lie group whose Lie algebra is the space of Killing fields $\mathcal L_V\bar g=0$. Its dimension is the learned continuous symmetry dimension.
+\end{prop}
+\textbf{Prediction:} rotated-MNIST generalizer $\Rightarrow$ 1-dimensional algebra; memorizer $\Rightarrow$ 0. The meshfree solver (\texttt{numerics/killing.py}) recovers $\mathfrak{so}(3)$ on the Fisher--Rao simplex cap and 0 on a generic metric (check\_m1), but on the frozen N4 tolerances it \emph{fails} T-N4-02 and T-N4-03 (see \texttt{reports/phase1.md}); Phase 3 may not use it until that is resolved.
+
+\begin{prop}[M1.3 groupoid]\status{definition only}
+For a finite probe set $(P,D)$, a learned groupoid is a family $(U,V,\phi)$, $U,V\subseteq P$, $\phi:U\to V$ bijective with $\sup|D(\phi a,\phi b)-D(a,b)|\le\varepsilon$ on $U$. Global groups are $U=V=P$. No result is claimed.
+\end{prop}
+
+\begin{prop}[M1.4 metric symmetry vs.\ output equivariance]\status{part (i) proved, unchecked; part (ii) verified on one example; sufficiency open}
+Let $T$ be a diffeomorphism of $\mathcal M$ with $T^*g=g$.
+(i) $f\circ T=\Phi\circ f$ for some isometry $\Phi$ of $(\Delta_\circ,G_{\FR})$ iff $\bar f$ and $\bar f\circ T$ are congruent isometric immersions of $(\mathcal M/\mathcal F,\bar g)$ into the simplex. Isometries of $(\Delta_\circ,G_{\FR})$ are exactly the coordinate permutations (the open simplex is, via $s=2\sqrt p$, an open orthant of the round sphere of radius 2, and the isometries of that orthant are the permutations of coordinates).
+(ii) $T^*g=g$ does not imply output equivariance: the circle $\theta\mapsto\sqrt p(\theta)$ around the barycentre has constant speed, so \emph{every} rotation of the parameter is an isometry of $g$, but only the rotations by multiples of $2\pi/K$ are realised by permutations (observed in check\_m1: metric defect $0$ for all shifts, best permutation defect $<3\times10^{-16}$ for $2\pi/3,4\pi/3$ and $0.13$--$0.40$ otherwise).
+\end{prop}
+\begin{proof}[Proof of (i)]
+$(\Rightarrow)$ trivial. $(\Leftarrow)$: congruence means $\bar f\circ T=\Phi\circ\bar f$ for an isometry $\Phi$ of the ambient simplex; precompose with the quotient map. The characterisation of $\mathrm{Isom}$ uses that an orthogonal map of $\R^K$ preserving the positive orthant (and sending the sphere to itself) is a signed-free permutation matrix. \qedhere
+\end{proof}
+No rigidity condition guaranteeing congruence is proved. \textbf{Prediction:} on a task engineered so that metric symmetry holds without equivariance, symmetry detection succeeds and $\kappa$ fails. \textbf{Test:} Phase 2 (task to be built).
+\begin{conj}[M1.5] If the image of $\bar f$ spans $\R^K$ and its quotient dimension is at least $2$, congruence is generic.\end{conj}
+
+\section*{M2. Stability of approximate symmetry}
+Let $P=\{x_1,\dots,x_n\}$, $D_{ij}=d_g(x_i,x_j)$, $\bar D=\frac1{n^2}\sum D_{ij}$. For a permutation $\sigma$ of $P$ define the mean-normalised distortion
+\[ \mathrm{err}(\sigma)=\frac{1}{n^2\bar D}\sum_{i,j}\bigl|D_{\sigma i,\sigma j}-D_{ij}\bigr|. \]
+\begin{prop}[M2.1 approximate closure]\status{proved, unchecked; check\_m2(a) is a different (Lipschitz) variant}
+(i) $\mathrm{err}(\sigma^{-1})=\mathrm{err}(\sigma)$. (ii) $\mathrm{err}(\sigma\tau)\le\mathrm{err}(\sigma)+\mathrm{err}(\tau)$. (iii) A word of length $k$ in $\delta$-accepted generators has $\mathrm{err}\le k\delta$. (iv) If $\sigma$ has order $n$ and $\mathrm{err}(\sigma)=\delta$ then every element of $\langle\sigma\rangle$ has $\mathrm{err}\le\lfloor n/2\rfloor\delta$; so $\langle\sigma\rangle$ is a $\delta'$-approximate group for $\delta'=\lfloor n/2\rfloor\delta$, and words of length $\le L=\lfloor\delta'/\delta\rfloor$ stay within a prescribed $\delta'$.
+\end{prop}
+\begin{proof}
+(i) Substitute $(i,j)\to(\sigma^{-1}i,\sigma^{-1}j)$, a bijection of index pairs. (ii) $|D_{\sigma\tau i,\sigma\tau j}-D_{ij}|\le|D_{\sigma(\tau i),\sigma(\tau j)}-D_{\tau i,\tau j}|+|D_{\tau i,\tau j}-D_{ij}|$. Summing over $(i,j)$ and substituting $(\tau i,\tau j)\to(i,j)$ in the first term gives $\sum|D_{\sigma i,\sigma j}-D_{ij}|$; the second sum is the $\tau$ defect. $\bar D$ is permutation invariant. (iii) Induction with (i),(ii). (iv) Each element is $\sigma^k$ with $|k|\le\lfloor n/2\rfloor$ up to inverse. \qedhere
+\end{proof}
+\textbf{Prediction:} the number of accepted words before the defect exceeds the null threshold is $\ge\delta^*/\delta$ for the cyclic generator; for $\Z_{113}$ elements beyond $|k|=56$ are reached through inverses. \textbf{Test:} Phase 2 on the v1 $\Z_{113}$ models (untested).
+
+\begin{prop}[M2.2 Ulam-type stability for $\Z_n$]\status{proved, unchecked; check\_m2(b) tests the inequalities}
+Let $\rho:\Z_n\to U(d)$ with $\rho(0)=I$ and $\|\rho(a)\rho(b)-\rho(a+b)\|\le\varepsilon$ for all $a,b$ (an $\varepsilon$-representation, operator norm). Put $A=\rho(1)$. Then $\|A^n-I\|\le(n-1)\varepsilon$, and there is a unitary $B$ with $B^n=I$ and
+\[ \|A-B\|\;\le\;\tfrac2n\arcsin\!\bigl(\tfrac{(n-1)\varepsilon}{2}\bigr)\;\le\;\tfrac{\pi}{2}\varepsilon . \]
+The genuine representation $\beta(k)=B^k$ satisfies $\sup_{k}\|\rho(k)-\beta(k)\|\le\tfrac n2\bigl(1+\tfrac\pi2\bigr)\varepsilon$.
+\end{prop}
+\begin{proof}
+Telescoping: $\|\rho(1)^k-\rho(k)\|\le(k-1)\varepsilon$ (induction: $\rho(1)^k-\rho(k)=\rho(1)(\rho(1)^{k-1}-\rho(k-1))+(\rho(1)\rho(k-1)-\rho(k))$). With $k=n$, $\rho(n)=\rho(0)=I$. $A$ is unitary hence normal; diagonalise, eigenvalues $e^{i\theta_j}$. $\|A^n-I\|=\max_j2|\sin(n\theta_j/2)|=:e$. Choose $\varphi_j$ with $n\varphi_j\in2\pi\Z$ and $|\theta_j-\varphi_j|\le\pi/n$. Then $|\sin(n(\theta_j-\varphi_j)/2)|=|\sin(n\theta_j/2)|$ and $n|\theta_j-\varphi_j|/2\le\pi/2$, so $|\theta_j-\varphi_j|=\frac2n\arcsin(|\sin(n\theta_j/2)|)\le\frac2n\arcsin(e/2)$. Let $B$ have the same eigenvectors and eigenvalues $e^{i\varphi_j}$; $B^n=I$ and $\|A-B\|=\max_j2\sin(|\theta_j-\varphi_j|/2)\le\max|\theta_j-\varphi_j|$. Finally $\arcsin x\le\pi x/2$ on $[0,1]$. For the last bound, $\|\rho(k)-B^k\|\le\|\rho(k)-A^k\|+\|A^k-B^k\|\le(k-1)\varepsilon+k\tfrac\pi2\varepsilon$ and one may take $|k|\le n/2$ (use $\rho(-k)$, $B^{-k}$). \qedhere
+\end{proof}
+\begin{rem}The generator is $O(\varepsilon)$-close with an $n$-independent constant $\pi/2$; the whole action is $O(n\varepsilon)$-close with this proof. The $n$-dependence is a feature of the elementary argument, not shown to be necessary; Kazhdan's theorem for amenable groups gives a bound independent of $n$ with a worse (non-explicit) constant. We do not claim it.\end{rem}
+\textbf{Prediction:} recovered structure is stable under probe resampling: Gromov--Hausdorff distance between recovered structures scales as $O(\varepsilon)$. \textbf{Test:} Phase 2 (untested). This is a prediction about estimation, not implied by M2.2 alone.
+
+\begin{prop}[M2.3 finite vs.\ infinitesimal]\status{proved, unchecked; check\_m2(c)}
+If $h\in C^2$ and $\sup_{[x,x+\Delta]}\|\nabla^2h\|\le\Lambda$ then $\|h(x+\Delta)-h(x)-J(x)\Delta\|\le\tfrac12\Lambda\|\Delta\|^2$.
+\end{prop}
+Taylor with integral remainder. For token jumps $\|\Delta\|=O(1)$ the linear term is uncontrolled. \textbf{Prediction:} the gap between linearised and finite $q$ grows with measured $\Lambda$. \textbf{Test:} Phase 2 (untested). The check found log--log slope $1.989$ against expected 2 on a tanh tower; the bound is loose (actual/bound $0.007$).
+
+\begin{prop}[M2.4 quotient-covering generalisation bound]\status{conditional reduction to a cited result; not an independent proof}
+Let $d_g$ be the pseudo-distance induced by $g$ (geodesic, or the finite secant length of N2) and $N(r)$ the $r$-covering number of $(\mathcal M,d_g)$ (equal to that of the quotient). Suppose the loss $\ell(f(x),y)\in[0,1]$ is $L$-Lipschitz in $d_g$, and the label $y$ is constant on each cell of an $r$-cover. Then the algorithm is $(N(r),Lr)$-robust in the sense of Xu and Mannor (2012), so with probability $\ge1-\delta$ over $m$ samples
+\[ \bigl|R_{\text{test}}-R_{\text{train}}\bigr|\;\le\;Lr+\sqrt{\tfrac{2N(r)\ln2+2\ln(1/\delta)}{m}}\;. \]
+\end{prop}
+\textbf{Prediction (pre-registered in Phase 2 as H2.7):} across the model zoo the measured quotient covering number predicts the generalisation gap better than weight norm and sharpness (Spearman, bootstrap CI over seeds). Note the label-constancy assumption: where labels vary inside a cell an additional term appears; we have no bound for it. The multinomial concentration of cell masses used in the proof was checked numerically (check\_m2(d), 0 violations at $m=100,400,1600$).
+
+\section*{M3. Topology}
+\begin{prop}[M3.1 stability of H0 and Rips statistics]\status{cited: Cohen-Steiner--Edelsbrunner--Harer 2007; Chazal--de Silva--Oudot 2014; H0 case checked numerically}
+(S1) If $D,D'$ are symmetric with $\|D-D'\|_\infty\le\eta$ then $d_B(\mathrm{dgm}\,D,\mathrm{dgm}\,D')\le\eta$ for the Rips filtration. (S2) For $S\subseteq X$, $d_B(\mathrm{dgm}S,\mathrm{dgm}X)\le2\,d_H(S,X)$.
+\end{prop}
+For $H_0$ this reduces to: the sorted MST edge lengths are 1-Lipschitz in sup norm of the distance matrix (violations $0/300$ in check\_m3). \textbf{Use:} certified bars $\epsilon^*,\Delta$ with error bar $2\eta_c$, $\eta_c=2d_H$. \textbf{Limitation found in N5:} at the frozen sample sizes the certificate is too loose to certify $b_2$ of $S^2$ ($n=300$) or $b_1$ of the Clifford torus ($n=500$): $\eta_c\approx0.79$ (T-N5-02, see report).
+
+\textbf{M3.2--M3.4} (quotient homology, circular coordinates, Mapper) are not yet formalised; they are listed as Phase 2--4 tasks and \emph{no claim is made}.
+
+\section*{M4. Symplectic mechanics (strict kill criterion)}
+Heavy ball with weight decay: $v_{t+1}=\beta v_t-\eta(\nabla L(q_t)+\kappa q_t)$, $q_{t+1}=q_t+v_{t+1}$. Let $S$ be a linear generator with $L(e^{sS}q)=L(q)$, hence $\langle\nabla L(q),Sq\rangle=0$.
+\begin{prop}[M4.1 exact drift laws]\status{proved, unchecked; residuals $<10^{-15}$ in check\_m4 on MLP, attention $W_QW_K^\top$, $W_VW_O$ symmetries}
+Let $u_{t+1}=q_t^\top Sv_{t+1}$, $k_t=v_t^\top Sv_t$, $Q_t=\tfrac12q_t^\top Sq_t$.
+(i) $S$ symmetric: $u_{t+1}=\beta(u_t+k_t)-2\eta\kappa Q_t$ and $Q_{t+1}=Q_t+u_{t+1}+\tfrac12k_{t+1}$.
+(ii) $S$ antisymmetric: $u_{t+1}=\beta u_t$ exactly (also with $\kappa>0$).
+(iii) The one-step map $(q,v)\mapsto(q',v')$ has Jacobian determinant $\beta^n$ ($n=\dim q$): dissipative, not symplectic unless $\beta=1$.
+\end{prop}
+\begin{proof}
+(i) $q_t^\top S\nabla L=\langle\nabla L,Sq_t\rangle=0$ and $q_t^\top Sq_t=2Q_t$, so $u_{t+1}=\beta q_t^\top Sv_t-2\eta\kappa Q_t$ and $q_t=q_{t-1}+v_t$ gives $q_t^\top Sv_t=u_t+k_t$. $Q_{t+1}=\tfrac12(q_t+v_{t+1})^\top S(q_t+v_{t+1})=Q_t+u_{t+1}+\tfrac12k_{t+1}$. (ii) $q^\top Sq=0$, $v^\top Sv=0$, $\langle\nabla L,Sq\rangle=0$, so $u_{t+1}=\beta q_t^\top Sv_t=\beta(q_{t-1}+v_t)^\top Sv_t=\beta u_t$. (iii) $(q,v)\mapsto(q,v')$ with $v'=\beta v-\eta(\cdots)$ is block triangular with determinant $\beta^n$, and $(q,v')\mapsto(q+v',v')$ has determinant $1$. \qedhere
+\end{proof}
+\begin{rem}With $\kappa=0$ the scale charge $Q$ is \emph{not} conserved by Euclidean heavy ball (drift $0.393\to0.329$ in check\_m4): the kinetic term $k_t\ne0$ breaks conservation, so ``conserved under gradient flow'' holds for the flow, not for the discrete heavy-ball iteration.\end{rem}
+\textbf{M4.3 (Marsden--Weinstein reduction) is not proved here.} The statement that every certified $G$-invariant quantity is a function on the reduced space is true for the diagonal action by construction (invariance \emph{is} descent to the quotient) but adds no measurable prediction beyond M0.1; per rule 1 it is recorded as ornamental unless H-symp passes.
+\begin{conj}[H-symp, pre-registered in Phase 2]The onset of generalisation coincides with a change in the decay rate of $Q_t$ or in the effective dimension of the reduced trajectory, at the checkpoint where the generator is accepted. Kill: if the signal does not precede or coincide with acceptance on $\ge80\%$ of seeds, or adds nothing beyond weight norm, M4 is cut (\texttt{docs/cut.md}).\end{conj}
+
+\section*{M5. Causality}
+Let $G=\Z_n$ act on inputs and by cyclic permutation $\rho$ on the $K$ logits, with an exactly $G$-invariant data law. For a model $f$ put $(Qf)(x)=\frac1{|G|}\sum_g\rho(g)^{-1}f(gx)$ (exactly equivariant), $\Gamma(f)=\mathbb E_x\frac1{|G|}\sum_g\|P_\perp(\rho(g)^{-1}f(gx)-Qf(x))\|^2$ ($P_\perp$ removes the all-ones direction), and $\mu=\inf\lambda_{\min}^{\perp}(F)$ over the range of logits.
+\begin{prop}[M5.1 equivariance gap]\status{proved, unchecked; check\_m5}
+For cross-entropy $R$: $R(f)\ge R(Qf)+\tfrac\mu2\Gamma(f)$.
+\end{prop}
+\begin{proof}
+Cross-entropy satisfies $\ell(\rho u,\rho y)=\ell(u,y)$ and the data law is $G$-invariant, so $R(f)=\mathbb E\,\frac1{|G|}\sum_g\ell(\rho(g)^{-1}f(gx),y)$. For each $x$, $u_g:=\rho(g)^{-1}f(gx)$ has mean $\bar u=Qf(x)$. $\ell(\cdot,y)$ is convex with Hessian $F\succeq\mu P_\perp$ on the segment, and shift invariant, so $\ell(u_g)\ge\ell(\bar u)+\langle\nabla\ell(\bar u),u_g-\bar u\rangle+\tfrac\mu2\|P_\perp(u_g-\bar u)\|^2$. Average over $g$; the linear term vanishes. \qedhere
+\end{proof}
+\textbf{Prediction (destroy):} a penalty that increases $\Gamma$ by $\gamma$ increases risk by at least $\mu\gamma/2$ over the equivariant projection. \textbf{Test:} Phase 2 causal block. Check\_m5 dose--response held at all $s$ (realised ratio $2(R(f)-R(Qf))/\Gamma=0.117\ge\mu$). The link from risk to the \emph{generalisation gap} additionally needs M2.4 and is not proved.
+
+\section*{Proof status}
+\begin{center}\small\begin{tabular}{@{}p{1.1cm}p{4.2cm}p{5.6cm}p{3.3cm}@{}}\toprule
+item & status & measurable prediction & tested where\\\midrule
+M0.1 & proved, unchecked & $g$ shift-/rewriting-invariant; $\kappa,q$ shift under metric change & N1 T-N1-12..14 (pass); v1 re-run Phase 2\\
+M1.1 & cited & foliation aligns with orbits (generalizers only) & Phase 3\\
+M1.2 & cited; solver fails N4 gate & Killing dim = 1 on rotated MNIST & Phase 3, blocked\\
+M1.4 & (i) proved, (ii) example; sufficiency open & metric symmetry without equivariance & Phase 2\\
+M2.1 & proved, unchecked & word-length error $\le k\delta$ & Phase 2\\
+M2.2 & proved, unchecked & generator $\le\pi\varepsilon/2$, action $\le\tfrac n2(1+\tfrac\pi2)\varepsilon$ & Phase 2 (GH scaling)\\
+M2.3 & proved, unchecked & linear--finite gap tracks $\Lambda$ & Phase 2\\
+M2.4 & reduction to cited result & covering number beats weight norm/sharpness & Phase 2 H2.7\\
+M3.1 & cited; H0 checked & certified bars & N5 (partly fails)\\
+M3.2--4 & not formalised & --- & ---\\
+M4.1 & proved, unchecked & drift laws for $Q_t$ & H-symp, Phase 2\\
+M4.3 & ornamental unless H-symp passes & --- & ---\\
+M5.1 & proved, unchecked & destroy raises risk $\ge\mu\gamma/2$ & Phase 2 causal block\\
+\bottomrule\end{tabular}\end{center}
+\end{document}

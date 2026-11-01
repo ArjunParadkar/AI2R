@@ -1,0 +1,37 @@
+{
+ "config": {
+  "seed": 7
+ },
+ "config_hash": "5f83350f79a392f22dd6c4c97d9c3eba4530c974405a4fcdce43af14f1d968c8",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": true,
+  "deterministic_algorithms": true,
+  "flash_sdp": false,
+  "math_sdp": true,
+  "mem_efficient_sdp": false
+ },
+ "name": "T-N6-01",
+ "result": {
+  "conditions": {
+   "other seed differs": true,
+   "same seed identical": true
+  },
+  "measured": {
+   "diff": true,
+   "same": true
+  },
+  "passed": true
+ },
+ "result_sha256": "e920e5ffd735feb60dabd37b459715819a87992563f0ed25f159d2f82c561790",
+ "saved_at": "2026-10-04T18:22:45",
+ "seed": 7,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

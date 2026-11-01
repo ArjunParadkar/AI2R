@@ -1,0 +1,38 @@
+{
+ "config": {
+  "dtype": "float32 vs float64"
+ },
+ "config_hash": "d1df3e9eae6be45ead05b29a1293f4c3a6120600a86fd7bb75e442e6136af1a6",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N1-11",
+ "result": {
+  "conditions": {
+   "drift<=1e-5": true,
+   "fd32<=5e-2": true
+  },
+  "measured": {
+   "autograd_drift": "3.254721684381988e-07",
+   "fd32_err": "8.273830590761568e-05",
+   "fd_over_autograd": "254.21007978851554"
+  },
+  "passed": true
+ },
+ "result_sha256": "3006198d8bdbf915d2a2e559052713186557b58eca639e81e797ab403190922b",
+ "saved_at": "2026-10-04T18:14:38",
+ "seed": 4,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

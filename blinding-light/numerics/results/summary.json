@@ -1,0 +1,827 @@
+{
+ "T-N1-01": {
+  "conditions": {
+   "abs<=1e-12(1+|J|)": true
+  },
+  "id": "T-N1-01",
+  "measured": {
+   "affine": 0,
+   "poly": 2.777050198308046e-17,
+   "tanh_mlp": 1.950621375445659e-16
+  },
+  "passed": true
+ },
+ "T-N1-02": {
+  "conditions": {
+   "rel<=1e-12": true
+  },
+  "id": "T-N1-02",
+  "measured": {
+   "affine": 0,
+   "poly": 3.1071190070799662e-16,
+   "tanh_mlp": 1.9788664551178846e-15
+  },
+  "passed": true
+ },
+ "T-N1-03": {
+  "conditions": {
+   "k64<k4": true,
+   "rel<=0.15": true
+  },
+  "id": "T-N1-03",
+  "measured": {
+   "median_err_k4": 0.8916173442814572,
+   "median_err_k64": 0.25547886132970443,
+   "rel_mean_err": 0.029772577599379013
+  },
+  "passed": true
+ },
+ "T-N1-04": {
+  "conditions": {
+   "rate<=delta": true
+  },
+  "id": "T-N1-04",
+  "measured": {
+   "N": 503,
+   "a": 0.5446908586103586,
+   "b": 0.45438832547865055,
+   "failure_rate": 0.0075,
+   "worst_case_N": 1620
+  },
+  "passed": true
+ },
+ "T-N1-05": {
+  "conditions": {
+   "err<=0.03": true,
+   "sum=1": true
+  },
+  "id": "T-N1-05",
+  "measured": {
+   "max_abs_err": 0.00445088950325262,
+   "sum_minus_1": 0.0
+  },
+  "passed": true
+ },
+ "T-N1-06": {
+  "conditions": {
+   "rel<=0.05": true
+  },
+  "id": "T-N1-06",
+  "measured": {
+   "rel_err": 0.04144010475916611
+  },
+  "passed": true
+ },
+ "T-N1-07": {
+  "conditions": {
+   "rel<=1e-6": true,
+   "spec<=2sigma11": true
+  },
+  "id": "T-N1-07",
+  "measured": {
+   "rel_top5": 1.2212453270876722e-15,
+   "sigma_11": 0.0009765625,
+   "spec_err": 0.0009765625
+  },
+  "passed": true
+ },
+ "T-N1-08": {
+  "conditions": {
+   "plain<=1e-8": true,
+   "rich<=1e-8": true
+  },
+  "id": "T-N1-08",
+  "measured": {
+   "plain": 2.589887820816123e-11,
+   "richardson": 1.5082598616885812e-11
+  },
+  "passed": true
+ },
+ "T-N1-09": {
+  "conditions": {
+   "ratio>=100": true
+  },
+  "id": "T-N1-09",
+  "measured": {
+   "plain": 7.265018623318506e-05,
+   "ratio": 35930.15755726422,
+   "richardson": 2.0219835139157893e-09
+  },
+  "passed": true
+ },
+ "T-N1-10": {
+  "conditions": {
+   "counts_exact": true,
+   "monotone": true
+  },
+  "id": "T-N1-10",
+  "measured": {
+   "curve_queries_err": [
+    [
+     10,
+     0.007184303690423259
+    ],
+    [
+     20,
+     2.0420539009190723e-05
+    ],
+    [
+     30,
+     9.826080642366787e-09
+    ]
+   ]
+  },
+  "passed": true
+ },
+ "T-N1-11": {
+  "conditions": {
+   "drift<=1e-5": true,
+   "fd32<=5e-2": true
+  },
+  "id": "T-N1-11",
+  "measured": {
+   "autograd_drift": 3.254721684381988e-07,
+   "fd32_err": 8.273830590761568e-05,
+   "fd_over_autograd": 254.21007978851554
+  },
+  "passed": true
+ },
+ "T-N1-12": {
+  "conditions": {
+   "<=1e-12": true
+  },
+  "id": "T-N1-12",
+  "measured": {
+   "analytic_rel": 1.5553183016829413e-16,
+   "sqrt_form": 5.727731216763478e-15
+  },
+  "passed": true
+ },
+ "T-N1-13": {
+  "conditions": {
+   "euclid>=1e-2": true,
+   "fr<=1e-12": true
+  },
+  "id": "T-N1-13",
+  "measured": {
+   "euclid_change_min": 3.825063077184818,
+   "fr_change": 3.1762873111142924e-14
+  },
+  "passed": true
+ },
+ "T-N1-14": {
+  "conditions": {
+   "hidden<=1e-10": true,
+   "in<=1e-10": true
+  },
+  "id": "T-N1-14",
+  "measured": {
+   "euclid_in": 1.1513169286735865e-15,
+   "f_diff": 8.881784197001252e-16,
+   "fr_in": 1.76932312390772e-15,
+   "hidden_cov": 0.0
+  },
+  "passed": true
+ },
+ "T-N2-01": {
+  "conditions": {
+   "ambient: mean<=.03,p95<=.08": false,
+   "chart: mean<=.03,p95<=.08": false
+  },
+  "id": "T-N2-01",
+  "measured": {
+   "ambient": {
+    "mean": 0.032631138041607125,
+    "p95": 0.061220248729332426
+   },
+   "chart": {
+    "mean": 0.03276968607732179,
+    "p95": 0.0613473106094453
+   }
+  },
+  "passed": false
+ },
+ "T-N2-02": {
+  "conditions": {
+   "k_nonincreasing": true,
+   "n_not_worse": true
+  },
+  "id": "T-N2-02",
+  "measured": {
+   "err_vs_k": {
+    "6": 0.1049542041662076,
+    "12": 0.03276968607732179,
+    "24": 0.00995419963700942
+   },
+   "err_vs_n": {
+    "500": 0.0371014816112726,
+    "1000": 0.03361170888296256,
+    "2000": 0.03441316665104615,
+    "4000": 0.03276968607732179
+   }
+  },
+  "passed": true
+ },
+ "T-N2-03": {
+  "conditions": {
+   "<=0.02": true
+  },
+  "id": "T-N2-03",
+  "measured": {
+   "mean_abs_rel_diff": 0.00013416635193434044
+  },
+  "passed": true
+ },
+ "T-N2-04": {
+  "conditions": {
+   "ratio>=.995": true,
+   "sym<=1e-12": true,
+   "tri<=1e-9": true
+  },
+  "id": "T-N2-04",
+  "measured": {
+   "diag": 0.0,
+   "min_ratio": 1.0021163041890755,
+   "sym": 1.3322676295501878e-15,
+   "triangle_violation": 8.881784197001252e-16
+  },
+  "passed": true
+ },
+ "T-N3-01": {
+  "conditions": {
+   "dim=3": true,
+   "gap>=1e6": true,
+   "sine<=1e-8": true
+  },
+  "id": "T-N3-01",
+  "measured": {
+   "dim": 3,
+   "lam3": 1.9689563222910862e-16,
+   "lam4": 0.8536494551951349,
+   "ratio": 4335542873809535.0,
+   "sine": 0.0
+  },
+  "passed": true
+ },
+ "T-N3-02": {
+  "conditions": {
+   "i_norm abelian flag": true,
+   "i_norm closure<=1e-8": true,
+   "i_norm dim": true,
+   "ii_proj12 abelian flag": true,
+   "ii_proj12 closure<=1e-8": true,
+   "ii_proj12 dim": true,
+   "iii_x1x2sq_x3 abelian flag": true,
+   "iii_x1x2sq_x3 closure<=1e-8": true,
+   "iii_x1x2sq_x3 dim": true,
+   "iv_identity abelian flag": true,
+   "iv_identity closure<=1e-8": true,
+   "iv_identity dim": true
+  },
+  "id": "T-N3-02",
+  "measured": {
+   "i_norm": {
+    "abelian": false,
+    "closure_res": 5.063140957024921e-16,
+    "dim": 3,
+    "max_bracket": 0.7071067811865477
+   },
+   "ii_proj12": {
+    "abelian": false,
+    "closure_res": 0.0,
+    "dim": 3,
+    "max_bracket": 1.0
+   },
+   "iii_x1x2sq_x3": {
+    "abelian": true,
+    "closure_res": 0.0,
+    "dim": 1,
+    "max_bracket": 0.0
+   },
+   "iv_identity": {
+    "abelian": true,
+    "closure_res": 0.0,
+    "dim": 0,
+    "max_bracket": 0.0
+   }
+  },
+  "passed": true
+ },
+ "T-N3-03": {
+  "conditions": {
+   "decoy>=0.1": true,
+   "nonabelian": true,
+   "size=6": true,
+   "true<=1e-12": true
+  },
+  "id": "T-N3-03",
+  "measured": {
+   "abelian": false,
+   "closure_size": 6,
+   "delta_decoy_min": 0.595631895260109,
+   "delta_true_max": 7.015671296276717e-17
+  },
+  "passed": true
+ },
+ "T-N3-04": {
+  "conditions": {
+   "fpr<=0.10": true,
+   "rot0.30 accepted": true,
+   "rot1.00 accepted": true,
+   "rot2.00 accepted": true,
+   "rot3.14 accepted": true,
+   "scale2 rejected": true,
+   "shift3 rejected": true
+  },
+  "id": "T-N3-04",
+  "measured": {
+   "rot0.30": {
+    "delta": 0.07646227399850328,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.005,
+    "thr_hi": 1.1408693926384939,
+    "thr_lo": 1.1239623057557278,
+    "thr_point": 1.1347338218260592
+   },
+   "rot1.00": {
+    "delta": 0.08417139126428651,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.0025,
+    "thr_hi": 1.1419232066322649,
+    "thr_lo": 1.1264886458841563,
+    "thr_point": 1.1371517897477403
+   },
+   "rot2.00": {
+    "delta": 0.07392214180531903,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.005,
+    "thr_hi": 1.1427750494836046,
+    "thr_lo": 1.1256706065830424,
+    "thr_point": 1.1377610783892287
+   },
+   "rot3.14": {
+    "delta": 0.0874930471649935,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.0,
+    "thr_hi": 1.1379792300932714,
+    "thr_lo": 1.1048185113172562,
+    "thr_point": 1.1311699703860851
+   },
+   "scale2": {
+    "delta": 1.5946235628326544,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.0025,
+    "thr_hi": 1.1325201551283328,
+    "thr_lo": 1.1127866063262968,
+    "thr_point": 1.127068428941675
+   },
+   "shift3": {
+    "delta": 2.809173874374782,
+    "dkw_eps": 0.06790507578703096,
+    "fpr_heldout": 0.0025,
+    "thr_hi": 1.0976998973810759,
+    "thr_lo": 1.0684623491852756,
+    "thr_point": 1.0878029943889733
+   }
+  },
+  "passed": true
+ },
+ "T-N4-01": {
+  "conditions": {
+   "dim=2": true,
+   "err<=1e-4": true,
+   "gap>=100": true
+  },
+  "id": "T-N4-01",
+  "measured": {
+   "gap": 787525.7072392184,
+   "null_dim": 2,
+   "sigma_first6": [
+    2.2897124797338595e-06,
+    2.440332565283734e-06,
+    1.9218246293739687,
+    1.9359516221420365,
+    1.9435226070120417,
+    1.9587035236971067
+   ],
+   "subspace_err": 1.519626234052415e-07
+  },
+  "passed": true
+ },
+ "T-N4-02": {
+  "conditions": {
+   "convergence": true,
+   "dim=3": false,
+   "err<=1e-3": false,
+   "gap>=100": false
+  },
+  "id": "T-N4-02",
+  "measured": {
+   "gap": 41.8817649430784,
+   "null_dim": 1,
+   "observed_order": 3.0979080400955237,
+   "ref_fields_residual": [
+    9.930334332608481e-10,
+    9.523928312660246e-10,
+    0.0
+   ],
+   "sigma_first6": [
+    0.0006474097235259607,
+    0.02711466186257766,
+    0.031780705654066266,
+    1.413769106197765,
+    1.42568636959391,
+    1.8079554804278326
+   ],
+   "subspace_err": 0.0036718902167572945,
+   "sweep_h_err": {
+    "100": [
+     0.3996160359378858,
+     0.0736824290318964
+    ],
+    "200": [
+     0.28257120888256615,
+     0.020575077310471042
+    ],
+    "400": [
+     0.1998080179689429,
+     0.008133393599183004
+    ],
+    "800": [
+     0.14128560444128307,
+     0.0028018728527930965
+    ]
+   }
+  },
+  "passed": false
+ },
+ "T-N4-03": {
+  "conditions": {
+   "dim=3": false,
+   "err<=1e-2": false,
+   "gap>=20": true
+  },
+  "id": "T-N4-03",
+  "measured": {
+   "gap": Infinity,
+   "null_dim": 0,
+   "ref_fields_residual": [
+    4.098607324984185e-11,
+    2.7324048833227897e-11,
+    3.524908180175628e-11
+   ],
+   "sigma_first6": [
+    0.024115308890198008,
+    0.025067370568991443,
+    0.03849510256940759,
+    0.16228324181327042,
+    0.6942999863788046,
+    0.710055452893103
+   ],
+   "subspace_err": 0.061055876138686634
+  },
+  "passed": false
+ },
+ "T-N4-04": {
+  "conditions": {
+   "dim=0": true,
+   "sigma_min>=1e-3": true
+  },
+  "id": "T-N4-04",
+  "measured": {
+   "null_dim": 0,
+   "sigma_first6": [
+    0.20984797789525483,
+    0.4006925724484824,
+    0.41059718743676615,
+    0.5085067835113624,
+    0.5774758274820297,
+    0.6972053788951179
+   ],
+   "sigma_min": 0.20984797789525483
+  },
+  "passed": true
+ },
+ "T-N5-01": {
+  "conditions": {
+   "eta=0.01": true,
+   "eta=0.05": true,
+   "eta=0.1": true
+  },
+  "id": "T-N5-01",
+  "measured": {
+   "worst_bottleneck_H0_H1": {
+    "0.01": [
+     0.009901352226734161,
+     0.009152069687843323
+    ],
+    "0.05": [
+     0.03627704083919525,
+     0.044705867767333984
+    ],
+    "0.1": [
+     0.05146399140357971,
+     0.08620107173919678
+    ]
+   }
+  },
+  "passed": true
+ },
+ "T-N5-02": {
+  "conditions": {
+   "circle b1=1": true,
+   "circle no extra": true,
+   "sphere b1=0": true,
+   "sphere b2=1": false,
+   "torus b1=2": false,
+   "torus no extra H1": false,
+   "two circles b0=2": true,
+   "two circles b1=2": true
+  },
+  "id": "T-N5-02",
+  "measured": {
+   "circle": {
+    "b1": 1,
+    "eta_c": 0.14675695535772182,
+    "nlong": 1
+   },
+   "sphere": {
+    "b1": 0,
+    "b2": 0,
+    "eta_c": 0.7900400847104284
+   },
+   "torus": {
+    "H2_reported": 0,
+    "b1": 0,
+    "eta_c": 0.7835792671098832,
+    "nlong": 0
+   },
+   "two_circles": {
+    "b0": 2,
+    "b1": 2,
+    "eta_c": 0.23813836135886737
+   }
+  },
+  "passed": false
+ },
+ "T-N5-03": {
+  "conditions": {
+   "bound holds 100%": true,
+   "maxmin err(400)<err(50)": true
+  },
+  "id": "T-N5-03",
+  "measured": {
+   "mean_err": {
+    "maxmin_100": 0.3192335933446884,
+    "maxmin_200": 0.17858767807483672,
+    "maxmin_400": 0.09112387001514435,
+    "maxmin_50": 0.4542024940252304,
+    "random_100": 0.3950274646282196,
+    "random_200": 0.2639621406793594,
+    "random_400": 0.1840898424386978,
+    "random_50": 0.5285608619451523
+   }
+  },
+  "passed": true
+ },
+ "T-N6-01": {
+  "conditions": {
+   "other seed differs": true,
+   "same seed identical": true
+  },
+  "id": "T-N6-01",
+  "measured": {
+   "diff": true,
+   "same": true
+  },
+  "passed": true
+ },
+ "T-N6-02": {
+  "conditions": {
+   "fields present": true,
+   "hash changes with nested value": true,
+   "hash changes with value": true,
+   "hash key-order invariant": true
+  },
+  "id": "T-N6-02",
+  "measured": {
+   "keys": [
+    "config",
+    "config_hash",
+    "determinism",
+    "name",
+    "result",
+    "result_sha256",
+    "saved_at",
+    "seed",
+    "versions"
+   ]
+  },
+  "passed": true
+ },
+ "T-N6-03": {
+  "conditions": {
+   "deterministic_algorithms": true,
+   "flash off": true,
+   "math on": true,
+   "mem_efficient off": true
+  },
+  "id": "T-N6-03",
+  "measured": {
+   "cudnn_benchmark": false,
+   "cudnn_deterministic": true,
+   "deterministic_algorithms": true,
+   "flash_sdp": false,
+   "math_sdp": true,
+   "mem_efficient_sdp": false
+  },
+  "passed": true
+ },
+ "T-N7-01": {
+  "conditions": {
+   "all five seeds pass": true
+  },
+  "id": "T-N7-01",
+  "measured": {
+   "runs": [
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": 0.9349155219200185,
+       "r2": 0.8602651031106691,
+       "spacing_rel_err": 0.012987668725141293
+      },
+      {
+       "orient_err": 1.1572083639686355,
+       "r2": 0.8488608997657072,
+       "spacing_rel_err": 0.014383857675110625
+      },
+      {
+       "orient_err": 5.674928598864426e-05,
+       "r2": 0.8698594517510493,
+       "spacing_rel_err": 0.021471094325122224
+      }
+     ],
+     "seed": 10
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": 0.01675599464624611,
+       "r2": 0.8364736400515224,
+       "spacing_rel_err": 0.003462103193036957
+      },
+      {
+       "orient_err": 0.17659330628382008,
+       "r2": 0.8881894656163025,
+       "spacing_rel_err": 0.0038456173334068854
+      },
+      {
+       "orient_err": 0.08578035980067966,
+       "r2": 0.8642424207627462,
+       "spacing_rel_err": 0.018663345142992085
+      }
+     ],
+     "seed": 11
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": 0.13421669958180615,
+       "r2": 0.869164050083816,
+       "spacing_rel_err": 0.010826859027024774
+      },
+      {
+       "orient_err": 0.12196149566105419,
+       "r2": 0.7811512074686553,
+       "spacing_rel_err": 0.031706700234568
+      },
+      {
+       "orient_err": 0.6725250376264285,
+       "r2": 0.8628088567728369,
+       "spacing_rel_err": 0.024441640770617168
+      }
+     ],
+     "seed": 12
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": 0.1785365527146041,
+       "r2": 0.8371261086952961,
+       "spacing_rel_err": 0.0032231808965105862
+      },
+      {
+       "orient_err": 1.0244282634900088,
+       "r2": 0.8118116956078559,
+       "spacing_rel_err": 0.030343185494603804
+      },
+      {
+       "orient_err": 0.3168312244255844,
+       "r2": 0.8700758818619526,
+       "spacing_rel_err": 0.012384097630260887
+      }
+     ],
+     "seed": 13
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": 0.4313903942908581,
+       "r2": 0.8895567534853303,
+       "spacing_rel_err": 0.001087510661733626
+      },
+      {
+       "orient_err": 0.5332871231034346,
+       "r2": 0.8536087354261113,
+       "spacing_rel_err": 0.012265559046937652
+      },
+      {
+       "orient_err": 0.6189047855209253,
+       "r2": 0.8612640485096232,
+       "spacing_rel_err": 0.026043704286784607
+      }
+     ],
+     "seed": 14
+    }
+   ]
+  },
+  "passed": true
+ },
+ "T-N7-02": {
+  "conditions": {
+   "k exact on all": true,
+   "random wiring b1==0": true,
+   "ring b1==1": true,
+   "torus b1==2 on all modules": false
+  },
+  "id": "T-N7-02",
+  "measured": {
+   "random_b1": [
+    0
+   ],
+   "random_k": 1,
+   "ring_b1": [
+    1
+   ],
+   "runs": [
+    {
+     "b1": [
+      0,
+      5,
+      2
+     ],
+     "k": 3,
+     "seed": 30
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 31
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 32
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 33
+    },
+    {
+     "b1": [
+      2,
+      2,
+      2
+     ],
+     "k": 3,
+     "seed": 34
+    }
+   ]
+  },
+  "passed": false
+ }
+}

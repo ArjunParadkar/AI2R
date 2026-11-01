@@ -1,0 +1,286 @@
+<title>Blinding Light Run Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · ten-hour specification run</div>
+  <h1>Seven definitions of what a network knows, tested against ground truth</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-19 23:33 → 2026-09-20 05:45 CDT</span><span>one laptop, RTX 5070 8 GB</span></div>
+</header>
+
+<section>
+  <p class="lede col">The specification proposed that a trained network is a sequence of Riemannian manifolds, and that seven questions about it — what it learned, whether it understands, why it decided, when bias entered, what it does not know, where it will fail, how it formed — each have a computable answer. It pre-registered pass criteria for every one. This is what happened when they were run.</p>
+  <div class="verdict">
+    <p><strong>By the letter of the pre-registration, most cells fail.</strong> Two pass outright (the geodesic explanation, and speed). Spurious-structure detection passes, including against a harder null added during the run. The training-time interrupt works on four of five seeds. Ignorance, failure prediction and the geodesic definition of understanding do not meet their criteria on any system.</p>
+    <p><strong>The mathematics still found things that are true.</strong> The pullback metric is the right metric for the topology of a representation. Three of the specification's own ground truths turned out to be wrong, and in each case the framework measured the correct answer. And the most important negative: a detector built on cohomology can be evaded — a network under pressure destroyed the circle and kept the shortcut.</p>
+  </div>
+  <nav aria-label="Contents"><ol>
+    <li><a href="#scorecard">Scorecard</a></li><li><a href="#found">What was found</a></li><li><a href="#failed">What failed, and why</a></li>
+    <li><a href="#interrupt">The interrupt</a></li><li><a href="#library">Library and speed</a></li><li><a href="#caveats">Caveats</a></li>
+    <li><a href="#history">Run history</a></li><li><a href="#next">What follows</a></li><li><a href="#files">Files</a></li>
+  </ol></nav>
+</section>
+
+<section id="scorecard">
+  <h2>Scorecard against the pre-registered criteria</h2>
+  <p class="col">Every verdict below is scored against §6.3 of the specification as written. Anything introduced after seeing data is labelled post-hoc and sits beside the pre-registered number; it never replaces it.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Cell</th><th>Criterion</th><th>Result</th><th>Verdict</th></tr></thead>
+    <tbody>
+    <tr><td>P1 · Z113</td><td>≥3 of top-5 Fourier frequencies at r &gt; 0.9; answer-fibers are circles</td><td class="num">Frequencies 5/5 at r = 0.995, 0.996, 0.995, 0.971, 0.906 — with the group parameter supplied. Unsupervised Rips names nothing under either metric. Fibers: 0 circles in 20 fibers — correctly (they are intervals).</td><td><span class="tag part">◐ PARTIAL</span></td></tr>
+    <tr><td>P1 · ring RNN</td><td>One H¹ class; coordinate vs heading r &gt; 0.99</td><td class="num">As registered (Euclidean Rips): r = 0.80 / 0.75 / 0.75. Post-hoc pullback-geodesic Rips: one class, r = 0.979 / 0.993 / 0.993 (network's own output: 0.983 / 0.993 / 0.989).</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>P1 · rotated-MNIST</td><td>Rotation circle in ≥7/10 digit fibers</td><td class="num">Late layers 0/10. conv1, conv2 10/10 — but raw pixels 10/10 and an untrained network 10/10.</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>P6 · Z113</td><td>G jumps &gt; 0.4 within ±3 checkpoints of grokking; scrambled G &lt; 0.2</td><td class="num">Jump 0.06 / 0.16; scrambled G = 0.59. Post-hoc interior-only G: jump 0.17 / 0.35, scrambled 0.076.</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>P6 · ResNet-18</td><td>Clean G &gt; 0.9; scrambled &lt; 0.3; shuffle null → chance</td><td class="num">Clean 1.00; null 0.09; scrambled 0.89.</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>P7 · Z113</td><td>Frequency births within ±3 checkpoints of grokking; cross-seed order τ &gt; 0.6</td><td class="num">Births: 12 of 14 within ±3. Order: not computable — the seeds learn different frequencies.</td><td><span class="tag part">◐ PARTIAL</span></td></tr>
+    <tr><td>P2</td><td>Path-product / integrated-gradients r &gt; 0.95; margin CV &lt; 0.2</td><td class="num">r = 1.0000 on every input; CV 0.072 / 0.101 / 0.084.</td><td><span class="tag pass">✓ PASS</span></td></tr>
+    <tr><td>P3 · detection</td><td>Onset within 5% of training; zero false positives on clean</td><td class="num">Five seeds: 0–4% late. 0 flags in 153 clean checkpoints and 0 in 52 decoy-null checkpoints; 25/26 on each shortcut model.</td><td><span class="tag pass">✓ PASS</span></td></tr>
+    <tr><td>P3 · interrupt</td><td>Within 2 points of clean on decorrelated test; beats no-intervention by &gt; 10 points worst-group</td><td class="num">4 of 5 seeds: 0.01 → 0.998–1.000 (clean 1.000; no intervention 0.012–0.016; SPARE 0.014). Seed 1 never responds.</td><td><span class="tag part">◐ 4 / 5</span></td></tr>
+    <tr><td>P4</td><td>AUROC above softmax confidence and Euclidean kNN on both OOD sets</td><td class="num">Beats softmax on 0 of 12 Z113 cells, 0 of 9 ring cells; ResNet 0.63 vs 0.83; GPT-2 0.40 and 0.38 — below chance.</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>P5</td><td>Spearman(ρ, failure radius) &lt; −0.5; beats softmax margin</td><td class="num">Z113 −0.12 / −0.14 / −0.23 (margin +0.21…+0.30); ResNet +0.32, wrong sign; GPT-2 +0.04.</td><td><span class="tag fail">✗ FAIL</span></td></tr>
+    <tr><td>Speed</td><td>open() under 60 s per layer</td><td class="num">4.6 s (Z113) and 8.3 s (ResNet-18) on a quiet machine.</td><td><span class="tag pass">✓ PASS</span></td></tr>
+    </tbody>
+  </table></div>
+  <figure>
+    <div class="frame"><img src="figures/grid.png" alt="Grid of systems by problems P1 to P7 with a verdict and the key numbers in each cell; one pass, several partial, most fail."></div>
+    <figcaption>The grid: five systems × seven problems, with the manifold score m for each system. GPT-2 was exploratory by design and carries no verdicts.</figcaption>
+  </figure>
+</section>
+
+<section id="found">
+  <h2>What the run established</h2>
+
+  <div class="finding">
+    <h3>The pullback metric is the right metric for cohomology</h3>
+    <div class="col"><p>The ring RNN integrates angular velocity; the only way to do that is to carry a heading around a circle. Yet Vietoris–Rips on its hidden states finds a thick blob, and the best H¹ coordinate tracks heading at r ≈ 0.75–0.80. The reason is that heading explains only half of the hidden state's variance (R² = 0.50–0.55); the rest is velocity history that the read-out never uses.</p>
+    <p>Measure the same cloud by geodesic distance on the graph weighted with g = JᵀJ — the distance the specification's object actually carries — and it becomes one circle: a single class 17–20× longer-lived than the next, whose coordinate tracks heading at 0.979 / 0.993 / 0.993. That is exactly the accuracy of the network's own output (0.983 / 0.993 / 0.989); on one seed the hidden-state coordinate is better than the output. The feature-shuffle null gives 0.01. The metric quotients out whatever the output does not read.</p></div>
+    <div class="src">results/ring_pullback.json · now available as <code>p1_inventory(metric='g')</code></div>
+  </div>
+
+  <figure>
+    <div class="frame"><img src="figures/inventory.png" alt="Top row: five scatter plots of recovered circular coordinate against true k times a for Z113, all on the diagonal. Bottom: ring RNN Euclidean coordinate scattered, pullback-geodesic coordinate on the diagonal; rotated-MNIST circle strength by layer for trained and untrained networks."></div>
+    <figcaption>Each panel plots a recovered circular coordinate against the variable it should be; the diagonal means the coordinate <em>is</em> the variable. Top: the five frequency circles of the grokked Z113 model. Bottom left: the ring RNN under the Euclidean metric and under the pullback-geodesic metric. Bottom right: rotated-MNIST, trained against untrained.</figcaption>
+  </figure>
+
+  <div class="finding">
+    <h3>Z113 answer-fibers are intervals, and the network explains why</h3>
+    <div class="col"><p>The specification expected each answer-fiber {(a, c−a)} to be a circle parameterised by a. It is not, on any seed. The network is commutative at the layer we open: swapping the operands moves the representation by 0.3–0.8% of the fiber's radius. So inside a fiber every frequency k carries two counter-rotating phasors,</p>
+    <div class="eq">e<sup>ika</sup> + e<sup>ik(c−a)</sup> = 2 e<sup>ikc/2</sup> · cos k(a − c/2)</div>
+    <p>— a standing wave. The fiber's image in each frequency plane has axis ratio 0.016–0.025, a line segment; the same planes on the b = 0 slice, where nothing folds the orbit, give 0.996–0.999, a circle. The fiber is S¹ / (a ~ c−a): an interval. The pre-registered ground truth was wrong, and the instrument reported the right topology anyway.</p></div>
+    <div class="src">results/z113_fiber_symmetry.json · results/z113_fibers.json</div>
+  </div>
+
+  <div class="finding">
+    <h3>Decision boundaries sit where the frequency inventory says they should</h3>
+    <div class="col"><p>The specification predicted that the geodesic from an input to the decision boundary would reach the neighbouring residue, c ± 1. It essentially never does (0%, 0%, 1.3% of 300 geodesics per seed). The nearest competing answer is the residue shift Δ that almost preserves every key-frequency phase at once — the minimiser of Σ<sub>k</sub> var<sub>k</sub>(1 − cos 2πkΔ/113), computed from the P1 inventory alone. The top three predicted shifts contain 52% / 43% / 25% of geodesic destinations and 42% / 67% / 47% of logit runners-up; chance is 5%.</p>
+    <p>What P1 finds predicts where P2's boundaries are. The two notions of "competing answer" are also different objects: the geodesic destination equals the second-largest logit only 8–23% of the time.</p></div>
+    <div class="src">results/z113_p2_boundary.json</div>
+  </div>
+
+  <div class="finding">
+    <h3>Geodesic closure is a real structural signal at grokking — a ramp, not a step</h3>
+    <div class="col"><p>Computed from training points only, the interior-only statistic sits at 0.06–0.09 through thousands of steps of perfect training accuracy, begins to rise as the frequency circles are born, and keeps rising for about ten checkpoints after test accuracy has saturated. The scrambled-label model never leaves 0.07. That is why it fails a criterion written as a jump.</p>
+    <p>After grokking it oscillates with period three checkpoints. The cause is the optimiser: training loss swings between 10⁻⁷ and 10⁻² while accuracy reads 1.00, and G falls at every spike (Spearman with training loss −0.51 / −0.54 / −0.60). It registers a disturbance of the representation that accuracy does not.</p></div>
+    <div class="src">results/p6_p7_score.json</div>
+  </div>
+
+  <figure>
+    <div class="frame"><img src="figures/grokking.png" alt="Four panels of training curves: train accuracy, test accuracy, pre-registered G and interior-only G for two clean seeds, a clean control and a scrambled-label null, with vertical dotted lines at circle births."></div>
+    <figcaption>Train accuracy, test accuracy and geodesic closure on one axis, with the birth of each certified frequency circle marked. All four quantities are fractions in [0, 1].</figcaption>
+  </figure>
+
+  <div class="finding">
+    <h3>Rotated-MNIST: what the network learned is the destruction of the circle</h3>
+    <div class="col"><p>A rotation orbit is already a circle in pixel space, and it stays one through two convolutional layers of any network, trained or not — so finding it there says nothing about learning. After pooling, the trained network has erased it (median r 0.57, then 0.29) further than random wiring does (0.79, 0.57). The digit's fiber carries no rotation coordinate because the classifier quotiented it out: a learned invariance, read as an absence.</p></div>
+    <div class="src">results/rotmnist_controls.json</div>
+  </div>
+
+  <div class="finding">
+    <h3>GPT-2 small, layer 6 (exploratory)</h3>
+    <div class="col"><p>The manifold score is 0.06, so every answer is flagged low-confidence — the honesty mechanism doing its job. Intrinsic dimension is 12–16 of 768. The weekday circle is certified out-of-sample when the cyclic index is supplied (r = 0.992, lifetime ratio 25, null 0.005). Months give a plane whose angle tracks the month (0.97) without a clean H¹ coordinate (0.47). Unsupervised Rips finds neither.</p></div>
+    <div class="src">results/gpt2_explore.json</div>
+  </div>
+</section>
+
+<section id="failed">
+  <h2>What failed, and why</h2>
+
+  <div class="finding">
+    <h3>P4 fails for a structural reason</h3>
+    <div class="col"><p>The definition pushes the off-manifold displacement through the Jacobian of the remaining network. That deletes exactly the directions the head ignores — and an out-of-distribution input is displaced mostly along those. On GPT-2 the score is below chance (0.40 and 0.38): out-of-distribution points look <em>closer</em> than in-distribution ones. Measuring the same normal displacement in activation space instead (post-hoc) recovers 0.79 and 0.61, and still loses to softmax confidence and to entropy on every system tried.</p></div>
+  </div>
+
+  <div class="finding">
+    <h3>P6's "cannot be faked" argument is wrong at a late layer</h3>
+    <div class="col"><p>A ResNet that memorised random labels scores G = 0.89 at its penultimate layer: memorisation also makes training points class-contiguous there. Forcing geodesics through unlabeled held-out inputs (post-hoc; no held-out label used) does not rescue the criterion. From layer 1 to the penultimate the clean network reads 0.99–1.00 and the memorising network 0.54 / 0.55 / 0.60 / 0.86 / 0.88, against a label-permutation null of 0.10.</p>
+    <p>There is a circularity underneath. A metric derived from the output makes "near" mean "same output", so a geodesic between two same-output points that runs through same-output points is close to a tautology. The two networks do separate — most at early layers, least at the last — and the number of connected components of a class fiber separates them more cleanly than G does (1.0–1.2 against 7.9–9.1).</p>
+    <p>As a label-free tracker of test accuracy across 68 Z113 checkpoints, the amended statistic ties mean softmax confidence in rank (Spearman 0.837 vs 0.836), is more linear (0.85 vs 0.65) and is a worse estimator (mean absolute error 0.38 vs 0.27).</p></div>
+  </div>
+
+  <div class="finding">
+    <h3>P5 does not hold</h3>
+    <div class="col"><p>The test suite found that the curvature fit used tangent dimension 4 regardless of the manifold. With that fixed, ρ = ‖II‖·Lip correlates with measured failure radius with the predicted sign on all three Z113 seeds (p &lt; 10⁻⁴, shuffled null 0) — at a fifth of the required strength, below the softmax margin, and absent on a second probe of the same model (+0.02). On ResNet-18 the sign is wrong (+0.32; ρ is anti-predictive of errors). On GPT-2 it is null. A margin measured along the manifold does better (+0.84 on ResNet) and still loses to the softmax margin (+0.93).</p></div>
+  </div>
+
+  <figure>
+    <div class="frame"><img src="figures/p4_p5.png" alt="Left: dot plot of AUROC for each ignorance score across Z113, ResNet and GPT-2 out-of-distribution sets, softmax confidence ahead almost everywhere. Right: Spearman correlations of failure predictors with failure radius; rho never enters the pass region."></div>
+    <figcaption>P4 and P5 against their baselines, every system on one page. Only AUROCs and correlations were stored, so this is a dot plot rather than ROC curves.</figcaption>
+  </figure>
+</section>
+
+<section id="interrupt">
+  <h2>The interrupt: it works when it is told the nuisance, and fails when it is not</h2>
+  <div class="col">
+    <p>Detection is the strong half. On five seeds the planted shortcut takes hold by step 500 and is flagged at step 500, 1000, 1500, 500 and 1000 — never more than 4% of training late. Clean models are never flagged. Neither are <em>decoy</em> models, a harder null added during the run in which the hint token appears just as often but carries nothing: the network ignores it entirely, and no circle forms.</p>
+    <p>The intervention that removes the shortcut — one round at λ = 3 takes decorrelated accuracy from 0.01 to 1.00 on four of five seeds, where SPARE-style reweighting leaves it at 0.01 — is a symmetric-KL consistency loss across hint values on random inputs. It has to be told which input token the nuisance is. Anyone who knows that can apply it without any topology. Seed 1 never responds and collapses under escalation, under both the registered schedule and a gentler post-hoc one; seed 2 was detected later and recovered, so lateness is not the cause. It is unexplained.</p>
+    <p>The specification's penalty taken literally — invariance along the <em>discovered</em> circle at the layer, with no knowledge of the input — was then implemented and run. It destroyed the circle and left the shortcut fully intact. For three consecutive checkpoints the detector reported zero spurious classes on a model with shortcut reliance 1.000 and decorrelated accuracy 0.014. The network had re-encoded the hint in a form that is not a circle.</p>
+    <p><strong>Detection by H¹ can be evaded by re-encoding.</strong> Any monitor of this kind that is also used as a training signal should be assumed to have this failure mode.</p>
+  </div>
+  <figure>
+    <div class="frame"><img src="figures/interrupt.png" alt="Three panels of accuracy on the decorrelated test set through training. The input-level interrupt reaches 1.00 on seed 0 and stays at 0.01 on seed 1; all other interventions stay near 0.01. Third panel: five seeds of the interrupt, four reaching 1.00."></div>
+    <figcaption>Accuracy on the decorrelated test set, where the hint is uniform and independent of the answer. Left and centre: every intervention on seeds 0 and 1. Right: the pre-registered interrupt on five seeds.</figcaption>
+  </figure>
+</section>
+
+<section id="library">
+  <h2>Library and speed</h2>
+  <div class="col"><p><code>whiteboxtopo</code> implements every function the specification lists, plus what the run showed was needed: pullback-geodesic persistence, a symmetry-informed inventory, a Jacobian-free secant metric for layers too wide to differentiate, and an ambient tubular distance. 143 unit tests on synthetic manifolds with analytic ground truth pass; one documented limitation remains (the local dimension estimate at k = 15 over-reads a noisy circle as 2.3). The suite caught three real bugs mid-run, all fixed, with pre-fix outputs kept beside the new ones.</p></div>
+  <div class="scroll"><pre>open(Z113 transformer, grokked, seed 1)                                   probe extraction 0.9 s
+layer resid_mid   manifold score m = 0.77
+  P1  beta0=1; 70 persistent H1 classes, none named
+      with the task symmetry supplied: circles at frequency 3 (r=0.995, 39% var), 26 (0.998, 21%),
+                                       50 (0.995, 19%), 51 (0.969, 19%), 6 (0.903, 7%)
+  P6  G = 0.864 (interior-only 0.687); mean beta0 of a fiber = 1.08
+  P2  input 0: predicted 16, nearest other answer 55 at manifold margin 141.6
+  P4  random_tokens AUC 0.664 (softmax 0.942, euclid 0.401, tubular 0.604)
+  P5  Spearman(rho, failure radius) = 0.018 (p=0.57); softmax margin 0.306
+  P7  [bundle] circles born at checkpoints 9-13; grokking at checkpoint 10
+  P3  [bundle] 0 spurious classes over 153 clean checkpoints; shortcut flagged at steps 500, 1000
+total wall time 4.6 s
+
+open(ResNet-18 / CIFAR-10, clean)                                         probe extraction 2.0 s
+layer penultimate   manifold score m = 0.00   [LOW MANIFOLD SCORE -- answers not trustworthy]
+  P6  G = 1.000; mean beta0 of a fiber = 1.00
+  P4  svhn AUC 0.632 (softmax 0.847, euclid 0.667); gaussian_noise 0.730 (softmax 0.732, euclid 0.892)
+total wall time 8.3 s</pre></div>
+  <p class="small">Abridged from logs/demo_transcript.txt. The one-minute demo returns in seconds; what it returns is only as good as the definitions above.</p>
+</section>
+
+<section id="caveats">
+  <h2>Caveats that apply to everything</h2>
+  <ul class="col">
+    <li><strong>The route that names circles is symmetry-informed.</strong> It is handed the group parameter (a, rotation index, weekday index). It discovers which characters the network uses and certifies each circle by H¹, out-of-sample where the layer is wider than the orbit is long. It does not discover the group, and unsupervised Rips named nothing on Z113 under either metric.</li>
+    <li><strong>The manifold score m is fragile.</strong> The same grokked model scores 0.99 or 0.45 depending on the neighbourhood size of its spectral-gap test; ResNet layers score 0.00–0.04 although every other statistic on them behaves. A continuous replacement was tried, was no better, and was removed. m is reported everywhere and should be trusted nowhere yet.</li>
+    <li><strong>G under-reads a perfectly generalising model</strong> when classes are thin curves sampled sparsely: 0.6–0.85 on Z113 at test accuracy 1.00.</li>
+    <li><strong>The P2 pass has a footnote.</strong> The constant-activation-pattern segment on which the path product is exact spans 1.5% of the first geodesic edge.</li>
+    <li>Wide ResNet conv layers were reduced to 256 principal components (54–87% of variance) before the graph was built, after the unreduced layer exhausted memory.</li>
+  </ul>
+</section>
+
+<section id="history">
+  <h2>Run history</h2>
+  <div class="two">
+    <div><h3>What went wrong operationally</h3>
+      <p class="small">The first session died at 00:56 when its terminal tab closed, taking two analyses with it; two jobs launched under systemd survived. The second session rebuilt state from the transcript at 01:07. Three jobs were then OOM-killed because too many CUDA processes were started at once on a 30 GB machine; each was rerun to completion through a single sequential queue. Nothing was lost. Nothing is committed to git; two snapshots are in <code>~/blindinglight_backups/</code>.</p></div>
+    <div><h3>What was added beyond the specification</h3>
+      <p class="small">A decoy-hint null for P3. Pixel and untrained-network controls for rotated-MNIST. Three extra interrupt seeds and a gentler schedule. The structure-derived penalty. Commutativity, boundary-shift and label-free-accuracy tests on Z113. ResNet analysed through depth. A full unit-test suite. Each came from following a number that did not make sense.</p></div>
+  </div>
+</section>
+
+<section id="next">
+  <h2>What follows from this</h2>
+  <ul class="col">
+    <li><strong>Keep:</strong> the pullback-geodesic metric for topology; the symmetry-informed inventory, stated as such; the spurious-structure detector with its two nulls; the link from the frequency inventory to where decision boundaries sit.</li>
+    <li><strong>Retire or redefine:</strong> P4 as defined (it is blind by construction to what the head ignores); P5's ρ; P6 as a threshold on G. Fiber connectivity is the more promising discriminator of memorisation and deserves its own pre-registration.</li>
+    <li><strong>The open question worth the next run:</strong> can a structural monitor be made robust to re-encoding? The interrupt experiment is a clean, small test bed for exactly that — a planted shortcut, a detector that goes quiet, and ground truth that says it should not have.</li>
+    <li><strong>Before any claim at scale:</strong> the manifold score needs replacing with something stable. Every answer in the framework is supposed to be conditioned on it.</li>
+  </ul>
+</section>
+
+<section id="files">
+  <h2>Where everything is</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead>
+    <tbody>
+      <tr><td>Scorecard, findings, number-to-file map</td><td><code>CLAIMS.md</code></td></tr>
+      <tr><td>Chronological log</td><td><code>RUNLOG.md</code></td></tr>
+      <tr><td>Figures</td><td><code>figures/</code> — grid, grokking, inventory, interrupt, p4_p5</td></tr>
+      <tr><td>Demo transcript</td><td><code>logs/demo_transcript.txt</code> · <code>python analysis/demo.py</code></td></tr>
+      <tr><td>Library and tests</td><td><code>whiteboxtopo/</code> · <code>tests/</code> · <code>python -m pytest tests -q</code></td></tr>
+      <tr><td>Experiments</td><td><code>analysis/</code> (one script each) · <code>systems/</code> · results in <code>results/</code> and <code>runs/*/</code></td></tr>
+      <tr><td>Specification</td><td><code>docs/WHITEBOX_Final_10hr_Specification.pdf</code></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<footer>Verdicts are by the letter of the pre-registration. Post-hoc variants are labelled and never upgrade a verdict. No system passes every cell, so the word "complete" is not used.</footer>
+
+</div>

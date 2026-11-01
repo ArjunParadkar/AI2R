@@ -1,0 +1,145 @@
+<title>Blinding Light Run 7</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:11.5px;line-height:1.5;padding:16px 18px;white-space:pre-wrap;word-break:break-word;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 7 · the extractor, and the end</div>
+  <h1>What does a network learn to ignore?</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-22 08:07 → 09:30 CDT (five-hour budget; all computing finished at +1 h)</span><span>no new specimens except three early-stopped Z113 seeds; GPU capped at 30 W</span></div>
+</header>
+<section>
+  <p class="lede col">One idea, earned by six runs: a learned symmetry is one the trained network keeps and the untrained network does not. Architecture is the null. Run 7 built the extractor that subtracts it — λ = (q<sub>untrained</sub> − q<sub>trained</sub>) / q<sub>untrained</sub> over seventeen transformation families and a Lie-algebra search — and asked whether the symmetries it finds on a CNN do what the discovered generator did on the transformer: mark what the network does not know and where it fails. Then it rebuilt the transformer from its group alone and stopped.</p>
+  <div class="verdict">
+    <p><strong>The extractor works and says something specific.</strong> An augmented ResNet-18 has exactly three learned symmetries — brightness, contrast, gamma — none of which was augmented, on both seeds; memorisers have none and are two to three times more fragile than an untrained net to rotation, scale and shear; a gradient search over a ten-dimensional Lie algebra, told nothing, converges to brightness. Training makes the network <em>more</em> sensitive to noise, blur and JPEG. The one rule that failed is "built-in = q<sub>untrained</sub> &lt; 0.05": the untrained transformer is blind to swap and the untrained CNN is not blind to a shift, so the threshold is right on one architecture and wrong on the other.</p>
+    <p><strong>Learned symmetries lift the CNN's knowledge boundary where the unknown set breaks them and nowhere else.</strong> SVHN from below chance to 0.63 and 0.73; Gaussian noise to 0.95; CIFAR-100 unchanged. <strong>On the transformer, natural failure is orbit incoherence</strong>: on grokking-in-progress models the held-out errors are exactly the incoherent inputs (AUROC 1.000 against softmax's 0.85–0.90). On the CNN three photometric invariances do not predict a semantic error. <strong>The generator and five characters rebuild the transformer at 100%</strong> with eleven fitted weights, and the ablation asymmetry says the network's own circuit is a different implementation of the same specification.</p>
+  </div>
+  <nav aria-label="Contents"><ol><li><a href="#grid">Seven runs, one grid</a></li><li><a href="#x">The extractor</a></li><li><a href="#k">Knowledge and failure</a></li><li><a href="#r">Reconstruction</a></li><li><a href="#u">The artifact</a></li><li><a href="#end">What WhiteBOX is</a></li><li><a href="#files">Files</a></li></ol></nav>
+</section>
+<section id="grid"><h2>Seven runs, one grid</h2>
+<figure><div class="frame"><img src="figures/grid_seven_runs.png" alt="Table of the seven problems with verdicts and key numbers for runs 1 to 7."></div><figcaption>Verdicts by the letter of each pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table><thead><tr><th>Run-7 cell</th><th>Pre-registered</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td>X.4 (i) learned families</td><td>≥ 3 at the penultimate layer, both clean ResNets</td><td class="num">brightness 0.72, contrast 0.69–0.70, gamma 0.70–0.72 — exactly three each</td><td>PASS</td></tr>
+  <tr><td>X.4 (ii) built-in exclusion</td><td>shift, flip q<sub>untr</sub> &lt; 0.05</td><td class="num">0.17–0.30; they read as partially learned (λ 0.35, 0.27) — augmentation</td><td>FAIL</td></tr>
+  <tr><td>X.4 (iii) contrastive search</td><td>|cos| ≥ 0.8 to a learned family, 2/2</td><td class="num">brightness, |cos| 0.95–0.99, λ 0.76–0.79</td><td>PASS</td></tr>
+  <tr><td>X.4 (iv) memorisers</td><td>&lt; 2 learned</td><td class="num">0, 0, 0</td><td>PASS</td></tr>
+  <tr><td>X.4 (v) Z113 consistency</td><td>orbit translation λ &lt; 0.2; swap ≥ 0.5 clean, &lt; 0.2 mem</td><td class="num">orbit translation ✓ 6/6; swap 0.40–0.73 (built-in by the rule: q<sub>untr</sub> 0.01–0.03); memorisers −50 to −76</td><td>FAIL</td></tr>
+  <tr><td>K′.2 knowledge boundary</td><td>learned ≥ built-in + 0.20 on SVHN and CIFAR-100; untrained null &lt; 0.9</td><td class="num">SVHN +0.28 / +0.31 ✓; CIFAR-100 ±0.01 ✗; untrained 0.997 ✗ (cosine artefact)</td><td>FAIL</td></tr>
+  <tr><td>P5′ Z113 natural failure</td><td>AUROC(κ) &gt; max-softmax, 3/3</td><td class="num">0.983 / 1.000 / 1.000 vs 0.563 / 0.852 / 0.900; random-transformation null 0.44–0.49</td><td>PASS</td></tr>
+  <tr><td>P5′ ResNet natural failure</td><td>κ<sub>s</sub><sup>learned</sup> &gt; max-softmax on test errors or corruptions, 2/2</td><td class="num">0.69 / 0.67 vs 0.84; 0.67 / 0.66 vs 0.76; beats the non-learned null 4/4</td><td>FAIL</td></tr>
+  <tr><td>R reconstruction</td><td>rebuilt ≥ 0.98; ablation symmetry ≥ 4/5; γ &lt; 0.2</td><td class="num">1.000 ×6 · 1, 1, 1, 1, 1, 0 of 5 · γ = 0.00 (logit variance explained 0.39–0.58)</td><td>PASS · FAIL · PASS</td></tr>
+  <tr><td>P7 persistence ≥ 0.85</td><td>3/3</td><td class="num">0.871 / 1.000 / 0.970</td><td>PASS</td></tr>
+  </tbody></table></div>
+</section>
+<section id="x"><h2>The extractor</h2>
+<figure><div class="frame"><img src="figures/run7_inventory.png" alt="Heatmaps of λ per transformation family and layer for two clean and two memoriser ResNets, with the contrastive-search results."></div><figcaption>λ per family and layer. Asterisk: learned (λ ≥ 0.5). Right: the ten-dimensional Lie-algebra search, ten restarts per seed, converges to brightness every time.</figcaption></figure>
+  <p>Invariance depth: brightness is learned by layer1–2, gamma by layer2, contrast only at layer4–penultimate; translation beyond the padding and circular shift become learned only at the logits. Hue, saturation, cutout and elastic warps are not learned. Geometric families read λ −0.3 to −0.5 on clean nets and −1.7 to −2.3 on memorisers: nobody learned them, and memorising makes a network fragile to them. This is P1 on a CNN — and it is a different answer from "shifts and flips".</p>
+</section>
+<section id="k"><h2>Knowledge and failure with the learned group</h2>
+<figure><div class="frame"><img src="figures/run7_roc.png" alt="Three bar panels: knowledge-boundary AUROC learned vs built-in vs baselines; natural-failure AUROC on ResNet; natural-failure AUROC on Z113."></div><figcaption>Left: K′ on the CNN. Middle: P5′ on the CNN. Right: P5′ on early-stopped Z113 models, where orbit coherence separates the errors perfectly.</figcaption></figure>
+  <p>The learned group sees SVHN and noise because they violate photometric invariances learned on natural images; it does not see CIFAR-100 because a CIFAR-100 image satisfies them. Orbit coherence marks inputs on which the learned rule breaks, not inputs that are semantically new. The untrained null fails for the same reason it failed in Run 6: a cosine between an untrained network's near-constant logits is ≈ 1 under any transformation, while the extractor's random-pair-normalised q is not — the right next instrument is a κ built from that q, and it is deferred, not claimed.</p>
+</section>
+<section id="r"><h2>Reconstruction from the group</h2>
+<figure><div class="frame"><img src="figures/run7_reconstruction.png" alt="Bars of original vs rebuilt accuracy on six seeds, and a scatter of accuracy lost when a frequency is removed from the rebuild vs from the original."></div><figcaption>Eleven fitted weights on the discovered generator and characters reproduce the function; removing a frequency costs the rebuild nothing and the network up to 78 points.</figcaption></figure>
+</section>
+<section id="u"><h2>The artifact: open() on a CNN and a transformer</h2>
+  <pre>========================================================================================================================
+open(ResNet-18, CIFAR-10, clean + augmentation, seed 5)  — r6_resnet_cleanaug_s5
+  P1 what it learned           [registered] learned symmetries (architecture subtracted, λ ≥ 0.5 at the penultimate layer): ['brightness', 'contrast', 'gamma']; λ = brightness +0.72, contrast +0.69, gamma +0.70; contrastive search recovers brightness (|cos| 0.95); partially learned by augmentation: shift +0.35, flip +0.27; made MORE sensitive: noise -1.45, blur -1.03, jpeg -1.88
+  P2 why this decision         [registered] orbit coherence under the learned group on CIFAR-10 test: κ_s mean 0.978 (untrained network 0.997); on its own training set κ median 1.00 vs memorisers 0.23
+  P3 spurious structure        [ carried  ] functional floor + dominance rule are Z113 instruments (Run 4); on the CNN: shift consistency 0.989 (train recipe), no slot structure to read
+  P4 what it does not know     [   FAIL   ] κ_s over learned symmetries, AUROC: SVHN 0.631 (built-in group 0.351, max-softmax 0.809); CIFAR-100 0.689 (0.692, 0.710); lowest-κ images misclassified 75%
+  P5 where it will fail        [   FAIL   ] natural failure: test errors AUROC κ_s 0.693 vs msp 0.844 (non-learned null 0.657); 25 corruption cells pooled κ_s 0.670 vs msp 0.758
+  P6 understands?              [registered] shift consistency 0.989 (memorisers 0.17–0.19); learned-symmetry count 3 (memorisers 0); depth slope: no difference once the label-blind null is removed (transformer-only instrument)
+  P7 how it formed             [not measured] formation sweeps exist for Z113 only; the CNN has no discrete group to watch appear
+========================================================================================================================
+open(Z113 transformer, clean, seed 12)  — r6_z113_clean_s12
+  P1 what it learned           [registered] the cyclic group generated by translation by 1 (full 113-cycle from outputs alone); characters at [38, 45, 5, 11, 22]; swap is built-in (untrained q 0.03) and kept; the symmetric translation (a+u, b−u) is a learned invariance (λ_post +0.74), the orbit translation is a symmetry, not an invariance (λ −0.40)
+  P2 why this decision         [registered] orbit coherence κ = 1.000 on held-out inputs (memorisers 0.000); rebuilt from generator + characters with 11 weights: 1.0000 held-out accuracy
+  P3 spurious structure        [registered] slot shares (a, b, hint) = (0.489, 0.496, 0.015); dominance flag none; functional interrupt (Run 4) 5/5
+  P4 what it does not know     [ partial  ] OOV token: κ AUROC 0.994 (max-softmax 0.793); pairs from a smaller modulus are valid inputs and are not detected (0.50)
+  P5 where it will fail        [   PASS   ] natural failure on an early-stopped sibling (seed 20, test acc 0.88): AUROC κ 1.000 vs max-softmax 0.900; adversarial radius (Runs 1–6): nothing beats the margin
+  P6 understands?              [registered] slot collapse yes; q(swap) 0.005; null-subtracted depth slope -0.411; generator yes → UNDERSTANDS 4/4 (memorisers 0/4)
+  P7 how it formed             [registered] generator first accepted at checkpoint 19 (test acc 0.23), largest jump at 23, lead +4; persistence 0.871 (≥ 0.85)
+</pre>
+</section>
+<section id="end"><h2>What WhiteBOX is</h2>
+  <p>Seven runs, on about fifty fresh models trained after their criteria were written, scored by the letter with a null on every positive. A network's knowledge is a group. On a transformer that group is discoverable from its outputs, its characters are the learned features, its orbits explain every decision, it arrives with the accuracy jump and never on a memoriser, it rebuilds the function, and the inputs on which it stops acting coherently are the inputs the network gets wrong and the tokens it has never seen. On a CNN the group is what training taught the network to ignore — brightness, contrast, gamma — found by subtracting the untrained network; it separates a memoriser from a generaliser and marks the unknown inputs that violate it, and no more. Nothing derived from the representation predicts adversarial failure better than the softmax margin, on either architecture, in six attempts. The definition of understanding — collapse onto the task, preserved symmetry, a recoverable group — is registered on the transformer and has two instruments on the CNN. That is what it is.</p>
+</section>
+<section id="files"><h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+  <tr><td>Pre-registration, brief</td><td><code>SPEC7.md</code>, <code>docs/RUN7_BRIEF.md</code>, <code>RUNLOG7.md</code></td></tr>
+  <tr><td>Findings and the final claims map</td><td><code>FINDINGS7_X.md</code>, <code>FINDINGS7_K.md</code>, <code>FINDINGS7_P5.md</code>, <code>FINDINGS7_R.md</code>, <code>FINDINGS7_P7.md</code>, <code>CLAIMS.md</code> (every claim → run, evidence, null, baseline, status)</td></tr>
+  <tr><td>Results</td><td><code>results/run7/</code> (X, X_z113, K, P5_resnet, P5_z113, R, score)</td></tr>
+  <tr><td>Code</td><td><code>whiteboxtopo/extractor.py</code> (17 families, λ, Lie-algebra search), <code>analysis/run7_{resnet,z113,score}.py</code>, <code>fig_run7.py</code>, <code>make_grid_run7.py</code>, <code>demo_run7.py</code>; 213 tests pass, 1 xfail</td></tr>
+  <tr><td>Demo</td><td><code>logs/demo_run7_transcript.txt</code></td></tr>
+  </tbody></table></div>
+</section>
+<footer>Verdicts are by the letter of SPEC7.md. Post-hoc observations are labelled and never upgrade a verdict. The word "complete" is not used.</footer>
+</div>

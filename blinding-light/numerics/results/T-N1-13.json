@@ -1,0 +1,35 @@
+{
+ "config": {},
+ "config_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N1-13",
+ "result": {
+  "conditions": {
+   "euclid>=1e-2": true,
+   "fr<=1e-12": true
+  },
+  "measured": {
+   "euclid_change_min": "3.825063077184818",
+   "fr_change": "3.1762873111142924e-14"
+  },
+  "passed": true
+ },
+ "result_sha256": "dd277ac3b36675de71935090e5b1970b4ed397fce49b2a344d8ff3cdc4647b9a",
+ "saved_at": "2026-10-04T18:14:38",
+ "seed": 6,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

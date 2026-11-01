@@ -1,0 +1,152 @@
+{
+ "config": {
+  "seeds": [
+   10,
+   11,
+   12,
+   13,
+   14
+  ]
+ },
+ "config_hash": "398f1cb29c3c1574bbce9cb33a1b92f6aef3f33149d4e29f63208a4e63a5d2bd",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": true,
+  "deterministic_algorithms": true,
+  "flash_sdp": false,
+  "math_sdp": true,
+  "mem_efficient_sdp": false
+ },
+ "name": "T-N7-01",
+ "result": {
+  "conditions": {
+   "all five seeds pass": true
+  },
+  "measured": {
+   "runs": [
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": "0.9349155219200185",
+       "r2": "0.8602651031106691",
+       "spacing_rel_err": "0.012987668725141293"
+      },
+      {
+       "orient_err": "1.1572083639686355",
+       "r2": "0.8488608997657072",
+       "spacing_rel_err": "0.014383857675110625"
+      },
+      {
+       "orient_err": "5.674928598864426e-05",
+       "r2": "0.8698594517510493",
+       "spacing_rel_err": "0.021471094325122224"
+      }
+     ],
+     "seed": 10
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": "0.01675599464624611",
+       "r2": "0.8364736400515224",
+       "spacing_rel_err": "0.003462103193036957"
+      },
+      {
+       "orient_err": "0.17659330628382008",
+       "r2": "0.8881894656163025",
+       "spacing_rel_err": "0.0038456173334068854"
+      },
+      {
+       "orient_err": "0.08578035980067966",
+       "r2": "0.8642424207627462",
+       "spacing_rel_err": "0.018663345142992085"
+      }
+     ],
+     "seed": 11
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": "0.13421669958180615",
+       "r2": "0.869164050083816",
+       "spacing_rel_err": "0.010826859027024774"
+      },
+      {
+       "orient_err": "0.12196149566105419",
+       "r2": "0.7811512074686553",
+       "spacing_rel_err": "0.031706700234568"
+      },
+      {
+       "orient_err": "0.6725250376264285",
+       "r2": "0.8628088567728369",
+       "spacing_rel_err": "0.024441640770617168"
+      }
+     ],
+     "seed": 12
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": "0.1785365527146041",
+       "r2": "0.8371261086952961",
+       "spacing_rel_err": "0.0032231808965105862"
+      },
+      {
+       "orient_err": "1.0244282634900088",
+       "r2": "0.8118116956078559",
+       "spacing_rel_err": "0.030343185494603804"
+      },
+      {
+       "orient_err": "0.3168312244255844",
+       "r2": "0.8700758818619526",
+       "spacing_rel_err": "0.012384097630260887"
+      }
+     ],
+     "seed": 13
+    },
+    {
+     "k": 3,
+     "pass_": true,
+     "per_module": [
+      {
+       "orient_err": "0.4313903942908581",
+       "r2": "0.8895567534853303",
+       "spacing_rel_err": "0.001087510661733626"
+      },
+      {
+       "orient_err": "0.5332871231034346",
+       "r2": "0.8536087354261113",
+       "spacing_rel_err": "0.012265559046937652"
+      },
+      {
+       "orient_err": "0.6189047855209253",
+       "r2": "0.8612640485096232",
+       "spacing_rel_err": "0.026043704286784607"
+      }
+     ],
+     "seed": 14
+    }
+   ]
+  },
+  "passed": true
+ },
+ "result_sha256": "59b33ecae243b34a7737b545d31b93c47a981e63d38248dc0188b9c13c05f288",
+ "saved_at": "2026-10-04T18:23:31",
+ "seed": 10,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

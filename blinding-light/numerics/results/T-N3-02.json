@@ -1,0 +1,69 @@
+{
+ "config": {
+  "n": 2000
+ },
+ "config_hash": "7c42434ad25ee9971f7e917b34ba5cf6114f00e6ae945cb125a9924c9c7ccf64",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N3-02",
+ "result": {
+  "conditions": {
+   "i_norm abelian flag": true,
+   "i_norm closure<=1e-8": true,
+   "i_norm dim": true,
+   "ii_proj12 abelian flag": true,
+   "ii_proj12 closure<=1e-8": true,
+   "ii_proj12 dim": true,
+   "iii_x1x2sq_x3 abelian flag": true,
+   "iii_x1x2sq_x3 closure<=1e-8": true,
+   "iii_x1x2sq_x3 dim": true,
+   "iv_identity abelian flag": true,
+   "iv_identity closure<=1e-8": true,
+   "iv_identity dim": true
+  },
+  "measured": {
+   "i_norm": {
+    "abelian": false,
+    "closure_res": "5.063140957024921e-16",
+    "dim": 3,
+    "max_bracket": 0.7071067811865477
+   },
+   "ii_proj12": {
+    "abelian": false,
+    "closure_res": "0.0",
+    "dim": 3,
+    "max_bracket": 1.0
+   },
+   "iii_x1x2sq_x3": {
+    "abelian": true,
+    "closure_res": "0.0",
+    "dim": 1,
+    "max_bracket": "0.0"
+   },
+   "iv_identity": {
+    "abelian": true,
+    "closure_res": "0.0",
+    "dim": 0,
+    "max_bracket": "0.0"
+   }
+  },
+  "passed": true
+ },
+ "result_sha256": "a1562ebf7f7435c38c5443e0706fe0a3a6a7c10095e875617d08bb0fc7e5004d",
+ "saved_at": "2026-10-04T18:14:42",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

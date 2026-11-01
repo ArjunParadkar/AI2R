@@ -1,0 +1,56 @@
+{
+ "config": {
+  "ks": [
+   6,
+   12,
+   24
+  ],
+  "ns": [
+   500,
+   1000,
+   2000,
+   4000
+  ]
+ },
+ "config_hash": "503a5ee1a9fe4b3a9f45ac3e06acc4fe5369f482aa4260c52ac3f019c1f418d0",
+ "determinism": {
+  "cudnn_benchmark": false,
+  "cudnn_deterministic": false,
+  "deterministic_algorithms": false,
+  "flash_sdp": true,
+  "math_sdp": true,
+  "mem_efficient_sdp": true
+ },
+ "name": "T-N2-02",
+ "result": {
+  "conditions": {
+   "k_nonincreasing": true,
+   "n_not_worse": true
+  },
+  "measured": {
+   "err_vs_k": {
+    "12": "0.03276968607732179",
+    "24": "0.00995419963700942",
+    "6": "0.1049542041662076"
+   },
+   "err_vs_n": {
+    "1000": "0.03361170888296256",
+    "2000": "0.03441316665104615",
+    "4000": "0.03276968607732179",
+    "500": "0.0371014816112726"
+   }
+  },
+  "passed": true
+ },
+ "result_sha256": "a429edae0177d5300282a8253da294ff2f063f89cea1bf2597631e220516dd99",
+ "saved_at": "2026-10-04T18:14:42",
+ "seed": 0,
+ "versions": {
+  "numpy": "2.5.2",
+  "persim": "0.3.8",
+  "python": "3.12.13",
+  "ripser": "0.6.15",
+  "scipy": "1.18.1",
+  "torch": "2.11.0+cu128"
+ }
+}

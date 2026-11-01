@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Run a long job detached from the terminal/Claude session, memory-capped so a runaway
+# job is OOM-killed ALONE instead of taking the session's scope down with it.
+# usage: scripts/wbrun <name> <cmd...>   logs -> logs/<name>.log ; status: systemctl --user status wb-<name>
+set -e
+name="$1"; shift
+cd "$(dirname "$0")/.."
+systemd-run --user --unit="wb-$name" --collect \
+  -p MemoryHigh=12G -p MemoryMax=16G -p MemorySwapMax=2G -p OOMPolicy=kill \
+  -p StandardOutput=append:"$PWD/logs/$name.log" -p StandardError=append:"$PWD/logs/$name.log" \
+  -p WorkingDirectory="$PWD" "$@"

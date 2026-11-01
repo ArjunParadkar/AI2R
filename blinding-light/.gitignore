@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+runs/
+runs_v2/
+data/
+logs/
+results/pilot*/
+results/pilot*_models/
+results/phase2/
+results/phase2_models/
+*.pt
+*.pdf

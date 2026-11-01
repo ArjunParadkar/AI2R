@@ -1,0 +1,136 @@
+<title>Blinding Light Run 6</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --ground:#f6f8fa; --panel:#ffffff; --ink:#16212c; --muted:#56646f; --rule:#d8dee5;
+  --accent:#0e5f7e; --accent-soft:#e3eff4;
+  --pass:#0b6b38; --fail:#a8231c; --part:#8a5c00; --expl:#56646f;
+  --pass-bg:#e4f3ea; --fail-bg:#f9e6e4; --part-bg:#f7eed8; --expl-bg:#e9edf1;
+  --serif:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+    --accent:#63b9d8; --accent-soft:#17303b;
+    --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+    --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0f151b; --panel:#161e26; --ink:#e4eaf0; --muted:#97a5b1; --rule:#28333e;
+  --accent:#63b9d8; --accent-soft:#17303b;
+  --pass:#6fd39a; --fail:#f08b84; --part:#e2b75a; --expl:#97a5b1;
+  --pass-bg:#15301f; --fail-bg:#3a1b19; --part-bg:#352a12; --expl-bg:#1e2831;
+}
+body{background:var(--ground);color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;padding-inline:20px;padding-block:48px 96px}
+.wrap{max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;gap:56px}
+.col{max-width:68ch}
+header .kicker{font-family:var(--sans);font-size:13px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--sans);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+header .meta{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 18px}
+h2{font-family:var(--sans);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 14px;text-wrap:balance;padding-top:14px;border-top:2px solid var(--ink)}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;line-height:1.3;margin:0 0 6px;text-wrap:balance}
+section{display:flex;flex-direction:column;gap:18px}
+p{margin:0}
+.col p+p{margin-top:12px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code,.mono{font-family:var(--mono);font-size:.84em}
+code{background:var(--accent-soft);padding:1px 5px;border-radius:3px;overflow-wrap:anywhere}
+.lede{font-size:21px;line-height:1.5}
+.verdict{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--accent);padding:18px 22px;max-width:74ch}
+.verdict p+p{margin-top:10px}
+nav{font-family:var(--sans);font-size:14.5px}
+nav ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px}
+.scroll{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:14.5px;line-height:1.45;min-width:760px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,td .num{font-variant-numeric:tabular-nums}
+td:first-child{font-weight:600;white-space:nowrap}
+.tag{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.05em;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.pass{color:var(--pass);background:var(--pass-bg)} .tag.fail{color:var(--fail);background:var(--fail-bg)}
+.tag.part{color:var(--part);background:var(--part-bg)} .tag.expl{color:var(--expl);background:var(--expl-bg)}
+figure{margin:0;display:flex;flex-direction:column;gap:8px}
+figure .frame{background:#fcfcfb;border:1px solid var(--rule);overflow-x:auto}
+figure img{display:block;width:100%;min-width:640px;height:auto}
+figcaption{font-family:var(--sans);font-size:14px;color:var(--muted);max-width:90ch;line-height:1.5}
+.finding{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.finding .src{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.eq{font-family:var(--serif);font-style:italic;text-align:center;padding:10px 8px;overflow-x:auto;white-space:nowrap}
+pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.55;padding:16px 18px;white-space:pre;color:var(--ink)}
+ul{margin:0;padding-left:22px} li+li{margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:28px}
+.small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+footer{font-family:var(--sans);font-size:13.5px;color:var(--muted);border-top:1px solid var(--rule);padding-top:16px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="kicker">WhiteBOX · Blinding Light · run 6 · orbit-closure</div>
+  <h1>Does the group also say what the network does not know?</h1>
+  <div class="meta"><span>Arjun Paradkar &amp; Reva Paradkar · independent · run executed by Claude</span><span>2026-09-21 22:52 → 2026-09-22 02:20 CDT</span><span>thirteen fresh specimens; GPU capped at 30 W throughout</span></div>
+</header>
+<section>
+  <p class="lede col">Five runs established that a network that generalises carries a discoverable group and one that memorises does not. Run 6 asked the group to do two more jobs: mark the boundary of what the network knows (orbit coherence, P4) and predict where it will fail (equivariance defect, P5) — against max-softmax, entropy, ODIN and Golan's designer transformations, on models trained after the thresholds were written. It also closed the definition of understanding with the memoriser clause in the right shape.</p>
+  <div class="verdict">
+    <p><strong>The definition closes on the transformer.</strong> Four instruments and the group hold on six fresh models; the re-registered slot-collapse clause passes 6/6 with the untrained null on the memoriser side. On the CNN the depth-slope instrument dies for good: null-subtracted, a memoriser's fibres tighten with depth exactly as much as a generaliser's (−0.12 vs −0.11 to −0.13). Three instruments there, not four.</p>
+    <p><strong>Orbit coherence finds an unknown input only where the group was learned.</strong> On Z113 an out-of-vocabulary token breaks the learned orbit at AUROC 0.99 against softmax's 0.79–0.89. On the CNN, whose group is the architecture's own shifts and flips, coherence holds on SVHN, CIFAR-100, noise and the untrained network alike — it is below chance on SVHN and loses to every softmax baseline. <strong>The equivariance defect does not predict failure</strong> on either system; random non-group transformations do as well. P4 and P5 stay descriptive, and the theory is stated for five problems.</p>
+  </div>
+  <nav aria-label="Contents"><ol><li><a href="#grid">Six runs, one grid</a></li><li><a href="#p6">The definition, closed</a></li><li><a href="#k">Knowledge</a></li><li><a href="#f">Failure</a></li><li><a href="#u">One object</a></li><li><a href="#honest">What went wrong</a></li><li><a href="#files">Files</a></li></ol></nav>
+</section>
+<section id="grid"><h2>Six runs, one grid</h2>
+<figure><div class="frame"><img src="figures/grid_six_runs.png" alt="Table of the seven problems with verdicts and key numbers for runs 1 to 6."></div><figcaption>Verdicts by the letter of each pre-registration. Post-hoc variants never upgrade a verdict.</figcaption></figure>
+  <div class="scroll"><table><thead><tr><th>Run-6 cell</th><th>Pre-registered</th><th>Measured</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td>P6.a / b / e</td><td>Run-5 thresholds</td><td class="num">0.005 ×3 vs 0.52–0.63 · 0.989 ×2 vs 0.17–0.19 · 3/3 vs 0/3</td><td>PASS ×3</td></tr>
+  <tr><td>P6.c null-subtracted slope</td><td>clean Δ &lt; −0.25; mem &gt; −0.10</td><td class="num">Z113 −0.41/−0.39/−0.45 vs −0.05 ×3 · ResNet <strong>−0.12/−0.12 vs −0.12/−0.11/−0.13</strong></td><td>FAIL (transformer-only PASS)</td></tr>
+  <tr><td>P6.d slot collapse, re-registered</td><td>mem: hint &gt; 0.10 or max(a,b) &lt; 0.40</td><td class="num">3/3 clean, 3/3 mem (hint 0.31, 0.42, 0.43); untrained memoriser-side 6/6</td><td>PASS</td></tr>
+  <tr><td>P6 block</td><td>all five</td><td class="num">4 of 5</td><td>FAIL</td></tr>
+  <tr><td>P7.d persistence ≥ 0.94</td><td>3/3</td><td class="num">0.871 / 1.000 / 0.970</td><td>FAIL</td></tr>
+  <tr><td>K.2 Z113 unknown</td><td>AUROC(κ) ≥ 0.95 on OOV and p′=97</td><td class="num">OOV 0.994/0.996/0.996 (softmax 0.79–0.89); p′=97 0.500 ×3 (valid inputs, predicted)</td><td>FAIL by the letter; OOV passes</td></tr>
+  <tr><td>K.3 ResNet unknown</td><td>κ_s beats msp, entropy, ODIN; ≥ Golan-72</td><td class="num">SVHN κ_s 0.35/0.42 vs msp 0.81/0.74 · CIFAR-100 0.69/0.68 vs 0.71 · ODIN 0.74–0.81 · Golan 0.11–0.45</td><td>FAIL</td></tr>
+  <tr><td>K.4 memoriser control</td><td>mem κ &lt; 0.3; clean &gt; 0.95</td><td class="num">0.00 ×3, 0.23 ×3; 1.00 ×5</td><td>PASS</td></tr>
+  <tr><td>F.2 (A-15)</td><td>|ρ(ε, radius)| &gt; |ρ(margin)|</td><td class="num">Z113 −0.03/−0.02/−0.13 vs +0.53/+0.46/+0.36 · ResNet −0.41/−0.43 vs +0.93/+0.94</td><td>FAIL 0/5</td></tr>
+  <tr><td>F.2 direction · F.3 non-group null</td><td>cos &gt; 0.5 on ≥ 70% · group ε beats random ε</td><td class="num">15%, 16% · Z113 random −0.04/−0.14/−0.18 ≥ group; ResNet −0.37/−0.38 vs −0.41/−0.43</td><td>FAIL · FAIL</td></tr>
+  <tr><td>U</td><td>Spearman(κ_s, ε̄) &lt; −0.6, 5/5</td><td class="num">−0.84, −0.68, −0.66, −0.97, −0.97 (same orbit residuals: by construction)</td><td>PASS</td></tr>
+  </tbody></table></div>
+</section>
+<section id="p6"><h2>The definition, closed</h2>
+<figure><div class="frame"><img src="figures/run6_closure.png" alt="Six bar panels for the five instruments on eleven fresh models with registered thresholds."></div><figcaption>Solid = generaliser, hatched = true memoriser. Dashed = clean-side threshold, dotted = memoriser-side.</figcaption></figure>
+  <p>Across Runs 4–6, seventeen fresh matched models: slot collapse, preserved swap symmetry, and a recoverable generator separate every generaliser from every memoriser on the transformer, and null-subtracted fibre tightening does too (−0.39 to −0.45 vs −0.05). On the CNN, shift consistency separates (0.99 vs 0.17–0.19, augmentation on the clean side), and the depth slope does not once the label-blind null is removed. The generator on seed 12 arrives four checkpoints before the accuracy jump at test accuracy 0.23 and then flickers (present on 87% of later checkpoints); leads across six dense-swept seeds are +0, +0, +1, +4, +0, −1.</p>
+</section>
+<section id="k"><h2>Knowledge as orbit coherence</h2>
+<figure><div class="frame"><img src="figures/run6_roc.png" alt="AUROC bars for orbit coherence and four baselines on SVHN, CIFAR-100, noise, and the three Z113 unknown sets."></div><figcaption>Solid bar: the model's own group. Golan-72: designer transformations in consistency form.</figcaption></figure>
+  <p>The one number that explains the CNN: mean κ_s is 0.983 on CIFAR-10 test, 0.989 on SVHN, 0.974 on CIFAR-100, 0.983 on Gaussian noise, and 0.996 on the untrained network. A shift-and-flip-invariant network is invariant on anything. That was written into SPEC5 and SPEC6 for the P6 nulls ("an untrained network has its architecture's symmetries") and not carried to K.3, where it is fatal. Z113 works because its group is learned: translation by the discovered generator with the answer relabelled, on which an out-of-vocabulary token has no place (κ drops from 1.00 to 0.33).</p>
+<figure><div class="frame"><img src="figures/run6_knowledge_map.png" alt="Histograms of orbit coherence for CIFAR-10 and SVHN, and the sixteen lowest-coherence CIFAR-10 images per model."></div><figcaption>The knowledge map. Inside CIFAR-10 the lowest-coherence images are mostly misclassified (10/16, 9/16) or ambiguous; SVHN sits to the right of CIFAR-10.</figcaption></figure>
+</section>
+<section id="f"><h2>Failure as equivariance defect</h2>
+<figure><div class="frame"><img src="figures/run6_failure.png" alt="Scatter of failure radius against equivariance defect and against softmax margin on five clean models."></div><figcaption>Top: the network's own equivariance defect. Bottom: softmax margin — the quantity the PGD radius descends.</figcaption></figure>
+  <p>The brief's clause — ρ(ε, radius) "more negative than the softmax margin's" — is satisfied by any negative number, because the margin's correlation with the radius is positive (+0.36 to +0.93); A-15 registered the |ρ| reading before analysis. Under it ε fails on all five models. On Z113, random token substitutions predict failure as well as the group does (the group is not doing the work); on the CNN the group adds 0.05 to a smoothness proxy that random pixel transformations already give. The flipping direction is not the gradient of the defect (median cosine 0.22). Sixth run, third instrument for P5, same result: nothing beats the margin, because the radius is defined by descending it.</p>
+</section>
+<section id="u"><h2>One object, stated for what held</h2>
+<figure><div class="frame"><img src="figures/run6_kappa_eps.png" alt="Scatter of orbit coherence against equivariance defect for five clean models."></div><figcaption>κ_s against ε̄ on in-distribution and OOV inputs. The correlation is registered and passes; it is largely the construction.</figcaption></figure>
+  <p>A network's knowledge is a group. That answers what it learned (P1: the generator, from outputs), why it decided (P2: κ = 1.000 on generalisers, 0.00–0.23 on memorisers), whether it understood (P6: registered on the transformer), how it formed (P7: with the jump, never on a memoriser), and, with the functional floor, where planted structure lives (P3). It does not answer what the network does not know unless the group was learned rather than built in, and it does not answer where the network will fail at all.</p>
+</section>
+<section id="honest"><h2>What went wrong</h2>
+  <ul>
+    <li><strong>The GPU was capped at 30 W</strong> (80 W requested) for the whole run; thirteen specimens took 2.1 hours instead of 36 minutes. Not changed.</li>
+    <li><strong>K.3 was registered against a fact already in the specification.</strong> SPEC6 §3 says an untrained CNN has its architecture's symmetries; the same sentence predicts that coherence under those symmetries cannot mark unknown images. It should have been said at K.3 and was not.</li>
+    <li><strong>The brief's F.2 clause was the wrong shape</strong> (A-15, fixed before analysis, on a smoke test of a Run-5 model). Both readings are reported.</li>
+    <li>The "different modulus" unknown set is a subset of valid inputs (SPEC6 §2). Scored as registered; AUROC 0.500 on all three seeds.</li>
+  </ul>
+</section>
+<section id="files"><h2>Where everything is</h2>
+  <div class="scroll"><table><thead><tr><th>What</th><th>Where (under ~/blindinglight)</th></tr></thead><tbody>
+  <tr><td>Pre-registration, brief, amendments</td><td><code>SPEC6.md</code>, <code>docs/RUN6_BRIEF.md</code>, <code>AMENDMENTS.md</code> (A-15)</td></tr>
+  <tr><td>Findings</td><td><code>FINDINGS6_P6.md</code>, <code>FINDINGS6_K.md</code>, <code>FINDINGS6_F.md</code>, <code>FINDINGS6_U.md</code>, <code>CLAIMS.md</code> (Run-6 section), <code>RUNLOG6.md</code></td></tr>
+  <tr><td>Results</td><td><code>results/run6/</code> (z113_finals, resnet, raw_* per model, sweep_* ×3 at 51 checkpoints, score.json)</td></tr>
+  <tr><td>Code</td><td><code>whiteboxtopo/knowledge.py</code> (κ, ε, groups, Golan-72, non-group null), <code>analysis/run6_{z113,resnet,score}.py</code>, <code>fig_run6.py</code>, <code>make_grid_run6.py</code>, <code>demo_run6.py</code>; 213 tests pass, 1 xfail</td></tr>
+  <tr><td>Demo</td><td><code>logs/demo_run6_transcript.txt</code> — the seven cells on one fresh generaliser and one fresh memoriser</td></tr>
+  </tbody></table></div>
+</section>
+<footer>Verdicts are by the letter of SPEC6.md and A-15. Post-hoc observations are labelled and never upgrade a verdict. The word "complete" is not used.</footer>
+</div>
