@@ -1,0 +1,30 @@
+{
+ "cell": "V2",
+ "seed": 0,
+ "frac_memo": 0.1975,
+ "auroc_neg_mu": [
+  1.0,
+  1.0,
+  1.0
+ ],
+ "auroc_neg_lambda": [
+  0.9080996884735203,
+  0.8882338277191217,
+  0.9290306020733652
+ ],
+ "memorized_at_tau": 1.0,
+ "grounded_rule": 0.7959501557632399,
+ "generality": {
+  "sum": 0.8025,
+  "ov5": 0.05
+ },
+ "status": "ok",
+ "commit": "f8cf1d1abfab63bae4c681a835cf946de734cdf2",
+ "spec": [
+  "V2",
+  "0"
+ ],
+ "wall_s": 77.37820625305176,
+ "node": "omarchyroot",
+ "start": "2026-10-23T07:13:27"
+}

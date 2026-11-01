@@ -1,0 +1,19 @@
+[05:17:29] cell EleutherAI__pythia-70m_add2_s0 config a6935816d7f308a6 n_train 300 n_test 200
+[05:17:34] train accuracy {'out0': 0.12333333333333334, 'out1': 0.06} full 0.006666666666666667
+[05:17:35] 52 candidates
+[05:24:57] nodes {}
+[05:24:57] parents {'out:out0': ['a0', 'a1', 'b0', 'b1'], 'out:out1': ['a0', 'a1', 'b0', 'b1']}
+[05:25:12] K1 written; generality {}
+[05:48:01] cell EleutherAI__pythia-70m_add2_s0 config a6935816d7f308a6 n_train 300 n_test 200
+[05:48:06] train accuracy {'out0': 0.12333333333333334, 'out1': 0.06} full 0.006666666666666667
+[05:48:06] graph loaded
+[05:48:06] nodes {}
+[05:48:06] parents {'out:out0': ['a0', 'a1', 'b0', 'b1'], 'out:out1': ['a0', 'a1', 'b0', 'b1']}
+[05:48:20] K1 written; generality {}
+[05:54:36] cell EleutherAI__pythia-70m_add2_s0 config a6935816d7f308a6 n_train 300 n_test 200
+[05:54:41] train accuracy {'out0': 0.12333333333333334, 'out1': 0.06} full 0.006666666666666667
+[05:54:41] graph loaded
+[05:54:41] nodes {}
+[05:54:41] parents {'out:out0': ['a0', 'a1', 'b0', 'b1'], 'out:out1': ['a0', 'a1', 'b0', 'b1']}
+[05:54:54] K1 written; generality {}
+[05:55:36] K2 written; test full accuracy 0.005

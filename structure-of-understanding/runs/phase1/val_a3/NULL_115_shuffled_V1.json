@@ -1,0 +1,21 @@
+{
+ "cell": "NULL",
+ "kind": "shuffled",
+ "family": "V1",
+ "seed": 115,
+ "n_candidates": 210,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted_labels": [],
+ "status": "ok",
+ "commit": "45cbd1dddb29e590f1f3ee3502198e269937a625",
+ "spec": [
+  "NULL",
+  "115",
+  "shuffled",
+  "V1"
+ ],
+ "wall_s": 91.06067967414856,
+ "node": "c1504",
+ "start": "2026-10-23T23:11:48"
+}

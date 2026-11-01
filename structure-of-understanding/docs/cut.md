@@ -1,0 +1,11 @@
+# Cut formalisms and instruments
+
+Every formalism or instrument that was dropped, with the reason and the phase (master prompt rules 0.1.3 and 0.1.6).
+
+| Date | Item | Kind | Phase | Reason | Prediction that failed or was never produced |
+|---|---|---|---|---|---|
+| 2026-10-22 | Symplectic geometry, Morse theory, sheaves, group discovery (archived WHITEBOX lines) | Formalisms | 0 | Excluded by master prompt §2.6 unless a stated prediction requires them; none does in Sections 2.1–2.4 | None stated |
+| 2026-10-22 | White-box analysis of 405B dense and 671B MoE models | Scope | 0 | Not feasible on the public Pinnacle partitions (`reports/phase0.md` §4); level-A black-box protocol only | Not applicable (scope, not a failed prediction) |
+| 2026-10-23 | Unsupervised proposers (top-k SAE + exclusive groups, ISA, pullback k-means) | Instruments | 1 | Not cut but **not gated**. On the planted Vector-HaSH scaffold (V4) they do not recover factorial categorical codes: centred SAEs give templates at cos 0.6–0.87; uncentred SAEs are non-identifiable with 60 distinct points; ICA components of discrete uniform sources mix blocks. They may not be used on any real model until a later amendment pre-registers and passes their own planted tests. This blocks the blind Vector-HaSH anchor (Phase 6) and the unsupervised arm of K12. | None yet (not tested on real models) |
+| 2026-10-23 | Formation estimator for real models (K14) | Instrument | 1 | Failed pre-registered P6b (0/5 seeds). In fully memorized planted checkpoints Λ is 0.58–0.88 where the planted answer is 0. The memorization verdict does not flag memorization when memorized answers funnel through a shared, answer-valued node that is not output-equivalent ("answer funnel"). Blocked for K14 until fixed and re-validated on seeds 105–109. | P6b: Λ tracks the planted grounded fraction |
+| 2026-10-23 | Observational minimal-sufficiency parents (theory Def. 2.3) as the parent definition | Formalism (definition) | 1 | Replaced by interventional direct-effect parents (M1). Rule-plus-exception mechanisms (V2) collapse to an input lookup, the rule node leaves every derivation, and every input reads as memorized. Minimal sufficient sets are still enumerated and reported as alternatives. | V2 memorization AUROC under the old definition (development) |

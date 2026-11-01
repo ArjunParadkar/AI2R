@@ -1,0 +1,21 @@
+{
+ "cell": "V5",
+ "seed": 101,
+ "variant": "generic",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling",
+  "N": "exposure-generic"
+ },
+ "n_represented_not_used": 0,
+ "commit": "bc6036a303a6cf2065d935f5a0c79c54be1385d6",
+ "spec": [
+  "V5",
+  "101",
+  "generic"
+ ],
+ "wall_s": 23.67599081993103,
+ "node": "omarchyroot",
+ "start": "2026-10-23T04:06:10"
+}

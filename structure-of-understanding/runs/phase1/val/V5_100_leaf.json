@@ -1,0 +1,21 @@
+{
+ "cell": "V5",
+ "seed": 100,
+ "variant": "leaf",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling",
+  "N": "new leaf (used, not derived)"
+ },
+ "n_represented_not_used": 1,
+ "commit": "bc6036a303a6cf2065d935f5a0c79c54be1385d6",
+ "spec": [
+  "V5",
+  "100",
+  "leaf"
+ ],
+ "wall_s": 11.681378602981567,
+ "node": "omarchyroot",
+ "start": "2026-10-23T04:04:14"
+}

@@ -1,0 +1,29 @@
+{
+ "cell": "V2D",
+ "seed": 2,
+ "frac_memo": 0.03125,
+ "auroc_neg_mu": [
+  0.9954838709677419,
+  0.9888885455294603,
+  1.0
+ ],
+ "auroc_neg_lambda": [
+  0.983225806451613,
+  0.9749333334436856,
+  0.9903350515463918
+ ],
+ "memorized_at_tau": 1.0,
+ "grounded_rule": 0.9664516129032258,
+ "generality": {
+  "sum": 0.96875
+ },
+ "status": "ok",
+ "commit": "5deefecae96a7a6e5beac99d07cf91dc06a2b41f",
+ "spec": [
+  "V2D",
+  "2"
+ ],
+ "wall_s": 1679.401155948639,
+ "node": "c1402",
+ "start": "2026-10-23T13:32:25"
+}

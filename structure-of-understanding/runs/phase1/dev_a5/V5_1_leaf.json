@@ -1,0 +1,21 @@
+{
+ "cell": "V5",
+ "seed": 1,
+ "variant": "leaf",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling",
+  "N": "new leaf (used, not derived)"
+ },
+ "n_represented_not_used": 9,
+ "commit": "092578dcc2d54444d7542e9e3976a1c81e9b081e",
+ "spec": [
+  "V5",
+  "1",
+  "leaf"
+ ],
+ "wall_s": 50.63387846946716,
+ "node": "c1402",
+ "start": "2026-10-23T11:43:28"
+}

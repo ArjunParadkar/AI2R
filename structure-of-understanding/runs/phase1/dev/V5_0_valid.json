@@ -1,0 +1,29 @@
+{
+ "cell": "V5",
+ "seed": 0,
+ "variant": "valid",
+ "valid": [
+  [
+   "N",
+   [
+    "A",
+    "B"
+   ]
+  ]
+ ],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling",
+  "N": "valid"
+ },
+ "n_represented_not_used": 0,
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
+ "spec": [
+  "V5",
+  "0",
+  "valid"
+ ],
+ "wall_s": 11.407174110412598,
+ "node": "omarchyroot",
+ "start": "2026-10-23T03:30:52"
+}

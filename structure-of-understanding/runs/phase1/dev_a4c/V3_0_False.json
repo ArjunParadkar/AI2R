@@ -1,0 +1,37 @@
+{
+ "cell": "V3",
+ "seed": 0,
+ "compositional": false,
+ "node_labels": [
+  "A",
+  "B"
+ ],
+ "withheld": {
+  "move_acc": 1.0,
+  "pred_correct_acc": 1.0,
+  "actual_correct": 0.0
+ },
+ "seen": {
+  "move_acc": 1.0,
+  "pred_correct_acc": 1.0,
+  "actual_correct": 1.0
+ },
+ "moves": {
+  "withheld": {
+   "sideways": 80
+  },
+  "seen": {
+   "lower": 80
+  }
+ },
+ "status": "ok",
+ "commit": "9cbfc57e84243db7863466f9d28ab65e15f1332c",
+ "spec": [
+  "V3",
+  "0",
+  "False"
+ ],
+ "wall_s": 5.862248182296753,
+ "node": "c1402",
+ "start": "2026-10-23T11:13:58"
+}

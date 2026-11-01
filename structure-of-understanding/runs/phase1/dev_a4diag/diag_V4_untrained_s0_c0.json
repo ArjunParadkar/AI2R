@@ -1,0 +1,177 @@
+{
+ "seed": 0,
+ "kind": "untrained",
+ "family": "V4",
+ "coarsen": 0,
+ "n_candidates": 160,
+ "n_accepted": 3,
+ "fp_rate": 0.01875,
+ "accepted": [
+  {
+   "node": "C0@h0",
+   "label": "g0",
+   "candidate": "cand2@h0:probe:g0",
+   "merged": [
+    "cand82@h0:probe:g0"
+   ],
+   "site": "h0",
+   "k": 2,
+   "source": "probe:g0",
+   "delta_Q": 0.002623570221636953,
+   "A": 0.02713195313435994,
+   "eta": 0.036540891667909185,
+   "kappa": 0.2120967130746312,
+   "H": 1.5842753733829027,
+   "parents": [
+    "pos",
+    "move"
+   ],
+   "cert": {
+    "parents": [
+     "pos",
+     "move"
+    ],
+    "suff": 0.03752835312120086,
+    "edge_effects": {
+     "pos": 0.662109375,
+     "move": 0.390625
+    },
+    "edge_null": {
+     "pos": 0.0,
+     "move": 0.0
+    },
+    "iia": {
+     "passed": true,
+     "pass_eff": true,
+     "iia": [
+      0.9840476190476191,
+      0.981547619047619,
+      0.9866101190476191
+     ],
+     "iia_eff": [
+      0.9436619718309859,
+      0.9190140845070423,
+      0.9683098591549296
+     ],
+     "n_eff": 284,
+     "random_eff": 0.25,
+     "frac_undefined": 0.1796875
+    },
+    "stability_jaccard": 1.0
+   }
+  },
+  {
+   "node": "C1@h0",
+   "label": "g1",
+   "candidate": "cand3@h0:probe:g1",
+   "merged": [
+    "cand83@h0:probe:g1",
+    "cand103@h1:probe:g1"
+   ],
+   "site": "h0",
+   "k": 3,
+   "source": "probe:g1",
+   "delta_Q": 0.0029705985374866442,
+   "A": 0.042236097973876875,
+   "eta": 0.043951729369040696,
+   "kappa": 0.2675427802417366,
+   "H": 1.9984347325280403,
+   "parents": [
+    "pos",
+    "move"
+   ],
+   "cert": {
+    "parents": [
+     "pos",
+     "move"
+    ],
+    "suff": 0.03357348670161782,
+    "edge_effects": {
+     "pos": 0.787109375,
+     "move": 0.326171875
+    },
+    "edge_null": {
+     "pos": 0.0,
+     "move": 0.0
+    },
+    "iia": {
+     "passed": true,
+     "pass_eff": true,
+     "iia": [
+      0.9823262839879154,
+      0.9791540785498489,
+      0.9854267371601209
+     ],
+     "iia_eff": [
+      0.9888888888888889,
+      0.9777777777777777,
+      0.9972222222222222
+     ],
+     "n_eff": 360,
+     "random_eff": 0.225,
+     "frac_undefined": 0.353515625
+    },
+    "stability_jaccard": 1.0
+   }
+  },
+  {
+   "node": "C2@h0",
+   "label": "g2",
+   "candidate": "cand84@h0:probe:g2",
+   "merged": [],
+   "site": "h0",
+   "k": 4,
+   "source": "probe:g2",
+   "delta_Q": 0.0029463881922853845,
+   "A": 0.04821418783264567,
+   "eta": 0.05140447568355109,
+   "kappa": 0.3106909551003617,
+   "H": 2.3207338848533547,
+   "parents": [
+    "pos",
+    "move"
+   ],
+   "cert": {
+    "parents": [
+     "pos",
+     "move"
+    ],
+    "suff": 0.03089588825186227,
+    "edge_effects": {
+     "pos": 0.830078125,
+     "move": 0.140625
+    },
+    "edge_null": {
+     "pos": 0.0,
+     "move": 0.0
+    },
+    "iia": {
+     "passed": true,
+     "pass_eff": true,
+     "iia": [
+      0.986026936026936,
+      0.9831649831649831,
+      0.9888888888888889
+     ],
+     "iia_eff": [
+      0.9577777777777777,
+      0.94,
+      0.9755555555555555
+     ],
+     "n_eff": 450,
+     "random_eff": 0.31333333333333335,
+     "frac_undefined": 0.419921875
+    },
+    "stability_jaccard": 1.0
+   }
+  }
+ ],
+ "verdict_counts": {
+  "quotient pass": 6,
+  "represented, not used": 21,
+  "quotient fail": 120,
+  "realiser": 13
+ },
+ "coarsened": {},
+ "wall_s": 100.42590165138245
+}

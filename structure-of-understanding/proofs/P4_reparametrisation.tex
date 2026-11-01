@@ -1,0 +1,36 @@
+\subsection{Proof of Proposition~\ref{prop:reparam} (reparametrisation)}
+\label{proof:P4}
+Let $u\colon V\to V'$ be a bijection and $\tilde C=u\circ C$, with the same
+site and realiser. The statement concerns population quantities, not the
+behaviour of a particular finite-sample estimator.
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{Fibre events.} $\tilde C(x)=\tilde C(x')$ iff $C(x)=C(x')$
+because $u$ is injective, so $\Part_{\tilde C}=\Part_C$. The realiser patch
+$f_{R\leftarrow x'}(x)$ does not involve $\varphi$. Hence $A_b^{=}$, $A_b$
+and $\delta_Q$ are unchanged.
+\item \emph{Entropies.} $\Hent(u(C))=\Hent(C)$ and
+$\Hent(u(C)\mid S)=\Hent(C\mid S)$ for bijective $u$; likewise
+$\Hent(C\mid S)$ is unchanged when a member of $S$ is reparametrised, since
+conditioning depends only on the generated partition. So $\kappa$,
+$h_{\min}$, sufficiency and minimality, and hence $\pa(\cdot)$, are unchanged.
+\item \emph{Interchange.} With $\psi_{\tilde C}=u\circ\psi_C$ and each child's
+map $\tilde\psi_{C''}$ obtained from $\psi_{C''}$ by precomposing $u^{-1}$ in
+the $C$ argument, the high-level model satisfies
+$\tilde F_{\G}(x;\mathrm{do}(\tilde C=u(v)))=F_{\G}(x;\mathrm{do}(C=v))$ for
+every $v$, by direct substitution. The pairs with $\tilde C(x)\ne\tilde C(x')$
+are the pairs with $C(x)\ne C(x')$, and the system-side patch is unchanged.
+So $\IIA$ is unchanged.
+\item \emph{Generality and depth.} $a_C(x)$ depends only on the fibre events
+of (1) and on realiser patches, so $g$, $g_\#$, $\Pi_\tau$, $D(x)$,
+$\lambda$, $\mu$ and $\gamma_\tau$ are unchanged.
+\item \emph{Ranges.} For finite $V$, $\mathrm{Rg}(\tilde C)=u(\mathrm{Rg}(C))$
+and $\tilde C(x^\ast)\in\mathrm{Rg}(\tilde C)$ iff $C(x^\ast)\in\mathrm{Rg}(C)$.
+\end{enumerate}
+\hfill$\square$
+
+\textbf{Limit of the statement.} For a continuous value space, the
+$\delta$-fibres of Definition~\ref{def:quotient} and the nearest-neighbour range of
+Definition~\ref{def:range} are preserved by isometries of $(V,\rho)$ but not by general
+homeomorphisms. The invariance claim for continuous $V$ is therefore made
+only for isometries, and the choice of metric on $V$ is part of the
+pre-registered specification of a concept.

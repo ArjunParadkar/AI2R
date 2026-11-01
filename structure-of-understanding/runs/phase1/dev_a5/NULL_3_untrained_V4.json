@@ -1,0 +1,21 @@
+{
+ "cell": "NULL",
+ "kind": "untrained",
+ "family": "V4",
+ "seed": 3,
+ "n_candidates": 160,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted_labels": [],
+ "status": "ok",
+ "commit": "092578dcc2d54444d7542e9e3976a1c81e9b081e",
+ "spec": [
+  "NULL",
+  "3",
+  "untrained",
+  "V4"
+ ],
+ "wall_s": 44.30615448951721,
+ "node": "c1402",
+ "start": "2026-10-23T11:48:44"
+}

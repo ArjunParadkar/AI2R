@@ -1,0 +1,129 @@
+{
+ "cell": "V1",
+ "variant": "noise10",
+ "seed": 2,
+ "N": 2000,
+ "node_precision": 1.0,
+ "node_recall": 1.0,
+ "edge_precision": 1.0,
+ "edge_recall": 1.0,
+ "edge_f1": 1.0,
+ "decoy_verdicts": [
+  "represented, not used",
+  "represented, not used"
+ ],
+ "wrong_hits": [],
+ "n_wrong": 5,
+ "unlabelled_nodes": [],
+ "generality": {
+  "s0": 0.4370833333333333,
+  "s1": 0.44208333333333333,
+  "s2": 0.42166666666666663,
+  "c0": 0.18708333333333332,
+  "c1": 0.19916666666666666
+ },
+ "generality_oracle": {
+  "s0": 0.445,
+  "s1": 0.44583333333333336,
+  "s2": 0.42333333333333334,
+  "c0": 0.195,
+  "c1": 0.20416666666666666
+ },
+ "spearman_vs_oracle": 0.9999999999999999,
+ "generality_mae_vs_oracle": 0.005250000000000021,
+ "oracle_nodes": [
+  "c0",
+  "c1",
+  "s0",
+  "s1",
+  "s2"
+ ],
+ "oracle_edge_f1_vs_spec": 1.0,
+ "n_candidates": 95,
+ "runtime_s": 60.782867431640625,
+ "n_forward_rows": 825920,
+ "stability": {
+  "C0@h1": 1.0,
+  "C1@h1": 1.0,
+  "C2@h1": 1.0,
+  "C3@h2": 1.0,
+  "C4@h3": 1.0
+ },
+ "edges": [
+  [
+   "a0",
+   "s0"
+  ],
+  [
+   "a1",
+   "s1"
+  ],
+  [
+   "a2",
+   "s2"
+  ],
+  [
+   "b0",
+   "s0"
+  ],
+  [
+   "b1",
+   "s1"
+  ],
+  [
+   "b2",
+   "s2"
+  ],
+  [
+   "c0",
+   "c1"
+  ],
+  [
+   "c0",
+   "out:out1"
+  ],
+  [
+   "c1",
+   "out:out2"
+  ],
+  [
+   "c1",
+   "out:out3"
+  ],
+  [
+   "s0",
+   "c0"
+  ],
+  [
+   "s0",
+   "out:out0"
+  ],
+  [
+   "s1",
+   "c1"
+  ],
+  [
+   "s1",
+   "out:out1"
+  ],
+  [
+   "s2",
+   "out:out2"
+  ],
+  [
+   "s2",
+   "out:out3"
+  ]
+ ],
+ "not_converged": false,
+ "status": "ok",
+ "commit": "092578dcc2d54444d7542e9e3976a1c81e9b081e",
+ "spec": [
+  "V1",
+  "2",
+  "noise10"
+ ],
+ "wall_s": 78.40438938140869,
+ "node": "c1402",
+ "start": "2026-10-23T11:47:55"
+}

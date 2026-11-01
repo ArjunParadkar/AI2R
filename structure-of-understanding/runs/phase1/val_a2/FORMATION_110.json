@@ -1,0 +1,30 @@
+{
+ "cell": "FORMATION",
+ "seed": 110,
+ "events": {
+  "out": {
+   "grounding_event": 1,
+   "jump": 0.0
+  }
+ },
+ "Lambda": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "sum_principle_from": 4,
+ "sum_first_seen": 3,
+ "status": "ok",
+ "commit": "22e3993a4c631e825ebdc1c845df25a0f97334a1",
+ "spec": [
+  "FORMATION",
+  "110"
+ ],
+ "wall_s": 3202.0921869277954,
+ "node": "c1511",
+ "start": "2026-10-23T17:34:45"
+}

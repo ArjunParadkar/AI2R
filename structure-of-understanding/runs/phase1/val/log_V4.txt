@@ -1,0 +1,5 @@
+[phase1] V4_100.json 44s 
+[phase1] V4_101.json 33s 
+[phase1] V4_102.json 25s 
+[phase1] V4_103.json 35s 
+[phase1] V4_104.json 42s 

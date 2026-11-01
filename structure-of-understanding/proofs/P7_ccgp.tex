@@ -1,0 +1,70 @@
+\subsection{Proposition 2.7.1 of the master prompt: CCGP and depth one}
+\label{proof:P7}
+\textbf{Setting.} A single site with noiseless condition means: a finite set
+of conditions $K$, a trial of condition $k$ has state $h=\mu_k\in\mathbb{R}^d$,
+and conditions are equally weighted. A dichotomy $C\colon K\to\{0,1\}$. The
+behaviour $b$ reads out $y(h)=\mathbf{1}[w^\top h>\theta]$ for a fixed
+$w\ne0$, $\theta$. Bernardi et al.'s CCGP for $C$ with $m$ training conditions
+per side is the mean, over all choices $S$ of $m$ conditions from each side,
+of the accuracy on $K\setminus S$ of the max-margin linear classifier trained
+on $\{\mu_k:k\in S\}$. The \emph{readout-aligned} CCGP replaces that
+classifier by the system's own readout $y$. The depth-one graph is
+$K\to C\to y$ with $C$ realised by $R=\mathrm{span}(w)$ and value map
+$\varphi(z)=\mathbf{1}[z>\theta/\lVert w\rVert]$ on $z=\hat w^\top h$.
+
+\textbf{Proposition P7.} (a) \emph{Depth-one grounding without CCGP.} There
+is a system in which $y$ reports $C$ on every condition (so the candidate
+passes the quotient test with $\delta_Q=0$, the causal-use test with
+$\mathrm{IIA}=1$, and every input has $\lambda(x)=g(C)=1$), while CCGP with
+$m=1$ is at most $1/2$.
+(b) \emph{CCGP without a concept.} There is a system with CCGP $=1$ for a
+dichotomy $C'$ whose realiser does not matter for any behaviour, so $C'$ fails
+Condition 1(i) and contributes $0$ to every depth score.
+(c) \emph{Aligned case.} Readout-aligned CCGP equals $1$ for every $m$ if and
+only if $y(\mu_k)=C(k)$ for all $k$, which holds if and only if the depth-one
+candidate passes the exact quotient and causal-use tests; then $\lambda(x)=g(C)=1$
+on every input.
+Hence Bernardi's CCGP is the depth-one case of the depth measure only after
+the decoder is fixed to the system's own readout direction and causal use is
+added; without these two changes neither score bounds the other.
+
+\textbf{Proof.} (a) Take $d=2$, $C=1$ conditions $\mu_1=(1,0)$,
+$\mu_2=(-3,10)$; $C=0$ conditions $\mu_3=(-1,0)$, $\mu_4=(3,-10)$; readout
+$w=(1,\tfrac12)$, $\theta=0$. Then $w^\top\mu=1,2,-1,-2$, so $y=C$ on all four.
+The realiser swap of $z=\hat w^\top h$ between two trials with the same $C$
+leaves $y$ unchanged (the swapped coordinate stays on the same side of the
+threshold), so $\delta_Q=0$; a swap between trials with different $C$ sets
+$z$ to the partner's value and moves $y$ to the partner's $C$, which is what
+the graph $C\to y$ predicts, so $\mathrm{IIA}=1$; $C$ is active on every
+trial and lies on its only path, so $g(C)=1=\lambda(x)$. CCGP with $m=1$
+averages four training pairs. The max-margin classifier for two points is the
+perpendicular bisector. $\{\mu_1\}$ vs $\{\mu_3\}$: direction $(1,0)$; it
+classifies $\mu_2$ ($-3$) as $0$ and $\mu_4$ ($3$) as $1$: accuracy $0$.
+$\{\mu_2\}$ vs $\{\mu_4\}$: direction $(-6,20)$ through the origin; $\mu_1$
+scores $-6$ (wrong), $\mu_3$ scores $6$ (wrong): accuracy $0$.
+$\{\mu_1\}$ vs $\{\mu_4\}$: direction $\mu_1-\mu_4=(-2,10)$, midpoint
+$(2,-5)$, offset $(-2,10)\cdot(2,-5)=-54$; $\mu_2$ scores $106+54>0$ (right),
+$\mu_3$ scores $2+54>0$ (wrong): accuracy $1/2$. $\{\mu_2\}$ vs $\{\mu_3\}$
+is symmetric: accuracy $1/2$. So CCGP $=(0+0+\tfrac12+\tfrac12)/4=1/4\le1/2$.
+(b) Take $d=2$, $\mu_k=(C'(k),\,\epsilon_k)$ with arbitrary small $\epsilon_k$
+and a behaviour that reads only the second coordinate. Every training split
+yields a classifier whose direction is dominated by the first coordinate, and
+all held-out conditions are classified correctly (both sides are separated
+by $x_1=\tfrac12$ with margin $\tfrac12$ against $|\epsilon|$ small), so
+CCGP $=1$. Swapping the first coordinate never changes any readout, so
+$A_b(C')=0$ for every behaviour and Condition 1(i) fails.
+(c) With the decoder fixed to $y$, the accuracy on held-out conditions is
+the fraction of $k\in K\setminus S$ with $y(\mu_k)=C(k)$. It is $1$ for every
+$S$ iff $y(\mu_k)=C(k)$ for all $k$ (every condition is held out by some
+$S$). If $y(\mu_k)=C(k)$ for all $k$, the swap argument of (a) gives
+$\delta_Q=0$ and $\mathrm{IIA}=1$, and $\lambda=g=1$. Conversely if
+$y(\mu_k)\ne C(k)$ for some $k$, a swap from a trial of condition $k$ into a
+trial of the other side moves $y$ to $y(\mu_k)$, not to $C(k)$, so
+$\mathrm{IIA}<1$. \hfill$\square$
+
+\textbf{Measurable prediction.} On real models, CCGP and depth disagree in
+two identifiable ways: variables that are geometrically abstract but unused
+(high CCGP, failing Condition 1 or 3) and variables that are used but not
+parallel across conditions (low CCGP, high depth). The K2 contrast reports
+the per-input agreement of the two scores and the share of disagreements of
+each kind; that is what decides whether depth carries information CCGP lacks.

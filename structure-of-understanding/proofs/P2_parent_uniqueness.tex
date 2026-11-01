@@ -1,0 +1,73 @@
+\subsection{Proof of Proposition~\ref{prop:unique} (uniqueness of the minimal parent
+set) and of Proposition~\ref{prop:welldef}}
+\label{proof:P2}
+\textbf{Setting.} All variables are finite-valued functions of $X\sim P$.
+$U=\{U_1,\dots,U_n\}$ is the candidate parent set; for $A\subseteq U$ write
+$A$ also for the tuple of its members. \emph{Positivity}: for every
+combination $u=(u_1,\dots,u_n)$ in $\prod_j\mathcal{V}_j$, where
+$\mathcal{V}_j$ is the set of values $U_j$ takes with positive probability,
+$P(U=u)>0$. Positivity of $U$ implies positivity of every sub-collection,
+since a marginal of a positive law on a product set is positive on the
+product of the marginal value sets. A set $S\subseteq U$ is a \emph{blanket}
+for $C$ if $C\perp U\setminus S\mid S$.
+
+\textbf{Lemma (intersection property with a deterministic target).} Let
+$Y,W,Z$ be disjoint sub-collections of $U$ and assume positivity. If
+$C\perp Y\mid(Z,W)$ and $C\perp W\mid(Z,Y)$, then $C\perp(Y,W)\mid Z$. No
+positivity is required of $C$.
+
+\textbf{Proof.} Fix values $z$, $y$, $w$. By positivity $P(y,w,z)>0$ for every
+$y$ and $w$ in their value sets, so all conditionals below are defined. The
+first hypothesis gives $P(c\mid y,z,w)=P(c\mid z,w)$ and the second gives
+$P(c\mid y,z,w)=P(c\mid z,y)$. Hence $P(c\mid z,w)=P(c\mid z,y)$ for all
+$y,w$. The left side does not depend on $y$ and the right side does not
+depend on $w$, so both equal a function $q(c,z)$ only. Then
+$P(c\mid z)=\sum_{y,w}P(c\mid y,z,w)P(y,w\mid z)=q(c,z)\sum_{y,w}P(y,w\mid z)
+=q(c,z)$, and therefore $P(c\mid y,z,w)=q(c,z)=P(c\mid z)$ for all $y,w$, which
+is $C\perp(Y,W)\mid Z$. \hfill$\square$
+
+\textbf{Proof of Proposition~\ref{prop:unique}.} Let $S_1,S_2$ be blankets. Put
+$Z=S_1\cap S_2$, $A=S_1\setminus S_2$, $B=S_2\setminus S_1$ and
+$R=U\setminus(S_1\cup S_2)$; these are disjoint and cover $U$.
+Since $S_1=Z\cup A$ is a blanket, $C\perp(B,R)\mid(Z,A)$.
+Since $S_2=Z\cup B$ is a blanket, $C\perp(A,R)\mid(Z,B)$, and by weak union
+$C\perp A\mid(Z,B,R)$. Apply the Lemma with $Y=A$ and $W=(B,R)$: the two
+hypotheses are $C\perp A\mid(Z,B,R)$ and $C\perp(B,R)\mid(Z,A)$, both
+established. Hence $C\perp(A,B,R)\mid Z$, i.e.\ $Z=S_1\cap S_2$ is a blanket.
+Now let $S_1,S_2$ be inclusion-minimal blankets. Then $S_1\cap S_2$ is a
+blanket contained in both, so by minimality $S_1=S_1\cap S_2=S_2$.
+\hfill$\square$
+
+\textbf{Link to Definition~\ref{def:parents}.} If $C$ is a function of $U$ (the exact
+case of Condition 2, where some subset of $U$ is $0$-sufficient), then for
+any $S\subseteq U$, $S$ is a blanket iff $\Hent(C\mid S)=0$. Indeed, if
+$\Hent(C\mid S)=0$ then $C$ is a function of $S$ and is independent of
+everything given $S$; conversely, if $C\perp U\setminus S\mid S$ then
+$\Hent(C\mid S)=\Hent(C\mid S,U\setminus S)=\Hent(C\mid U)=0$. So under
+positivity the exact parent set of Definition~\ref{def:parents} is unique.
+
+\textbf{Proof of Proposition~\ref{prop:welldef}.} Nodes are equivalence classes of
+accepted candidates, i.e.\ distinct partitions of $X$; since the accepted set
+is fixed (assumption (c)), the node set is determined. Each class is assigned
+the earliest site of its members under the fixed linear extension, which is
+determined. For each node $C$ the candidate parents form a positive
+collection by (b), so its exact parent set is unique by the result just
+proved; hence the edge set is determined. Every edge goes from a node whose
+site is strictly earlier to a node whose site is later in a fixed linear
+order, so a directed cycle would require a site strictly earlier than
+itself; the graph is acyclic. Finally, by Proposition~\ref{prop:reparam}, replacing a
+value map by an invertible reparametrisation leaves the partition, hence the
+node, and all conditional-independence statements, hence the edges,
+unchanged. \hfill$\square$
+
+\textbf{Caveat recorded with the proof.} Positivity fails whenever the
+candidate set contains two members one of which is a function of the other
+(for example a node together with its own parents), and equivalent
+candidates violate it trivially; merging (Definition~\ref{def:equiv}) is therefore a
+precondition, not a convenience. When positivity fails, distinct minimal
+parent sets can exist (for $C=C_3=C_1\oplus C_2$ both $\{C_3\}$ and
+$\{C_1,C_2\}$ are minimal). The programme then reports the set of all
+minimal parent sets and every downstream quantity as a range over the
+resulting graphs; the choice of a canonical candidate set (for example, the
+latest-site antichain that is sufficient) is an open design decision for
+Phase 1 and is tested on planted system V1.

@@ -1,0 +1,34 @@
+python -m validation.dev_quotient_stats --spec V2D 0 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 0 onehot --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 0 noise05 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V4 0 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 0 True --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 0 False --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 0 valid --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 0 decoy --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 0 untrained V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 0 untrained V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 0 shuffled V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 0 shuffled V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 1 onehot --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 1 noise05 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V4 1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 1 True --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 1 False --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 1 valid --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 1 decoy --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 1 untrained V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 1 untrained V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 1 shuffled V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 1 shuffled V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 2 onehot --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V1 2 noise05 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V4 2 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 2 True --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V3 2 False --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 2 valid --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec V5 2 decoy --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 2 untrained V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 2 untrained V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 2 shuffled V4 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs
+python -m validation.dev_quotient_stats --spec NULL 2 shuffled V1 --out /scrfs/storage/paradkar/wb/results/phase1/dev_a4qs

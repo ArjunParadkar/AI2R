@@ -1,0 +1,40 @@
+{
+ "acc": {
+  "out0": 1.0,
+  "out1": 0.9925
+ },
+ "full": 0.9925,
+ "n_cand": 284,
+ "runtime_s": 3137.9365389347076,
+ "rows": 369024,
+ "nodes": {},
+ "outputs": {
+  "out:out0": [
+   "a0",
+   "a1",
+   "b0"
+  ],
+  "out:out1": [
+   "a0",
+   "a1",
+   "b0",
+   "b1"
+  ]
+ },
+ "dropped": {
+  "C0@L24@pre_ans_d0[L24@pre_ans_d0]": "causal use fails (effective-pair test: IIA 0.851, eff 0.169, n_eff 89, random 0.000)",
+  "C0@L24@pre_ans_d0[L27@pre_ans_d0]": "parents not eps_D-sufficient (0.915; pa=['a0', 'a1', 'b0', 'b1'])"
+ },
+ "verdicts": {
+  "realiser of output out:o": 5,
+  "quotient fail": 62,
+  "represented, not used": 69,
+  "quotient pass": 2,
+  "coarsening of cand186@L2": 1,
+  "coarsening of cand249@L2": 1,
+  "realiser of input a0": 27,
+  "realiser of input a1": 55,
+  "realiser of input b0": 26,
+  "realiser of input b1": 36
+ }
+}

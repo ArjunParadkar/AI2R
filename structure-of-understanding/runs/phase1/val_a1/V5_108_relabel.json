@@ -1,0 +1,20 @@
+{
+ "cell": "V5",
+ "seed": 108,
+ "variant": "relabel",
+ "valid": [],
+ "status": {
+  "A": "relabelling",
+  "B": "relabelling"
+ },
+ "n_represented_not_used": 0,
+ "commit": "9a57d93bcb1834c12decf61880bd1c285ccc5061",
+ "spec": [
+  "V5",
+  "108",
+  "relabel"
+ ],
+ "wall_s": 13.21903133392334,
+ "node": "omarchyroot",
+ "start": "2026-10-23T07:20:33"
+}

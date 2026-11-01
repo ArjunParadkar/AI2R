@@ -1,0 +1,17 @@
+{
+ "seed": 3,
+ "kind": "untrained",
+ "family": "V1",
+ "coarsen": 1,
+ "n_candidates": 210,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted": [],
+ "verdict_counts": {
+  "quotient fail": 58,
+  "represented, not used": 116,
+  "realiser": 36
+ },
+ "coarsened": {},
+ "wall_s": 67.28967547416687
+}

@@ -1,0 +1,33 @@
+{
+ "acc": {
+  "out0": 1.0,
+  "out1": 0.9925
+ },
+ "full": 0.9925,
+ "n_cand": 258,
+ "runtime_s": 4257.491610765457,
+ "rows": 386944,
+ "nodes": {},
+ "outputs": {
+  "out:out0": [
+   "a0",
+   "b0"
+  ],
+  "out:out1": [
+   "a0",
+   "a1",
+   "b0",
+   "b1"
+  ]
+ },
+ "dropped": {},
+ "verdicts": {
+  "realiser of output out:o": 2,
+  "quotient fail": 39,
+  "represented, not used": 62,
+  "realiser of input a0": 28,
+  "realiser of input a1": 63,
+  "realiser of input b0": 28,
+  "realiser of input b1": 36
+ }
+}

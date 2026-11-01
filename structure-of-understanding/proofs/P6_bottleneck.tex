@@ -1,0 +1,35 @@
+\subsection{Proofs of Proposition~\ref{prop:bottleneck} and Proposition~\ref{prop:order}
+(bottleneck characterisation and order of scores)}
+\label{proof:P6}
+\textbf{Conventions.} $D$ is a finite DAG with a set $I$ of input nodes, an
+output node $o$, and weights $g\ge0$ on internal nodes (neither input nor
+output). For a path $p$ from $I$ to $o$, $\max_{C\in p}g(C)$ is taken over
+its internal nodes and is $0$ if it has none. $\mathcal{P}$ is the set of such
+paths. If $\mathcal{P}=\emptyset$ we set $\lambda=0$ (an output disconnected
+from the inputs is not grounded); $\mu$ is the maximum of $g$ over internal
+nodes of $D$, and $0$ if there are none. A set $K$ of internal nodes is a
+vertex cut if every $p\in\mathcal{P}$ contains a node of $K$. For $\tau>0$ let
+$K_\tau=\{C:g(C)\ge\tau\}$.
+
+\textbf{Proposition~\ref{prop:bottleneck}.} Let $\tau>0$ and $\mathcal{P}\ne\emptyset$.
+$K_\tau$ is a vertex cut iff every $p\in\mathcal{P}$ contains an internal node
+with $g\ge\tau$, iff $\max_{p}g\ge\tau$ for every $p$, iff
+$\min_{p\in\mathcal{P}}\max_{C\in p}g(C)\ge\tau$ (the minimum over a finite
+non-empty set is attained). Computation: process nodes in topological
+order and set $M(v)=0$ for $v\in I$ and
+$M(v)=\min_{u\to v}\max\bigl(M(u),\,g(u)\mathbf{1}[u\notin I]\bigr)$ otherwise.
+By induction on the topological order, $M(v)$ is the minimum over paths from
+$I$ to $v$ of the maximum weight of the internal nodes before $v$; so
+$\lambda=M(o)$, computed with one pass over the edges. \hfill$\square$
+
+\textbf{Proposition~\ref{prop:order}.} If $\mathcal{P}=\emptyset$ then $\lambda=0\le\mu$.
+Otherwise, for any $p\in\mathcal{P}$, $\max_{C\in p}g(C)\le\mu$ because the
+internal nodes of $p$ are internal nodes of $D$; hence
+$\lambda=\min_p\max_{C\in p}g\le\mu$. If $\lambda(x)\ge\tau>0$ then
+$\mu(x)\ge\tau$, so $x$ is not memorized at $\tau$.
+For a behaviour: $\{\lambda\ge\tau\}\subseteq\{\mu\ge\tau\}$, so
+$\Pr(\mu<\tau)\le1-\Lambda_\tau(b)$. If $b$ is grounded,
+$\Lambda_\tau(b)\ge1-\varepsilon_M$, hence $\Pr(\mu<\tau)\le\varepsilon_M$,
+which is $<1-\varepsilon_M$ whenever $\varepsilon_M<1/2$; so $b$ is not
+memorized. Partly grounded is defined as neither, so the three verdicts are
+mutually exclusive when $\varepsilon_M<1/2$. \hfill$\square$

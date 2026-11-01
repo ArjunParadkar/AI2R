@@ -1,0 +1,21 @@
+{
+ "cell": "NULL",
+ "kind": "untrained",
+ "family": "V4",
+ "seed": 1,
+ "n_candidates": 80,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted_labels": [],
+ "status": "ok",
+ "commit": "c3b5f2ff749f1046d1d65ac2e57505e13a2e8f8d",
+ "spec": [
+  "NULL",
+  "1",
+  "untrained",
+  "V4"
+ ],
+ "wall_s": 39.31189751625061,
+ "node": "omarchyroot",
+ "start": "2026-10-23T03:33:28"
+}

@@ -1,0 +1,17 @@
+{
+ "seed": 0,
+ "kind": "shuffled",
+ "family": "V4",
+ "coarsen": 0,
+ "n_candidates": 160,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted": [],
+ "verdict_counts": {
+  "quotient fail": 82,
+  "represented, not used": 77,
+  "quotient pass": 1
+ },
+ "coarsened": {},
+ "wall_s": 106.38823103904724
+}

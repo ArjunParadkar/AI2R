@@ -1,0 +1,24 @@
+{
+ "seed": 3,
+ "kind": "untrained",
+ "family": "V4",
+ "coarsen": 1,
+ "n_candidates": 160,
+ "n_accepted": 0,
+ "fp_rate": 0.0,
+ "accepted": [],
+ "verdict_counts": {
+  "coarsening": 5,
+  "quotient fail": 127,
+  "represented, not used": 15,
+  "realiser": 13
+ },
+ "coarsened": {
+  "cand2@h0:probe:g0": "coarsening of pos",
+  "cand3@h0:probe:g1": "coarsening of pos",
+  "cand4@h0:probe:g2": "coarsening of pos",
+  "cand82@h0:probe:g0": "coarsening of pos",
+  "cand83@h0:probe:g1": "coarsening of pos"
+ },
+ "wall_s": 45.25300693511963
+}
