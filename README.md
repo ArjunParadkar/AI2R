@@ -10,6 +10,33 @@ One question, pursued in four programmes from June to October 2026: **can mathem
 | **v2 programme** | Aug 2026 | [`v2-programme/`](v2-programme/) | E1–E6 + stages 2–3: every predictive claim failed pre-registration; four instruments shipped |
 | **v1: developmental interpretability** | Jun – Aug 2026 | this directory (root) | the original AI2R work below: persistent homology across training events |
 
+## Run it in 60 seconds
+
+The instrument library runs on plain numpy arrays — no trained model, no GPU, no checkpoint:
+
+```bash
+cd whiteboxtopo
+pip install -e ".[legibility]" matplotlib
+python demo/whitebox_demo.py          # ~6 s on a laptop CPU
+pytest -q                             # the library's own tests, ~30 s
+```
+
+`demo/whitebox_demo.py` runs all four instruments on synthetic cases and prints one verdict line each
+(real output, 2026-11-01, in [`whiteboxtopo/demo/whitebox_demo_output.txt`](whiteboxtopo/demo/whitebox_demo_output.txt)):
+
+```
+[1 invariants]  'top neuron activation': verdict=not_invariant, broken_by=perm+scale, CV=1.73   |   'network output mean': verdict=exact, CV=4.3e-16
+[2 gluing]      Omega=0.267 (CI 0..0.267), shuffle null [0, 0.4], p_null=0.45, significant_vs_null=False, nerve edges=4, frustrated=1
+[3 darkmatter]  verdict='neither', MP outliers=0/60 (CI (0.0, 0.0)), lambda+=1.5, TC ratio=1.06
+[4 legibility]  modularity Q=0.749 (4 communities found, 4 planted), treewidth bound=8
+```
+
+i.e. a raw-neuron reading is exposed as a statement about one weight representative (not the function), a
+planted two-regime explanation does **not** clear the shuffle null, pure-noise residuals are correctly called
+unstructured, and a planted 4-block attribution graph is recovered.  It also writes
+[`whiteboxtopo/demo/whitebox_demo.png`](whiteboxtopo/demo/whitebox_demo.png) (2×2 panel) — 25-second walkthrough:
+[`whiteboxtopo/demo/whitebox_demo.mp4`](whiteboxtopo/demo/whitebox_demo.mp4).
+
 Papers, boards and specs across all eras: [`papers/`](papers/) (competition papers, NeurIPS drafts, science-fair board + logbook, FINAL_SPEC, HANDBOOK, mathematical foundations).
 
 Nulls are results here. Nothing in this repository upgrades a verdict that the pre-registration did not grant.

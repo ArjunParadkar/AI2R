@@ -1,0 +1,7 @@
+whiteboxtopo demo -- four instruments, numpy-only (seed 0)
+[1 invariants]  'top neuron activation': verdict=not_invariant, broken_by=perm+scale, CV=1.73   |   'network output mean': verdict=exact, CV=4.3e-16
+[2 gluing]      Omega=0.267 (CI 0..0.267), shuffle null [0, 0.4], p_null=0.45, significant_vs_null=False, nerve edges=4, frustrated=1
+[3 darkmatter]  verdict='neither', MP outliers=0/60 (CI (0.0, 0.0)), lambda+=1.5, TC ratio=1.06
+[4 legibility]  modularity Q=0.749 (4 communities found, 4 planted), treewidth bound=8
+done in 6.1 s
+figure -> /tmp/claude-1000/-home-god/0428e819-24f3-40b0-bb56-07fe0e33b2c2/scratchpad/ai2r/main/whiteboxtopo/demo/whitebox_demo.png
