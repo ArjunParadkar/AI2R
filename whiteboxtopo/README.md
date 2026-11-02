@@ -77,9 +77,9 @@ import numpy as np
 rng = np.random.default_rng(0)
 
 # 1. invariants — is this metric a statement about the FUNCTION, or about
-#    one arbitrary weight representative? check_invariance samples the ReLU-
+#    one arbitrary weight representative? check_invariance_e2 samples the ReLU-
 #    MLP gauge orbit (unit permutations x per-unit positive scalings).
-from whiteboxtopo.invariants import check_invariance, ReluMLP
+from whiteboxtopo.invariants import check_invariance_e2, ReluMLP
 
 mlp = ReluMLP([rng.normal(size=(3, 6)), rng.normal(size=(6, 1))],
               [rng.normal(size=6), rng.normal(size=1)])
@@ -89,7 +89,7 @@ def raw_top_neuron(m, X):                      # a classic non-invariant reading
     h = np.maximum(X @ m.Ws[0] + m.bs[0], 0)
     return float(h[:, 0].mean())
 
-rep = check_invariance(lambda m: raw_top_neuron(m, X), mlp, n_reps=50)
+rep = check_invariance_e2(lambda m: raw_top_neuron(m, X), mlp, n_reps=50)
 print(rep.verdict, rep.broken_by)               # 'not_invariant' 'perm+scale'
 
 # 2. gluing — does an explanation glue into one global explanation, or fall
